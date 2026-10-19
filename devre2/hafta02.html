@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 2 · R, L, C ve Empedans — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>
+  .phx{display:block;width:100%;background:#0e1726;border-radius:8px}
+  .solved{background:#f3fbf5;border-left:4px solid var(--ok);padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}
+  .why{background:#f6f2fd;border-left:4px solid #6a4bc4;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}
+  .rng{display:flex;align-items:center;gap:8px;font-size:13px;margin:4px 0}
+  .rng input[type=range]{flex:1}
+</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 2 — R, L, C ve Empedans</h1>
+    <div class="sub">V–I faz ilişkisi · Reaktans ve frekans · Empedans/admitans · Kompleks düzlem · Gerçek elemanlar (ESR)</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: V–I Faz İlişkisi</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Frekans Taraması</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Empedans Düzlemi</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Bilinmeyen Eleman ve ESR</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 2 · Pasif Elemanlar ve Empedans</h2>
+  <p class="lead">Ders notu: <b>Bölüm 1.4 R, L, C ve Empedans</b> (kompleks sayı ve fazör bilgisi 1.3’ten).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Dirençte, bobinde ve kondansatörde gerilim ile akım arasındaki <b>faz ilişkisini</b> osiloskopla ölçeceksiniz (ELI the ICE man).</li>
+        <li>Frekans taraması ile <b>|Z|</b> ve <b>θ</b>’nın frekansla nasıl değiştiğini gösterecek, X<sub>L</sub> ∝ f ve |X<sub>C</sub>| ∝ 1/f bağıntılarını veriden doğrulayacaksınız.</li>
+        <li>Seri ve paralel bağlı elemanların <b>empedansını ve admitansını</b> ölçüp kompleks düzlemde işaretleyeceksiniz.</li>
+        <li>İçi görünmeyen bir elemanın <b>türünü ve değerini</b> yalnız ölçümle bulacak, gerçek kondansatörün <b>ESR</b>’sini ölçeceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Fonksiyon üreteci (50 Ω) · AC güç yükselteci (düşük çıkış empedanslı) · İki kanallı osiloskop ve diferansiyel prob · 10 Ω akım algılama (şönt) direnci · True-rms AC voltmetre ve ampermetre · Faz metre (θ<sub>v</sub> − θ<sub>i</sub>) · Direnç/bobin/kondansatör kutuları · Kara kutular X ve Y.</p>
+      <div class="info">Tüm fazörler <b>tepe değerli</b> ve kosinüs referanslıdır. AC voltmetre ve ampermetre <b>rms</b> okur: |Z| = V<sub>rms</sub>/I<sub>rms</sub> = V<sub>m</sub>/I<sub>m</sub> (oran aynıdır), ama fazör yazarken tepe değeri kullanın.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b> bölümündeki animasyonda üç elemanın fazörlerini izleyin ve kompleks düzlemde Z noktasının frekansla nasıl kaydığını görün. <b>Ön Hazırlık</b> sorularını çözün. Deneylerde föy adımları doğru ayarda kendiliğinden işaretlenir; ölçümleri <kbd>R</kbd> ile kaydedin. Son bölümde raporunuzu yazdırın.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Her Eleman Bir Kompleks Sayıdır</h2>
+  <p class="lead">Fazör bölgesinde türev jω ile çarpmadır. Bu tek kural, üç elemanın davranışını tek bir Ohm yasasına toplar: <b>V = Z I</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Üç eleman, üç faz</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Direnç:</b> v = Ri ⇒ <b>V = R I</b>. Gerilim ve akım aynı fazdadır.<br>
+      <b>Bobin:</b> v = L di/dt ⇒ <b>V = jωL I</b>. j = 1∠90° olduğundan gerilim akımdan <b>90° öndedir</b>. Bobin akımın değişmesine karşı koyar: gerilim, akım tepe yapmadan önce (akım en hızlı değişirken) en büyüktür.<br>
+      <b>Kondansatör:</b> i = C dv/dt ⇒ <b>I = jωC V</b>, <b>V = I/(jωC) = −j I/(ωC)</b>. Akım gerilimden <b>90° öndedir</b>.</p>
+      <div class="eq">Z<sub>R</sub> = R,&nbsp; Z<sub>L</sub> = jωL,&nbsp; Z<sub>C</sub> = 1/(jωC) = −j/(ωC)</div>
+      <p style="font-size:14px;line-height:1.65"><b>Ezber yolu “ELI the ICE man”:</b> E-L-I: bobinde (L) gerilim (E) akımdan (I) önce; I-C-E: kondansatörde (C) akım (I) gerilimden (E) önce.</p>
+      <h3>2 · Frekansla değişim</h3>
+      <p style="font-size:14px;line-height:1.65">X<sub>L</sub> = ωL frekansla <b>doğru</b>, |X<sub>C</sub>| = 1/(ωC) <b>ters</b> orantılıdır. DC’de (ω = 0) bobin kısa devre, kondansatör açık devredir; çok yüksek frekansta tersi. Ses süzgeçleri, güç faktörü düzeltme ve radyo ayarı bu farka dayanır.</p>
+      <h3>3 · Empedans ve admitans</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Z = R + jX</b> (direnç + reaktans), <b>Y = 1/Z = G + jB</b> (iletkenlik + süseptans). Seride empedanslar, paralelde admitanslar toplanır. X &gt; 0 endüktif, X &lt; 0 kapasitif. Dikkat: G = 1/R yalnız saf direnç için geçerlidir; genelde G = R/(R² + X²).</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">V ve I fazörleri ↔ zaman eğrileri</h3>
+      <div class="row" id="obSel"></div>
+      <canvas id="obAnim" class="phx" width="640" height="260"></canvas>
+      <div class="row"><button class="btn small" id="obRun">Durdur</button><span style="font-size:13px;color:var(--muted)">Sarı: gerilim v, mavi: akım i. Fazörler birlikte döner; aralarındaki açı elemana özgüdür.</span></div>
+      <h3>Kompleks düzlemde Z (ω ile)</h3>
+      <svg id="obZ" class="schem" viewBox="0 0 640 300" style="background:#fff"></svg>
+      <div class="rng">ω<input type="range" id="obW" min="1.5" max="4.5" step="0.01" value="3"><span id="obWv" style="min-width:110px"></span></div>
+      <div class="why"><b>Ne görmelisiniz?</b> R noktası ω’dan bağımsız olarak gerçel eksende sabittir. Z<sub>L</sub> sanal eksende <b>yukarı</b> (ω arttıkça uzaklaşır), Z<sub>C</sub> <b>aşağı</b> (ω arttıkça orijine yaklaşır). Seri RL’nin Z’si R’den başlayan dikey bir doğru üzerinde yukarı tırmanır.</div>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Direnç</td><td class="l">Z<sub>R</sub> = R, θ = 0°</td></tr>
+        <tr><td class="l">Bobin</td><td class="l">Z<sub>L</sub> = jωL = ωL∠90°, X<sub>L</sub> = ωL</td></tr>
+        <tr><td class="l">Kondansatör</td><td class="l">Z<sub>C</sub> = −j/(ωC) = (1/ωC)∠−90°, X<sub>C</sub> = −1/(ωC)</td></tr>
+        <tr><td class="l">Seri / paralel</td><td class="l">Z<sub>eş</sub> = ΣZ<sub>k</sub>; Y<sub>eş</sub> = ΣY<sub>k</sub></td></tr>
+        <tr><td class="l">Ölçümden Z</td><td class="l">|Z| = V<sub>rms</sub>/I<sub>rms</sub>, θ = θ<sub>v</sub> − θ<sub>i</sub>, Z = |Z|cos θ + j|Z|sin θ</td></tr>
+        <tr><td class="l">Gerçek bobin</td><td class="l">Z = r<sub>L</sub> + jωL, Q = ωL/r<sub>L</sub></td></tr>
+        <tr><td class="l">Gerçek kondansatör</td><td class="l">Z = ESR − j/(ωC), D = tan δ = ωC·ESR</td></tr>
+        <tr><td class="l">|Z<sub>L</sub>| = |Z<sub>C</sub>|</td><td class="l">ω = 1/√(LC)</td></tr>
+      </table>
+      <h3>Çözümlü mini örnek (Örnek 1.16)</h3>
+      <div class="solved">v<sub>s</sub> = 50cos1000t V, seri R = 30 Ω, L = 60 mH, C = 50 µF.<br>
+      1) Z<sub>L</sub> = j1000·0,06 = j60 Ω; Z<sub>C</sub> = −j/(1000·50·10<sup>−6</sup>) = −j20 Ω.<br>
+      2) Z = 30 + j60 − j20 = 30 + j40 = 50∠53,13° Ω (endüktif).<br>
+      3) I = 50∠0°/50∠53,13° = 1∠−53,13° A ⇒ i = cos(1000t − 53,13°) A.<br>
+      4) V<sub>R</sub> = 30∠−53,13°, V<sub>L</sub> = 60∠36,87°, V<sub>C</sub> = 20∠−143,13°; toplamları 50∠0° (KVL ✓). Dikkat: |V<sub>L</sub>| = 60 V kaynaktan büyük!</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+      <div class="warnbox"><b>Kutuplu elektrolitik kondansatöre AC uygulamayın.</b> Ters yarı periyotta oksit tabakası bozulur, kondansatör ısınır, şişer ve patlayabilir. AC deneylerinde film/seramik ya da <b>kutupsuz (bipolar)</b> kondansatör kullanın; gerilim değerinin <b>tepe</b> değerden büyük olduğundan emin olun.</div>
+      <div class="warnbox"><b>Osiloskop toprağı ile eleman gerilimi.</b> Seri devrede ortadaki bir elemanın gerilimini tek uçlu probla ölçmek için toprak klipsini elemanın bir ucuna takarsanız devrenin geri kalanını kısa devre edersiniz. Ya <b>diferansiyel prob</b> kullanın ya da iki kanalla ölçüp osiloskopun MATH (CH1 − CH2) işleviyle farkı alın.</div>
+      <div class="warnbox"><b>Akım ölçümü:</b> Akım, küçük bir şönt dirençteki gerilim olarak ölçülür (i = v<sub>şönt</sub>/R<sub>şönt</sub>). Şöntü toprağa bağlı tarafa koyun ki osiloskop toprağı ile çakışsın. Multimetreyi akım kademesindeyken <b>asla paralel bağlamayın</b>; sigortası atar ya da alet zarar görür.</div>
+      <div class="warnbox"><b>Rezonansta beklenmedik yüksek gerilim.</b> Seri LC devresinde rezonansa yakın bobin ve kondansatör gerilimleri kaynak geriliminden çok büyük olabilir; rezonans dışında bile aşabilir (Örnek 1.16’da 60 V &gt; 50 V). Eleman gerilim değerlerini bu yüzden geniş seçin.</div>
+      <div class="warnbox"><b>Yüklü kondansatörü boşaltın.</b> Devreyi söktükten sonra büyük kondansatörleri bir dirençle (ör. 1 kΩ, 5 W) boşaltmadan elle tutmayın; kısa devre telle boşaltmak kıvılcım ve kontak hasarı yaratır.</div>
+      <div class="warnbox"><b>Bobin devresini akım varken açmayın.</b> Ani kesilen akım L di/dt ile yüksek gerilim üretir. Önce kaynağı kapatın. Demir çekirdekli bobinlerde büyük akım çekirdeği doyurur ve L değeri düşer.</div>
+      <div class="info"><b>Sık hatalar:</b> Kondansatör reaktansını pozitif almak (X<sub>C</sub> = −1/ωC) · jωL’de j’yi unutmak (o zaman bobin direnç gibi görünür) · 230 V rms’yi fazör genliği olarak yazmak (tepe 325,3 V) · ω yerine f kullanmak (X<sub>L</sub> = 2πfL) · Paralel elemanların empedanslarını doğrudan toplamak · G = 1/R’yi seri RL’ye uygulamak · Faz farkını tersten okumak (θ<sub>v</sub> − θ<sub>i</sub>, tersi değil).</div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Sayılar ders notundaki örneklerden alınmıştır.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · R, L ve C’de Gerilim–Akım Faz İlişkisi</h2>
+  <p class="lead">Üreteç (50 Ω) → eleman → 10 Ω şönt → toprak. CH1 diferansiyel prob ile eleman gerilimini, CH2 şönt gerilimini (i·10 Ω) gösterir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Faz farkı θ = θ<sub>v</sub> − θ<sub>i</sub> = 360°·Δt/T. Δt, CH1 (gerilim) tepesinden CH2 (akım) tepesine olan süredir: CH2 tepesi <b>sonra</b> geliyorsa akım geridedir ve θ &gt; 0 (endüktif).</div>
+        <div class="info">|Z| = V<sub>m</sub>/I<sub>m</sub>; I<sub>m</sub> = (CH2 tepe)/10 Ω. Şönt direnç saf direnç olduğundan akımla aynı fazdadır; faz ölçümünü bozmaz.</div>
+        <div class="why"><b>Neden bobinde gerilim önde?</b> v = L di/dt: gerilim akımın <b>eğimiyle</b> orantılıdır. Akım sıfırdan geçerken eğimi en büyüktür, bu yüzden gerilim tepe yapar; akım tepesine çeyrek periyot sonra ulaşır. Kondansatörde rol değişir: i = C dv/dt, akım gerilimin eğimini izler ve önde gider.</div>
+        <div class="warnbox">Gerçek bobinin sargı direnci (r<sub>L</sub>) yüzünden ölçülen açı 90°’den biraz küçük çıkar. Model seçiminde “Gerçek” seçip farkı görün; raporda hangi modeli kullandığınızı yazın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" style="margin-top:12px" id="d1scopeHost"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 210"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Eleman</th><th>Model</th><th>f</th><th>CH1 tepe (V)</th><th>CH2 tepe (V)</th><th>Δt = t<sub>i</sub> − t<sub>v</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Frekans Taraması: |Z| ve θ</h2>
+  <p class="lead">Eleman AC güç yükseltecine bağlı; true-rms voltmetre eleman uçlarında, ampermetre seride, faz metre θ<sub>v</sub> − θ<sub>i</sub>’yi okur.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Grafiğin iki ekseni de <b>logaritmik</b>: x = log<sub>10</sub>f, y = log<sub>10</sub>|Z|. Bu ölçekte X<sub>L</sub> = 2πfL eğimi <b>+1</b>, |X<sub>C</sub>| = 1/(2πfC) eğimi <b>−1</b> olan doğrulardır; direnç yatay doğrudur.</div>
+        <div class="info">L’yi bulmak için: L = |Z|/(2πf). C için: C = 1/(2πf|Z|). Birkaç noktanın ortalamasını alın.</div>
+        <div class="why"><b>Neden log–log?</b> Frekansı 20 Hz’den 100 kHz’e taradığımızda |Z| beş on katlık bir aralıkta değişir. Doğrusal eksende küçük değerler sıfıra yapışır; logaritmik eksende her on kat eşit uzunluktadır ve kuvvet yasaları doğruya dönüşür.</div>
+        <div class="warnbox">Ampermetrenin de bir frekans aralığı vardır ve düşük empedanslı elemanlarda (yüksek f’de kondansatör, düşük f’de bobin) akım büyür. Yükseltecin akım sınırını ve elemanın güç değerini aşmamak için gerilimi düşük tutun.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>log|Z| – log f</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d2theo"> Teorik eğriler</label></div>
+          <canvas id="d2plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+        <div class="card">
+          <div class="row"><b>θ – log f</b></div>
+          <canvas id="d2plotph" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Eleman</th><th>f (Hz)</th><th>V<sub>rms</sub> (V)</th><th>I<sub>rms</sub></th><th>θ (°)</th><th>|Z| = V/I (Ω)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Empedans, Admitans ve Kompleks Düzlem</h2>
+  <p class="lead">Seri ya da paralel bir devre kurun; ölçtüğünüz V, I ve θ’dan Z’yi hesaplayıp kompleks düzleme işaretleyin.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Ölçümden kompleks empedans: <span class="eq">Z = (V<sub>rms</sub>/I<sub>rms</sub>)∠θ = R + jX</span> Admitans: <span class="eq">Y = 1/Z = G + jB</span> |Y| = 1/|Z|, açısı −θ.</div>
+        <div class="info">Örnek 1.17: R = 50 Ω ∥ C = 10 µF, ω = 2000 rad/s. Y = 1/50 + j2000·10<sup>−5</sup> = 0,02 + j0,02 S ⇒ Z = 1/Y = 25 − j25 Ω.</div>
+        <div class="why"><b>Neden paralelde admitans?</b> Paralel kollarda gerilim ortaktır; akımlar toplanır: I = Y<sub>1</sub>V + Y<sub>2</sub>V = (Y<sub>1</sub> + Y<sub>2</sub>)V. Seride ise akım ortaktır ve gerilimler toplanır, bu yüzden empedanslar toplanır.</div>
+        <div class="warnbox">Seri RLC’de ω = 1/√(LC) civarında akım çok büyür, L ve C gerilimleri kaynak gerilimini katlarca aşabilir. Kaynak gerilimini düşük tutun ve elemanların gerilim/akım değerlerini kontrol edin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 200"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Kompleks düzlem (ölçülen noktalar)</b><span class="grow"></span></div>
+          <div class="row" id="d3view"></div>
+          <svg id="d3cp" class="schem" viewBox="0 0 400 360" style="background:#fff"></svg>
+          <label style="font-size:13px"><input type="checkbox" id="d3theo"> Teorik yer eğrisini (ω taraması) çiz</label>
+        </div>
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d3del">Sil</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Devre</th><th>ω</th><th>V<sub>rms</sub></th><th>I<sub>rms</sub></th><th>θ (°)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Bilinmeyen Eleman ve Gerçek Kondansatör (ESR)</h2>
+  <p class="lead">Kara kutu X’in içinde tek bir eleman (R, L ya da C) var. Kara kutu Y ise kutupsuz (bipolar) bir kondansatördür; eşdeğer seri direncini (ESR) ölçeceksiniz.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Tür belirleme:</b> θ ≈ 0° ve |Z| frekanstan bağımsızsa direnç; θ ≈ +90° ve |Z| f ile artıyorsa bobin; θ ≈ −90° ve |Z| f ile azalıyorsa kondansatör. Tek bir frekansta ölçmek yetmez; <b>iki frekansta</b> karşılaştırın.</div>
+        <div class="info"><b>Gerçek kondansatör modeli:</b> Z = ESR − j/(ωC). ESR = Re{Z} = |Z| cos θ. Düşük frekansta reaktans baskındır (θ ≈ −90°); yüksek frekansta 1/(ωC) küçülür ve ESR öne çıkar, θ sıfıra doğru kayar.</div>
+        <div class="why"><b>ESR neden önemli?</b> Anahtarlamalı güç kaynaklarında kondansatörden yüksek frekanslı dalgalı akım geçer; harcanan güç I<sub>rms</sub>²·ESR’dir. Yaşlanan elektrolitiklerde ESR artar, kondansatör ısınır ve arızalanır: elektronik atığa giden cihazların önemli bir bölümünün nedeni budur.</div>
+        <div class="warnbox">Bilinmeyen bir elemana yüksek gerilim uygulamayın; önce düşük genlikle başlayın. Kutu kondansatör çıkarsa ve kutuplu ise AC uygulamak tehlikelidir: bu deneyde kutular kutupsuzdur, gerçekte etiketini kontrol edin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 170"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d4del">Son satırı sil</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>Kutu</th><th>f (Hz)</th><th>V<sub>rms</sub> (V)</th><th>I<sub>rms</sub></th><th>θ (°)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Kutu Y: θ – log f</b></div>
+        <canvas id="d4plot" width="560" height="280" style="width:100%"></canvas>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Hangi elemanda gerilim önde, hangisinde geride? Bilinmeyen elemanı hangi ölçümlerle belirlediniz? ESR yüksek frekansta neden belirleyici oluyor?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta02.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h02', ders: 'Devre Kuramı II', hafta: 2,
+  doc: [
+    { id: 'DÖÇ1', t: 'R, L ve C elemanlarında gerilim–akım faz ilişkisini fazörlerle açıklar ve osiloskopla ölçer.', mc: [1, 4, 5] },
+    { id: 'DÖÇ2', t: 'Reaktansın frekansla değişimini ölçer; |Z| ve θ verisinden eleman değerlerini belirler.', mc: [1, 2, 4, 5] },
+    { id: 'DÖÇ3', t: 'Seri ve paralel devrelerin empedans ve admitansını hesaplar, kompleks düzlemde yorumlar.', mc: [1, 2, 5] },
+    { id: 'DÖÇ4', t: 'Bilinmeyen bir elemanın türünü ve değerini ölçüm planlayarak bulur; gerçek elemanların kayıplarını (ESR, sargı direnci) değerlendirir.', mc: [2, 3, 5, 6] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Direnç, bobin ve kondansatörde gerilim ile akım arasındaki faz farkını osiloskopla ölçmek ve |Z| değerini bulmak.', doc: ['DÖÇ1'], mc: [1, 4, 5],
+      gerec: 'Fonksiyon üreteci (50 Ω), 100 Ω direnç, 10 mH bobin, 1 µF film kondansatör, 10 Ω şönt, diferansiyel prob, iki kanallı osiloskop.',
+      guvenlik: 'Seri devrede ortadaki elemanı tek uçlu probla ölçmek için toprak klipsi takılmaz; diferansiyel prob ya da MATH kullanılır. Kutuplu elektrolitik kondansatöre AC uygulanmaz.',
+      veri: 'Her eleman için CH1/CH2 tepe değerleri ve imleç Δt’si; hesaplanan θ ve |Z|.',
+      tartisma: 'Gerçek bobinde ölçülen açı neden 90°’den küçük? Hangi frekansta fark daha belirgindir?' },
+    d2: { amac: 'R, L ve C’nin empedans büyüklüğünü ve açısını geniş bir frekans aralığında ölçüp X<sub>L</sub> ∝ f ve |X<sub>C</sub>| ∝ 1/f bağıntılarını doğrulamak.', doc: ['DÖÇ2'], mc: [1, 2, 4, 5],
+      gerec: 'AC güç yükselteci, true-rms voltmetre ve ampermetre, faz metre, R/L/C kutuları.',
+      guvenlik: 'Düşük empedanslı durumlarda akım büyür; yükseltecin akım sınırını ve eleman güç değerlerini aşmayın.',
+      veri: 'f, V<sub>rms</sub>, I<sub>rms</sub>, θ tablosu; log–log |Z| ve θ grafikleri; L ve C değerleri.' },
+    d3: { amac: 'Seri ve paralel devrelerin empedans ve admitansını ölçümden hesaplayıp kompleks düzlemde göstermek.', doc: ['DÖÇ3'], mc: [1, 2, 3, 5],
+      gerec: 'AC güç yükselteci (ayarlı ω), direnç/bobin/kondansatör kutuları, V/A metre, faz metre.',
+      guvenlik: 'Seri RLC’de ω ≈ 1/√(LC) civarında eleman gerilimleri kaynak gerilimini aşabilir; düşük kaynak gerilimiyle çalışın.',
+      veri: 'V, I, θ ölçümleri; hesaplanan Z = R + jX ve Y = G + jB; kompleks düzlemdeki noktalar.' },
+    d4: { amac: 'Kara kutudaki elemanın türünü ve değerini ölçümle bulmak; gerçek bir kondansatörün ESR’sini ve kapasitesini belirlemek.', doc: ['DÖÇ4'], mc: [2, 3, 5, 6],
+      gerec: 'AC güç yükselteci, V/A metre, faz metre, kara kutu X (tek eleman), kara kutu Y (kutupsuz kondansatör).',
+      guvenlik: 'Bilinmeyen elemana önce düşük gerilim uygulayın. Kutuplu kondansatöre AC uygulamayın. Yüksek ESR’li kondansatörler ısınır; yaşlanmış kondansatörlerin değiştirilmesi cihaz ömrünü uzatır ve elektronik atığı azaltır.',
+      veri: 'Kutu X ve Y için çok frekanslı V, I, θ ölçümleri; θ–f grafiği; ESR ve C hesabı.',
+      tartisma: 'Elemanın türünü tek bir frekanstaki ölçümle kesin belirleyebilir miydiniz? Neden?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 1 · Op-Amp ile Tanışma — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=7">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 1 — Op-Amp ile Tanışma</h1>
+    <div class="sub">Uçlar · Açık çevrim · Doyum · Karşılaştırıcı · Sanal kısa devre</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>1b · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>2 · Deney 1: Uçlar ve Besleme</button>
+  <button data-p="d2"><span class="dot"></span>3 · Deney 2: Açık Çevrim ve Doyum</button>
+  <button data-p="d3"><span class="dot"></span>4 · Deney 3: Karşılaştırıcı</button>
+  <button data-p="d4"><span class="dot"></span>5 · Deney 4: Geri Besleme</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 1 · İşlemsel Yükselteçle (Op-Amp) Tanışma</h2>
+  <p class="lead">Ders notu: <b>Bölüm 1.1 Uçlar ve Kısıtlar</b> ve <b>1.2 İdeal Model ve Sanal Kısa Devre</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>µA741 entegresinin 8 bacağını tanıyıp breadboard üzerinde <b>simetrik beslemeyi</b> doğru bağlayabileceksiniz.</li>
+        <li>Açık çevrim karakteristiğini <b>ölçerek</b> A kazancını ve doğrusal bölgenin sınırını (±V<sub>CC</sub>/A) bulacaksınız.</li>
+        <li>Geri beslemesiz op-ampın bir <b>karşılaştırıcı</b> olduğunu osiloskopta görecek, yükselme hızını (SR) ölçeceksiniz.</li>
+        <li>Negatif geri beslemenin <b>sanal kısa devreyi</b> nasıl oluşturduğunu, pozitif geri beslemenin neden kilitlendiğini göreceksiniz.</li>
+        <li>Beş uçta KCL ile çıkış akımının <b>beslemeden</b> geldiğini doğrulayacaksınız.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Simetrik DC güç kaynağı (0–20 V, akım sınırlı) · Ayarlı DC gerilim kaynağı · İki dijital multimetre · Fonksiyon üreteci (sinüs/üçgen/kare) · İki kanallı osiloskop (imleçli) · Breadboard, µA741, dirençler, 10 kΩ ofset trimpotu.</p>
+      <h3>Op-amp modeli (tüm deneylerde)</h3>
+      <div class="row" style="font-size:14px">
+        <label>Doyum kabulü
+          <select id="satModel">
+            <option value="ideal">Ders kabulü: v<sub>o</sub> = ±V<sub>CC</sub></option>
+            <option value="real">Gerçek 741: v<sub>o</sub> = ±(V<sub>CC</sub> − 1,5 V)</option>
+          </select></label>
+      </div>
+      <div class="info">µA741: A = 10<sup>5</sup>, R<sub>i</sub> = 2 MΩ, SR = 0,5 V/µs, sükûnet akımı 1,7 mA, kısa devre çıkış akımı ≈ 25 mA, en yüksek besleme ±18 V. Sayısal sorular ders kabulüyle (±V<sub>CC</sub>) hazırlanmıştır.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Hazırlık</b> sorularını çözün. Her deneyde soldaki föyü adım adım izleyin; adımlar siz doğru ayarı yaptığınızda kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile tabloya kaydedin, soruları yanıtlayın. Son bölümde raporunuzu yazdırın ya da PDF olarak kaydedin.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Op-Amp'a Kısa Bir Yolculuk</h2>
+  <p class="lead">Deneylere başlamadan 10 dakikanızı ayırın: kavramlar, formül kartı ve gerçek laboratuvarda sizi bekleyen tuzaklar.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Op-amp nedir, neden “işlemsel”?</h3>
+      <p style="font-size:14px;line-height:1.65">İşlemsel yükselteç, iki girişi arasındaki <b>farkı</b> çok büyük bir kazançla (A ≈ 10<sup>5</sup>) yükselten beş uçlu bir entegredir. Adını analog bilgisayarlardan alır: birkaç dirençle toplama, çıkarma, integral ve türev <b>işlemleri</b> yapılır. Sensör arabirimleri, ses devreleri, filtreler, ölçü aletleri ve kontrol devrelerinin temel taşıdır.</p>
+      <div class="eq">v<sub>o</sub> = A (v<sub>p</sub> − v<sub>n</sub>),&nbsp;&nbsp; −V<sub>CC</sub> ≤ v<sub>o</sub> ≤ +V<sub>CC</sub></div>
+      <h3>2 · Üç çalışma durumu</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Geri besleme yok:</b> doğrusal bölge yalnızca ±V<sub>CC</sub>/A (≈150 µV) genişliğindedir; çıkış pratikte hep ±V<sub>sat</sub>'tadır → <b>karşılaştırıcı</b>.<br>
+      <b>Negatif geri besleme:</b> çıkış, farkı sıfıra yaklaştıracak değeri kendiliğinden bulur → <b>v<sub>p</sub> ≈ v<sub>n</sub></b> (sanal kısa devre), kazancı dirençler belirler.<br>
+      <b>Pozitif geri besleme:</b> fark büyür, çıkış bir doyuma kilitlenir → <b>bellek / histerezis</b>.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Doğrusal bölge sınırı</td><td class="l">|v<sub>p</sub>−v<sub>n</sub>| &lt; V<sub>CC</sub>/A</td></tr>
+        <tr><td class="l">İdeal kısıtlar (negatif GB)</td><td class="l">v<sub>p</sub> = v<sub>n</sub>, i<sub>p</sub> = i<sub>n</sub> = 0</td></tr>
+        <tr><td class="l">Beş uç KCL</td><td class="l">i<sub>p</sub>+i<sub>n</sub>+i<sub>o</sub>+i<sub>CC+</sub>+i<sub>CC−</sub> = 0</td></tr>
+        <tr><td class="l">Eviren kazanç (sonlu A)</td><td class="l">(−R<sub>f</sub>/R<sub>s</sub>)/(1+(1+R<sub>f</sub>/R<sub>s</sub>)/A)</td></tr>
+        <tr><td class="l">Yükselme hızı</td><td class="l">SR = |dv<sub>o</sub>/dt|<sub>maks</sub> (741: 0,5 V/µs)</td></tr>
+        <tr><td class="l">Karşılaştırıcı görev oranı</td><td class="l">D = ½ − arcsin(V<sub>ref</sub>/V<sub>m</sub>)/π</td></tr>
+      </table>
+      <h3>µA741 bacak bağlantısı (üstten, çentik solda)</h3>
+      <pre style="font-size:13px;background:#f6f8fb;padding:8px;border-radius:6px;margin:0">  8 NC   7 +VCC   6 Çıkış   5 Ofset
+ ┌──────────────────────────────┐
+ ◖ µA741                         │
+ └──────────────────────────────┘
+  1 Ofset 2 Giriş(−) 3 Giriş(+) 4 −VCC</pre>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Önce bağla, sonra besle.</b> Kaynağın çıkışı kapalıyken devreyi kurun, bağlantıları şemayla tek tek karşılaştırın, ancak sonra çıkışı açın. Devre değiştirirken beslemeyi kapatın.</div>
+    <div class="warnbox"><b>Akım sınırını düşük ayarlayın.</b> Op-amp deneylerinde kaynağın akım sınırını 50–100 mA'e çekin. Bir hata yaptığınızda entegre yanmaz, kaynak “CC” konumuna geçer: bu sizin uyarı lambanızdır.</div>
+    <div class="warnbox"><b>Ters besleme ve aşırı gerilim entegreyi öldürür.</b> 7 ↔ 4 karışması veya ±18 V'un aşılması saniyeler içinde kalıcı hasar verir. Entegre ısınıyorsa veya koku geliyorsa beslemeyi hemen kesin.</div>
+    <div class="warnbox"><b>Toprak (COM) her ölçümün referansıdır.</b> Kaynağın COM ucu, üretecin ve osiloskobun toprak klipsleri <u>aynı noktaya</u> bağlanmalıdır. Osiloskop toprağını devrede başka bir düğüme takmak o düğümü toprağa kısa devre eder.</div>
+    <div class="warnbox"><b>Girişleri boş bırakmayın.</b> Havada kalan bir op-amp girişi gürültü toplar, çıkış rastgele doyuma gider. Kullanılmayan girişi dirençle toprağa bağlayın.</div>
+    <div class="warnbox"><b>Dekuplaj kondansatörü.</b> Gerçek devrede her besleme bacağına (7 ve 4) toprağa 100 nF seramik kondansatör koyun; aksi hâlde devre salınım yapabilir.</div>
+    <div class="info"><b>Sık hatalar:</b> doyumu kontrol etmeden ideal formülü kullanmak (100 V çıkış yok!), eviren kazancın eksi işaretini unutmak, sanal toprağı gerçek toprak sanıp oraya akım akıtmak, µV ile mV birimlerini karıştırmak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. A = 10<sup>5</sup>, besleme ±15 V, doyum ±V<sub>CC</sub> kabul edin.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · µA741'in Uçları ve Simetrik Besleme</h2>
+  <p class="lead">Kabloları fareyle bir delikten/klemensten diğerine sürükleyerek bağlayın. Kabloya tıklarsanız sökülür.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Op-amp <b>beş uçludur</b>: iki giriş (v<sub>n</sub> “−”, v<sub>p</sub> “+”), bir çıkış (v<sub>o</sub>) ve iki besleme (+V<sub>CC</sub>, −V<sub>CC</sub>). Besleme uçları şemalarda çoğu zaman çizilmez ama <b>her zaman vardır</b>: hem enerjiyi verir hem de çıkışın sınırlarını belirler.</div>
+        <div class="info">Breadboard'da her <b>sütunun</b> üst beşli (a–e) ve alt beşli (f–j) delikleri kendi içinde bağlıdır; ortadaki kanal bunları ayırır. Uzun yatay raylar boydan boya bağlıdır. Bir deliğin üzerine gelince ona bağlı delikler yanar.</div>
+        <div class="warnbox">Besleme ters bağlanırsa ya da ±18 V aşılırsa entegre zarar görür. Gerçek laboratuvarda da: <b>önce bağla, kontrol et, sonra çıkışı aç.</b></div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <svg id="bb" viewBox="0 0 980 480" style="width:100%;display:block;user-select:none;touch-action:none"></svg>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="row">
+          <span style="font-size:13px">Kablo rengi:</span>
+          <span id="wireColors" class="row"></span>
+          <button class="btn sec small" id="undoWire">Son kabloyu sök</button>
+          <button class="btn sec small" id="clearWires">Tümünü sök</button>
+          <button class="btn warn small" id="newIC" style="display:none">Yeni 741 tak</button>
+          <span class="grow"></span>
+          <button class="btn small" id="pinQuizBtn">Bacak testini başlat</button>
+        </div>
+        <div id="pinInfo" class="info" style="min-height:44px">Fareyi entegrenin bacaklarının üzerine getirin.</div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Açık Çevrim Karakteristiği ve Doyum</h2>
+  <p class="lead">Geri besleme yok: v<sub>o</sub> = A(v<sub>p</sub> − v<sub>n</sub>). Mikrovoltluk farkı elde etmek için 1000:1 gerilim bölücü kullanılıyor.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Doğrusal bölge çok dardır: <span class="eq">|v<sub>p</sub> − v<sub>n</sub>| &lt; V<sub>CC</sub> / A</span> A = 10<sup>5</sup> ve ±15 V için yalnızca 150 µV.</div>
+        <div class="info">Gerçek bir 741'de girişler eşitken bile çıkış sıfır olmaz: girişe seri küçük bir pil gibi davranan <b>ofset gerilimi</b> (V<sub>os</sub> ≈ 1–2 mV) vardır. 1 ve 5 numaralı bacaklara bağlı 10 kΩ trimpot ile sıfırlanır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 290"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d2rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d2del">Son satırı sil</button>
+            <button class="btn sec small" id="d2csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>V<sub>S</sub> (mV)</th><th>±V<sub>CC</sub></th><th>v<sub>p</sub>−v<sub>n</sub> (µV)</th><th>v<sub>o</sub> (V)</th><th>Bölge</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>v<sub>o</sub> – (v<sub>p</sub>−v<sub>n</sub>) grafiği</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d2theo"> İdeal eğri</label></div>
+          <canvas id="d2plot" width="560" height="300" style="width:100%"></canvas>
+          <div id="d2fit" style="font-size:13px;margin-top:4px"></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Geri Beslemesiz Op-Amp: Karşılaştırıcı</h2>
+  <p class="lead">Evirmeyen girişe fonksiyon üreteci, eviren girişe ayarlı bir referans gerilimi bağlıdır. CH1 girişi, CH2 çıkışı gösterir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Çıkış yalnızca iki değer alır: v<sub>p</sub> &gt; v<sub>n</sub> ise +V<sub>sat</sub>, değilse −V<sub>sat</sub>. Sinyal yükseltmede kötü, ama <b>karşılaştırıcı</b> olarak tam istenen davranış.</div>
+        <div class="info">Çıkış sonsuz hızla değişemez: <span class="eq">SR = |dv<sub>o</sub>/dt|<sub>maks</sub> = 0,5 V/µs</span> Yüksek frekansta kenarlar eğik görünür. Bu bir doyum değil, op-ampın <b>yetişememesidir</b>.</div>
+        <div class="info">Görev oranı (sinüs, tepe V<sub>m</sub>, referans V<sub>ref</sub>): <span class="eq">D = ½ − arcsin(V<sub>ref</sub>/V<sub>m</sub>)/π</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d3inst"></div>
+        <div class="bench-row" style="margin-top:12px">
+          <div class="inst dark scopewrap" style="flex:1;min-width:420px">
+            <div class="brand"><span>DSO-2C · Dijital Osiloskop</span><span><span class="led on g"></span> RUN</span></div>
+            <div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+              <canvas id="scope" width="640" height="400" style="width:100%;max-width:640px"></canvas>
+              <div style="min-width:150px">
+                <div class="ctrls" id="scopeKnobs"></div>
+                <div class="row" style="margin:6px 0">
+                  <button class="seg-btn on" id="ch1on">CH1</button>
+                  <button class="seg-btn on" id="ch2on">CH2</button>
+                  <button class="seg-btn" id="curon">İMLEÇ</button>
+                </div>
+                <div class="meas" id="scopeMeas"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Negatif Geri Besleme, Sanal Kısa Devre ve Uç Akımları</h2>
+  <p class="lead">R<sub>f</sub> çıkışı girişe geri bağlar. S1 anahtarı op-ampın iki giriş ucunu yer değiştirir: geri besleme <b>negatif</b> ya da <b>pozitif</b> olur.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Negatif geri beslemede devre, v<sub>p</sub> − v<sub>n</sub> farkını neredeyse sıfıra indiren çıkışı kendiliğinden bulur: <span class="eq">v<sub>p</sub> − v<sub>n</sub> = v<sub>o</sub>/A ≈ 0</span> Bu bir <b>sonuçtur</b>, kural değil.</div>
+        <div class="info">Sonlu A ile eviren yapı: <span class="eq">v<sub>o</sub>/v<sub>g</sub> = (−R<sub>f</sub>/R<sub>s</sub>) / (1 + (1 + R<sub>f</sub>/R<sub>s</sub>)/A)</span></div>
+        <div class="info">Beş uç için KCL (op-ampa giren yönde): <span class="eq">i<sub>p</sub> + i<sub>n</sub> + i<sub>o</sub> + i<sub>CC+</sub> + i<sub>CC−</sub> = 0</span> Yükün akımı girişlerden değil <b>beslemeden</b> gelir.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 320"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <b>Uç akımları (op-ampa giren yön +)</b>
+          <table class="data" id="d4cur" style="margin-top:6px"></table>
+          <div id="d4kcl" style="font-size:13px;margin-top:6px"></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>v<sub>o</sub> – v<sub>g</sub> aktarım eğrisi</b><span class="grow"></span>
+            <button class="btn small" id="d4sweep">Otomatik tara</button>
+            <button class="btn small" id="d4rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d4clr">Temizle</button></div>
+          <canvas id="d4plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span><button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>GB</th><th>A</th><th>R<sub>s</sub></th><th>R<sub>f</sub></th><th>R<sub>L</sub></th><th>v<sub>g</sub> (V)</th><th>v<sub>n</sub></th><th>v<sub>o</sub> (V)</th><th>v<sub>o</sub>/v<sub>g</sub></th><th>i<sub>o</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Sanal kısa devre ne zaman geçerlidir? Açık çevrimde neden doğrusal ölçüm yapmak zordur? Gözlemlerinizi yazın."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Kablolar (Deney 1):</b> bir delikten/klemensten diğerine sürükleyin; kabloya tıklayınca sökülür.<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=6"></script>
+<script src="hafta01.js?v=6"></script>
+<script>
+window.CIKTI = { key: 'd1h1', ders: 'Devre Kuramı I', hafta: 1,
+  doc: [
+    { id: 'DÖÇ1', t: 'Op-ampın uçlarını tanır, simetrik beslemeyi güvenli biçimde kurar.', mc: [1, 4, 6] },
+    { id: 'DÖÇ2', t: 'Açık çevrim karakteristiğini ölçer; A kazancını ve doğrusal bölgeyi veriden belirler.', mc: [1, 4, 5] },
+    { id: 'DÖÇ3', t: 'Doyum ve yükselme hızı sınırlarını hesaplar ve osiloskopla doğrular.', mc: [1, 2, 5] },
+    { id: 'DÖÇ4', t: 'Negatif/pozitif geri beslemeyi ayırt eder; sanal kısa devre ve uç akımlarını analiz eder.', mc: [1, 2, 5] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'µA741 entegresinin bacak bağlantılarını öğrenmek ve ±15 V simetrik beslemeyi breadboard üzerinde hatasız kurmak.', doc: ['DÖÇ1'], mc: [1, 4, 6],
+      gerec: 'Simetrik DC güç kaynağı (0–20 V, akım sınırlı), breadboard, µA741, bağlantı kabloları.',
+      guvenlik: 'Ters besleme ve ±18 V üstü gerilim entegreyi kalıcı bozar; akım sınırını 50–100 mA yapın; bağlantıyı enerjisizken kurun; ısınan entegreye dokunmayın.',
+      veri: 'Kaynak göstergelerindeki gerilim ve sükûnet akımı; bacak testi puanı.' },
+    d2: { amac: 'Açık çevrim aktarım eğrisini ölçerek A kazancını, doğrusal bölge sınırını ve ofset gerilimini belirlemek.', doc: ['DÖÇ2'], mc: [1, 2, 4, 5],
+      gerec: 'Ayarlı DC kaynak, 100 kΩ/100 Ω bölücü, iki DMM, 10 kΩ ofset trimpotu, ±V<sub>CC</sub> kaynağı.',
+      guvenlik: 'Bölücüsüz bağlantıda girişe yüzlerce mV uygulamak çıkışı doyurur ama zarar vermez; trimpot ucunu −V<sub>CC</sub> dışında bir yere bağlamayın.',
+      veri: 'v<sub>p</sub>−v<sub>n</sub> ve v<sub>o</sub> tablosu, aktarım grafiği, en küçük kareler ile A ve V<sub>os</sub>.' },
+    d3: { amac: 'Geri beslemesiz op-ampın karşılaştırıcı davranışını, görev oranını ve yükselme hızını gözlemek ve ölçmek.', doc: ['DÖÇ3'], mc: [1, 2, 4, 5],
+      gerec: 'Fonksiyon üreteci, referans potansiyometresi, iki kanallı osiloskop (imleçli).',
+      guvenlik: 'Osiloskop toprak klipsi yalnızca devre toprağına; üreteç çıkışını kısa devre etmeyin.',
+      veri: 'Osiloskop ölçümleri (Vpp, f, görev oranı, t<sub>r</sub>), imleçle SR hesabı.' },
+    d4: { amac: 'Negatif geri beslemenin sanal kısa devreyi nasıl oluşturduğunu, pozitif geri beslemenin histerezisini ve beş uç KCL denklemini doğrulamak.', doc: ['DÖÇ4'], mc: [1, 2, 3, 4, 5],
+      gerec: 'DC kaynak, direnç kutusu (R<sub>s</sub>, R<sub>f</sub>, R<sub>L</sub>), S1 giriş değiştirme anahtarı, iki DMM.',
+      guvenlik: 'Küçük yük direncinde çıkış 25 mA ile sınırlanır ve entegre ısınır; R<sub>L</sub> ≥ 2 kΩ seçin.',
+      veri: 'v<sub>g</sub>–v<sub>o</sub> aktarım eğrisi, uç akımları tablosu, sonlu kazanç karşılaştırması.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

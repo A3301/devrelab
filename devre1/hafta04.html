@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 4 · Gerçek Op-Amp Sınırları — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 4 — Gerçek Op-Amp Sınırları</h1>
+    <div class="sub">Sonlu kazanç · Kazanç–bant genişliği çarpımı · Yükselme hızı · Ofset ve polarma akımı</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Sonlu Kazanç</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Kazanç–Bant</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Yükselme Hızı</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Ofset ve I<sub>B</sub></button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 4 · İdeal Model Nerede Biter?</h2>
+  <p class="lead">Ders notu: <b>Bölüm 1.6 Gerçek Op-Amp Sınırları</b> (Örnek 1.8, 1.9, 1.10 ve 1.21).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Sonlu açık çevrim kazancı A'nın kapalı çevrim kazancında yarattığı hatayı <b>ölçecek</b>, hatanın (1+R<sub>f</sub>/R<sub>s</sub>)/A ile orantılı olduğunu göreceksiniz.</li>
+        <li>Frekans taraması yaparak Bode genlik eğrisini çizecek, <b>kazanç × bant = GBW</b> sabitliğini doğrulayacak, iki katlı tasarımla (Örnek 1.10) bandı genişleteceksiniz.</li>
+        <li>Yükselme hızının (SR) sinüsü nasıl <b>üçgene</b> çevirdiğini osiloskopta görecek, tam güç bant genişliğini ölçeceksiniz.</li>
+        <li>Belirli bir devrede bandı <b>GBW'nin mi SR'nin mi</b> sınırladığını ayırt edeceksiniz.</li>
+        <li>Ofset gerilimi ve polarma akımının çıkışta yarattığı DC kaymayı ölçüp <b>dengeleme direnci</b> R<sub>p</sub> = R<sub>s</sub>‖R<sub>f</sub> ile azaltacaksınız.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Simetrik DC güç kaynağı (±15 V) · Ayarlı DC kaynak · İki dijital multimetre (4½ hane, giriş direnci 10 MΩ) · Fonksiyon üreteci (sinüs, 50 Ω çıkış) · Çift kanallı AC milivoltmetre / faz ölçer · Bozulma (THD) analizörü · İki kanallı osiloskop (imleçli) · Dekat direnç kutuları · µA741.</p>
+      <h3>Op-amp modeli (tüm deneylerde)</h3>
+      <div class="info">µA741: A<sub>0</sub> = 10<sup>5</sup>, tek kutuplu frekans yanıtı <span class="eq">A(f) = A<sub>0</sub> / (1 + j f/f<sub>b</sub>),&nbsp; f<sub>b</sub> = 10 Hz,&nbsp; GBW = A<sub>0</sub>f<sub>b</sub> = 1 MHz</span> SR = 0,5 V/µs, ±15 V beslemede çıkış ±14 V'ta doyar, V<sub>os</sub> = 1–5 mV, I<sub>B</sub> ≈ 80 nA.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b> sayfasını okuyun ve <b>Ön Hazırlık</b> sorularını çözün. Her deneyde soldaki föyü adım adım izleyin; adımlar doğru ayarı yaptığınızda kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile tabloya kaydedin, grafikte teorik eğriyle karşılaştırın, soruları yanıtlayın. Son bölümde raporunuzu yazdırın ya da PDF olarak kaydedin.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · İdeal Op-Amp ile Gerçek Op-Amp Arasındaki Mesafe</h2>
+  <p class="lead">“Sapmanın kendisi değil, devreye etkisi karar verdirir.” Bu hafta dört sapmayı tek tek ölçüp etkilerini tartacağız.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Neden önemli?</h3>
+      <p style="font-size:14px;line-height:1.65">Şimdiye kadar op-ampı A = ∞, R<sub>i</sub> = ∞, R<sub>o</sub> = 0 kabul ettik. Bu kabul DC'de ve düşük frekansta binde bir doğrulukla çalışır. Ama bir <b>ses yükseltecinde</b> tiz sesler kısılıyorsa, bir <b>sensör yükseltecinin</b> çıkışı girişte hiçbir şey yokken 50 mV gösteriyorsa ya da bir <b>osilatörün</b> sinüsü üçgene dönüyorsa, sebep bu hafta ölçeceğimiz gerçek sınırlardır.</p>
+      <h3>2 · Dört sınır, dört farklı belirti</h3>
+      <p style="font-size:14px;line-height:1.65">
+      <b>Sonlu A:</b> kazanç biraz düşük çıkar; hata (1+R<sub>f</sub>/R<sub>s</sub>)/A kadardır. Kazanç ne kadar büyük istenirse hata o kadar büyür — A ortak bütçedir.<br>
+      <b>GBW:</b> A frekansla düşer. Kapalı çevrimde kazanç × f<sub>3dB</sub> sabittir; kazancın her katı banttan bir kat götürür. <i>Küçük işaret</i> sınırıdır, genlikten bağımsızdır.<br>
+      <b>SR:</b> çıkış en çok 0,5 V/µs hızla değişebilir. Sinüsün en dik yeri sıfır geçişidir (eğim ωV<sub>m</sub>). <i>Büyük işaret</i> sınırıdır: genlik büyüdükçe sınır frekansı düşer, sinüs üçgenleşir.<br>
+      <b>V<sub>os</sub>, I<sub>B</sub>:</b> DC hatalardır. Sinyalin biçimi bozulmaz, sıfır noktası kayar.</p>
+      <svg viewBox="0 0 420 190" style="width:100%;max-width:420px;display:block;margin:auto" aria-label="Bode genlik eğrisi taslağı">
+        <line x1="40" y1="160" x2="410" y2="160" stroke="#555"/><line x1="40" y1="10" x2="40" y2="160" stroke="#555"/>
+        <path d="M40,22 L70,22 Q80,22 90,30 L360,160" stroke="#888" stroke-dasharray="5 4" fill="none" stroke-width="2"/>
+        <path d="M40,70 L190,70 Q215,70 230,84 L290,135" stroke="#0b5cad" fill="none" stroke-width="2.5"/>
+        <path d="M40,110 L270,110 Q290,110 305,122 L335,148" stroke="#1a8a4a" fill="none" stroke-width="2.5"/>
+        <circle cx="222" cy="79" r="4" fill="#c62828"/><circle cx="296" cy="117" r="4" fill="#c62828"/>
+        <text x="95" y="20" font-size="11" fill="#666">açık çevrim A(f)</text>
+        <text x="60" y="64" font-size="11" fill="#0b5cad">kazanç 100</text><text x="60" y="104" font-size="11" fill="#1a8a4a">kazanç 10</text>
+        <text x="228" y="74" font-size="10" fill="#c62828">10 kHz</text><text x="302" y="112" font-size="10" fill="#c62828">100 kHz</text>
+        <text x="225" y="182" font-size="11" fill="#333" text-anchor="middle">log f →  (−20 dB/dekad eğim)</text>
+        <text x="14" y="90" font-size="11" fill="#333" transform="rotate(-90 14 90)">dB</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Eviren, sonlu A</td><td class="l">v<sub>o</sub>/v<sub>g</sub> = (−R<sub>f</sub>/R<sub>s</sub>) / (1 + (1+R<sub>f</sub>/R<sub>s</sub>)/A)</td></tr>
+        <tr><td class="l">Bağıl hata</td><td class="l">ε ≈ (1+R<sub>f</sub>/R<sub>s</sub>)/A</td></tr>
+        <tr><td class="l">Tek kutuplu op-amp</td><td class="l">A(f) = A<sub>0</sub>/(1 + jf/f<sub>b</sub>), GBW = A<sub>0</sub>f<sub>b</sub></td></tr>
+        <tr><td class="l">Kazanç–bant</td><td class="l">kazanç × f<sub>3dB</sub> = GBW (evirmeyen: kazanç = 1+R<sub>f</sub>/R<sub>s</sub>)</td></tr>
+        <tr><td class="l">Yükselme hızı</td><td class="l">SR = |dv<sub>o</sub>/dt|<sub>maks</sub></td></tr>
+        <tr><td class="l">Tam güç bant genişliği</td><td class="l">f<sub>SR</sub> = SR / (2πV<sub>m</sub>)</td></tr>
+        <tr><td class="l">Kullanılabilir en yüksek f</td><td class="l">min(GBW/kazanç, SR/(2πV<sub>m</sub>))</td></tr>
+        <tr><td class="l">Ofset kayması</td><td class="l">Δv<sub>o</sub> = (1+R<sub>f</sub>/R<sub>s</sub>)V<sub>os</sub></td></tr>
+        <tr><td class="l">Polarma akımı kayması</td><td class="l">Δv<sub>o</sub> ≈ I<sub>B</sub>R<sub>f</sub> (R<sub>p</sub> = 0 iken)</td></tr>
+        <tr><td class="l">Dengeleme direnci</td><td class="l">R<sub>p</sub> = R<sub>s</sub>‖R<sub>f</sub> → kalan Δv<sub>o</sub> ≈ I<sub>os</sub>R<sub>f</sub></td></tr>
+        <tr><td class="l">Desibel</td><td class="l">dB = 20 log<sub>10</sub>(V<sub>o</sub>/V<sub>i</sub>); −3 dB ⇔ ×0,707</td></tr>
+      </table>
+      <h3>Önce tahmin edin</h3>
+      <div class="info">GBW = 1 MHz ve SR = 0,5 V/µs olan tek bir op-ampla kazancı 1000, bant genişliğini 100 kHz yapmak mümkün müdür? Besleme artırılsa? R<sub>f</sub> büyütülse? Yanıtı Deney 2'de kendiniz bulacaksınız.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Önce bağla, sonra besle; akım sınırını düşük tutun.</b> Simetrik kaynağın akım sınırını 50–100 mA'e çekin. Devre değiştirirken beslemeyi kapatın. ±18 V'u asla aşmayın; 7 ↔ 4 bacak karışması entegreyi saniyeler içinde bozar.</div>
+    <div class="warnbox"><b>Osiloskop toprak klipsi tek noktaya.</b> Probların toprak klipsleri ve fonksiyon üretecinin toprağı devrenin ortak toprağına bağlanır. Klipsi devrede başka bir düğüme takmak o düğümü şebeke toprağı üzerinden kısa devre eder.</div>
+    <div class="warnbox"><b>Prob ×10 konumu ve kompanzasyonu.</b> 100 kHz üzerinde ölçüm yaparken ×1 prob kendi kapasitansıyla (≈100 pF) devreyi yükler ve sahte bir bant sınırı ölçersiniz. ×10 kullanın ve probu kalibrasyon karesiyle dengeleyin.</div>
+    <div class="warnbox"><b>Multimetre AC kademesinin bant genişliği sınırlıdır.</b> Ucuz DMM'ler AC'de yalnızca 50 Hz–1 kHz arasında doğru okur. Frekans taramasında DMM değil AC milivoltmetre ya da osiloskop kullanın; aksi hâlde aletin bandını op-ampın bandı sanırsınız.</div>
+    <div class="warnbox"><b>Giriş genliğini kazanca göre seçin.</b> Kazanç 100 iken 1 Vpp giriş, çıkışı doyuma götürür; doyumu bant sınırı ya da yükselme hızı sanmayın. Frekans taramasında çıkışı birkaç Vpp'de tutun.</div>
+    <div class="warnbox"><b>Dekuplaj ve kısa kablolar.</b> Her besleme bacağına toprağa 100 nF seramik kondansatör koyun, geri besleme direncini entegreye yakın yerleştirin. Uzun kablolar yüksek frekansta salınıma ve yanlış Bode ölçümüne yol açar.</div>
+    <div class="warnbox"><b>Büyük dirençlerden kaçının.</b> 1 MΩ'luk R<sub>f</sub>, 80 nA polarma akımıyla 80 mV hata üretir; breadboard'un yüzey kaçağı ve el nemi de MΩ düzeyinde paralel yol oluşturur. Mümkünse 1–100 kΩ aralığında kalın.</div>
+    <div class="info"><b>Sık hatalar:</b> her bozulmayı tek sınıra bağlamak (f<sub>maks</sub> = GBW/A her zaman doğru değildir; SR genliğe bağlıdır) · yükselme hızı bozulmasını doyumla karıştırmak (çıkış ±V<sub>CC</sub>'ye değmiyorsa doyum değildir) · −3 dB noktasını tepe değerin yarısında aramak (doğrusu %70,7) · iki katlı yapıda toplam bandın her katın bandına eşit olduğunu sanmak · ofset kaymasını kazançla çarpmayı unutmak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. µA741: A = 10<sup>5</sup>, GBW = 1 MHz, SR = 0,5 V/µs.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Sonlu Açık Çevrim Kazancının Getirdiği Hata</h2>
+  <p class="lead">Eviren yükselteç. Op-amp kartındaki seçiciyle A'yı 10 ile 10<sup>6</sup> arasında değiştirebilirsiniz (gerçekte farklı op-amp tipleri ya da zayıf bir transistör katı).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">A sonlu olunca sanal kısa devre tam değildir: <span class="eq">v<sub>n</sub> = −v<sub>o</sub>/A</span> Eviren düğümde KCL bunu da hesaba katınca kazanç: <span class="eq">v<sub>o</sub>/v<sub>g</sub> = (−R<sub>f</sub>/R<sub>s</sub>) / (1 + (1+R<sub>f</sub>/R<sub>s</sub>)/A)</span></div>
+        <div class="info">Bağıl hata ε = |G<sub>ideal</sub> − G<sub>ölçülen</sub>| / |G<sub>ideal</sub>|. Hata, dirençlerin %1'lik toleransından çok küçükse ideal model yeterlidir (Örnek 1.8).</div>
+        <div class="warnbox">Gerçek dirençlerin toleransı ölçtüğünüz kazancı da değiştirir. “%1 tolerans” kutusunu açınca hatanın hangi kısmının A'dan, hangisinin dirençten geldiğini ayırmak zorlaşır: önce dirençleri ohmmetreyle ölçmek iyi bir laboratuvar alışkanlığıdır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 280"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d1rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d1del">Son satırı sil</button>
+            <button class="btn sec small" id="d1csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>A</th><th>R<sub>s</sub></th><th>R<sub>f</sub></th><th>v<sub>g</sub> (V)</th><th>v<sub>n</sub></th><th>v<sub>o</sub> (V)</th><th>v<sub>o</sub>/v<sub>g</sub></th><th>Hata (%)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>Hata – log<sub>10</sub>A grafiği</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Teorik eğri</label></div>
+          <canvas id="d1plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12px;color:#556">Hata, ölçülen kazancın ideal −R<sub>f</sub>/R<sub>s</sub> değerinden yüzde sapmasıdır (logaritmik eksen: log<sub>10</sub> hata %).</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Frekans Yanıtı ve Kazanç–Bant Genişliği Çarpımı</h2>
+  <p class="lead">Evirmeyen yükselteç (R<sub>s</sub> = 1 kΩ, R<sub>f</sub> seçilebilir), istenirse ikinci bir özdeş kat ardışık bağlanır. Fonksiyon üretecinin frekansını değiştirip giriş ve çıkış genliğini AC milivoltmetreyle ölçün.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Evirmeyen yükseltecin DC kazancı <span class="eq">G = 1 + R<sub>f</sub>/R<sub>s</sub></span> Tek kutuplu op-ampla kapalı çevrim yanıtı yine tek kutupludur: <span class="eq">H(f) ≈ G / (1 + j f/f<sub>3dB</sub>),&nbsp; f<sub>3dB</sub> = GBW/G</span></div>
+        <div class="info">−3 dB noktası: çıkış genliği düşük frekanstaki değerin 0,707'sine (1/√2) indiği frekanstır. Bu noktada faz kayması −45°'dir.</div>
+        <div class="info">İki özdeş kat ardışıkken kazançlar <b>çarpılır</b>, ama her katın kendi −3 dB'si toplamda üst üste biner: toplam −3 dB, tek katın bandının √(√2 − 1) ≈ 0,64 katıdır.</div>
+        <div class="warnbox">Taramada çıkış genliğini birkaç Vpp'de tutun. Çıkış büyükse yüksek frekansta <b>yükselme hızı</b> devreye girer ve ölçtüğünüz eğri GBW'yi değil SR'yi gösterir. Milivoltmetredeki “SR” ışığı yanarsa genliği düşürün.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Bode genlik eğrisi</b><span class="grow"></span>
+          <button class="btn small" id="d2sweep">Otomatik tara</button>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2clr">Temizle</button>
+          <label style="font-size:13px"><input type="checkbox" id="d2theo"> Teorik eğri</label></div>
+        <canvas id="d2plot" width="900" height="340" style="width:100%"></canvas>
+        <div id="d2leg" style="font-size:12px"></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span><button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Yapı</th><th>f (Hz)</th><th>V<sub>i</sub> (mVpp)</th><th>V<sub>o</sub> (Vpp)</th><th>V<sub>o</sub>/V<sub>i</sub></th><th>dB</th><th>Faz (°)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Yükselme Hızı ve Tam Güç Bant Genişliği</h2>
+  <p class="lead">Evirmeyen yükselteç, büyük genlikli sinüs. CH1 girişi, CH2 çıkışı gösterir. Bozulma analizörü çıkıştaki harmonik bozulmayı (THD) ölçer.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Sinüsün eğimi sıfır geçişinde en büyüktür: <span class="eq">v<sub>o</sub> = V<sub>m</sub> sin ωt ⇒ |dv<sub>o</sub>/dt|<sub>maks</sub> = 2πfV<sub>m</sub></span> Bozulmasız çalışma koşulu <span class="eq">2πfV<sub>m</sub> ≤ SR ⇒ f ≤ SR/(2πV<sub>m</sub>)</span></div>
+        <div class="info"><b>SR sınırı:</b> dalga biçimi bozulur (üçgen/yamuk), THD hızla artar, sınır genliğe bağlıdır.<br><b>GBW sınırı:</b> dalga sinüs kalır, yalnızca genlik düşer ve faz gecikir; sınır genlikten bağımsızdır.</div>
+        <div class="warnbox">Yükselme hızı bozulmasını doyumla karıştırmayın: doyumda tepeler <b>düz</b> kesilir ve ±14 V'ta durur; SR bozulmasında tepeler sivridir ve çıkış beslemeye hiç değmez.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d3inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d3scopeBox"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 220"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d3del">Son satırı sil</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Kazanç</th><th>V<sub>i</sub> (Vpp)</th><th>f (kHz)</th><th>V<sub>o</sub> (Vpp)</th><th>V<sub>o</sub>/V<sub>i</sub></th><th>THD (%)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Ofset Gerilimi, Polarma Akımı ve Dengeleme Direnci</h2>
+  <p class="lead">Eviren yükseltecin girişi toprağa bağlı (v<sub>g</sub> = 0). İdeal op-ampta çıkış 0 V olmalıydı. DMM ile çıkıştaki DC kaymayı ölçün; R<sub>p</sub> evirmeyen girişe seri bağlı dengeleme direncidir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Ofset gerilimi girişe seri küçük bir pil gibidir; evirmeyen kazançla yükseltilir: <span class="eq">Δv<sub>o</sub> = (1 + R<sub>f</sub>/R<sub>s</sub>) V<sub>os</sub></span></div>
+        <div class="info">Eviren girişin polarma akımı I<sub>B−</sub> R<sub>f</sub> üzerinden akar: <span class="eq">Δv<sub>o</sub> ≈ I<sub>B</sub> R<sub>f</sub></span> Evirmeyen girişe R<sub>p</sub> = R<sub>s</sub>‖R<sub>f</sub> konursa iki giriş eşit direnç görür, kalan hata yalnızca iki akımın farkından (I<sub>os</sub>) gelir.</div>
+        <div class="info"><b>Ölçüm yöntemi:</b> küçük dirençlerle (I<sub>B</sub> etkisi ihmal edilebilir) V<sub>os</sub>'u, büyük dirençlerle toplam kaymayı ölçün; farktan I<sub>B</sub>'yi bulun.</div>
+        <div class="warnbox">DMM'nin 10 MΩ giriş direnci ve breadboard kaçakları MΩ'luk dirençlerle karşılaştırılabilir. Büyük dirençli ölçümlerde probları sabit tutun, devreye elinizle dokunmayın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 280"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d4del">Son satırı sil</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>R<sub>s</sub></th><th>R<sub>f</sub></th><th>R<sub>p</sub></th><th>Trim</th><th>v<sub>g</sub> (mV)</th><th>v<sub>o</sub> (mV)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Hangi sınır hangi koşulda baskın? Kazanç–bant takasını ve SR ile GBW ayrımını kendi ölçümlerinizle açıklayın."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin. Ölçüm kutusu CH2 için ΔV/Δt'yi verir.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta04.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd1h04', ders: 'Devre Kuramı I', hafta: 4,
+  doc: [
+    { id: 'DÖÇ1', t: 'Sonlu açık çevrim kazancının kapalı çevrim kazancında yarattığı hatayı hesaplar ve ölçerek doğrular.', mc: [1, 2, 5] },
+    { id: 'DÖÇ2', t: 'Frekans taramasıyla Bode genlik eğrisini ölçer; kazanç–bant genişliği çarpımını kullanarak tek/çok katlı yükselteç tasarlar.', mc: [1, 3, 4, 5] },
+    { id: 'DÖÇ3', t: 'Yükselme hızı ve tam güç bant genişliğini ölçer; bir uygulamada GBW ile SR sınırından hangisinin baskın olduğunu ayırt eder.', mc: [1, 2, 4, 5] },
+    { id: 'DÖÇ4', t: 'Ofset gerilimi ve polarma akımının DC etkisini ölçer, dengeleme direnci ve ofset ayarıyla azaltır; uygun op-amp/eleman seçimini gerekçelendirir.', mc: [1, 3, 5, 10] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Eviren yükselteçte A\'yı değiştirerek kazanç hatasının (1+R<sub>f</sub>/R<sub>s</sub>)/A ile orantılı olduğunu göstermek (Örnek 1.8).', doc: ['DÖÇ1'], mc: [1, 2, 5],
+      gerec: 'DC kaynak, dekat direnç kutuları, A seçicili op-amp kartı, iki DMM (4½ hane).',
+      guvenlik: 'Büyük kazançta küçük v<sub>g</sub> bile çıkışı doyurur; ±15 V beslemeyi akım sınırlı kaynaktan verin, bağlantıyı enerjisizken değiştirin.',
+      veri: 'A, R<sub>s</sub>, R<sub>f</sub>, v<sub>n</sub>, v<sub>o</sub> tablosu; log hata–log A grafiği ve teorik eğri.',
+      tartisma: 'Hangi koşulda ideal op-amp modeli yeterlidir? Direnç toleransıyla A kaynaklı hatayı nasıl ayırırsınız?' },
+    d2: { amac: 'Evirmeyen yükseltecin frekans yanıtını ölçmek, kazanç × bant = GBW sabitliğini doğrulamak ve 60 kHz/100 kazanç gereksinimini iki katla tasarlamak (Örnek 1.10).', doc: ['DÖÇ2'], mc: [1, 3, 4, 5, 10],
+      gerec: 'Fonksiyon üreteci (50 Ω), iki evirmeyen kat, AC milivoltmetre / faz ölçer, direnç kutuları.',
+      guvenlik: 'Yüksek frekansta ×10 prob ve kısa kablo kullanın; çıkışı doyurmayacak giriş genliği seçin; dekuplaj kondansatörlerini unutmayın.',
+      veri: 'f, V<sub>i</sub>, V<sub>o</sub>, dB ve faz tablosu; farklı kazançlar ve iki katlı yapı için Bode genlik eğrileri.',
+      tartisma: 'Daha yüksek GBW\'li tek op-amp mı, iki ucuz op-amp mı? Maliyet, güç tüketimi ve bant açısından karşılaştırın.' },
+    d3: { amac: 'Büyük genlikli sinüste yükselme hızı bozulmasını gözlemek, SR\'yi ölçmek ve tam güç bant genişliğini GBW sınırından ayırt etmek (Örnek 1.9, 1.21).', doc: ['DÖÇ3'], mc: [1, 2, 4, 5],
+      gerec: 'Fonksiyon üreteci, evirmeyen yükselteç, iki kanallı imleçli osiloskop, bozulma (THD) analizörü.',
+      guvenlik: 'Osiloskop toprak klipsi yalnızca devre toprağına; büyük çıkış genliğinde yük direncini 2 kΩ altına indirmeyin.',
+      veri: 'Frekans–V<sub>o</sub>–THD tablosu, osiloskop görüntüsü, imleçle SR ölçümü.',
+      tartisma: 'Bir ses yükselteci için op-amp seçerken GBW ve SR değerlerini nasıl belirlersiniz?' },
+    d4: { amac: 'Ofset gerilimi ve polarma akımının çıkıştaki DC kaymasını ölçmek, V<sub>os</sub> ve I<sub>B</sub>\'yi ayırmak, R<sub>p</sub> = R<sub>s</sub>‖R<sub>f</sub> ve ofset trimpotuyla düzeltmek.', doc: ['DÖÇ4'], mc: [1, 3, 5, 10],
+      gerec: 'DC kaynak, direnç kutuları (R<sub>s</sub>, R<sub>f</sub>, R<sub>p</sub>), 10 kΩ ofset trimpotu, DMM (10 MΩ).',
+      guvenlik: 'MΩ\'luk dirençlerde kaçak akımlar ölçümü bozar; devreye elle dokunmayın, ölçümü kararlı hâlde alın.',
+      veri: 'R<sub>s</sub>, R<sub>f</sub>, R<sub>p</sub>, trim ve v<sub>o</sub> tablosu; V<sub>os</sub> ve I<sub>B</sub> hesapları.',
+      tartisma: 'Hassas bir sensör yükselteci için düşük V<sub>os</sub>/I<sub>B</sub>\'li (daha pahalı) op-amp mı, trimpot ve dengeleme direnci mi? Gerekçelendirin.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

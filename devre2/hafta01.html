@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 1 · Sinüs Kaynaklar ve Fazör — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>
+  .phx{display:block;width:100%;max-width:440px;margin:0 auto;background:#0e1726;border-radius:8px}
+  .xyc{width:100%;max-width:400px;background:#06140c;border-radius:6px;display:block}
+  .mini td,.mini th{font-size:13px}
+  .solved{background:#f3fbf5;border-left:4px solid var(--ok);padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}
+  .why{background:#f6f2fd;border-left:4px solid #6a4bc4;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}
+  .rng{display:flex;align-items:center;gap:8px;font-size:13px;margin:4px 0}
+  .rng input[type=range]{flex:1}
+</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 1 — Sinüs Kaynaklar ve Fazör Kavramı</h1>
+    <div class="sub">Genlik · Frekans · Faz · rms · Faz farkı · Dönen fazör · Geçici ve kararlı hâl</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Sinüs ve rms</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Faz Farkı</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Fazör Toplama</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Geçici ve Kararlı Hâl</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 1 · Sinüs Kaynaklar, Sinüsoidal Tepki ve Fazör Kavramı</h2>
+  <p class="lead">Ders notu: <b>Bölüm 1.1 Sinüsoidal Kaynak</b>, <b>1.2 Sinüsoidal Tepki</b> ve <b>1.3 Fazör Kavramı</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Bir sinüsü <b>genlik, frekans ve faz</b> ile tanımlayıp osiloskopta T, V<sub>m</sub>, V<sub>pp</sub> ölçecek; rms değeri tepe değerden ayırt edeceksiniz.</li>
+        <li>İki sinüs arasındaki <b>faz farkını</b> hem zaman kaymasından (Δt) hem de <b>Lissajous</b> (X-Y) şeklinden ölçeceksiniz.</li>
+        <li>Dönen fazörün gerçel eksendeki gölgesinin <b>v(t)</b> olduğunu görecek, iki sinüsü <b>fazörle toplayıp</b> osiloskopla doğrulayacaksınız.</li>
+        <li>Anahtar kapanınca RL devresinde <b>geçici bileşenin</b> τ = L/R ile sönüp yerini <b>sinüsoidal kararlı hâle</b> bıraktığını ölçeceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">İki kanallı fonksiyon üreteci (sinüs/üçgen/kare, 50 Ω çıkış, kanallar arası faz ayarı) · İki kanallı dijital osiloskop (imleçli, X-Y modu) · True-rms AC voltmetre · Ortalama değer duyarlı (sinüse kalibre) ucuz multimetre · Faz kaydırıcı “kara kutu” · Yalıtım trafolu AC güç kaynağı · Direnç kutusu, bobinler, akım probu.</p>
+      <div class="info">Kosinüs referansı: bu haftanın tüm hesaplarında <b>v = V<sub>m</sub> cos(ωt + φ)</b> biçimi kullanılır. Üreteçte “sin” seçerseniz cihaz sin(ωt + φ) = cos(ωt + φ − 90°) üretir.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b> bölümündeki dönen fazör animasyonuyla oynayın, sonra <b>Ön Hazırlık</b> sorularını çözün. Her deneyde soldaki föyü adım adım izleyin; adımlar siz doğru ayarı yaptığınızda kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile tabloya kaydedin, soruları yanıtlayın. Son bölümde raporunuzu yazdırın ya da PDF olarak kaydedin.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Sinüsten Fazöre</h2>
+  <p class="lead">Neden hep sinüs? Çünkü şebeke, jeneratör ve her doğrusal devrenin kararlı hâli sinüstür; türevi, integrali ve toplamı yine aynı frekansta bir sinüstür.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Üç parametre</h3>
+      <div class="eq">v(t) = V<sub>m</sub> cos(ωt + φ),&nbsp; ω = 2πf = 2π/T</div>
+      <p style="font-size:14px;line-height:1.65"><b>V<sub>m</sub></b> tepe değer (eğri −V<sub>m</sub> ile +V<sub>m</sub> arasında), <b>ω</b> saniyede süpürülen açı (rad/s), <b>φ</b> ise t = 0’daki konum. φ &gt; 0 ise tepe t = 0’dan <b>önce</b> gelir: eğri <b>öndedir</b> (lead). Önde olmak büyük olmak değildir; yalnızca tepelerin zamanına bakılır.</p>
+      <h3>2 · rms neden var?</h3>
+      <p style="font-size:14px;line-height:1.65">Sinüsün ortalaması sıfırdır ama direnci ısıtır. Isı v²’nin ortalamasıyla orantılıdır; v²’nin ortalaması V<sub>m</sub>²/2 olduğundan aynı ısıyı veren DC gerilim <b>V<sub>rms</sub> = V<sub>m</sub>/√2</b>’dir. Prizdeki “230 V” rms’dir: tepe değeri 325 V’tur. Yalıtım tepe değere, ısınma rms değere göre seçilir.</p>
+      <h3>3 · Dönen fazör: sinüsün “gizli” çemberi</h3>
+      <p style="font-size:14px;line-height:1.65">Euler: e<sup>jθ</sup> = cos θ + j sin θ. Bu yüzden <span class="eq">v = Re{V<sub>m</sub>e<sup>jφ</sup> · e<sup>jωt</sup>}</span> V<sub>m</sub>e<sup>jφ</sup> = <b>V<sub>m</sub>∠φ</b> sayısı <b>fazördür</b>: genliği ve fazı taşır, frekansı taşımaz. e<sup>jωt</sup> onu saatin tersi yönde ω hızıyla döndürür; ucunun <b>gerçel eksendeki gölgesi</b> v(t)’dir. Sağdaki animasyonda bunu izleyin.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Dönen fazör ↔ zaman eğrisi</h3>
+      <canvas id="phAnim" class="phx" width="440" height="470"></canvas>
+      <div class="rng">V<sub>m</sub><input type="range" id="phA" min="0.2" max="1" step="0.05" value="0.9"><span id="phAv"></span></div>
+      <div class="rng">φ<input type="range" id="phP" min="-180" max="180" step="5" value="30"><span id="phPv"></span></div>
+      <div class="rng"><label><input type="checkbox" id="phB"> İkinci fazör (0,6∠<span id="phBv">−60°</span>) ve toplam</label><input type="range" id="phBP" min="-180" max="180" step="5" value="-60"></div>
+      <div class="row"><button class="btn small" id="phRun">Durdur</button><span style="font-size:13px;color:var(--muted)">Zaman aşağı doğru akar; yatay eksen gerçel eksendir. Sarı: v<sub>1</sub>, mavi: v<sub>2</sub>, beyaz: toplam.</span></div>
+      <div class="why"><b>Ne görmelisiniz?</b> Fazör gerçel eksene geldiği anda (ωt = −φ) gölge en büyüktür: v tepe yapar. Bir tur bir periyottur. İki fazör aynı hızla döndüğü için aralarındaki açı <b>hiç değişmez</b>: toplamları da aynı hızla dönen tek bir fazördür. Fazör toplamanın neden işe yaradığının özü budur.</div>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Açısal frekans</td><td class="l">ω = 2πf = 2π/T; 50 Hz ⇒ ω = 314,16 rad/s, T = 20 ms</td></tr>
+        <tr><td class="l">Derece ↔ radyan</td><td class="l">φ<sub>rad</sub> = φ<sub>der</sub>·π/180 (ωt radyan, φ derece: doğrudan toplanmaz!)</td></tr>
+        <tr><td class="l">sin → cos</td><td class="l">sin(ωt+φ) = cos(ωt+φ−90°); −cos x = cos(x±180°)</td></tr>
+        <tr><td class="l">rms</td><td class="l">sinüs V<sub>m</sub>/√2 ≈ 0,707V<sub>m</sub>; üçgen V<sub>p</sub>/√3; kare V<sub>p</sub></td></tr>
+        <tr><td class="l">Faz farkı ↔ zaman</td><td class="l">Δφ = 360°·Δt/T</td></tr>
+        <tr><td class="l">Lissajous (elips)</td><td class="l">|sin Δφ| = Y<sub>0</sub>/Y<sub>m</sub> (Y<sub>0</sub>: x = 0’daki kesim)</td></tr>
+        <tr><td class="l">Fazör</td><td class="l">V<sub>m</sub>cos(ωt+φ) ↔ V<sub>m</sub>∠φ; d/dt ↔ jω</td></tr>
+        <tr><td class="l">RL sinüsoidal tepki</td><td class="l">i = −I<sub>m</sub>cos(φ−θ)e<sup>−t/τ</sup> + I<sub>m</sub>cos(ωt+φ−θ)</td></tr>
+        <tr><td class="l"></td><td class="l">I<sub>m</sub> = V<sub>m</sub>/√(R²+ω²L²), tan θ = ωL/R, τ = L/R</td></tr>
+      </table>
+      <h3>Çözümlü mini örnek (Örnek 1.8)</h3>
+      <div class="solved">y = 20cos(ωt − 30°) + 40cos(ωt + 60°) = ?<br>
+      1) Fazörler: 20∠−30° = 17,32 − j10; 40∠60° = 20 + j34,64.<br>
+      2) Topla (dikdörtgen biçimde!): 37,32 + j24,64.<br>
+      3) Kutupsala: √(37,32² + 24,64²) = 44,72; tan<sup>−1</sup>(24,64/37,32) = 33,43°.<br>
+      4) y = <b>44,72 cos(ωt + 33,43°)</b>. Genlik 60 değil, çünkü iki dalga aynı anda tepe yapmaz.</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+      <div class="warnbox"><b>Şebekeyi osiloskopla doğrudan ölçmeyin.</b> Osiloskop probunun toprak klipsi şebekenin koruma toprağına bağlıdır. Klipsi şebekenin faz ya da nötr ucuna takmak <b>kısa devre</b> yaratır: prob, osiloskop ve siz zarar görebilirsiniz. Şebeke ölçümü yalnızca <b>diferansiyel probla</b> ya da <b>yalıtım trafosu</b> arkasından yapılır. Osiloskopun toprak pimini “yüzdürmek” (topraksız fiş) kesinlikle yasaktır.</div>
+      <div class="warnbox"><b>230 V rms = 325 V tepe.</b> Yalıtım, prob ve kondansatör gerilim değerleri tepe değere göre seçilir. 10:1 prob kullanın ve probun en yüksek gerilim değerini (CAT sınıfı) kontrol edin.</div>
+      <div class="warnbox"><b>İki toprak klipsi aynı noktaya.</b> İki kanallı osiloskopta iki probun toprağı içeride birleşiktir. CH1 ve CH2 toprak klipslerini devrede farklı düğümlere takmak aradaki elemanı kısa devre eder; faz farkı ölçümünde iki sinyal de <b>ortak toprağa göre</b> alınmalıdır.</div>
+      <div class="warnbox"><b>Multimetre her dalgada rms ölçmez.</b> Ucuz ölçü aletleri ortalama değeri ölçüp sinüs varsayımıyla 1,11 ile çarpar. Üçgen veya kare dalgada yanlış okur; “True RMS” yazanları kullanın. AC voltmetrenin bant genişliği de sınırlıdır (çoğu 1 kHz civarına kadar doğrudur).</div>
+      <div class="warnbox"><b>Bobin anahtarlamada ters EMK.</b> Akım taşıyan bir bobinin devresini açmak L·di/dt ile çok yüksek gerilim üretir; anahtar kontaklarında kıvılcım görülür. Deney 4’te devreyi açmadan önce kaynağı kapatın ya da serbest dolaşım yolu (direnç/diyot) bırakın.</div>
+      <div class="warnbox"><b>Fonksiyon üretecinin iç direnci 50 Ω’dur.</b> Düşük empedanslı yükte çıkış gerilimi göstergedekinden küçülür; ölçtüğünüz genliği her zaman osiloskopta doğrulayın. Çıkışı kısa devre etmeyin.</div>
+      <div class="info"><b>Sık hatalar:</b> 230 V’u tepe sanıp P = 230²/R yazmak · ωt radyanken φ’yi derece olarak eklemek (cos(1 + 30) değil, cos(57,3° + 30°)) · sin’i cos’a çevirmeden fazör yazmak (10 sin(ωt+30°) ↔ 10∠−60°) · iki sinüsün genliklerini doğrudan toplamak · kararlı hâlde bobini kısa devre sayıp I = V<sub>m</sub>/R bulmak · ω ile f’yi karıştırmak (2π çarpanı).</div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Sorular ders notundaki örneklerle aynı sayıları kullanır.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Sinüsün Parametreleri ve rms Değer</h2>
+  <p class="lead">Fonksiyon üretecini osiloskopun CH1’ine ve aynı anda bir true-rms voltmetre ile ucuz (ortalama duyarlı) bir multimetreye bağlayın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Osiloskopta <b>periyot</b>, iki ardışık tepe (veya aynı yönde iki sıfır geçişi) arasındaki süredir: f = 1/T, ω = 2πf. İmleç A’yı bir tepeye, B’yi bir sonrakine koyun; Δt = T.</div>
+        <div class="info"><b>V<sub>pp</sub> = 2V<sub>m</sub></b> (sinüs simetriktir). Osiloskop tepe değerleri, voltmetre rms gösterir. Örnek 1.3: ekranda 34 V<sub>pp</sub> ⇒ V<sub>m</sub> = 17 V ⇒ V<sub>rms</sub> = 12,02 V.</div>
+        <div class="why"><b>Neden üçgende 1/√3?</b> v² sinüste ortalaması V<sub>m</sub>²/2 olan cos² biçimindedir; üçgende ise t² parabolleridir ve ortalaması V<sub>p</sub>²/3 olur (Örnek 1.1). Kare dalga hep ±V<sub>p</sub>’de olduğundan rms = V<sub>p</sub>.</div>
+        <div class="warnbox">Ucuz multimetrenin göstergesi yalnız sinüste doğrudur. Laboratuvar raporuna AC ölçüm yazarken aletin “True RMS” olup olmadığını ve frekans aralığını belirtin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" style="margin-top:12px" id="d1scopeHost"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 170"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Dalga</th><th>Ayar f</th><th>V<sub>pp</sub> (V)</th><th>Δt imleç</th><th>True-rms (V)</th><th>Ucuz DMM (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · İki Sinüs Arasındaki Faz Farkı: Δt ve Lissajous</h2>
+  <p class="lead">Üretecin iki çıkışı (ya da kara kutunun girişi/çıkışı) CH1 ve CH2’ye bağlı. Faz farkını iki yoldan ölçeceksiniz.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Zaman yöntemi:</b> İki eğrinin aynı yöndeki sıfır geçişleri (veya tepeleri) arasındaki Δt ölçülür: <span class="eq">Δφ = 360° · Δt / T</span> CH2’nin tepesi CH1’inkinden <b>sonra</b> geliyorsa CH2 geridedir (Δφ negatif).</div>
+        <div class="info"><b>Lissajous yöntemi:</b> X-Y modunda yatay eksen CH1, düşey eksen CH2’dir. Aynı frekanslı iki sinüs bir <b>elips</b> çizer. Elipsin x = 0’daki düşey kesimi Y<sub>0</sub>, en büyük düşey açıklığı Y<sub>m</sub> ise <span class="eq">|sin Δφ| = Y<sub>0</sub>/Y<sub>m</sub></span> Δφ = 0 düz çizgi (/), 90° daire veya eksenlere hizalı elips, 180° ters çizgi (\).</div>
+        <div class="why"><b>Neden sin?</b> x = A cos ωt, y = B cos(ωt + Δφ). x = 0 iken ωt = 90°, y = B cos(90° + Δφ) = −B sin Δφ. Yani kesim B|sin Δφ|’dir. Lissajous işareti söylemez: ileri mi geri mi olduğunu elipsin dönüş yönünden ya da Δt yönteminden anlarsınız.</div>
+        <div class="warnbox">X-Y modunda iki kanalın V/d ayarı farklıysa elips yamuk görünür ama oran Y<sub>0</sub>/Y<sub>m</sub> yalnız düşey kanaldan okunduğu için değişmez. Kanalın AC/DC kuplajını aynı seçin; DC ofset elipsi kaydırır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div><div class="bench-row" style="margin-top:12px" id="d2scopeHost"></div></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>X-Y (Lissajous) ekranı</b><span class="grow"></span><span style="font-size:12px;color:var(--muted)">X: CH1, Y: CH2</span></div>
+          <canvas id="d2xy" class="xyc" width="400" height="320"></canvas>
+          <div class="rng">Y imleci<input type="range" id="d2ycur" min="-4" max="4" step="0.02" value="1"><span id="d2ycurv" style="min-width:80px"></span></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d2rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d2del">Sil</button>
+            <button class="btn sec small" id="d2csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Kaynak</th><th>f</th><th>Δt</th><th>Y imleci</th><th>CH2 maks</th></tr></thead><tbody></tbody></table></div>
+          <div style="font-size:12px;color:var(--muted)">Kayıt: imleç Δt’si (YT modu) ile Y imleci ve CH2 tepe değeri (X-Y modu) birlikte yazılır.</div>
+        </div>
+      </div>
+      <div class="card"><svg id="d2sch" class="schem" viewBox="0 0 760 200"></svg></div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Fazörle Sinüs Toplama</h2>
+  <p class="lead">İki sinüs kaynağı seri bağlı; uçlarındaki toplam gerilim v = v<sub>1</sub> + v<sub>2</sub>. CH1 referans cos ωt’yi (üretecin SYNC çıkışı), CH2 seçtiğiniz sinyali gösterir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Aynı frekanstaki iki sinüsün toplamı yine o frekansta bir sinüstür. Genliği ve fazı, <b>fazörleri vektör gibi</b> toplayarak bulunur: <span class="eq">V = V<sub>1</sub> + V<sub>2</sub> = (a<sub>1</sub>+a<sub>2</sub>) + j(b<sub>1</sub>+b<sub>2</sub>)</span></div>
+        <div class="info">Toplamın fazını osiloskopta ölçmek için CH2 tepesinin CH1 (cos ωt, faz 0) tepesine göre kaymasını ölçün: φ = −360°·Δt/T (CH2 tepesi sonra geliyorsa φ negatif).</div>
+        <div class="why"><b>Neden genlikler toplanmıyor?</b> 2 + 4 = 6 ancak iki dalga aynı anda tepe yaparsa olur (aynı faz). Aralarında 90° varsa toplam √(2²+4²) = 4,47’dir; 180° varsa |4 − 2| = 2. Fazör diyagramındaki paralelkenar bunu geometrik olarak gösterir.</div>
+        <div class="warnbox">Gerçekte iki üreteci seri bağlamak için en az birinin çıkışı topraktan <b>yalıtılmış</b> (yüzer) olmalıdır; aksi hâlde ikinci üretecin toprağı ilk üretecin çıkışını kısa devre eder. Tek gövdeli iki kanallı üreteçlerde toplama, osiloskopun MATH (CH1+CH2) fonksiyonu ile yapılır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" style="margin-top:12px" id="d3scopeHost"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 190"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Fazör diyagramı (canlı)</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3rot"> Döndür (e<sup>jωt</sup>)</label></div>
+          <svg id="d3ph" class="schem" viewBox="0 0 360 320" style="background:#fff"></svg>
+        </div>
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d3del">Sil</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>V<sub>1</sub></th><th>V<sub>2</sub></th><th>CH2</th><th>CH2 maks (V)</th><th>Δt</th><th>T</th></tr></thead><tbody></tbody></table></div>
+          <div class="row" style="margin-top:6px"><label style="font-size:13px"><input type="checkbox" id="d3theo"> Hesaplanan toplamı diyagramda yazdır</label></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · RL Devresinde Geçici ve Sinüsoidal Kararlı Hâl</h2>
+  <p class="lead">t = 0’da anahtar kapanır, v<sub>s</sub> = V<sub>m</sub>cos(ωt + φ) seri RL devresine uygulanır. Osiloskop tek atış (SINGLE) modunda, tetik anahtarın kapanma anına kilitli; CH2 akım probu (1 V/A).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Tam yanıt = sönen <b>geçici</b> + sürekli <b>kararlı hâl</b>: <span class="eq">i = K e<sup>−t/τ</sup> + I<sub>m</sub> cos(ωt + φ − θ)</span> K = i(0) − I<sub>m</sub>cos(φ − θ). Bobin akımı sıçramadığı için i(0) = 0.</div>
+        <div class="info"><b>5τ kuralı:</b> 5τ sonra geçici bileşen ilk değerinin %0,7’sine iner. τ’ya yalnız R ve L girer; kaynağın ω’sı girmez: sönüm devrenin kendi özelliğidir.</div>
+        <div class="why"><b>Neden bazı açılarda geçici hiç yok?</b> Kararlı hâl eğrisi t = 0’da zaten sıfırdan geçiyorsa (φ − θ = ±90°) i(0) = 0 koşulu kendiliğinden sağlanır, K = 0 olur. En büyük geçici ise φ = θ veya θ + 180° iken oluşur: trafoların ve motorların “açılış darbe akımı” bu yüzden anahtarlama anına bağlıdır.</div>
+        <div class="warnbox">Gerçek devrede bobin akımı varken anahtarı açmayın: L di/dt kıvılcım ve aşırı gerilim üretir. Deney sonunda önce kaynağı kapatın. 100 V tepe gerilimle çalışılıyor: devreye enerji varken dokunmayın, akım probunu enerjisizken takın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div><div class="bench-row" style="margin-top:12px" id="d4scopeHost"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 220"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Bileşenler</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d4theo"> Geçici ve kararlı hâl eğrilerini göster</label></div>
+          <canvas id="d4plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d4rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d4del">Sil</button>
+            <button class="btn sec small" id="d4csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>V<sub>m</sub></th><th>f</th><th>φ</th><th>R</th><th>L</th><th>t<sub>A</sub></th><th>i<sub>A</sub> (A)</th><th>i maks (A)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Faz farkını iki yöntemle ölçtüğünüzde sonuçlar uyuştu mu? Fazör toplamı neden genliklerin toplamından küçük? Geçici bileşen hangi koşulda kayboldu?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin. Deney 2’de X-Y düğmesi Lissajous ekranını etkinleştirir.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta01.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h01', ders: 'Devre Kuramı II', hafta: 1,
+  doc: [
+    { id: 'DÖÇ1', t: 'Sinüsoidal bir işareti genlik, frekans, faz ve rms değeriyle tanımlar; osiloskop ve AC ölçü aletleriyle bu büyüklükleri ölçer.', mc: [1, 4, 5] },
+    { id: 'DÖÇ2', t: 'İki sinüs arasındaki faz farkını zaman kayması ve Lissajous yöntemiyle ölçer, sonuçları karşılaştırır.', mc: [1, 4, 5] },
+    { id: 'DÖÇ3', t: 'Sinüsleri fazöre çevirir, fazör toplamını hesaplar ve deneysel olarak doğrular.', mc: [1, 2, 5] },
+    { id: 'DÖÇ4', t: 'RL devresinin sinüsoidal tepkisinde geçici ve kararlı hâl bileşenlerini ayırt eder, anahtarlama açısının etkisini analiz eder.', mc: [1, 2, 3, 5, 6] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Sinüs, üçgen ve kare dalgada periyot, tepe ve rms değerlerini ölçmek; true-rms ve ortalama duyarlı ölçü aletlerini karşılaştırmak.', doc: ['DÖÇ1'], mc: [1, 4, 5],
+      gerec: 'Fonksiyon üreteci (50 Ω), iki kanallı osiloskop, true-rms AC voltmetre, ortalama duyarlı multimetre.',
+      guvenlik: 'Osiloskop toprak klipsi yalnız üretecin toprağına; üreteç çıkışını kısa devre etmeyin. Şebeke gerilimi bu deneyde ölçülmez.',
+      veri: 'V<sub>pp</sub>, imleç Δt’si, iki voltmetrenin okumaları; dalga biçimine göre rms/tepe oranları.',
+      tartisma: 'Ucuz multimetre hangi dalga biçiminde ne kadar hata yaptı? Bunun nedeni nedir?' },
+    d2: { amac: 'İki aynı frekanslı sinüs arasındaki faz farkını zaman kayması ve Lissajous elipsi ile ölçmek; bilinmeyen bir devrenin faz kaymasını belirlemek.', doc: ['DÖÇ2'], mc: [1, 4, 5],
+      gerec: 'İki kanallı fonksiyon üreteci, faz kaydırıcı kara kutu, X-Y modlu iki kanallı osiloskop.',
+      guvenlik: 'İki probun toprak klipsi aynı noktaya bağlanmalıdır; farklı düğümlere bağlamak devre elemanını kısa devre eder.',
+      veri: 'Δt ve T ölçümleri, Lissajous kesim değerleri, iki yöntemle hesaplanan faz farkları.',
+      tartisma: 'Hangi yöntem küçük faz farklarında, hangisi 90° civarında daha duyarlıdır? Neden?' },
+    d3: { amac: 'İki sinüsün toplamını fazör toplamıyla hesaplamak ve osiloskopla doğrulamak.', doc: ['DÖÇ3'], mc: [1, 2, 5],
+      gerec: 'İki yüzer çıkışlı sinüs kaynağı, osiloskop (SYNC referansı, MATH), canlı fazör diyagramı.',
+      guvenlik: 'Toprağı ortak iki üreteci seri bağlamayın; yüzer çıkış veya MATH fonksiyonu kullanın.',
+      veri: 'Toplam sinyalin tepe değeri ve referansa göre zaman kayması; hesaplanan fazörle karşılaştırma.' },
+    d4: { amac: 'Seri RL devresinde anahtar kapanınca oluşan geçici bileşeni ve sinüsoidal kararlı hâli ölçmek; geçicinin anahtarlama açısına bağlılığını incelemek.', doc: ['DÖÇ4'], mc: [1, 2, 3, 5, 6],
+      gerec: 'Yalıtım trafolu AC güç kaynağı (0–100 V tepe, faz açılı anahtarlama), direnç kutusu, 30–300 mH bobinler, akım probu, tek atışlı osiloskop.',
+      guvenlik: 'Akım taşıyan bobinin devresini açmak kıvılcım ve aşırı gerilim üretir; önce kaynağı kapatın. Yalıtım trafosu kullanılmadan şebeke tarafı osiloskopla ölçülmez. Açılış darbe akımı sigortaları attırabilir: enerji verimliliği ve ekipman ömrü için anahtarlama anı önemlidir.',
+      veri: 'İmleçle okunan i(t) değerleri, en büyük akım, farklı φ için geçici genliği.',
+      tartisma: 'Büyük bir trafonun şebekeye bağlandığı anda sigortanın atabilmesi bu deneyle nasıl açıklanır?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

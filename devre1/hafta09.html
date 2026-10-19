@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 9 · RL ve RC Doğal Tepki — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 9 — RL ve RC Devrelerinin Doğal Tepkisi</h1>
+    <div class="sub">Süreklilik · Zaman sabiti τ · %36,8 ve teğet · 5τ kuralı · R<sub>Th</sub> ile τ</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: RC Boşalması</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: RL Doğal Tepki</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: τ Tasarımı ve ln Grafiği</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: R<sub>Th</sub> ile τ</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>S</kbd> anahtarı çevir · <kbd>A</kbd> osiloskobu kur (SINGLE) · <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 9 · Birinci Dereceden Devrelerin Doğal Tepkisi</h2>
+  <p class="lead">Ders notu: <b>Bölüm 3.1 RL Devresinin Doğal Tepkisi</b> ve <b>3.2 RC Devresinin Doğal Tepkisi</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Anahtarı <b>kendiniz</b> çevirip osiloskobu <b>tek atış (SINGLE)</b> modunda tetikleyerek bir geçici olayı yakalayabileceksiniz.</li>
+        <li>Zaman sabitini iki yoldan ölçeceksiniz: <b>%36,8 noktası</b> ve <b>başlangıç teğeti</b>.</li>
+        <li>RL devresinde bobin akımının <b>sürekliliğini</b>, gerilimin ise <b>sıçradığını</b> görecek; anahtar açılırken oluşan aşırı gerilimi ve ona karşı önlemleri (sönüm direnci, serbest geçiş diyotu) deneyeceksiniz.</li>
+        <li>Hedef bir τ için R ve C <b>seçecek</b>, ölçümünüzü ln grafiğiyle doğrusallaştırıp eğimden τ bulacaksınız.</li>
+        <li>Çok dirençli devrede τ'yu belirleyen direncin, elemanın uçlarından görülen <b>Thevenin direnci</b> olduğunu ölçerek doğrulayacaksınız.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Ayarlı DC güç kaynağı (0–30 V, akım sınırlı) · Direnç kutuları · Kondansatör kutusu (film ve elektrolitik) · Bobin seti (iç dirençli) · İki konumlu (A/B) ve tek konumlu anahtar · Dijital multimetre (10 MΩ giriş) · İki kanallı dijital osiloskop (×10 prob = 10 MΩ, akım probu, SINGLE tetik, imleçler) · Serbest geçiş diyotu (1N4007).</p>
+      <div class="info">Bu haftanın püf noktası <b>zamanlama</b>dır: geçici olay bir kez olur ve biter. Osiloskobu önce <b>kurar (ARM)</b>, sonra anahtarı çevirirsiniz; ekran olayı dondurur.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b>yi okuyun ve <b>Ön Hazırlık</b> sorularını çözün. Her deneyde soldaki föyü izleyin; adımlar doğru ayarı yaptığınızda kendiliğinden işaretlenir. Anahtarı <kbd>S</kbd> ile, osiloskobu <kbd>A</kbd> ile kurabilirsiniz. İmleçleri yerleştirip <kbd>R</kbd> ile ölçümü tabloya kaydedin. Son bölümde raporunuzu yazdırın.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Anahtardan Sonra Ne Olur?</h2>
+  <p class="lead">Kaynak kesildiğinde bobin ve kapasitör hemen “boşalmaz”: depoladıkları enerjiyi bir dirençte ısıya çevirirken akım ya da gerilim üstel olarak söner. Bu sönümün hızını tek bir sayı, <b>zaman sabiti τ</b> belirler.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Neden “doğal” tepki?</h3>
+      <p style="font-size:14px;line-height:1.65">Anahtar açıldıktan sonra devrede <b>kaynak yoktur</b>; tepkiyi devrenin kendi elemanları belirler. Enerji, bobinde ½LI<sub>0</sub><sup>2</sup> ya da kapasitörde ½CV<sub>0</sub><sup>2</sup> olarak depolanmıştır ve dirençte ısıya dönüşür. Enerjiyi geri verecek ikinci bir depolayıcı olmadığı için tepki <b>salınmaz</b>, tek yönlü olarak sıfıra iner.</p>
+      <h3>2 · Süreklilik: neyin sıçrayamayacağını bilin</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Bobin akımı</b> ve <b>kapasitör gerilimi</b> anlık olarak değişemez; çünkü bu, sonsuz gerilim (v = L di/dt) ya da sonsuz akım (i = C dv/dt) isterdi. Buna karşılık bobin <b>gerilimi</b> ve kapasitör <b>akımı</b> sıçrayabilir. Deney 2'de bobin gerilimi 0'dan −20 V'a sıçrarken, Deney 1'de kapasitör akımı 0'dan bir anda en büyük değerine çıkacak.</p>
+      <h3>3 · Gerçek hayatta nerede?</h3>
+      <p style="font-size:14px;line-height:1.65">Röle bırakma süresi, fotoğraf flaşı, güç kaynağı çıkış kondansatörünün “kapattıktan sonra hâlâ çarpması”, bellek yedekleme kapasitörleri, kontak arkı ve serbest geçiş diyotları, düğme sıçrama (debounce) filtreleri… Hepsi aynı denklem: <span class="eq" style="display:inline">x(t) = X<sub>0</sub> e<sup>−t/τ</sup></span></p>
+      <svg viewBox="0 0 420 190" style="width:100%;max-width:440px;display:block;margin:6px auto 0" aria-label="Üstel sönüm, %36,8 noktası ve teğet">
+        <line x1="40" y1="160" x2="410" y2="160" stroke="#555"/><line x1="40" y1="15" x2="40" y2="160" stroke="#555"/>
+        <path d="M40,25 C90,80 140,115 200,135 S330,157 405,159" fill="none" stroke="#0b5cad" stroke-width="2.5"/>
+        <line x1="40" y1="25" x2="120" y2="160" stroke="#e07a10" stroke-width="2" stroke-dasharray="6 4"/>
+        <line x1="120" y1="160" x2="120" y2="110" stroke="#888" stroke-dasharray="3 3"/><line x1="40" y1="110" x2="120" y2="110" stroke="#888" stroke-dasharray="3 3"/>
+        <circle cx="120" cy="110" r="4" fill="#c62828"/>
+        <text x="30" y="29" font-size="12" text-anchor="end">X₀</text><text x="30" y="114" font-size="11" text-anchor="end">0,368X₀</text>
+        <text x="120" y="176" font-size="12" text-anchor="middle">τ</text><text x="200" y="176" font-size="12" text-anchor="middle">2τ</text><text x="360" y="176" font-size="12" text-anchor="middle">5τ</text>
+        <text x="138" y="62" font-size="12" fill="#e07a10">başlangıç teğeti τ'da sıfırı keser</text>
+        <text x="250" y="128" font-size="12" fill="#0b5cad">X₀e^(−t/τ)</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><th></th><th>RL devresi</th><th>RC devresi</th></tr>
+        <tr><td class="l">Sürekli büyüklük</td><td class="l">i<sub>L</sub>(0<sup>−</sup>) = i<sub>L</sub>(0<sup>+</sup>)</td><td class="l">v<sub>C</sub>(0<sup>−</sup>) = v<sub>C</sub>(0<sup>+</sup>)</td></tr>
+        <tr><td class="l">Denklem</td><td class="l">L di/dt + Ri = 0</td><td class="l">C dv/dt + v/R = 0</td></tr>
+        <tr><td class="l">Doğal tepki</td><td class="l">i = I<sub>0</sub>e<sup>−t/τ</sup></td><td class="l">v = V<sub>0</sub>e<sup>−t/τ</sup></td></tr>
+        <tr><td class="l">Zaman sabiti</td><td class="l">τ = L/R</td><td class="l">τ = RC</td></tr>
+        <tr><td class="l">Sıçrayan</td><td class="l">v<sub>L</sub>(0<sup>+</sup>) = −I<sub>0</sub>R</td><td class="l">i(0<sup>+</sup>) = V<sub>0</sub>/R</td></tr>
+        <tr><td class="l">Enerji</td><td class="l">w = ½LI<sub>0</sub><sup>2</sup>e<sup>−2t/τ</sup></td><td class="l">w = ½CV<sub>0</sub><sup>2</sup>e<sup>−2t/τ</sup></td></tr>
+      </table>
+      <table class="data" style="margin-top:10px">
+        <tr><th>t</th><td>τ</td><td>2τ</td><td>3τ</td><td>5τ</td><td>τ ln2</td></tr>
+        <tr><th>kalan</th><td>%36,8</td><td>%13,5</td><td>%5,0</td><td>%0,7</td><td>%50</td></tr>
+      </table>
+      <div class="info" style="margin-top:10px"><b>τ'yu bulmanın kuralı:</b> I<sub>0</sub> (ya da V<sub>0</sub>) <b>eski</b> devreden, τ <b>yeni</b> devreden alınır. τ'daki R, anahtarlamadan <u>sonra</u> elemanın uçlarından görülen <b>Thevenin direncidir</b> (kaynaklar söndürülmüş).</div>
+      <div class="info"><b>Zaman bulmak:</b> v = V<sub>0</sub>e<sup>−t/τ</sup> ⇒ <span class="eq" style="display:inline">t = τ ln(V<sub>0</sub>/v)</span>. <b>Doğrusallaştırma:</b> ln(v/V<sub>0</sub>) = −t/τ, yani ln grafiği eğimi −1/τ olan bir doğrudur.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Yüklü kondansatör, devre kapalı olsa da çarpar.</b> Büyük bir kondansatör (özellikle elektrolitik, ≥ 100 µF) kaynak kapatıldıktan sonra da yükünü uzun süre tutar. Dokunmadan önce 1–10 kΩ'luk, yeterli güç değerinde bir dirençle <b>boşaltın</b> ve gerilimi multimetreyle sıfır olduğunu doğrulayın. Uçları tornavidayla kısa devre etmek kıvılcım çıkarır ve kondansatörü bozar.</div>
+    <div class="warnbox"><b>Elektrolitik kondansatörün kutbu.</b> Uzun bacak / işaretsiz taraf (+), gövdedeki şerit (−)'dir. Ters bağlanan ya da gerilim değeri aşılan elektrolitik ısınır, şişer ve patlayabilir. Gerilim değeri en az kaynağın 1,5 katı olsun.</div>
+    <div class="warnbox"><b>Bobinin akımını kesmek tehlikelidir.</b> Akım taşıyan bir bobinin yolunu birden açarsanız v = L di/dt yüzlerce, hatta binlerce volta çıkar: anahtar kontaklarında <b>ark</b>, yarı iletkenlerde delinme, elinizde elektrik çarpması. Bobine her zaman bir <b>sönüm yolu</b> (direnç ya da ters paralel serbest geçiş diyotu) bırakın.</div>
+    <div class="warnbox"><b>Osiloskop toprak klipsi devrenin toprağına.</b> Osiloskobun toprağı şebeke toprağına bağlıdır. Klipsi devrede başka bir düğüme takarsanız o düğümü toprağa kısa devre edersiniz. İki düğüm arasındaki gerilimi ölçmek için iki kanal kullanıp farkını alın (CH1 − CH2) ya da yalıtımlı diferansiyel prob kullanın.</div>
+    <div class="warnbox"><b>Ölçü aleti devreyi yükler.</b> ×10 prob 10 MΩ, multimetre 10 MΩ giriş direncine sahiptir. Bunlar boşalma direncine <b>paralel</b> girer: R = 1 MΩ ile çalışırken her biri τ'yu %9, ikisi birlikte %17 kısaltır. ×1 prob (1 MΩ) ile hata çok daha büyüktür.</div>
+    <div class="warnbox"><b>Direncin güç değeri ve akım sınırı.</b> Örnek 3.1'de 10 Ω'luk dirençte başlangıçta 2 A × 20 V = 40 W harcanır (kısa süreliğine). Tezgâhta ¼ W direnç bunu kaldıramaz; sönüm direnci olarak güç direnci kullanın. Kaynağın akım sınırını devrenin beklenen akımının biraz üstüne ayarlayın.</div>
+    <div class="warnbox"><b>Multimetrenin akım kademesi ve sigortası.</b> Akım ölçerken prob “A/mA” soketindedir ve multimetre <b>seri</b> bağlanır. Bu konumda gerilim ölçmeye kalkmak sigortayı attırır. Geçici akımları multimetreyle değil, akım probu ya da küçük bir şönt direnç ile osiloskopta ölçün.</div>
+    <div class="info"><b>Sık hatalar:</b> τ'da anahtarlamadan <u>önceki</u> devrenin direncini kullanmak (τ = L/R<sub>1</sub>); RC için τ = C/R yazmak (birim kontrolü bunu hemen yakalar); paralel kalan dirençleri seri sanmak ya da tersi; %36,8 yerine %63,2 noktasını okumak; başlangıç değerini “0'dan sonra” değil, sıçrayan büyüklükten okumak; bobin geriliminin de sürekli olduğunu sanmak; kalan enerjiyi e<sup>−1</sup> ile hesaplamak (doğrusu e<sup>−2</sup>).</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Sorular ders notundaki Örnek 3.1, 3.2 ve 3.3'e dayanır.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · RC Boşalması: Anahtarı Siz Çevirin, Osiloskop Yakalasın</h2>
+  <p class="lead">A konumunda kapasitör V<sub>g</sub> kaynağından R<sub>1</sub> üzerinden dolar. B konumuna çevirdiğiniz an (t = 0) kaynak ayrılır ve kapasitör yalnızca R üzerinden boşalır (ders notu Örnek 3.2).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Tek atış yakalama:</b> SINGLE düğmesi osiloskobu <b>kurar</b> (sarı ARMED). Anahtar çevrildiğinde tetiklenir (yeşil TRIG'D), ekranın ilk bölmesi tetikten öncesini gösterir (ön tetik). Bundan sonra ZAMAN/d ve V/d'yi değiştirerek kaydı yakından inceleyebilirsiniz.</div>
+        <div class="info"><b>%36,8 yöntemi:</b> A imlecini t = 0'a, B imlecini v<sub>B</sub>/v<sub>A</sub> = 0,368 olan noktaya getirin: Δt = τ. <b>Teğet yöntemi:</b> TEĞET düğmesi t = 0'daki eğimi uzatır; sıfır çizgisini kestiği an τ'dur.</div>
+        <div class="info">CH2 bir <b>akım probu</b>dur (1 V/mA): R'den geçen akımı gösterir. t = 0'da akımın sıçradığına, gerilimin ise sıçramadığına dikkat edin.</div>
+        <div class="warnbox">Dolma tamamlanmadan (≈5R<sub>1</sub>C) anahtarı çevirirseniz V<sub>0</sub> kaynak geriliminden küçük olur. Bu bir hata değil, yine üstel bir boşalmadır; ama V<sub>0</sub>'ı ekrandan okuyun, kaynaktan değil.</div>
+        <div class="warnbox">Kutu üzerindeki C değeri <b>nominal</b>dir; film kondansatörler ±%5, elektrolitikler ±%20 toleranslıdır. Ölçtüğünüz τ'nun hesaplananla birkaç yüzde farklı çıkması gerçekçidir.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" style="margin-top:12px" id="d1scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Olay</th><th>R</th><th>C (nom.)</th><th>V<sub>0</sub> (V)</th><th>t<sub>A</sub> (ms)</th><th>t<sub>B</sub> (ms)</th><th>Δt (ms)</th><th>v<sub>B</sub>/v<sub>A</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · RL Doğal Tepki: Bobin Akımı Sürer, Gerilim Sıçrar</h2>
+  <p class="lead">Anahtar uzun süre kapalıyken bobin kısa devredir ve akımın tamamını taşır. t = 0'da anahtar açılır; bobin akımı yalnızca R üzerinden devam eder (ders notu Örnek 3.1). CH1 düğüm gerilimini (R'nin ve bobin kolunun gerilimi), CH2 bobin akımını gösterir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Anahtar açıldığı anda i<sub>L</sub>(0<sup>+</sup>) = I<sub>0</sub> ve bu akım R'den <b>ters yönde</b> geçer: düğüm gerilimi +0 V'tan <b>−I<sub>0</sub>R</b>'ye sıçrar. R büyüdükçe τ = L/R küçülür (hızlı söner) ama gerilim sıçraması büyür.</div>
+        <div class="info">Gerçek bobinin sargı teli dirençlidir (r<sub>L</sub>). Sönüm çevriminde R ile <b>seri</b> olduğundan τ = L/(R + r<sub>L</sub>) olur. “Gerçek bobin” kutusunu kapatarak ideal bobinle karşılaştırın.</div>
+        <div class="info"><b>Serbest geçiş diyotu:</b> bobine ters paralel bağlanır; normalde tıkalıdır, anahtar açılınca iletir ve bobin gerilimini ≈ −0,7 V'ta tutar. Gerilim küçük kaldığı için sönüm <b>yavaşlar</b>: röle bırakma süresi uzar.</div>
+        <div class="warnbox">R'yi “açık” yapıp diyotu da sökerseniz bobin akımına yol kalmaz. Gerçekte anahtar kontaklarında <b>kilovoltluk ark</b> oluşur. Burada güvenle deneyebilirsiniz; gerçek tezgâhta <u>asla</u>.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div><div class="bench-row" style="margin-top:12px" id="d2scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>L</th><th>R</th><th>Diyot</th><th>I<sub>0</sub> (A)</th><th>v<sub>düğüm</sub>(0<sup>+</sup>) (V)</th><th>t<sub>A</sub> (ms)</th><th>t<sub>B</sub> (ms)</th><th>i<sub>B</sub>/i<sub>A</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · τ Tasarımı, 5τ Kuralı ve ln Grafiğiyle τ Ölçümü</h2>
+  <p class="lead">Size verilen hedef zaman sabitini sağlayacak R ve C'yi seçin, boşalmayı yakalayın ve eğri üzerinde birçok noktayı kaydedin. ln(v/V<sub>0</sub>) – t grafiği bir doğruya dönüşecek; eğiminden τ'yu siz hesaplayacaksınız.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><div class="info" id="d3target" style="font-size:15px"></div><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Tek bir noktadan τ ölçmek gürültüye ve imleç konumuna duyarlıdır. Birçok noktadan <b>doğru uydurmak</b> (en küçük kareler) hatayı ortalar. ln(v/V<sub>0</sub>) = −t/τ olduğundan eğim m = −1/τ'dur.</div>
+        <div class="info"><b>5τ kuralı:</b> 5τ sonra başlangıç değerinin %0,7'si kalır; mühendislikte tepki “bitmiş” sayılır. Kayıt penceresini (10 × ZAMAN/d) en az 5τ olacak şekilde seçin.</div>
+        <div class="warnbox">Eğrinin kuyruğundaki (v &lt; %3 V<sub>0</sub>) noktalar ln grafiğinde gürültüyü büyütür: ln, küçük sayıların bağıl hatasını şişirir. Doğru uydurmada 0–3τ arası noktaları tercih edin; ölçerken uygun V/d seçin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" style="margin-top:12px" id="d3scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Nokta tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d3del">Son satırı sil</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>t (ms)</th><th>v (V)</th><th>v/V<sub>0</sub></th><th>ln(v/V<sub>0</sub>)</th></tr></thead><tbody></tbody></table></div>
+          <div style="font-size:12px;color:#556;margin-top:4px">Kaydet, B imlecinin anını ve CH1 değerini alır; V<sub>0</sub> yakalanan kaydın başlangıç değeridir.</div>
+        </div>
+        <div class="card">
+          <div class="row"><b>ln(v/V<sub>0</sub>) – t grafiği</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Nominal RC doğrusu</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+          <div id="d3fit" style="font-size:13px;margin-top:4px"></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Çok Dirençli Devrede τ = L/R<sub>Th</sub></h2>
+  <p class="lead">Ders notu Örnek 3.7: 24 V kaynak, 4 Ω seri, 12 Ω paralel, bobin kolunda 6 Ω ve 180 mH. Anahtar t = 0'da açılır. τ'daki direnç hangisi? Önce ohmmetreyle bobinin uçlarından “bakın”, sonra ölçün.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>R<sub>Th</sub> nasıl bulunur?</b> 1) Bobini sökün, iki uç bırakın. 2) Kaynakları söndürün (gerilim kaynağı → kısa devre). 3) Uçlardan görülen direnci bulun. Burada kaynak anahtarla birlikte <b>ayrıldığı</b> için t &gt; 0 devresinde 4 Ω yoktur.</div>
+        <div class="info">t &lt; 0'da bobin kısa devredir: I<sub>0</sub> akım bölücüden gelir. t &gt; 0'da 6 Ω ile 12 Ω <b>seri</b> olur. “I<sub>0</sub> eski devreden, τ yeni devreden.”</div>
+        <div class="warnbox">Ohmmetreyi <b>enerjili</b> bir devreye bağlamayın: ohmmetre kendi küçük akımını basar, dışarıdan gelen gerilim ölçümü bozar ve aleti zorlar. Önce kaynağı ayırın, kondansatörleri boşaltın, bobin akımının sönmesini bekleyin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div><div class="bench-row" style="margin-top:12px" id="d4scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d4del">Son satırı sil</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>R<sub>a</sub></th><th>R<sub>b</sub></th><th>R<sub>c</sub></th><th>L</th><th>I<sub>0</sub> (A)</th><th>t<sub>A</sub> (ms)</th><th>t<sub>B</sub> (ms)</th><th>i<sub>B</sub>/i<sub>A</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="%36,8 ve teğet yöntemleri aynı τ'yu verdi mi? Ölçtüğünüz τ ile nominal değer neden farklı? Bobin akımını kesmek neden tehlikelidir? Gözlemlerinizi yazın."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Geçici olay yakalama:</b> osiloskopta <b>SINGLE</b> (<kbd>A</kbd>) ile kurun, sonra anahtarı çevirin (<kbd>S</kbd>).<br>
+    <b>İmleçler:</b> İMLEÇ düğmesine basın, ekranda sürükleyin. Yanda t<sub>A</sub>, t<sub>B</sub> ve oranlar görünür.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta09.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd1h09', ders: 'Devre Kuramı I', hafta: 9,
+  doc: [
+    { id: 'DÖÇ1', t: 'RL ve RC devrelerinde sürekliliği kullanarak başlangıç değerini bulur ve doğal tepkiyi x(t) = X<sub>0</sub>e<sup>−t/τ</sup> biçiminde yazar.', mc: [1, 2] },
+    { id: 'DÖÇ2', t: 'Tek atış osiloskop kaydı ile zaman sabitini %36,8 ve teğet yöntemleriyle ölçer; ölçü aleti yükünü ve toleransı yorumlar.', mc: [4, 5] },
+    { id: 'DÖÇ3', t: 'Bobin akımının kesilmesindeki aşırı gerilim tehlikesini açıklar; sönüm direnci ve serbest geçiş diyotuyla güvenli anahtarlama önlemi seçer.', mc: [1, 3, 6] },
+    { id: 'DÖÇ4', t: 'Hedef τ için eleman seçer, veriyi ln grafiğiyle doğrusallaştırıp eğimden τ bulur; çok dirençli devrede τ = L/R<sub>Th</sub> ilişkisini doğrular.', mc: [2, 3, 5, 10] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Yüklü bir kapasitörün R üzerinden boşalmasını anahtar zamanlamasını kendiniz belirleyerek tek atışta yakalamak ve τ = RC\'yi %36,8 ve teğet yöntemleriyle ölçmek.', doc: ['DÖÇ1', 'DÖÇ2'], mc: [1, 4, 5],
+      gerec: 'DC güç kaynağı (0–30 V), direnç ve kondansatör kutuları, A/B anahtarı, DMM (10 MΩ), iki kanallı osiloskop (×10 prob, akım probu).',
+      guvenlik: 'Yüklü kondansatörü dokunmadan önce dirençle boşaltın; elektrolitiğin kutbuna ve gerilim değerine dikkat edin; osiloskop toprağı yalnızca devre toprağına.',
+      veri: 'Yakalanan boşalma eğrisi, imleçlerle t<sub>A</sub>, t<sub>B</sub>, v<sub>B</sub>/v<sub>A</sub> tablosu; nominal ve ölçülen τ karşılaştırması.',
+      tartisma: 'Ölçtüğünüz τ nominal RC\'den neden farklı? Prob ve DMM yükü ile kondansatör toleransının payını tahmin edin.' },
+    d2: { amac: 'RL devresinde bobin akımının sürekliliğini, anahtar açılırken gerilim sıçramasını ve sönüm yolunun (R, diyot) τ\'ya ve aşırı gerilime etkisini incelemek.', doc: ['DÖÇ1', 'DÖÇ3'], mc: [1, 4, 5, 6],
+      gerec: 'DC güç kaynağı (akım sınırlı), güç dirençleri, bobin seti (iç dirençli), anahtar, 1N4007 diyot, osiloskop ve akım probu.',
+      guvenlik: 'Akım taşıyan bobinin yolunu asla tümden açmayın (ark, kilovolt gerilim); sönüm direncinin güç değerini kontrol edin; kaynak akım sınırını ayarlayın.',
+      veri: 'i<sub>L</sub>(t) ve düğüm gerilimi kayıtları; farklı R ve diyot durumları için I<sub>0</sub>, v(0<sup>+</sup>) ve τ tablosu.',
+      tartisma: 'Röle bobininde hızlı bırakma ile düşük kontak gerilimi arasındaki ödünleşimi nasıl çözersiniz?' },
+    d3: { amac: 'Verilen hedef zaman sabitini sağlayan R ve C\'yi tasarlamak; ölçülen noktaları ln grafiğiyle doğrusallaştırıp eğimden τ\'yu bulmak.', doc: ['DÖÇ2', 'DÖÇ4'], mc: [2, 3, 4, 5, 10],
+      gerec: 'E12 direnç kutusu, film/elektrolitik kondansatör seti, DC kaynak, osiloskop.',
+      guvenlik: 'Büyük elektrolitikleri kullanımdan sonra boşaltın; ters kutuplamayın.',
+      veri: 'Seçilen R, C; (t, v) nokta tablosu, ln(v/V<sub>0</sub>)–t grafiği, eğim ve R².',
+      tartisma: 'Aynı τ\'yu büyük R–küçük C ya da küçük R–büyük C ile elde etmenin ölçüm hatası, boyut ve maliyet açısından artı ve eksileri nelerdir?' },
+    d4: { amac: 'Çok dirençli RL devresinde τ\'yu belirleyen direncin, anahtarlamadan sonraki devrede bobin uçlarından görülen Thevenin direnci olduğunu ohmmetre ve osiloskopla doğrulamak.', doc: ['DÖÇ1', 'DÖÇ4'], mc: [1, 2, 4, 5],
+      gerec: 'DC kaynak, R<sub>a</sub>, R<sub>b</sub>, R<sub>c</sub> güç dirençleri, 180 mH bobin, anahtar, ohmmetre, osiloskop.',
+      guvenlik: 'Ohmmetreyi enerjili devreye bağlamayın; ölçümden önce kaynağı ayırın ve bobin akımının sönmesini bekleyin.',
+      veri: 'Ohmmetre ile R<sub>Th</sub>; farklı R<sub>a</sub>, R<sub>b</sub> değerleri için I<sub>0</sub> ve τ tablosu.',
+      tartisma: 'Hangi dirençler yalnızca başlangıç koşulunu, hangileri τ\'yu etkiledi? Nedenini devre üzerinden açıklayın.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

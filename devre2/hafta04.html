@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 4 · Thevenin–Norton (AC) — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 4 — AC Devrelerde Thevenin ve Norton Eşdeğeri</h1>
+    <div class="sub">Kara kutu · Açık devre gerilimi ve kısa devre akımı fazörleri · Yükle doğrulama · Kaynak dönüşümü · Üretecin 50 Ω’u</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Kara Kutu</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Yükle Doğrulama</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Üreteç ve Norton</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–6</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 4 · AC Devrelerde Thevenin ve Norton Eşdeğeri</h2>
+  <p class="lead">Ders notu: <b>Bölüm 1 · Kısım 3 — 1.6 Kaynak Dönüşümü ve Thevenin–Norton</b> (Örnek 1.26–1.28).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>İçini göremediğiniz bir AC kara kutunun <b>açık devre gerilimini</b> ve <b>kısa devre akımını</b> genlik ve faz olarak ölçeceksiniz.</li>
+        <li>Z<sub>Th</sub> = V<sub>Th</sub>/I<sub>N</sub> fazör bölmesiyle kutunun <b>Thevenin empedansını</b> (R<sub>Th</sub> ve X<sub>Th</sub>) bulacaksınız.</li>
+        <li>Farklı dirençli ve reaktif yüklerle modelinizi <b>doğrulayacak</b>, hata yüzdesini hesaplayacaksınız.</li>
+        <li>Fonksiyon üretecinin <b>50 Ω iç direncini</b> ölçecek, ekranın neden “yanlış” gösterdiğini anlayacaksınız.</li>
+        <li>Thevenin modelini <b>kaynak dönüşümüyle</b> Norton modeline çevirip uç davranışının aynı kaldığını göstereceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Kara kutu (1 kHz, REF senkron çıkışlı; size özel) · TRMS AC voltmetre (giriş 10 MΩ) · AC ampermetre (iç direnç 0,1 Ω) · 1 Ω akım algılama (şönt) direnci · İki kanallı osiloskop (imleç, X-Y) · Yük direnç kutusu, seri C ve L kutuları · Fonksiyon üreteci (50 Ω, “50 Ω / High-Z” ekran kipi).</p>
+      <div class="info"><b>Size özel:</b> her öğrencinin kara kutusu farklı değerler içerir. Sayısal yanıtlar kendi kutunuzun ölçümüyle denetlenir; arkadaşınızın sonucu sizinkini tutmaz.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Ön Bilgi’deki etkileşimli şekilde yük değişince V<sub>L</sub> fazörünün nasıl gezindiğini görün, Ön Hazırlık sorularını çözün. Deney 1’in sonuçları Deney 2’nin girdisidir: sırayı bozmayın. Ölçümleri <kbd>R</kbd> ile kaydedin; son bölümde raporu yazdırın.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Bir Devreyi İki Sayıya İndirgemek</h2>
+  <p class="lead">Prizdeki şebeke, bir ses yükseltecinin çıkışı, bir sensör: hepsini uçlarından bakınca “bir kaynak + bir empedans” olarak görürüz. Bu hafta bunu ölçerek yapacağız.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Neden eşdeğer devre?</h3>
+      <p style="font-size:14px;line-height:1.65">Yükü her değiştirdiğimizde koca ağı yeniden çözmek istemeyiz. Doğrusal ve <b>tek frekanslı</b> bir ağ, a–b uçlarından bakınca ya <b>V<sub>Th</sub> + seri Z<sub>Th</sub></b> (Thevenin) ya da <b>I<sub>N</sub> + paralel Z<sub>N</sub></b> (Norton) gibi davranır. İkisi arasındaki köprü kaynak dönüşümüdür: <b>V<sub>Th</sub> = Z<sub>Th</sub>·I<sub>N</sub></b>, Z<sub>N</sub> = Z<sub>Th</sub>.</p>
+      <svg viewBox="0 0 460 150" class="schem" style="max-width:460px">
+        <g stroke="#222" stroke-width="2" fill="none">
+          <circle cx="40" cy="75" r="18" fill="#fff"/><path d="M31,75 q4.5,-10 9,0 t9,0"/>
+          <path d="M40,57 V25 H70"/><rect x="70" y="17" width="60" height="16" fill="#fff"/><path d="M130,25 H180 M40,93 V125 H180"/>
+          <circle cx="180" cy="25" r="4" fill="#fff"/><circle cx="180" cy="125" r="4" fill="#fff"/>
+          <circle cx="290" cy="75" r="18" fill="#fff"/><path d="M290,86 V64 m-5,7 l5,-7 l5,7"/>
+          <path d="M290,57 V25 H430 M290,93 V125 H430 M370,25 V45 M370,105 V125"/><rect x="362" y="45" width="16" height="60" fill="#fff"/>
+          <circle cx="430" cy="25" r="4" fill="#fff"/><circle cx="430" cy="125" r="4" fill="#fff"/>
+        </g>
+        <g font-size="13" fill="#333" font-family="Segoe UI">
+          <text x="2" y="80">V<tspan font-size="10" dy="3">Th</tspan></text><text x="82" y="12">Z<tspan font-size="10" dy="3">Th</tspan></text>
+          <text x="188" y="30">a</text><text x="188" y="130">b</text>
+          <text x="255" y="80">I<tspan font-size="10" dy="3">N</tspan></text><text x="384" y="80">Z<tspan font-size="10" dy="3">N</tspan></text>
+          <text x="438" y="30">a</text><text x="438" y="130">b</text>
+          <text x="210" y="80" font-size="22">⇄</text>
+        </g>
+      </svg>
+      <h3>2 · Z<sub>Th</sub>’yi bulmanın üç yolu</h3>
+      <p style="font-size:14px;line-height:1.65;margin:0">(1) Bağımsız kaynakları sıfırla (V → kısa, I → açık), a–b’den Z’ye bak. (2) <b>Oran</b>: Z<sub>Th</sub> = V<sub>oc</sub>/I<sub>sc</sub> — laboratuvarda kutuyu açamadığımız için bunu kullanacağız; ama AC’de bu bir <b>fazör bölmesidir</b>: genlikler bölünür, <b>açılar çıkarılır</b>. (3) Bağımlı kaynak varsa test kaynağı: Z<sub>Th</sub> = V<sub>T</sub>/I<sub>T</sub>.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Thevenin gerilimi</td><td class="l">V<sub>Th</sub> = V<sub>ab</sub> (açık devre)</td></tr>
+        <tr><td class="l">Norton akımı</td><td class="l">I<sub>N</sub> = I<sub>ab</sub> (kısa devre)</td></tr>
+        <tr><td class="l">Eşdeğer empedans</td><td class="l">Z<sub>Th</sub> = Z<sub>N</sub> = V<sub>Th</sub>/I<sub>N</sub> → |Z| = |V|/|I|, θ = φ<sub>V</sub> − φ<sub>I</sub></td></tr>
+        <tr><td class="l">Kaynak dönüşümü</td><td class="l">V<sub>s</sub> = Z<sub>s</sub>I<sub>s</sub> ; Z<sub>s</sub> seri ↔ paralel, değeri değişmez</td></tr>
+        <tr><td class="l">Yük akımı / gerilimi</td><td class="l">I<sub>L</sub> = V<sub>Th</sub>/(Z<sub>Th</sub> + Z<sub>L</sub>) ; V<sub>L</sub> = V<sub>Th</sub>Z<sub>L</sub>/(Z<sub>Th</sub> + Z<sub>L</sub>)</td></tr>
+        <tr><td class="l">İç direnç (ölçümle)</td><td class="l">R<sub>i</sub> = R<sub>L</sub>(V<sub>oc</sub>/V<sub>L</sub> − 1) (yalnız saf dirençsel kaynakta)</td></tr>
+        <tr><td class="l">Faz (osiloskop)</td><td class="l">φ = 360°·f·Δt ; 1 kHz’te 1 µs = 0,36°</td></tr>
+      </table>
+      <div class="info" style="margin-top:10px"><b>Çözümlü mini örnek (Örnek 1.28):</b> 120∠0° V, seri 8 + j6 Ω, a–b’de 12 − j16 Ω. Kısa devre: I<sub>N</sub> = 120/(8 + j6) = 12∠−36,87° A. Kaynak kısa: Z<sub>N</sub> = (8 + j6) ∥ (12 − j16) = 8,8 + j1,6 Ω. V<sub>Th</sub> = I<sub>N</sub>Z<sub>N</sub> = 96 − j48 V. 10 Ω yükte I<sub>L</sub> = 5,69∠−31,43° A.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">3 · Yük değişince ne olur? (etkileşimli)</h3>
+    <p style="font-size:14px;line-height:1.65;margin:0 0 6px">V<sub>Th</sub> = 10∠0° V, Z<sub>Th</sub> = 50 + jX Ω. Saf dirençli R<sub>L</sub>’yi 0’dan ∞’a götürünce V<sub>L</sub> fazörünün ucu kesikli turuncu yay üzerinde gezer: R<sub>L</sub> = 0’da sıfır, R<sub>L</sub> = ∞’da V<sub>Th</sub>. X ≠ 0 iken yük gerilimi V<sub>Th</sub>’ye göre faz kaydırır.</p>
+    <svg id="obSvg" class="schem" viewBox="0 0 440 300" style="max-width:600px"></svg>
+    <div class="row" style="margin-top:6px;font-size:14px">
+      <label>R<sub>L</sub> (log): <input type="range" id="obR" min="0" max="4" step="0.01" value="1.7" style="width:220px"></label>
+      <label>X<sub>Th</sub>: <input type="range" id="obX" min="-100" max="100" step="1" value="50" style="width:220px"></label>
+    </div>
+    <div id="obTxt" style="font-size:14px;line-height:1.6;margin-top:6px"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Şebekenin “kısa devre akımını” asla ölçmeyin.</b> 230 V prizin Thevenin empedansı ohmun kesirleri mertebesindedir; kısa devre akımı yüzlerce–binlerce amperdir ve ark, yanık, yangın demektir. Şebekenin eşdeğeri ancak yük altında gerilim düşümünden, uygun ölçü aletiyle ve yetkili gözetimde bulunur.</div>
+    <div class="warnbox"><b>Kısa devre ölçümünü yalnız akım sınırlı, düşük güçlü kaynaklarda yapın.</b> Kara kutu ya da üreteç kısa devreye dayanıklı olmalıdır. Bir trafonun sekonderini kısa devre etmek sargıyı ısıtır; bir <b>akım trafosunun</b> sekonderi ise tam tersine <b>asla açık bırakılmaz</b> (yüksek gerilim oluşur).</div>
+    <div class="warnbox"><b>Ampermetre ile kısa devre ölçerken kademe ve sigorta.</b> Önce en yüksek akım kademesinde (10 A girişi) başlayın, sonra küçültün. mA girişindeki sigorta atarsa cihaz “0” gösterir ve siz kutunun akım vermediğini sanırsınız.</div>
+    <div class="warnbox"><b>Osiloskop toprağı ve REF.</b> Kara kutunun b ucu, REF çıkışının ve osiloskobun toprağı aynı noktadadır. Toprak klipsini a ucuna takmak kutuyu kısa devre eder; şönt direncini bu yüzden b (toprak) tarafına koyun.</div>
+    <div class="warnbox"><b>Ölçü aleti de yüktür.</b> 10 MΩ voltmetre çoğu devrede ihmal edilir, ama 1 MΩ osiloskop girişi ve probu (×1 probta ~100 pF) yüksek empedanslı kaynakları ve yüksek frekansı etkiler; ampermetrenin iç direnci kısa devreyi “kusursuz” olmaktan çıkarır.</div>
+    <div class="warnbox"><b>Kondansatörlü yüklerde deşarj.</b> Seri C yükünü değiştirmeden önce kaynağı kesin ve kondansatörü bir dirençle boşaltın; özellikle büyük kapasitelerde enerji kalabilir.</div>
+    <div class="info"><b>Sık hatalar:</b> Z<sub>Th</sub> = |V<sub>oc</sub>|/|I<sub>sc</sub>| deyip açıyı unutmak · açıları bölmede toplamak · V<sub>oc</sub> ve I<sub>sc</sub>’yi farklı fazlı referanslarla ölçmek · Vpp, tepe ve etkin değeri karıştırmak · bağımlı kaynağı sıfırlamak · üreteç ekranındaki genliği açık devre gerilimi sanmak · aranan elemanı kaynak dönüşümüne katmak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Sorular ders notundaki örneklerle aynı sayıları kullanır.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Kara Kutunun Thevenin Eşdeğeri (Fazör Olarak)</h2>
+  <p class="lead">Kutunun iki ucu (a, b) ve iç kaynağa senkron bir REF çıkışı var. Osiloskop CH1’de REF, CH2’de seçtiğiniz prob: a–b gerilimi ya da 1 Ω şönt üzerindeki gerilim (= akım).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Neden iki ölçüm yeter?</b> Doğrusal bir ağın a–b davranışı bir doğru (fazör düzleminde) gibidir: V = V<sub>Th</sub> − Z<sub>Th</sub>I. İki noktası (I = 0 ve V = 0) doğruyu belirler: V<sub>oc</sub> = V<sub>Th</sub>, I<sub>sc</sub> = V<sub>Th</sub>/Z<sub>Th</sub>.</div>
+        <div class="info"><b>Neden faz?</b> Yalnız genliklerle |Z<sub>Th</sub>| bulunur; ama R<sub>Th</sub> ile X<sub>Th</sub>’yi ayırmak için açı gerekir: θ = ∠V<sub>Th</sub> − ∠I<sub>N</sub>. İki ölçüm farklı anlarda yapıldığından ortak bir referans (REF) şarttır.</div>
+        <div class="info"><b>Çözümlü mini örnek:</b> V<sub>oc</sub> = 2,40 V ∠−20° ve I<sub>sc</sub> = 30,0 mA ∠+25° ölçülsün. |Z| = 2,40/0,030 = 80 Ω, θ = −20° − 25° = −45° → Z<sub>Th</sub> = 56,6 − j56,6 Ω (kapasitif).</div>
+        <div class="warnbox"><b>Pratik uyarı:</b> Kısa devre “gerçekten” sıfır ohm değildir: ampermetre (0,1 Ω) ve şönt (1 Ω) seri girer. |Z<sub>Th</sub>| birkaç on ohm iken bu %2–4 hata demektir; raporda tartışın. Düşük empedanslı kaynaklarda kısa devre ölçümü yerine iki farklı yükle ölçüm yapılır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" style="margin-top:12px" id="d1scope"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><svg id="d1sch" class="schem" viewBox="0 0 480 240"></svg></div>
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d1rec">Kaydet (R)</button><button class="btn sec small" id="d1del">Son satırı sil</button><button class="btn sec small" id="d1csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Yük</th><th>|V<sub>ab</sub>| (V)</th><th>|I| (mA)</th><th>CH2</th><th>Δt imleç (µs)</th></tr></thead><tbody></tbody></table></div>
+          <p style="font-size:12px;color:var(--muted);margin:6px 0 0">İmleçler açıkken kaydederseniz Δt de tabloya yazılır. Δt’yi fazöre çevirmek size kalmış.</p>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Modeli Yük Değiştirerek Doğrulama</h2>
+  <p class="lead">Aynı kara kutu. Deney 1’de bulduğunuz V<sub>Th</sub> ve Z<sub>Th</sub> ile her yük için |V<sub>L</sub>| tahmin edilir ve ölçümle karşılaştırılır. Kötü bir model burada ortaya çıkar.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Thevenin modeliniz</h3>
+        <table class="data" style="width:auto">
+          <tr><td class="l">|V<sub>Th</sub>| (V, etkin)</td><td><input type="text" id="d2vm" size="8"></td></tr>
+          <tr><td class="l">∠V<sub>Th</sub> (°, REF’e göre)</td><td><input type="text" id="d2va" size="8"></td></tr>
+          <tr><td class="l">R<sub>Th</sub> (Ω)</td><td><input type="text" id="d2zr" size="8"></td></tr>
+          <tr><td class="l">X<sub>Th</sub> (Ω)</td><td><input type="text" id="d2zi" size="8"></td></tr>
+        </table>
+        <div class="info">Tahmin: |V<sub>L</sub>| = |V<sub>Th</sub>·Z<sub>x</sub>/(Z<sub>Th</sub> + Z<sub>x</sub>)|, Z<sub>x</sub> = Z<sub>L</sub> + 1,1 Ω (ampermetre + şönt). Hata = (model − ölçüm)/ölçüm.</div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Neden reaktif yük de denenmeli?</b> Saf dirençli yükler yalnız |Z<sub>Th</sub>|’ye ve kısmen açıya duyarlıdır. R + C yükü X<sub>Th</sub>’nin bir kısmını götürür (seri rezonansa benzer) ve akım belirgin artar: X<sub>Th</sub>’nin işaretini yanlış bulduysanız hata burada büyür.</div>
+        <div class="info"><b>Güç ipucu:</b> Saf dirençli yükte yük gücü R<sub>L</sub> = |Z<sub>Th</sub>| civarında en büyüktür. (En büyük güç aktarımının tam koşulu, Z<sub>L</sub> = Z<sub>Th</sub>*, sonraki haftaların konusudur.)</div>
+        <div class="warnbox"><b>Pratik uyarı:</b> Yük direncinin güç değerini kontrol edin: P = I²R. Küçük dirençli yüklerde akım büyür; ¼ W’lık bir direnç ısınıp değer değiştirir, ölçümünüz kayar.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d2rec">Kaydet (R)</button><button class="btn sec small" id="d2del">Son satırı sil</button><button class="btn sec small" id="d2csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Yük</th><th>Z<sub>L</sub> (Ω)</th><th>|V<sub>L</sub>| ölç. (V)</th><th>|I<sub>L</sub>| (mA)</th><th>|V<sub>L</sub>| model</th><th>Hata %</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <b>|V<sub>L</sub>| – R<sub>L</sub></b> <span style="font-size:12px">(mavi ölçüm, turuncu sizin modeliniz)</span>
+          <canvas id="d2plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Fonksiyon Üretecinin 50 Ω’u, Kaynak Dönüşümü ve Norton</h2>
+  <p class="lead">Her gün kullandığınız üreteç ideal bir kaynak değildir: içinde 50 Ω seri direnç vardır. Ekranı ise “50 Ω” ya da “High-Z” yük varsayımına göre genlik gösterir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Model paneli</h3>
+        <div class="row" style="font-size:14px;margin-bottom:6px"><label>Yükü süren kaynak <select id="d3src"><option value="real">Gerçek üreteç</option><option value="thev">Thevenin modelim</option><option value="norton">Norton modelim</option></select></label></div>
+        <table class="data" style="width:auto">
+          <tr><td class="l">V<sub>Th</sub> (Vpp)</td><td><input type="text" id="d3vth" size="7"></td><td class="l">R<sub>Th</sub> (Ω)</td><td><input type="text" id="d3rth" size="7"></td></tr>
+          <tr><td class="l">I<sub>N</sub> (mA, tepe)</td><td><input type="text" id="d3in" size="7"></td><td class="l">R<sub>N</sub> (Ω)</td><td><input type="text" id="d3rn" size="7"></td></tr>
+        </table>
+        <div class="info">Modeli seçince tezgâhtaki üreteç devreden çıkar, yükü sizin modeliniz sürer. Aynı R<sub>L</sub>’de gerçek üreteçle aynı gerilimi veriyorsa modeliniz uçlardan eşdeğerdir.</div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Neden ekran “yanlış”?</b> Üreteç çıkışını 50 Ω’luk bir koaksiyel hatta ve 50 Ω’luk bir sonlandırmaya bağlanacak diye tasarlanır. “50 Ω” kipinde ekran, E/2’yi (50 Ω yükteki gerilimi) gösterir. Osiloskopun 1 MΩ girişine bağlayınca E’yi, yani <b>iki katını</b> ölçersiniz.</div>
+        <div class="info"><b>Kaynak dönüşümü:</b> E ve seri 50 Ω ↔ I<sub>N</sub> = E/50 Ω ve paralel 50 Ω. Vpp’den tepe akıma geçerken: I<sub>N,tepe</sub> = (V<sub>Th,pp</sub>/2)/R<sub>Th</sub>.</div>
+        <div class="warnbox"><b>Pratik uyarı:</b> Üreteç çıkışını kısa devre etmek çoğu cihazda zarar vermez (50 Ω akımı sınırlar) ama çıkış katını ısıtır; uzun süre bırakmayın. Üreteç çıkışına harici bir DC gerilim (ör. besleme) asla bağlamayın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" style="margin-top:12px" id="d3scope"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><svg id="d3sch" class="schem" viewBox="0 0 500 245"></svg></div>
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Kaydet (R)</button><button class="btn sec small" id="d3del">Son satırı sil</button><button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Kaynak</th><th>Üreteç ayarı</th><th>R<sub>L</sub></th><th>V<sub>L</sub> (Vpp)</th></tr></thead><tbody></tbody></table></div>
+          <p style="font-size:12px;color:var(--muted);margin:6px 0 0">V<sub>L</sub> (Vpp) osiloskop ölçümüdür; V1 voltmetresi etkin değer gösterir (Vpp = 2√2 · V<sub>rms</sub>).</p>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Z_Th’yi bulurken faz neden gerekliydi? Modelinizin hatası nereden kaynaklandı? Üreteç ekranı neden iki kat farklı gösterdi?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop:</b> İMLEÇ ile Δt ölçün (ekranda sürükleyin); X-Y Lissajous kipini açar; AUTO ölçekleri ayarlar.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>6</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta04.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h04', ders: 'Devre Kuramı II', hafta: 4,
+  doc: [
+    { id: 'DÖÇ1', t: 'Doğrusal bir AC ağın Thevenin ve Norton eşdeğerini açık devre/kısa devre ölçümlerinden fazör olarak belirler.', mc: [1, 2, 4, 5] },
+    { id: 'DÖÇ2', t: 'Osiloskopla ortak referansa göre faz ölçer ve fazör bölmesiyle kompleks empedansı hesaplar.', mc: [1, 4, 5] },
+    { id: 'DÖÇ3', t: 'Eşdeğer devre modelini farklı yüklerle doğrular, hata kaynaklarını (ölçü aleti yükü, ampermetre direnci) değerlendirir.', mc: [2, 3, 5] },
+    { id: 'DÖÇ4', t: 'Kaynak dönüşümünü uygular; gerçek bir fonksiyon üretecinin iç direncini ölçerek modeller.', mc: [1, 3, 4, 6] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'İçi bilinmeyen bir AC kara kutunun açık devre gerilimini ve kısa devre akımını genlik ve faz olarak ölçüp Thevenin/Norton eşdeğerini bulmak.', doc: ['DÖÇ1', 'DÖÇ2'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Kara kutu (1 kHz, REF çıkışlı), TRMS AC voltmetre (10 MΩ), AC ampermetre, 1 Ω şönt, iki kanallı osiloskop.',
+      guvenlik: 'Kısa devre ölçümü yalnız akım sınırlı, düşük güçlü kaynaklarda yapılır; şebekenin kısa devre akımı asla ölçülmez. Ampermetreyi yüksek kademeden başlatın; osiloskop toprağını yalnız b (ortak) ucuna bağlayın.',
+      veri: '|V<sub>oc</sub>|, |I<sub>sc</sub>|, REF’e göre Δt ve fazlar; Z<sub>Th</sub> = V<sub>Th</sub>/I<sub>N</sub> hesabı.',
+      tartisma: 'Ampermetre ve şönt direncinin I<sub>N</sub> ve Z<sub>Th</sub> sonucuna etkisini sayısal olarak tahmin edin. Faz ölçümündeki 1 µs’lik hata Z<sub>Th</sub> açısında kaç dereceye karşılık gelir?' },
+    d2: { amac: 'Deney 1’de bulunan Thevenin modelini dirençli ve reaktif yüklerle sınamak, modelin tahmin hatasını ölçmek.', doc: ['DÖÇ3'], mc: [2, 3, 5],
+      gerec: 'Kara kutu, yük direnç kutusu, seri C ve L kutuları, AC voltmetre ve ampermetre.',
+      guvenlik: 'Yük direncinin güç değerini (P = I²R) kontrol edin; kondansatörlü yükleri değiştirmeden önce boşaltın.',
+      veri: 'Yük, |V<sub>L</sub>|, |I<sub>L</sub>|, model tahmini ve yüzde hata tablosu; |V<sub>L</sub>|–R<sub>L</sub> grafiği.' },
+    d3: { amac: 'Fonksiyon üretecinin 50 Ω iç direncini ve ekran kipinin anlamını ölçmek; Thevenin modelini kaynak dönüşümüyle Norton modeline çevirip uç eşdeğerliğini göstermek.', doc: ['DÖÇ4'], mc: [1, 3, 4, 6, 10],
+      gerec: 'Fonksiyon üreteci (50 Ω, 50 Ω/High-Z kipi), yük direnç kutusu, osiloskop, AC voltmetre.',
+      guvenlik: 'Üreteç çıkışına harici DC gerilim bağlamayın; uzun süreli kısa devreden kaçının. Eşleşmemiş yükte ölçülen genliği ekranla karıştırmak yanlış ayarlı devrelere ve boşa harcanan enerjiye yol açar.',
+      veri: 'Kip, ekran genliği, R<sub>L</sub>, V<sub>L</sub> (Vpp) tablosu; model–gerçek karşılaştırması.',
+      tartisma: 'Norton ve Thevenin modelleri uçlarda aynı davranırken içlerinde harcanan güç neden farklıdır? 50 Ω’luk eşleştirmenin RF ve kablo sistemlerinde (ekonomik ve teknik) neden standart olduğunu araştırın.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

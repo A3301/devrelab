@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 8 · Ara Sınav Haftası — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>
+  .tp{cursor:pointer}
+  .tp circle{fill:#fff;stroke:#c62828;stroke-width:2.5}
+  .tp.red circle{fill:#c62828}
+  .tp.blk circle{fill:#222;stroke:#222}
+  .tp text{font-size:11px;font-weight:700;fill:#c62828}
+  .rsel{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:14px}
+  .timer{font:700 28px Consolas,monospace;color:#0b5cad}
+  .timer.low{color:#c62828}
+  .exq{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:6px 0;background:#fbfcfe;font-size:14px;line-height:1.5}
+  .exq.ok{border-color:#1a8a4a;background:#effaf2}
+  .exq.bad{border-color:#c62828;background:#fdf0f0}
+  .mist li{margin:5px 0;font-size:14px;line-height:1.5}
+  .why{background:#f3f0fb;border-left:4px solid #7a4cc2;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}
+  .solved{background:#f2faf4;border-left:4px solid #1a8a4a;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}
+</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 8 — Ara Sınav Haftası: Uygulamalı Sınav</h1>
+    <div class="sub">AC arıza bulma · Faz açısı tasarımı · Dalga biçimi / fazör tanıma · Süreli deneme sınavı (Bölüm 1–2)</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Sınava Hazırlık Özeti</button>
+  <button data-p="onhaz"><span class="dot"></span>1b · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>2 · Görev 1: AC Arıza Bul</button>
+  <button data-p="d2"><span class="dot"></span>3 · Görev 2: Faz Açısı Tasarımı</button>
+  <button data-p="d3"><span class="dot"></span>4 · Görev 3: Dalga / Fazör Tanıma</button>
+  <button data-p="d4"><span class="dot"></span>5 · Görev 4: Deneme Sınavı</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, tekerlek ya da <kbd>↑</kbd><kbd>↓</kbd>. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü/tasarımı kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 8 · Ara Sınav Haftası — Uygulamalı Sınav</h2>
+  <p class="lead">Kapsam: <b>Bölüm 1</b> (sinüzoidal kaynak ve rms, sinüzoidal tepki, fazör, empedans, seri/paralel/Δ–Y, Thevenin–Norton, düğüm/çevre, transformatör, ideal transformatör, fazör diyagramları) ve <b>Bölüm 2</b> (anlık, ortalama, reaktif güç, rms ile güç, kompleks güç, güç faktörü düzeltmesi, maksimum güç transferi).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu haftanın sonunda</h3>
+      <ol class="steps">
+        <li>Bozuk bir seri RLC kartında <b>rms voltmetre ve ampermetreyle ölçerek</b> kopuk bağlantıyı, kısa devreyi ya da yanlış takılmış elemanı bulabileceksiniz.</li>
+        <li>Verilen bir endüktif yükte akımın istenen <b>faz açısına</b> gelmesi için seri eleman (C ya da L) seçip <b>gerilim/akım değeri</b> ve maliyetiyle birlikte tasarlayacaksınız.</li>
+        <li>Osiloskop ekranından ya da fazör diyagramından yükün <b>türünü, θ<sub>v</sub> − θ<sub>i</sub> açısını ve ortalama gücünü</b> çıkaracaksınız.</li>
+        <li>Rastgele sayılarla üretilen <b>20 soruluk, 40 dakikalık</b> deneme sınavında hızınızı ve doğruluğunuzu ölçeceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Fonksiyon üreteci (iç direnci 50 Ω, 10 Hz–20 kHz) · Gerçek rms dijital multimetre (AC V, 10 MΩ) · AC ampermetre · Güç yükselteci (Görev 2) · İki kanallı osiloskop ve akım probu · Fazör diyagramı paneli · E12 serisi kondansatör ve bobin kutuları.</p>
+      <div class="info">Senaryolar her seferinde <b>rastgele</b> üretilir: ezber işe yaramaz, ölçüp düşünmeniz gerekir. Aksi yazmadıkça açılar derece, gerilim ve akımlar rms; kosinüs referansı ve pasif işaret düzeni geçerlidir.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Sınava Hazırlık Özeti</b>’ni okuyun ve <b>Ön Hazırlık</b> sorularını çözün. Görev 1–3 birer uygulamalı sınav istasyonudur: föy adımları siz doğru işi yaptıkça işaretlenir. Görev 4’ü en sona bırakın; sayaç başladıktan sonra formül kartına bakmadan çözmeye çalışın. Raporunuz bütün görevlerin sonuçlarını içerir.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Sınava Hazırlık Özeti · Bölüm 1 ve 2 Tek Sayfada</h2>
+  <p class="lead">Ara sınav öncesi son tekrar: iki bölümün ana fikri, dönen fazör sezgisi, bütün formüller tek kartta ve en sık yapılan 10 hata.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Bölüm 1’in özü: türev yerine jω</h3>
+      <p style="font-size:14px;line-height:1.65">Doğrusal bir devrede sinüzoidal kaynağın bütün tepkileri <b>aynı frekanstadır</b>; yalnız genlik ve faz değişir. Bu yüzden her sinüsü dönen bir okun (fazör) gölgesi olarak düşünebiliriz: <b>V = V<sub>m</sub>∠θ</b>. Türev jω ile çarpmaya dönüşür; diferansiyel denklem cebire iner. R, L, C birer <b>empedans</b> olur (R, jωL, −j/ωC) ve DA’dan bildiğimiz her araç (seri/paralel, gerilim bölücü, Thevenin, düğüm/çevre) aynen, ama <b>kompleks sayılarla</b> çalışır.</p>
+      <h3>Dönen fazör ↔ sinüs</h3>
+      <svg id="obPh" viewBox="0 0 520 200" style="width:100%;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:8px"></svg>
+      <p style="font-size:13px;line-height:1.5;margin:6px 0">Ok ω hızıyla döner; yatay izdüşümü (Re) v(t)’dir. Mavi ok akımdır: θ kadar geride (endüktif yük). İki ok aynı hızda döndüğü için aralarındaki açı <b>hiç değişmez</b>: fazör diyagramı bu donmuş anın fotoğrafıdır.</p>
+      <h3>2 · Bölüm 2’nin özü: P çalışır, Q gidip gelir</h3>
+      <p style="font-size:14px;line-height:1.65">p(t) = P + P cos2ωt − Q sin2ωt. Ortalaması <b>P</b> (W) yükte ısıya/işe dönüşür; <b>Q</b> (VAR) alan ile kaynak arasında gidip gelir. Hepsi tek kompleks sayıda toplanır: <b>S = V<sub>rms</sub>I<sub>rms</sub>* = P + jQ</b>, |S| görünür güç (VA), pf = P/|S|. Motorun Q’sunu yanındaki kondansatör karşılar (pf düzeltmesi); yükün en çok güç çekmesi için <b>Z<sub>L</sub> = Z<sub>Th</sub>*</b> olmalıdır.</p>
+      <h3>3 · AC arıza bulma tarifi</h3>
+      <svg viewBox="0 0 520 120" style="width:100%;max-width:520px;display:block" aria-label="AC arıza bulma akışı">
+        <g font-family="Segoe UI,Arial" font-size="12" text-anchor="middle">
+          <rect x="4" y="30" width="110" height="56" rx="8" fill="#eaf2fc" stroke="#0b5cad"/><text x="59" y="54">1 · Kaynak</text><text x="59" y="72">V ve I var mı?</text>
+          <rect x="140" y="30" width="110" height="56" rx="8" fill="#eaf2fc" stroke="#0b5cad"/><text x="195" y="54">2 · I = 0 ise</text><text x="195" y="72">tam V hangi elemanda?</text>
+          <rect x="276" y="30" width="110" height="56" rx="8" fill="#eaf2fc" stroke="#0b5cad"/><text x="331" y="54">3 · V ≈ 0 eleman</text><text x="331" y="72">kısa devre mi?</text>
+          <rect x="412" y="30" width="104" height="56" rx="8" fill="#fff4e2" stroke="#e07a10"/><text x="464" y="54">4 · Değer</text><text x="464" y="72">|Z| = V/I tutuyor mu?</text>
+          <path d="M114,58 h22 m-6,-5 l6,5 l-6,5 M250,58 h22 m-6,-5 l6,5 l-6,5 M386,58 h22 m-6,-5 l6,5 l-6,5" stroke="#333" fill="none" stroke-width="1.5"/>
+          <text x="260" y="112" fill="#555">Eleman gerilimlerinin aritmetik toplamı kaynağı aşabilir: KVL fazörlerle sağlanır!</text>
+        </g>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı (Bölüm 1 + 2)</h3>
+      <table class="data">
+        <tr><th colspan="2">Sinüs, rms, fazör</th></tr>
+        <tr><td class="l">Sinüs</td><td class="l">v = V<sub>m</sub>cos(ωt + φ), ω = 2πf, T = 1/f</td></tr>
+        <tr><td class="l">rms</td><td class="l">V<sub>rms</sub> = V<sub>m</sub>/√2 (sinüs); üçgen: I<sub>p</sub>/√3; V<sub>pp</sub> = 2V<sub>m</sub></td></tr>
+        <tr><td class="l">sin → cos</td><td class="l">sin x = cos(x − 90°)</td></tr>
+        <tr><td class="l">Zaman kayması</td><td class="l">Δt = (Δφ/360°)·T</td></tr>
+        <tr><td class="l">Fazör</td><td class="l">V<sub>m</sub>cos(ωt+φ) ↔ V<sub>m</sub>∠φ; d/dt ↔ jω</td></tr>
+        <tr><td class="l">RL tepkisi</td><td class="l">i = −I<sub>m</sub>cos(φ−θ)e<sup>−t/τ</sup> + I<sub>m</sub>cos(ωt+φ−θ), τ = L/R</td></tr>
+        <tr><th colspan="2">Empedans ve devre çözümü</th></tr>
+        <tr><td class="l">R, L, C</td><td class="l">Z<sub>R</sub> = R, Z<sub>L</sub> = jωL, Z<sub>C</sub> = −j/(ωC); Y = 1/Z = G + jB</td></tr>
+        <tr><td class="l">Seri / paralel</td><td class="l">Z<sub>s</sub> = ΣZ<sub>k</sub>; Y<sub>p</sub> = ΣY<sub>k</sub></td></tr>
+        <tr><td class="l">Bölücüler</td><td class="l">V<sub>k</sub> = V·Z<sub>k</sub>/ΣZ; I<sub>1</sub> = I·Z<sub>2</sub>/(Z<sub>1</sub>+Z<sub>2</sub>)</td></tr>
+        <tr><td class="l">Δ → Y</td><td class="l">Z<sub>1</sub> = Z<sub>b</sub>Z<sub>c</sub>/(Z<sub>a</sub>+Z<sub>b</sub>+Z<sub>c</sub>)</td></tr>
+        <tr><td class="l">Rezonans (seri)</td><td class="l">ω<sub>0</sub> = 1/√(LC), Q = ω<sub>0</sub>L/R, V<sub>L</sub> = V<sub>C</sub> = Q·V</td></tr>
+        <tr><td class="l">Thevenin</td><td class="l">V<sub>Th</sub> = V<sub>açık</sub>, Z<sub>Th</sub> = V<sub>Th</sub>/I<sub>kısa</sub>; kaynak dönüşümü I = V/Z</td></tr>
+        <tr><td class="l">İdeal transformatör</td><td class="l">V<sub>1</sub>/N<sub>1</sub> = V<sub>2</sub>/N<sub>2</sub>, N<sub>1</sub>I<sub>1</sub> = N<sub>2</sub>I<sub>2</sub>, Z<sub>giriş</sub> = (N<sub>1</sub>/N<sub>2</sub>)²Z<sub>L</sub></td></tr>
+        <tr><td class="l">Doğrusal trafo</td><td class="l">Z<sub>r</sub> = ω²M²/Z<sub>22</sub> = (ωM/|Z<sub>22</sub>|)²Z<sub>22</sub>*, M = k√(L<sub>1</sub>L<sub>2</sub>)</td></tr>
+        <tr><th colspan="2">Güç</th></tr>
+        <tr><td class="l">P, Q</td><td class="l">P = ½V<sub>m</sub>I<sub>m</sub>cos(θ<sub>v</sub>−θ<sub>i</sub>) = V<sub>rms</sub>I<sub>rms</sub>cos θ; Q = … sin θ</td></tr>
+        <tr><td class="l">Kompleks güç</td><td class="l">S = V<sub>rms</sub>I<sub>rms</sub>* = P + jQ = I<sub>rms</sub>²Z = V<sub>rms</sub>²/Z*</td></tr>
+        <tr><td class="l">pf düzeltmesi</td><td class="l">Q<sub>C</sub> = P(tanθ<sub>1</sub> − tanθ<sub>2</sub>), C = Q<sub>C</sub>/(ωV<sub>rms</sub>²)</td></tr>
+        <tr><td class="l">Maks. güç</td><td class="l">Z<sub>L</sub> = Z<sub>Th</sub>* → P<sub>maks</sub> = |V<sub>Th,rms</sub>|²/(4R<sub>Th</sub>)</td></tr>
+        <tr><td class="l">Enerji, sigorta</td><td class="l">E = P·t (kWh); I = ΣP/V (rezistif)</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">En sık 10 hata</h3>
+      <ol class="mist">
+        <li><b>Sinüsü kosinüse çevirmeden</b> faz almak (sin(ωt − 15°) → −105°).</li>
+        <li><b>Genlikleri toplamak:</b> |V<sub>R</sub>| + |V<sub>C</sub>| ≠ |V|; fazörler <b>vektörel</b> toplanır.</li>
+        <li><b>Derece ile radyanı karıştırmak:</b> 1000πt radyandır, faz açısı derece; hesap makinesinin kipine bakın.</li>
+        <li><b>Kapasitör empedansının eksi işaretini</b> unutmak: Z<sub>C</sub> = −j/(ωC).</li>
+        <li><b>f ile ω’yı karıştırmak:</b> X<sub>L</sub> = 2πfL; “ω = 1000” ise f = 159,15 Hz.</li>
+        <li><b>Tepe ile rms’yi karıştırmak:</b> P = ½V<sub>m</sub>I<sub>m</sub>cos θ ama P = V<sub>rms</sub>I<sub>rms</sub>cos θ; ½ katsayısını iki kez kullanmayın.</li>
+        <li><b>Güç faktörünü işaretsiz</b> kullanmak: “geri” endüktif (Q &gt; 0), “ileri” kapasitif (Q &lt; 0).</li>
+        <li><b>S = VI</b> yazmak: doğrusu S = V·I* (akımın eşleniği); yoksa Q’nun işareti ters çıkar.</li>
+        <li><b>Maksimum güçte Z<sub>L</sub> = Z<sub>Th</sub></b> almak: doğrusu eşlenik, Z<sub>Th</sub>*.</li>
+        <li><b>Transformatörde oranı ters</b> kullanmak: yansıyan empedans (N<sub>1</sub>/N<sub>2</sub>)²Z<sub>L</sub>, akım oranı gerilimin tersidir.</li>
+      </ol>
+      <div class="solved"><b>Çözümlü mini örnek (Örnek 1.16 + 2.3 birlikte):</b> v<sub>s</sub> = 50 cos1000t V, R = 30 Ω, L = 60 mH, C = 50 µF seri. Z = 30 + j(60 − 20) = 50∠53,13° Ω → I = 1∠−53,13° A. P = ½·50·1·cos53,13° = 15 W = ½I<sub>m</sub>²R ✓; Q = 20 VAR; V<sub>L</sub> = 60 V &gt; kaynak 50 V (fazörlerde normal!).</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+      <div class="warnbox"><b>Arıza ararken önce kaynağı ölçün.</b> Fonksiyon üretecinin 50 Ω iç direnci vardır: yük bağlıyken uç gerilimi ayar değerinden düşüktür. Önce üreteç uçlarında, sonra her elemanın uçlarında ölçün; ampermetrenin gösterdiği akımla V/I oranlarını karşılaştırın.</div>
+      <div class="warnbox"><b>Multimetre AC kademesi ve frekans.</b> Ucuz multimetreler yalnız 50–400 Hz’de doğru rms okur; kHz’lerde düşük gösterir. Kare/üçgen dalgada “true rms” olmayan aletin okuması yanlıştır.</div>
+      <div class="warnbox"><b>Çalışan devrede direnç/kapasite ölçülmez.</b> Ohm ve kapasite kademeleri kendi işaretini basar; enerjili devrede yanlış okur, aleti zorlar. Eleman değerini ölçmek için enerjiyi kesip bir bacağını ayırın (LCR metre).</div>
+      <div class="warnbox"><b>Rezonansta eleman gerilimi kaynağı aşar.</b> Seri RLC’de V<sub>C</sub> = Q·V olabilir: 10 V kaynakla kondansatörde 100 V görmek mümkündür. Kondansatörün gerilim değerini buna göre seçin.</div>
+      <div class="warnbox"><b>Osiloskop toprağı.</b> İki probun toprak klipsi aynı düğüme bağlanmalıdır. Şebekeyle ilgili ölçümde yalıtım trafosu ve diferansiyel prob kullanın; prob toprağını faza takmak kısa devre ve ark yaratır.</div>
+      <div class="warnbox"><b>Akım trafosunun sekonderini açık bırakmayın; trafo sekonderini kısa devre etmeyin.</b> Akım trafosunda sekonder açılırsa çok yüksek gerilim oluşur. Gerilim trafosunun sekonderini kısa devre etmek sargıyı yakar.</div>
+      <div class="warnbox"><b>Yüklü kondansatör ve bobin akımı.</b> Enerjiyi kestikten sonra kondansatörü dirençle boşaltın; bobin akımını anahtarla aniden kesmeyin (L di/dt kıvılcımı).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Görevlere başlamadan çözün. Kosinüs referansı, pasif işaret düzeni; aksi yazmıyorsa genlikler tepe değeridir.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= GÖREV 1 ================= -->
+<section class="page" id="d1">
+  <h2>Görev 1 · Arıza Bul: Seri RLC Kartı</h2>
+  <p class="lead">Kart şemadaki gibi <b>olmalı</b>: R = 220 Ω, L = 22 mH (sargı direnci 8 Ω), C = 1 µF; üreteç 5 V rms, iç direnci 50 Ω. Her yeni kartta rastgele bir arıza (ya da hiç arıza) olabilir. Kırmızı ve siyah ucu test noktalarına (TP) koyup ölçün, teşhisinizi seçin.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Sağlam kartta 1 kHz’de: <span class="eq">Z = 278 − j20,9 Ω (üreteç dahil)</span> I ≈ 18 mA, V<sub>R</sub> ≈ 3,9 V, V<sub>L</sub> ≈ 2,5 V, V<sub>C</sub> ≈ 2,9 V. Eleman gerilimlerinin toplamı (≈ 9,3 V) kaynaktan büyüktür: fazörlerde normal.</div>
+        <div class="why"><b>Neden böyle ölçüyoruz?</b> Seri devrede akım her yerde aynıdır. Akım sıfırsa bir yer <b>açık</b>tır ve kaynak gerilimin tamamı o açıklığın uçlarında görünür. Bir elemanda gerilim sıfır ama akım varsa o eleman <b>kısa devre</b>dir. Akım var, gerilimler orantısızsa <b>değer yanlıştır</b>: |Z<sub>k</sub>| = V<sub>k</sub>/I ile hesaplayıp beklenenle karşılaştırın.</div>
+        <div class="info">Frekansı değiştirmek L ile C’yi ayırt eder: f artınca X<sub>L</sub> büyür, X<sub>C</sub> küçülür. Şüpheli elemanın gerilimi f ile nasıl değişiyor?</div>
+        <div class="warnbox">Gerçek kartta delinmiş (kısa devre) bir kondansatör ısınabilir; arızalı elemanları <b>e-atık</b> olarak ayırın, çöpe atmayın. Lehim köprüsü ararken enerjiyi kesin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 300"></svg></div>
+      <div class="card">
+        <div class="row"><b>Teşhis</b> <span class="badge" id="d1card">Kart #1</span><span class="grow"></span><span id="d1score" class="badge"></span></div>
+        <div class="row" style="margin-top:8px">
+          <select id="d1diag" style="min-width:320px"></select>
+          <button class="btn" id="d1go">Teşhis et</button>
+          <button class="btn sec" id="d1next">Yeni kart</button>
+        </div>
+        <div id="d1fb" class="info" style="min-height:40px">Önce ölçün: en az üç farklı nokta çifti.</div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Kart</th><th>f (Hz)</th><th>Kırmızı → Siyah</th><th>V (V rms)</th><th>I (mA rms)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GÖREV 2 ================= -->
+<section class="page" id="d2">
+  <h2>Görev 2 · Tasarım: Seri Elemanla Faz Açısı Ayarlamak</h2>
+  <p class="lead">Güç yükselteci 1 kHz’de bir endüktif yükü (R<sub>y</sub> + L<sub>y</sub>, ör. bir bobinli röle/solenoid modeli) besliyor. Yüke seri bir <b>kondansatör ya da bobin</b> ekleyerek akımın gerilime göre <b>hedef faz açısına</b> gelmesini sağlayın. Elemanın gerilim/akım değerini de seçin.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Hedef: <span class="eq">θ = θ<sub>v</sub> − θ<sub>i</sub> = arctan((X<sub>y</sub> + X<sub>s</sub>)/R<sub>y</sub>)</span> Gerekli seri reaktans <span class="eq">X<sub>s</sub> = R<sub>y</sub> tan θ<sub>hedef</sub> − X<sub>y</sub></span> X<sub>s</sub> &lt; 0 ise kondansatör (C = 1/(ω|X<sub>s</sub>|)), X<sub>s</sub> &gt; 0 ise bobin (L = X<sub>s</sub>/ω).</div>
+        <div class="info">E12 değerleri kaba adımlıdır; iki elemanı birleştirebilirsiniz: kondansatörler <b>paralel</b> (C<sub>1</sub> + C<sub>2</sub>), bobinler <b>seri</b> (L<sub>1</sub> + L<sub>2</sub>). Kabul: |θ − θ<sub>hedef</sub>| ≤ 3°.</div>
+        <div class="info">Değer seçimi: kondansatörün <b>tepe gerilimi</b> √2·V<sub>C</sub> etiket gerilimini aşmamalı; bobinin rms akımı etiket akımını aşmamalı. Gereğinden yüksek değer pahalıdır: <b>en ekonomik yeterli</b> değeri seçin.</div>
+        <div class="why"><b>Neden önemli?</b> Aynı fikir güç faktörü düzeltmesinin, rezonans devrelerinin ve faz kaydırıcıların temelidir. Seri kondansatör endüktif reaktansı “siler”; ama rezonansa yaklaştıkça akım ve eleman gerilimi büyür.</div>
+        <div class="warnbox">Seri kondansatörde gerilim, kaynak geriliminden büyük olabilir. Yanlış (düşük) gerilim değerli kondansatör delinir; polarlı elektrolitik AC’de kullanılmaz.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 220"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <b>Tasarım</b>
+          <div class="rsel" style="margin-top:8px">
+            <label for="d2type">Eleman türü</label><span><select id="d2type"><option value="C">Kondansatör (paralel iki adet)</option><option value="L">Bobin (seri iki adet)</option></select></span>
+            <label for="d2v1">1. eleman</label><span><select id="d2v1"></select></span>
+            <label for="d2v2">2. eleman</label><span><select id="d2v2"></select></span>
+            <label for="d2rat">Değer (etiket)</label><span><select id="d2rat"></select></span>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn" id="d2eval">Ölç ve değerlendir (R)</button>
+            <button class="btn sec small" id="d2new">Yeni senaryo</button>
+          </div>
+          <div id="d2verdict" class="info" style="min-height:60px">Elemanı seçip değerlendirin.</div>
+        </div>
+        <div class="card">
+          <div class="row"><b>Fazör diyagramı paneli</b></div>
+          <svg id="d2ph" viewBox="0 0 360 300" style="width:100%;display:block"></svg>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Değerlendirilen tasarımlar</b><span class="grow"></span><button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Senaryo</th><th>Eleman</th><th>Değer</th><th>θ ölçülen</th><th>I (mA)</th><th>V<sub>s</sub> (V)</th><th>Maliyet</th><th>Sonuç</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GÖREV 3 ================= -->
+<section class="page" id="d3">
+  <h2>Görev 3 · Osiloskop Ekranından ya da Fazör Diyagramından Yük Tanıma</h2>
+  <p class="lead">Kara kutuda bir yük var. Ekranda ya osiloskop görüntüsü (CH1 v, CH2 i, akım probu 1 V/A) ya da ölçeklenmiş bir fazör diyagramı görünür. Yükün türünü, θ<sub>v</sub> − θ<sub>i</sub> açısını ve ortalama gücünü bulun.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Osiloskopta: önce hangisi tepe yapıyor? <b>v önce</b> tepe yapıyorsa akım geridedir → endüktif (θ &gt; 0). Açı: <span class="eq">θ = 360° · Δt / T</span> Güç: <span class="eq">P = ½V<sub>m</sub>I<sub>m</sub> cos θ</span></div>
+        <div class="info">Fazör diyagramında açılar yatay eksene göre ölçülür, saat yönünün tersi pozitiftir: <span class="eq">θ = ∠V − ∠I</span> Diyagramdaki uzunluklar <b>tepe değer</b>dir.</div>
+        <div class="why"><b>Neden tanıma?</b> Sahada çoğu zaman yükün içini göremezsiniz; yalnız uçlarındaki v ve i’yi görürsünüz. Faz ilişkisi yükün karakterini, genlik oranı |Z|’yi, ikisi birlikte P ve Q’yu söyler.</div>
+        <div class="warnbox">Gerçek ölçümde CH2’yi bir şönt üzerinden alıyorsanız toprak klipsini şöntün toprak tarafına takın; akım probunun yönünü (ok) akım yönüne göre takın, yoksa i 180° ters görünür.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row">
+          <div class="inst dark scopewrap" style="flex:1;min-width:420px" id="d3scopeBox">
+            <div class="brand"><span>DSO-2C · Dijital Osiloskop</span><span id="d3hdr"></span></div>
+            <div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+              <canvas id="scope" width="640" height="400" style="width:100%;max-width:640px"></canvas>
+              <div style="min-width:150px">
+                <div class="ctrls" id="scopeKnobs"></div>
+                <div class="row" style="margin:6px 0"><button class="seg-btn" id="curon">İMLEÇ</button></div>
+                <div class="meas" id="scopeMeas"></div>
+              </div>
+            </div>
+          </div>
+          <div class="inst" style="flex:1;min-width:360px;display:none" id="d3phBox">
+            <div class="brand"><span>FAZÖR DİYAGRAMI PANELİ</span><span id="d3hdr2"></span></div>
+            <svg id="d3ph" viewBox="0 0 420 340" style="width:100%;display:block;background:#fff;border-radius:6px"></svg>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="row"><b>Yanıtınız</b> <span class="badge" id="d3no">Ekran #1</span><span class="grow"></span><span class="badge" id="d3score"></span></div>
+        <div class="rsel" style="margin-top:8px">
+          <label for="d3type">Yük türü</label><span><select id="d3type"><option value="">— seçin —</option><option value="R">Saf direnç</option><option value="L">Saf bobin</option><option value="C">Saf kapasitör</option><option value="RL">Endüktif yük (R + L)</option><option value="RC">Kapasitif yük (R + C)</option></select></span>
+          <label for="d3th">θ<sub>v</sub> − θ<sub>i</sub></label><span><input type="text" id="d3th" size="8"> derece</span>
+          <label for="d3P">P</label><span><input type="text" id="d3P" size="8"> W</span>
+        </div>
+        <div class="row" style="margin-top:8px"><button class="btn" id="d3go">Yanıtla</button><button class="btn sec" id="d3next">Yeni ekran</button>
+          <label style="font-size:13px"><select id="d3mode"><option value="mix">Karışık</option><option value="scope">Yalnız osiloskop</option><option value="ph">Yalnız fazör</option></select></label></div>
+        <div id="d3fb" class="info" style="min-height:40px">Ekranı inceleyin, ölçün, yanıtlayın.</div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GÖREV 4 ================= -->
+<section class="page" id="d4">
+  <h2>Görev 4 · Süreli Deneme Sınavı (20 soru)</h2>
+  <p class="lead">Her denemede sayılar yeniden üretilir. Süre 40 dakika; süre bitince sınav kendiliğinden puanlanır. Ondalık için virgül kullanabilirsiniz. Her soru 5 puan; yanıt ±%2 içinde doğru sayılır. Açılar derece.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Sınav</h3>
+        <div class="timer" id="exTimer">40:00</div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="exStart">Yeni sınav başlat</button>
+          <button class="btn warn" id="exFinish">Bitir ve puanla</button>
+        </div>
+        <div id="exInfo" class="info">Başlatınca sayaç işlemeye başlar. Sayfadan ayrılsanız da süre devam eder.</div>
+        <div class="warnbox">Sınav ortamı gibi çalışın: hesap makinesi serbest (derece kipinde!), formül kartı yok. Birim soruda yazılıdır; sonucu o birimde girin.</div>
+        <h3>Deneme geçmişi</h3>
+        <table class="data" id="exHist"><thead><tr><th>#</th><th>Tarih</th><th>Puan</th><th>Süre</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div>
+      <div class="card" id="exBox"><p class="lead" style="margin:0">Henüz başlatılmış bir sınav yok.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz teşhislerinizden, tasarımlarınızdan, tanıma yanıtlarınızdan ve sınav sonuçlarınızdan otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Arıza bulurken hangi ölçüm en çok bilgi verdi? Tasarımda neden iki eleman birleştirmeniz gerekti? Sınavda en çok hangi konuda hata yaptınız?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Görev 1:</b> şemadaki TP dairesine tıklamak kırmızı ucu, <kbd>Shift</kbd>+tık siyah ucu oraya koyar (ya da açılır listeleri kullanın).<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin; Δt ve iki kanalın imleç değerleri görünür.<br>
+    <kbd>R</kbd> ölçüm/tasarım kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta08.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h08', ders: 'Devre Kuramı II', hafta: 8,
+  doc: [
+    { id: 'DÖÇ1', t: 'AC devrede rms gerilim ve akım ölçerek kopuk bağlantı, kısa devre ve yanlış eleman arızalarını sistematik biçimde bulur ve gerekçelendirir.', mc: [1, 2, 4, 5] },
+    { id: 'DÖÇ2', t: 'Verilen yükte hedef faz açısı için seri reaktif elemanı standart (E12) değerlerle, gerilim/akım değeri ve maliyetiyle birlikte tasarlar.', mc: [1, 3, 6, 10] },
+    { id: 'DÖÇ3', t: 'Osiloskop dalga biçimlerinden ve fazör diyagramından yük türünü, faz açısını ve ortalama gücü belirler.', mc: [1, 2, 4] },
+    { id: 'DÖÇ4', t: 'Bölüm 1–2 (fazör, empedans, transformatör, güç) problemlerini süre kısıtı altında doğru çözer.', mc: [1, 2, 11] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Rastgele arızalı seri RLC kartlarında rms voltmetre ve ampermetreyle ölçüm yaparak arızayı (açık eleman, kısa devre kondansatör, yanlış değer) teşhis etmek.', doc: ['DÖÇ1'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Fonksiyon üreteci (50 Ω), gerçek rms DMM (10 MΩ), AC ampermetre, seri RLC kartı (220 Ω, 22 mH / 8 Ω, 1 µF).',
+      guvenlik: 'Enerjili devrede ohm/kapasite ölçmeyin; delinmiş kondansatör ısınabilir. Arızalı elemanları e-atık olarak ayırın.',
+      veri: 'Test noktası gerilimleri ve akım tablosu, kart başına teşhis ve doğruluk oranı.',
+      tartisma: 'Hangi tek ölçüm en çok arıza sınıfını eledi? Frekans değiştirmek hangi arızayı ayırt etmenize yardımcı oldu?' },
+    d2: { amac: 'Endüktif bir yüke seri kondansatör ya da bobin ekleyerek akımı hedef faz açısına getirmek; elemanın gerilim/akım değerini ve maliyetini gözeterek E12 değerlerle tasarlamak.', doc: ['DÖÇ2'], mc: [1, 3, 4, 6, 10],
+      gerec: 'Güç yükselteci (1 kHz), endüktif yük modeli, E12 kondansatör ve bobin kutuları, rms ölçerler, fazör paneli.',
+      guvenlik: 'Rezonansa yakın tasarımda eleman gerilimi kaynağı aşar: kondansatör gerilim değerini tepe değere göre seçin; AC’de polarlı elektrolitik kullanmayın. Gereğinden büyük eleman maliyeti ve atığı artırır.',
+      veri: 'Tasarım tablosu (eleman, değer, θ, I, eleman gerilimi, maliyet, sonuç) ve fazör diyagramı.',
+      tartisma: 'Hedef açıya E12 tek elemanla neden ulaşılamadı? İki eleman yerine ayarlı (trimmer) eleman kullanmanın maliyet/başarım dengesi nedir?' },
+    d3: { amac: 'Osiloskop dalga biçimlerinden ve fazör diyagramlarından yük türünü, θ<sub>v</sub> − θ<sub>i</sub> açısını ve ortalama gücü belirlemek.', doc: ['DÖÇ3'], mc: [1, 2, 4],
+      gerec: 'İki kanallı imleçli osiloskop, akım probu (1 V/A), fazör diyagramı paneli.',
+      guvenlik: 'Prob toprakları aynı düğüme; akım probunun yönüne dikkat.',
+      veri: 'Ekran başına yanıt (tür, θ, P) ve doğruluk.',
+      tartisma: 'Osiloskopta açı ölçümündeki en büyük hata kaynağı neydi? İmleç yerine sıfır geçişlerini kullanmak doğruluğu nasıl etkiler?' },
+    d4: { amac: 'Rastgele sayılarla üretilen 20 soruluk süreli deneme sınavıyla Bölüm 1–2 hazırlığını ölçmek.', doc: ['DÖÇ4'], mc: [1, 2, 11],
+      gerec: 'Hesap makinesi, sayaç.',
+      guvenlik: '—',
+      veri: 'Deneme puanları ve süreleri.',
+      tartisma: 'Yanlışlarınız hangi konularda toplandı; sınava kadar nasıl bir çalışma planı yapacaksınız?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 12 · Üç Fazlı Kaynaklar ve Y–Y Bağlantı — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>.why{background:#eef8ef;border-left:4px solid var(--ok);padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}.ex{background:#f7f4ff;border-left:4px solid #6a4fc9;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 12 — Üç Fazlı Kaynaklar ve Y–Y Bağlantı</h1>
+    <div class="sub">Faz sırası · Faz/hat gerilimi (√3, 30°) · Nötr akımı · Nötr kopması · Tek-faz eşdeğer</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Faz Sırası</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Faz ve Hat Gerilimi</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Dengeli Y–Y</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Nötr Kopması</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, tekerleği kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd>. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 12 · Üç Fazlı Kaynaklar ve Y–Y Bağlantı</h2>
+  <p class="lead">Ders notu: <b>Bölüm 3 · Kısım 1–2</b> — 3.1 Dengeli üç fazlı gerilimler, 3.2 Üç fazlı kaynaklar, 3.3 Y–Y bağlı devre.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Üç faz gerilimini osiloskopta görüp aralarındaki 120°’yi <b>zaman farkından</b> ölçebilecek, faz sırasını (abc / acb) osiloskopla ve <b>kondansatör–lamba göstergesiyle</b> belirleyebileceksiniz.</li>
+        <li>Faz ve hat gerilimlerini ölçerek <b>V<sub>L</sub> = √3 V<sub>φ</sub></b> ilişkisini ve 30°’lik faz kaymasının işaretini doğrulayacaksınız.</li>
+        <li>Dengeli Y–Y devrede <b>nötr akımının sıfır</b> olduğunu, nötrün açılmasının hiçbir şeyi değiştirmediğini göreceksiniz.</li>
+        <li><b>Tek-faz eşdeğer devre</b> ile hesapladığınız hat akımını ve gerilimleri ölçümle karşılaştıracaksınız (Örnek 3.11).</li>
+        <li>Dengesiz yükte <b>nötr kopmasının</b> yıldız noktasını nasıl kaydırdığını ve aşırı gerilim tehlikesini ölçeceksiniz (Örnek 3.9).</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Yalıtım trafolu, ayarlı üç fazlı AC kaynak (0–230 V/faz, 50/60 Hz) · Etiketsiz ikinci kaynak (“Kaynak X”) · Dört kanallı osiloskop ve <b>diferansiyel problar</b> · True-rms dijital multimetre · Pens ampermetreler · Faz sırası göstergesi (kondansatör + iki lamba) · Ayarlı R–X yük kutusu, üç ayrı direnç yükü, nötr anahtarı.</p>
+      <div class="info">Hesaplarda rms değerler kullanılır: V<sub>φ</sub> = 230 V’luk bir fazın tepe değeri √2·230 = 325 V’tur. Osiloskop tepeyi, multimetre rms’yi gösterir.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b> bölümündeki dönen fazör animasyonunu izleyin ve <b>Ön Hazırlık</b> sorularını çözün. Her deneyde soldaki föyü izleyin: doğru ayarı yaptığınızda adım kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile kaydedin; sorulara kendi ölçümünüzden yanıt verin. Son bölümde raporunuzu yazdırın.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Üç Faz Neden Var, Nasıl Çalışır?</h2>
+  <p class="lead">15 dakikanızı ayırın: dönen fazörler, iki bağlantı biçimi, formül kartı ve şebekede sizi bekleyen tehlikeler.</p>
+  <div class="card">
+    <h3 style="margin-top:0">1 · Dönen fazörler ve üç sinüs</h3>
+    <div class="row" style="margin-bottom:6px"><button class="btn small" id="obPlay">❚❚ Durdur</button><button class="btn sec small" id="obSeq">Sıra: abc</button><label style="font-size:13px"><input type="checkbox" id="obSum"> Anlık toplamı göster</label></div>
+    <canvas id="obAnim" width="900" height="260" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px"></canvas>
+    <p style="font-size:14px;line-height:1.65">Üç sargı, generatör milinde birbirinden <b>120°</b> aralıklı yerleştirilmiştir. Mıknatıs döndükçe her sargıda aynı genlikte bir sinüs indüklenir; ama her biri bir öncekinden 120° (50 Hz’de T/3 = 6,67 ms) sonra tepe yapar. Animasyonda her fazör sabit hızla döner; dalga, fazörün yatay (Re) izdüşümüdür. <b>abc</b> sırasında tepe sırası a → b → c’dir; iki kabloyu değiştirirseniz <b>acb</b> olur ve üç fazlı bir motor <b>ters döner</b>.</p>
+    <div class="why"><b>Neden böyle?</b> Üç eşit, 120° aralı fazörün toplamı sıfırdır: v<sub>a</sub> + v<sub>b</sub> + v<sub>c</sub> = 0 her an. Bu, dengeli yükte nötr iletkeninden akım geçmemesinin ve aynı gücü tek fazdan daha az bakırla taşımanın (Örnek 3.1) kaynağıdır. “Anlık toplamı göster” kutusunu işaretleyip kontrol edin.</div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">2 · Faz gerilimi, hat gerilimi</h3>
+      <svg viewBox="0 0 340 250" style="width:100%;max-width:380px" class="schem">
+        <line x1="20" y1="125" x2="320" y2="125" stroke="#ccc"/><line x1="140" y1="10" x2="140" y2="240" stroke="#ccc"/>
+        <line x1="140" y1="125" x2="240" y2="125" stroke="#e0a800" stroke-width="3"/><text x="244" y="130" class="lbl" style="fill:#e0a800">V<tspan font-size="10">an</tspan></text>
+        <line x1="140" y1="125" x2="90" y2="212" stroke="#1597c9" stroke-width="3"/><text x="70" y="230" class="lbl" style="fill:#1597c9">V<tspan font-size="10">bn</tspan></text>
+        <line x1="140" y1="125" x2="90" y2="38" stroke="#d6336c" stroke-width="3"/><text x="70" y="32" class="lbl" style="fill:#d6336c">V<tspan font-size="10">cn</tspan></text>
+        <line x1="90" y1="212" x2="240" y2="125" stroke="#e07a10" stroke-width="2.5" stroke-dasharray="6 4"/>
+        <text x="185" y="190" class="lbl" style="fill:#e07a10">V<tspan font-size="10">ab</tspan> = V<tspan font-size="10">an</tspan> − V<tspan font-size="10">bn</tspan></text>
+        <path d="M180,125 A40,40 0 0 0 175,105" fill="none" stroke="#e07a10"/><text x="185" y="112" class="lbl" style="fill:#e07a10;font-size:11px">30°</text>
+      </svg>
+      <p style="font-size:14px;line-height:1.65"><b>Faz gerilimi</b> bir faz ucu ile nötr arasıdır (V<sub>an</sub>). <b>Hat gerilimi</b> iki faz ucu arasıdır (V<sub>ab</sub>). İkisi aynı genlikte ama 120° aralı fazörlerin farkı √3 kat büyüktür ve abc’de 30° ileridedir. Uyarı: genlikleri çıkarmak (230 − 230 = 0) yanlış; <b>fazörler</b> çıkarılır.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Dengeli kaynak (abc)</td><td class="l">V<sub>an</sub> = V<sub>φ</sub>∠0°, V<sub>bn</sub> = V<sub>φ</sub>∠−120°, V<sub>cn</sub> = V<sub>φ</sub>∠+120°</td></tr>
+        <tr><td class="l">acb (negatif dizi)</td><td class="l">V<sub>bn</sub> = V<sub>φ</sub>∠+120°, V<sub>cn</sub> = V<sub>φ</sub>∠−120°</td></tr>
+        <tr><td class="l">Y’de hat gerilimi</td><td class="l">V<sub>ab</sub> = √3 V<sub>an</sub>∠+30° (abc), ∠−30° (acb)</td></tr>
+        <tr><td class="l">Y’de akım</td><td class="l">I<sub>L</sub> = I<sub>φ</sub></td></tr>
+        <tr><td class="l">Faz farkı ↔ zaman</td><td class="l">θ = 360°·Δt·f (50 Hz: 1 ms = 18°)</td></tr>
+        <tr><td class="l">Senkron hız</td><td class="l">n = 120 f / p (dev/dak)</td></tr>
+        <tr><td class="l">Nötr kayması (genel)</td><td class="l">V<sub>N</sub> = Σ(V<sub>i</sub>/Z<sub>i</sub>) / (Σ1/Z<sub>i</sub> + 1/Z<sub>0</sub>)</td></tr>
+        <tr><td class="l">Dengeli Y–Y</td><td class="l">V<sub>N</sub> = 0, I<sub>0</sub> = 0 ⇒ tek-faz eşdeğer: I<sub>aA</sub> = V<sub>a′n</sub>/(Z<sub>g</sub>+Z<sub>ℓ</sub>+Z<sub>L</sub>)</td></tr>
+      </table>
+      <div class="ex"><b>Çözümlü mini örnek (Örnek 3.12):</b> 400 V hat, abc, hat 0,5 + j1 Ω, yük 7,5 + j5 Ω. ① V<sub>φ</sub> = 400/√3 = 230,9 V. ② Z<sub>toplam</sub> = 8 + j6 = 10∠36,87° Ω. ③ I<sub>aA</sub> = 230,9/10 = 23,09∠−36,87° A; I<sub>bB</sub> ve I<sub>cC</sub> aynı genlikte, −120° ve +120° kaydırılmış. ④ Yük faz gerilimi |V<sub>AN</sub>| = 23,09·|7,5+j5| = 208,2 V; hatta %9,9 düşüm.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>400 V öldürür.</b> Fazlar arası 400 V, faz–nötr 230 V’tur; tepe değeri 565 V’a ulaşır. Devreyi daima enerjisizken kurun, kilitleme–etiketleme yapın, tek elle çalışın, yalıtımlı (CAT III) prob ve kablolar kullanın. Deney masasında kaçak akım rölesi (30 mA) olmalıdır.</div>
+    <div class="warnbox"><b>Osiloskop toprak klipsi şebekeye bağlanmaz.</b> Sıradan probun toprak ucu koruma toprağına bağlıdır; onu bir faz ucuna takmak doğrudan kısa devre ve patlama demektir. Faz–nötr ve faz–faz ölçümünde <b>diferansiyel prob</b> ya da yalıtım trafosu kullanın. Osiloskobun topraklama pimini asla iptal etmeyin.</div>
+    <div class="warnbox"><b>Nötr asla kopmamalı.</b> Dengesiz yükte nötr koparsa yıldız noktası kayar; hafif yüklü fazdaki cihazlar 300 V’u aşan gerilimle yanabilir (Deney 4). Nötr sigortalanmaz, tek başına anahtarlanmaz; bağlantıları sıkı ve kesiti yeterli olmalıdır.</div>
+    <div class="warnbox"><b>Faz sırasını kontrol etmeden motoru çalıştırmayın.</b> Ters dönen bir pompa, fan ya da asansör hasara yol açar. Bağlantıdan önce faz sırası göstergesiyle abc olduğunu doğrulayın; iki fazın yerini değiştirmek sırayı çevirir.</div>
+    <div class="warnbox"><b>Ölçü aletinin kategorisi ve kademesi.</b> Multimetreyi V~ kademesinde ve doğru soketlerde kullanın; akım soketine takılı probla gerilim ölçmek sigortayı atar ya da aleti patlatır. Pens ampermetre iletkeni tek başına sarmalı, iki iletkeni birlikte sarınca akımlar birbirini götürür.</div>
+    <div class="warnbox"><b>Faz sırası göstergesindeki lambalar</b> yıldız noktası kaydığı için V<sub>φ</sub>’nin 1,5 katına kadar gerilim görür. Bu yüzden ya seri iki lamba ya da 400 V’a dayanıklı gösterge kullanılır; kondansatör en az 400 V AC sınıfında olmalı, iş bitince boşaltılmalıdır.</div>
+    <div class="info"><b>Sık hatalar:</b> abc’de b fazına +120° yazmak (doğrusu −120°) · etiketteki 400 V’u faz gerilimi sanmak (√3’ü unutmak) · genlikleri çıkararak hat gerilimini sıfır bulmak · acb’de +30° kullanmak · yük gerilimini kaynak gerilimine eşit sanmak (hat düşümünü unutmak) · dengesiz yükte yalnızca a fazını çözüp b, c’yi ±120° kaydırmak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Sayılar sunumdaki örneklerden alınmıştır.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Üç Fazın Osiloskopta Görülmesi ve Faz Sırası</h2>
+  <p class="lead">Üç faz–nötr gerilimi diferansiyel problarla aynı ekranda. Kaynak A etiketli (abc); Kaynak X’in sırası bilinmiyor.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Osiloskop CH1’in <b>yükselen sıfır geçişinde</b> tetiklenir (ekranda T▼ işareti). İMLEÇ düğmesiyle iki dikey imleç açılır; Δt = t<sub>B</sub> − t<sub>A</sub> doğrudan okunur. Faz farkı: <span class="eq">θ = 360°·Δt / T</span></div>
+        <div class="info"><b>Faz sırası göstergesi:</b> a fazına bir kondansatör, b ve c fazlarına birer lamba bağlanır, üçü ortak boş bir yıldız noktasında birleşir. Yük dengesiz olduğu için yıldız noktası kayar ve iki lamba farklı parlaklıkta yanar. Hangisinin parlak olduğu <b>sıraya bağlıdır</b>.</div>
+        <div class="why"><b>Neden böyle?</b> Kondansatörün akımı gerilimden 90° ileridedir; yıldız noktası bu yüzden a fazından “bir sonraki faz”dan uzağa itilir. Sıra değişince bir sonraki faz da değişir, parlak lamba yer değiştirir.</div>
+        <div class="warnbox">Gerçek tezgâhta osiloskobun sıradan probunun toprak klipsini <b>nötre bile</b> takmayın: nötr ile koruma toprağı arasında birkaç volt fark ve kaçak akım olabilir. Diferansiyel probun oranını (ör. 1:100) osiloskopta ayarlamayı unutmayın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" id="d1scope" style="margin-top:12px"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 300"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button><button class="btn sec small" id="d1del">Son satırı sil</button><button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Kaynak</th><th>b↔c</th><th>V<sub>φ</sub> (V)</th><th>f (Hz)</th><th>Δt (ms)</th><th>v<sub>a</sub>(A) (V)</th><th>v<sub>b</sub>(B) (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Faz ve Hat Gerilimi: √3 ve 30°</h2>
+  <p class="lead">Multimetrenin iki ucunu ve osiloskobun iki kanalını istediğiniz uçlar arasına bağlayın. Fazör panelinde DMM’nin ölçtüğü fark fazörü (turuncu) çizilir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Hat gerilimi iki faz geriliminin <b>farkıdır</b>: <span class="eq">V<sub>ab</sub> = V<sub>an</sub> − V<sub>bn</sub> = √3 V<sub>an</sub>∠±30°</span> Artı işaret abc, eksi acb içindir.</div>
+        <div class="why"><b>Neden √3?</b> İki eşit fazör arasındaki açı 120° ise farklarının boyu 2·V<sub>φ</sub>·sin60° = √3·V<sub>φ</sub>’dir. Fazör panelinde turuncu okun a–n ve b–n uçlarını birleştirdiğini görün.</div>
+        <div class="ex"><b>Mini örnek:</b> 50 Hz’de 30° = T/12 = 1,667 ms. abc’de v<sub>ab</sub> tepesi v<sub>an</sub> tepesinden 1,667 ms <b>önce</b> gelir (ileride).</div>
+        <div class="warnbox">DMM’yi fazlar arasına bağlarken <b>750 V AC</b> sınıfında ve CAT III olduğundan emin olun. Probları önce COM, sonra kırmızı uca bağlayın; sökerken tersini yapın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div><div class="bench-row" id="d2scope" style="margin-top:12px"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><b>Fazör paneli</b><svg id="d2ph" class="schem" viewBox="0 0 320 320"></svg></div>
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d2rec">Kaydet (R)</button><button class="btn sec small" id="d2del">Sil</button><button class="btn sec small" id="d2csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Sıra</th><th>V<sub>φ</sub></th><th>DMM uçları</th><th>V (V)</th><th>CH1/CH2</th><th>Δt (ms)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Dengeli Y–Y Devre, Nötr Akımı ve Tek-Faz Eşdeğer</h2>
+  <p class="lead">Generatör iç empedansı, hat empedansı ve Y yük. Örnek 3.11’in (Nilsson Örnek 11.1) laboratuvar karşılığı.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Tek-faz eşdeğer devre:</b> dengeli Y–Y’de nötrler aynı potansiyelde olduğundan aralarına kayıpsız bir tel çekilmiş gibi düşünülür. a fazı tek başına çözülür: <span class="eq">I<sub>aA</sub> = V<sub>a′n</sub> / (Z<sub>g</sub> + Z<sub>ℓ</sub> + Z<sub>L</sub>)</span> b ve c fazları aynı genlikte, −120° ve +120° kaydırılmıştır.</div>
+        <div class="why"><b>Neden nötr akımı sıfır?</b> I<sub>0</sub> = I<sub>aA</sub> + I<sub>bB</sub> + I<sub>cC</sub>; eşit genlikli, 120° aralı üç fazörün toplamı sıfırdır. Fazör panelinde kesikli akım oklarının uç uca eklenince kapalı bir üçgen oluşturduğunu düşünün.</div>
+        <div class="ex"><b>Çözüm yolu (Örnek 3.11):</b> ① Seri empedansları topla: (0,2+0,8+39) + j(0,5+1,5+28). ② Kutupsala çevir. ③ 120∠0° V’u böl. ④ V<sub>AN</sub> = Z<sub>L</sub>·I<sub>aA</sub>, V<sub>AB</sub> = √3 V<sub>AN</sub>∠30°. Sonuçları ölçümle karşılaştırın.</div>
+        <div class="warnbox">Pens ampermetreyi yalnızca <b>bir</b> iletkenin çevresine kapatın. Nötr akımını ölçerken nötr iletkenini ayrı sarın. Akım trafolu ölçümde trafonun sekonderini <b>asla açık bırakmayın</b>: yüksek gerilim oluşur.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" id="d3scope" style="margin-top:12px"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 700 270"></svg></div>
+      <div class="grid-half">
+        <div class="card"><b>Fazör paneli</b> <span style="font-size:12px;color:var(--muted)">(düz: yük faz gerilimleri, kesikli: hat akımları — ayrı ölçek)</span><svg id="d3ph" class="schem" viewBox="0 0 320 320"></svg></div>
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Kaydet (R)</button><button class="btn sec small" id="d3del">Sil</button><button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>E<sub>φ</sub></th><th>Z<sub>L</sub> (Ω)</th><th>Seri</th><th>Nötr</th><th>I<sub>aA</sub></th><th>I<sub>bB</sub></th><th>I<sub>cC</sub></th><th>I<sub>0</sub></th><th>V nokta</th><th>V (V)</th><th>Δt (ms)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Dengesiz Yük ve Nötr Kopması Tehlikesi</h2>
+  <p class="lead">Üç ayrı direnç (lamba) yükü. Nötr anahtarını açarak bir ev tesisatında nötrün kopmasını canlandırın. Lambaların parlaklığı uçlarındaki gerilimi gösterir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Nötr kopukken (Z<sub>0</sub> → ∞) yük yıldız noktası N′, kaynak nötründen kayar: <span class="eq">V<sub>N′n</sub> = (V<sub>a</sub>/Z<sub>A</sub> + V<sub>b</sub>/Z<sub>B</sub> + V<sub>c</sub>/Z<sub>C</sub>) / (1/Z<sub>A</sub> + 1/Z<sub>B</sub> + 1/Z<sub>C</sub>)</span> Yük faz gerilimleri artık N′’ye göre ölçülür: V<sub>AN′</sub> = V<sub>a</sub> − V<sub>N′n</sub>.</div>
+        <div class="why"><b>Neden hafif yüklü faz aşırı gerilim görür?</b> N′, en küçük empedanslı (en ağır yüklü) fazın gerilimine doğru çekilir. O fazın gerilimi düşer, diğer iki fazın gerilimi yükselir. Fazör panelinde kırmızı N′ noktasını izleyin.</div>
+        <div class="ex"><b>Çözüm (Örnek 3.9):</b> Y<sub>A</sub> = Y<sub>B</sub> = 0,05 S, Y<sub>C</sub> = 0,1 S. Pay = 120(0,05 + 0,05∠−120° + 0,1∠120°) = 6∠120°; payda 0,2 ⇒ V<sub>N</sub> = 30∠120° V.</div>
+        <div class="warnbox">Gerçek tesisatta nötr kopması; buzdolabı, televizyon gibi cihazların yanmasına, yangına yol açar. Nötr bağlantıları periyodik olarak sıkılmalı, nötr kesiti faz kesitinden küçük seçilmemelidir. Bu deneyi yalnızca düşük gerilimli eğitim setiyle yapın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 640 280"></svg></div>
+      <div class="grid-half">
+        <div class="card"><b>Fazör paneli</b> <span style="font-size:12px;color:var(--muted)">(gri: kaynak, renkli: N′’den yük uçlarına)</span><svg id="d4ph" class="schem" viewBox="0 0 320 320"></svg></div>
+        <div class="card">
+          <div class="row"><b>Faz gerilimleri – R<sub>A</sub></b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d4theo"> Teorik eğri</label></div>
+          <canvas id="d4plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Kaydet (R)</button><button class="btn sec small" id="d4del">Son satırı sil</button><button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>V<sub>φ</sub></th><th>R<sub>A</sub></th><th>R<sub>B</sub></th><th>R<sub>C</sub></th><th>Nötr</th><th>V<sub>AN′</sub></th><th>V<sub>BN′</sub></th><th>V<sub>CN′</sub></th><th>V<sub>N′n</sub></th><th>I<sub>0</sub> (A)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Faz sırasını hangi iki yolla belirlediniz? Dengeli ve dengesiz yükte nötrün rolü neydi? Nötr kopmasının sonuçlarını kendi ölçümlerinizle yorumlayın."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd>. <kbd>Shift</kbd> ile ince ayar; çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin. Δt = t<sub>B</sub> − t<sub>A</sub>.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta12.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h12', ders: 'Devre Kuramı II', hafta: 12,
+  doc: [
+    { id: 'DÖÇ1', t: 'Dengeli üç fazlı gerilimleri fazör ve zaman bölgesinde ifade eder; faz sırasını ölçerek belirler.', mc: [1, 4, 5] },
+    { id: 'DÖÇ2', t: 'Y bağlantıda faz ve hat gerilimleri arasındaki √3 ve ±30° ilişkisini ölçümle doğrular.', mc: [1, 2, 5] },
+    { id: 'DÖÇ3', t: 'Dengeli Y–Y devreyi tek-faz eşdeğer devreyle çözer ve sonuçları ölçümle karşılaştırır.', mc: [1, 2, 4] },
+    { id: 'DÖÇ4', t: 'Dengesiz yükte nötrün işlevini ve nötr kopmasının güvenlik sonuçlarını analiz eder.', mc: [2, 5, 6] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Üç faz gerilimini osiloskopta gözlemek, 120° faz farkını zaman farkından ölçmek ve bilinmeyen bir kaynağın faz sırasını belirleyip düzeltmek.', doc: ['DÖÇ1'], mc: [1, 4, 5, 6],
+      gerec: 'Yalıtım trafolu üç fazlı ayarlı kaynak, etiketsiz kaynak, dört kanallı osiloskop, diferansiyel problar, kondansatör–lamba faz sırası göstergesi.',
+      guvenlik: 'Osiloskop toprak klipsi şebekeye bağlanmaz; diferansiyel prob kullanılır. Gösterge lambaları 1,5V<sub>φ</sub> görür. Kablo değişikliği enerjisizken yapılır.',
+      veri: 'İmleçle ölçülen Δt değerleri, gösterge lambalarının parlaklığı, kaynakların faz sırası.',
+      tartisma: 'Faz sırası yanlış bağlanmış bir asansör ya da pompa motorunda ne olur? Sahada hangi yöntemi tercih ederdiniz, neden?' },
+    d2: { amac: 'Faz ve hat gerilimlerini ölçerek V<sub>L</sub> = √3V<sub>φ</sub> ilişkisini ve 30° faz kaymasının işaretinin faz sırasına bağlılığını doğrulamak.', doc: ['DÖÇ2'], mc: [1, 2, 4, 5],
+      gerec: 'Üç fazlı kaynak, true-rms multimetre (CAT III, 750 V AC), iki kanallı osiloskop, diferansiyel problar.',
+      guvenlik: '400 V fazlar arası gerilim ölümcüldür; ölçü uçları yalıtımlı olmalı, tek elle ölçüm yapılmalı.',
+      veri: 'V<sub>an</sub>, V<sub>ab</sub>, V<sub>bc</sub>, V<sub>ca</sub> okumaları; abc ve acb için v<sub>an</sub>–v<sub>ab</sub> zaman farkı.' },
+    d3: { amac: 'Dengeli Y–Y devrede nötr akımının sıfır olduğunu göstermek; tek-faz eşdeğer devre çözümünü hat akımı, yük ve generatör gerilimleriyle doğrulamak.', doc: ['DÖÇ3'], mc: [1, 2, 4, 5],
+      gerec: 'Generatör modeli (Z<sub>g</sub> = 0,2 + j0,5 Ω), hat empedansı (0,8 + j1,5 Ω), R–X yük kutusu, pens ampermetreler, voltmetre, osiloskop.',
+      guvenlik: 'Pens ampermetre tek iletkene kapatılır; akım trafosu sekonderi açık bırakılmaz.',
+      veri: 'Dört akım okuması (nötr bağlı/açık), V<sub>AN</sub>, V<sub>AB</sub>, V<sub>an</sub>; e<sub>a</sub>–i<sub>aA</sub> zaman farkı.' },
+    d4: { amac: 'Dengesiz Y yükte nötrün akım taşıdığını, nötr koptuğunda yıldız noktasının kaydığını ve fazlarda aşırı/düşük gerilim oluştuğunu ölçmek.', doc: ['DÖÇ4'], mc: [2, 4, 5, 6],
+      gerec: 'Üç fazlı kaynak, üç ayarlı direnç (lamba) yükü, nötr anahtarı, dört voltmetre, dört pens ampermetre.',
+      guvenlik: 'Nötr kopması gerçek tesisatta cihaz yakar ve yangın riski doğurur; deney düşük gerilimli eğitim setinde yapılır.',
+      veri: 'Nötr bağlı/kopuk durumda faz gerilimleri, V<sub>N′n</sub> ve I<sub>0</sub>; R<sub>A</sub>’ya göre faz gerilimi grafiği.',
+      tartisma: 'Bir apartmanda nötr koptuğunda hangi dairelerin cihazları risk altındadır? Tesisat tasarımında hangi önlemler alınmalıdır?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

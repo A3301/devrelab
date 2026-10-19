@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 10 · Basamak Tepkisi ve Genel Çözüm — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 10 — Basamak Tepkisi ve Genel Çözüm Yöntemi</h1>
+    <div class="sub">x(t) = x<sub>f</sub> + [x(0) − x<sub>f</sub>] e<sup>−t/τ</sup> · Kare dalga · Başlangıç koşulu · Zamanlayıcı tasarımı</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: RC ve Kare Dalga</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: RL Basamak Tepkisi</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Dört Adımlı Yöntem</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: LED/Röle Zamanlayıcı</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>S</kbd> anahtar / başlat · <kbd>A</kbd> osiloskobu kur (SINGLE) · <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<section class="page" id="giris">
+  <h2>Hafta 10 · Basamak Tepkisi ve Genel Çözüm Yöntemi</h2>
+  <p class="lead">Ders notu: <b>Bölüm 3.3 Basamak Tepkisi: RL ve RC</b> ve <b>3.4 Genel Çözüm Yöntemi</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Kare dalgayla sürülen RC devresinde, frekans τ'ya göre değiştikçe dalga biçiminin <b>tam dolmadan üçgene</b> nasıl dönüştüğünü göreceksiniz.</li>
+        <li>Yükselme süresini (%10–%90) ölçüp <b>t<sub>r</sub> = 2,2τ</b> ilişkisini doğrulayacaksınız.</li>
+        <li>RL basamak tepkisinde akımın negatiften pozitife <b>aynı τ</b> ile geçtiğini, bobin geriliminin kaynaktan büyük olabildiğini ölçeceksiniz.</li>
+        <li>Dört adımlı yöntemi (x(0<sup>+</sup>), x(∞), τ, yerine koy) bir sihirbazla uygulayıp kendi eğrinizi ölçümün üstüne çizeceksiniz.</li>
+        <li>Bir LED gecikme / röle zamanlayıcısı <b>tasarlayıp</b> kronometreyle doğrulayacaksınız.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Fonksiyon üreteci (kare dalga, 50 Ω çıkış) · DC güç kaynakları (akım sınırlı) · Ön koşul akım kaynağı · Direnç, kondansatör ve bobin setleri · Anahtarlar · İki kanallı osiloskop (SINGLE, imleç, akım probu) · Karşılaştırıcılı zamanlayıcı kartı (LED, 12 V röle, 1N4007) · Kronometre.</p>
+      <div class="info">Hafta 9'da kaynak <b>kesiliyordu</b> (x<sub>f</sub> = 0). Bu hafta kaynak <b>devreye giriyor</b>: büyüklük yeni bir son değere üstel olarak yaklaşıyor. τ'yu bulma kuralı aynı.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b>yi okuyun, <b>Ön Hazırlık</b> sorularını çözün. Deneylerde föy adımları doğru ayarda kendiliğinden işaretlenir. <kbd>S</kbd> anahtarı çevirir, <kbd>A</kbd> osiloskobu kurar, <kbd>R</kbd> kaydeder. Raporu son bölümde yazdırın.</p>
+  </div>
+</section>
+
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Yeni Değere Üstel Yolculuk</h2>
+  <p class="lead">Bir kaynak devreye girdiğinde bobin akımı ya da kapasitör gerilimi eski değerinden yeni kalıcı değerine <b>aynı τ</b> ile, üstel olarak geçer. Bütün birinci dereceden devreler tek bir formüle sığar.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Kalıcı + geçici</h3>
+      <p style="font-size:14px;line-height:1.65"><span class="eq" style="display:inline">x(t) = x<sub>f</sub> + [x(0<sup>+</sup>) − x<sub>f</sub>] e<sup>−(t−t<sub>0</sub>)/τ</sup></span><br>
+      Birinci terim kaynağın <b>zorladığı</b> kalıcı değer, ikinci terim başlangıç ile son değer arasındaki <b>farkın sönümü</b>dür. Fark ne kadar büyük olursa olsun, her τ'da kalan farkın %63,2'si kapanır: “uzaktan başlayan daha yavaş oturur” sezgisi yanlıştır.</p>
+      <h3>2 · Dört adım</h3>
+      <ol style="font-size:14px;line-height:1.6;margin-top:0">
+        <li><b>x(0<sup>+</sup>)</b>: anahtarlamadan <u>önceki</u> devre kalıcı durumda (L kısa, C açık); süreklilikle 0<sup>+</sup>'ya taşı.</li>
+        <li><b>x(∞)</b>: anahtarlamadan <u>sonraki</u> devre kalıcı durumda.</li>
+        <li><b>τ</b>: sonraki devrede, kaynaklar söndürülmüş, elemanın uçlarından görülen R<sub>Th</sub>: τ = R<sub>Th</sub>C ya da L/R<sub>Th</sub>.</li>
+        <li>Üçünü formüle yerleştir; diğer büyüklükleri (i<sub>C</sub> = C dv/dt, v<sub>L</sub> = L di/dt) türevle bul.</li>
+      </ol>
+      <h3>3 · Gerçek hayatta</h3>
+      <p style="font-size:14px;line-height:1.65">Dijital hatlarda kare dalganın kenarlarının yuvarlanması (yükselme süresi, bant genişliği), güç kaynağı yumuşak kalkışı, LED ve röle gecikme devreleri, 555 zamanlayıcı, motor yol verme akımı, düğme sıçrama süzgeci… Hepsinde soru aynıdır: “ne kadar sürede oturur?”</p>
+      <svg viewBox="0 0 420 170" style="width:100%;max-width:440px;display:block;margin:6px auto 0" aria-label="Kare dalga ile RC dolma ve boşalma">
+        <line x1="30" y1="150" x2="410" y2="150" stroke="#555"/>
+        <path d="M30,150 V40 H130 V150 H230 V40 H330 V150 H410" fill="none" stroke="#b8960a" stroke-width="1.5" stroke-dasharray="5 3"/>
+        <path d="M30,150 C50,70 80,45 130,42 C150,120 180,146 230,148 C250,70 280,45 330,42 C350,120 380,146 410,148" fill="none" stroke="#0b5cad" stroke-width="2.5"/>
+        <text x="140" y="30" font-size="12" fill="#b8960a">v_g (kare)</text><text x="60" y="110" font-size="12" fill="#0b5cad">v_C</text>
+        <text x="200" y="166" font-size="11" text-anchor="middle">T/2 ≥ 5τ: her yarım periyotta tam dolma/boşalma</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><th></th><th>RL</th><th>RC</th></tr>
+        <tr><td class="l">Basamak tepkisi</td><td class="l">i = I<sub>s</sub> + (I<sub>0</sub> − I<sub>s</sub>)e<sup>−t/τ</sup></td><td class="l">v = V<sub>s</sub> + (V<sub>0</sub> − V<sub>s</sub>)e<sup>−t/τ</sup></td></tr>
+        <tr><td class="l">Son değer</td><td class="l">I<sub>s</sub> = V<sub>s</sub>/R</td><td class="l">V<sub>f</sub> = V<sub>s</sub> (ya da V<sub>Th</sub>)</td></tr>
+        <tr><td class="l">Türetilen</td><td class="l">v<sub>L</sub> = (V<sub>s</sub> − I<sub>0</sub>R)e<sup>−t/τ</sup></td><td class="l">i = (V<sub>s</sub> − V<sub>0</sub>)/R · e<sup>−t/τ</sup></td></tr>
+        <tr><td class="l">Hedefe varış</td><td class="l" colspan="2">t = τ ln[(x(0) − x<sub>f</sub>)/(x − x<sub>f</sub>)]</td></tr>
+        <tr><td class="l">Yükselme süresi</td><td class="l" colspan="2">t<sub>r</sub>(%10→%90) = τ ln9 ≈ 2,2τ</td></tr>
+        <tr><td class="l">Kare dalga, T/2 ≪ τ</td><td class="l" colspan="2">v<sub>C</sub> ≈ ortalama ± küçük üçgen; dalgalanma ≈ V<sub>pp</sub>·T/(4τ)</td></tr>
+        <tr><td class="l">Zamanlayıcı (eşik V<sub>th</sub>)</td><td class="l" colspan="2">t<sub>d</sub> = RC ln[(V<sub>s</sub> − V<sub>0</sub>)/(V<sub>s</sub> − V<sub>th</sub>)]; V<sub>0</sub> = 0, V<sub>th</sub> = ⅔V<sub>s</sub> → t<sub>d</sub> = RC ln3 ≈ 1,1RC</td></tr>
+      </table>
+      <div class="info" style="margin-top:10px"><b>Üç büyüklük, üç devre:</b> x(0<sup>+</sup>) eski devreden, x(∞) yeni devreden, τ yeni devreden ve kaynaklar söndürülmüş olarak. Kaynak söndürmek yalnızca <b>direnç</b> bulmak içindir.</div>
+      <div class="info">Fonksiyon üretecinin <b>50 Ω iç direnci</b> R ile seridir: τ = (R + 50 Ω)C. R = 10 kΩ'da ihmal edilebilir, R = 100 Ω'da τ'yu %50 değiştirir.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Elektrolitik kondansatör kutbu ve kare dalga.</b> ±V'luk (simetrik) kare dalga elektrolitiği her yarım periyotta ters kutuplar. Elektrolitik kullanacaksanız üreteci 0/+V (ofsetli) moda alın ya da film kondansatör kullanın.</div>
+    <div class="warnbox"><b>Kapasitörü kısa devre gibi şarj etmek.</b> Boş bir kondansatör t = 0<sup>+</sup>'da kısa devre gibidir: başlangıç akımı V<sub>s</sub>/R kadar büyük olabilir. Örnek 3.6'da 3 A! Seri direnç ve kaynağın akım sınırı bu darbeyi sınırlar; seri direncin anlık gücünü (V<sup>2</sup>/R) hesaba katın.</div>
+    <div class="warnbox"><b>Röle bobini ve serbest geçiş diyotu.</b> Zamanlayıcı rölesini süren transistör kesime girdiğinde bobin gerilimi transistörü delebilir. Röle bobinine ters paralel 1N4007 takmayı unutmayın; diyodun yönü ters olursa transistör iletime geçtiği an kaynağı kısa devre eder.</div>
+    <div class="warnbox"><b>Zamanlayıcıyı yeniden başlatmadan önce kondansatörü boşaltın.</b> Kondansatörde kalan gerilim x(0) ≠ 0 demektir ve gecikme kısalır. Gerçek devrelerde bir “sıfırlama” transistörü/direnci bu işi yapar.</div>
+    <div class="warnbox"><b>Osiloskop ve üreteç toprakları ortaktır.</b> Üretecin siyah ucu ve osiloskop klipsi aynı noktaya bağlanmalıdır. R'nin gerilimini doğrudan ölçmek için klipsi R ile C arasına takarsanız C'yi kısa devre edersiniz; iki kanal farkı (CH1 − CH2) kullanın.</div>
+    <div class="warnbox"><b>Bobin akımını yön değiştirirken kaynağın sınırları.</b> Örnek 3.4'te akım −8 A'den +12 A'e gider; kaynak ve dirençler bu akım ve güce (24 V × 12 A ≈ 290 W) uygun olmalıdır. Tezgâhta ölçek küçültmek (daha büyük R, daha küçük V) güvenlidir.</div>
+    <div class="info"><b>Sık hatalar:</b> üstelin katsayısına (x(0) − x<sub>f</sub>) yerine x(0) yazmak; x<sub>f</sub>'yi anahtarlamadan önceki devreden okumak; τ'da kaynağın iç direncini ya da sonradan devreye giren direnci unutmak; ikinci anahtarlamada üstelde (t − t<sub>1</sub>) yerine t yazmak; %63,2 ile %36,8'i karıştırmak; başlangıç değerini akım ya da bobin gerilimi gibi <u>süreksiz</u> bir büyüklükten okumaya çalışmak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Sorular ders notundaki Örnek 3.4, 3.5 ve 3.6'ya dayanır.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<section class="page" id="d1">
+  <h2>Deney 1 · RC Devresi ve Kare Dalga: Frekans τ'yu Bulunca</h2>
+  <p class="lead">Fonksiyon üreteci (50 Ω çıkış) kare dalgayla R üzerinden C'yi sürer. Her yükselen kenar bir basamak, her düşen kenar bir doğal tepkidir. CH1 üreteç çıkışını, CH2 kapasitör gerilimini gösterir; osiloskop sürekli (AUTO) çalışır ve yükselen kenarda tetiklenir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>T/2 ≥ 5τ:</b> her yarım periyotta kapasitör tamamen dolar ve boşalır; v<sub>C</sub> kare dalganın yuvarlatılmış kopyasıdır.<br><b>T/2 ≈ τ:</b> kapasitör tam dolmaya fırsat bulamaz, “köpekbalığı yüzgeci” biçimi.<br><b>T/2 ≪ τ:</b> v<sub>C</sub> ortalama değerde küçük bir üçgen dalgadır: RC devresi integral alır.</div>
+        <div class="info">Yükselme süresi %10'dan %90'a varış süresidir: t<sub>r</sub> = τ(ln 0,9 − ln 0,1)… yani <b>τ ln 9 ≈ 2,2τ</b>. Bunu imleçlerle ölçün.</div>
+        <div class="warnbox">Üreteç ±V (simetrik) modundayken elektrolitik kondansatör (≥ 1 µF) seçmeyin: her yarım periyotta ters kutuplanır. 0/+V moduna geçin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" style="margin-top:12px" id="d1scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>f</th><th>R</th><th>C</th><th>(T/2)/τ<sub>nom</sub></th><th>v<sub>C</sub> min (V)</th><th>v<sub>C</sub> maks (V)</th><th>t<sub>A</sub> (ms)</th><th>t<sub>B</sub> (ms)</th><th>v<sub>C,A</sub></th><th>v<sub>C,B</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d2">
+  <h2>Deney 2 · RL Basamak Tepkisi: Akım Negatiften Pozitife</h2>
+  <p class="lead">t &lt; 0'da bobin, bir ön koşul akım kaynağından I<sub>0</sub> akımını taşır. t = 0'da anahtar bobini V<sub>s</sub>–R koluna aktarır (ders notu Örnek 3.4). CH1 bobin uçlarındaki gerilimi, CH2 bobin akımını gösterir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Son değer: bobin kısa devre → I<sub>s</sub> = V<sub>s</sub>/R. Akım I<sub>0</sub>'dan I<sub>s</sub>'ye <b>aynı τ = L/R</b> ile gider; sıfırdan geçişin özel bir anlamı yoktur.</div>
+        <div class="info">v<sub>L</sub>(0<sup>+</sup>) = V<sub>s</sub> − I<sub>0</sub>R. I<sub>0</sub> negatifse bobin gerilimi kaynaktan <b>büyük</b> olur (Örnek 3.4: 40 V &gt; 24 V).</div>
+        <div class="warnbox">Ön koşul akım kaynağı bir bobini sürerken açık devre bırakılamaz (Hafta 9!). Gerçekte aktarma, “önce kapat sonra aç” (make-before-break) bir anahtarla yapılır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div><div class="bench-row" style="margin-top:12px" id="d2scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>V<sub>s</sub></th><th>R</th><th>L</th><th>I<sub>0</sub> (A)</th><th>t<sub>A</sub> (ms)</th><th>t<sub>B</sub> (ms)</th><th>i<sub>A</sub> (A)</th><th>i<sub>B</sub> (A)</th><th>v<sub>L,A</sub> (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d3">
+  <h2>Deney 3 · Dört Adımlı Genel Yöntem: Sihirbaz ve Ölçüm Üst Üste</h2>
+  <p class="lead">Kapasitör bir ön şarj kaynağıyla V<sub>0</sub>'a yüklüdür; t = 0'da anahtar V<sub>s</sub>–R<sub>1</sub> kolunu bağlar, R<sub>2</sub> kapasitöre paraleldir (ders notu Örnek 3.6'nın genelleştirilmişi). Önce devreyi çözün, sonra ölçümü yakalayın ve kendi eğrinizi üstüne çizin.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Sihirbaz</h3>
+        <div id="wiz"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Kapasitörü söküp kalan iki uçlu devrenin Thevenin eşdeğerini bulun: V<sub>Th</sub> = V<sub>s</sub>R<sub>2</sub>/(R<sub>1</sub> + R<sub>2</sub>), R<sub>Th</sub> = R<sub>1</sub>‖R<sub>2</sub>. O zaman x<sub>f</sub> = V<sub>Th</sub> ve τ = R<sub>Th</sub>C.</div>
+        <div class="warnbox">Ön şarj kaynağını t = 0'dan önce ayırmayı unutmayın; aksi hâlde iki kaynak birbirine bağlanır. Burada anahtar bunu otomatik yapar.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" style="margin-top:12px" id="d3scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm ve sizin eğriniz</b><span class="grow"></span><span id="d3err" style="font-size:13px"></span></div>
+        <canvas id="d3plot" width="640" height="300" style="width:100%"></canvas>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d4">
+  <h2>Deney 4 · Uygulama: LED Gecikme / Röle Zamanlayıcı Tasarımı</h2>
+  <p class="lead">Başlat düğmesine basıldığında C, R üzerinden V<sub>s</sub>'ye dolar. Bir karşılaştırıcı v<sub>C</sub> eşiği (V<sub>th</sub> = ⅔V<sub>s</sub>) geçtiğinde LED'i ya da röleyi sürer. Size verilen gecikmeyi sağlayacak R ve C'yi seçin ve kronometreyle doğrulayın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><div class="info" id="d4target" style="font-size:15px"></div><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">v<sub>C</sub>(t) = V<sub>s</sub> + (V<sub>0</sub> − V<sub>s</sub>)e<sup>−t/RC</sup> = V<sub>th</sub> eşitliğinden t<sub>d</sub> = RC ln[(V<sub>s</sub> − V<sub>0</sub>)/(V<sub>s</sub> − V<sub>th</sub>)]. Eşik V<sub>s</sub>'nin sabit bir oranıysa gecikme V<sub>s</sub>'ye bağlı <b>değildir</b>: 555 zamanlayıcının sırrı.</div>
+        <div class="info">Uzun gecikmeler büyük C ister → elektrolitik → ±%20 tolerans. Gerçek tasarımda R'nin bir kısmı trimpot yapılır ve devre kalibre edilir.</div>
+        <div class="warnbox">Röle bobinini süren transistör kesime girerken bobin akımı yol arar. Diyotsuz çalıştırmayı burada deneyebilirsiniz; gerçek kartta transistörü yakar.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Deneme tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d4rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d4del">Son satırı sil</button>
+            <button class="btn sec small" id="d4csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>R</th><th>C (nom.)</th><th>V<sub>s</sub></th><th>V<sub>0</sub> (V)</th><th>Çıkış</th><th>t<sub>d</sub> ölçülen (s)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <b>v<sub>C</sub>(t) kaydı (son deneme)</b>
+          <canvas id="d4plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Kare dalganın frekansı τ'ya göre değişince ne gözlediniz? Dört adımlı yöntemle çizdiğiniz eğri ölçümle örtüştü mü? Zamanlayıcınız neden hedeften saptı?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Geçici olay yakalama (Deney 2–3):</b> SINGLE (<kbd>A</kbd>) ile kurun, anahtarı çevirin (<kbd>S</kbd>). Deney 1'de osiloskop sürekli çalışır.<br>
+    <b>İmleçler:</b> İMLEÇ düğmesine basın, ekranda sürükleyin.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta10.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd1h10', ders: 'Devre Kuramı I', hafta: 10,
+  doc: [
+    { id: 'DÖÇ1', t: 'RL ve RC basamak tepkisini x(t) = x<sub>f</sub> + [x(0) − x<sub>f</sub>]e<sup>−t/τ</sup> biçiminde yazar; kalıcı ve geçici bileşenleri ayırt eder.', mc: [1, 2] },
+    { id: 'DÖÇ2', t: 'Kare dalga ile sürülen RC devresinde frekans–τ ilişkisini gözler, yükselme süresini ve başlangıç koşullu tepkiyi osiloskopla ölçer.', mc: [4, 5] },
+    { id: 'DÖÇ3', t: 'Dört adımlı genel yöntemi (x(0<sup>+</sup>), x(∞), R<sub>Th</sub> ile τ) uygular ve sonucunu ölçümle karşılaştırarak doğrular.', mc: [1, 2, 5] },
+    { id: 'DÖÇ4', t: 'Hedef gecikmeyi sağlayan bir RC zamanlayıcı tasarlar; eleman toleransı, maliyet ve röle anahtarlama güvenliğini gözetir.', mc: [3, 6, 10] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Kare dalgayla sürülen RC devresinde dolma/boşalma dalga biçimlerinin frekans ile değişimini görmek, yükselme süresini ölçerek t<sub>r</sub> = 2,2τ ilişkisini doğrulamak.', doc: ['DÖÇ1', 'DÖÇ2'], mc: [1, 4, 5],
+      gerec: 'Fonksiyon üreteci (kare dalga, 50 Ω çıkış), direnç ve kondansatör setleri, iki kanallı osiloskop.',
+      guvenlik: 'Simetrik kare dalgada elektrolitik kullanmayın (ters kutuplama); osiloskop ve üreteç toprakları aynı noktada olsun.',
+      veri: 'Farklı (T/2)/τ oranlarında v<sub>C</sub> min–maks, imleçlerle %10–%90 yükselme süresi tablosu.',
+      tartisma: 'Kare dalga frekansı τ\'ya göre çok yükseldiğinde RC devresi hangi matematiksel işlemi yapar? Bu dijital hatlarda neden sorun olur?' },
+    d2: { amac: 'Sıfırdan farklı başlangıç akımlı RL basamak tepkisini ölçmek; τ\'nun başlangıç değerinden bağımsız olduğunu ve bobin geriliminin sıçramasını doğrulamak.', doc: ['DÖÇ1', 'DÖÇ2'], mc: [1, 2, 4, 5],
+      gerec: 'DC kaynak (yüksek akım), güç direnci, bobin seti, ön koşul akım kaynağı, aktarma anahtarı, osiloskop ve akım probu.',
+      guvenlik: 'Yüksek akımda direnç ve kaynak gücünü kontrol edin; bobin akımını aktarırken yolu hiç açık bırakmayın (make-before-break).',
+      veri: 'i<sub>L</sub>(t) ve v<sub>L</sub>(t) kayıtları; sıfır geçiş anı, farklı I<sub>0</sub> değerleri için τ tablosu.' },
+    d3: { amac: 'Dört adımlı genel çözüm yöntemini adım adım uygulamak ve kendi çözüm eğrisini ölçülen basamak tepkisiyle üst üste çizerek doğrulamak.', doc: ['DÖÇ1', 'DÖÇ3'], mc: [1, 2, 5],
+      gerec: 'DC kaynak, ön şarj kaynağı, R<sub>1</sub>, R<sub>2</sub>, C, anahtar, osiloskop.',
+      guvenlik: 'Ön şarj kaynağını anahtarlamadan önce ayırın; boş kondansatörün t = 0<sup>+</sup>\'daki kısa devre akımına (V<sub>Th</sub>/R<sub>Th</sub>) dikkat edin.',
+      veri: 'Sihirbaza girilen x(0), x<sub>f</sub>, τ; ölçüm ile model arasındaki RMS hata.',
+      tartisma: 'Eğriniz ölçümden saptıysa hangi adımdaki hata eğrinin hangi kısmını bozar (başlangıç, son değer, eğim)?' },
+    d4: { amac: 'Hedef gecikmeyi sağlayan bir RC + karşılaştırıcı zamanlayıcıyı tasarlamak, kronometreyle doğrulamak; başlangıç geriliminin ve toleransın etkisini incelemek.', doc: ['DÖÇ3', 'DÖÇ4'], mc: [2, 3, 5, 6, 10],
+      gerec: 'Zamanlayıcı kartı (karşılaştırıcı, LED, 12 V röle, transistör), E12 dirençler, kondansatör seti, DC kaynak, kronometre.',
+      guvenlik: 'Röle bobinine serbest geçiş diyotu takın; elektrolitiğin kutbuna dikkat edin; LED\'i seri dirençsiz sürmeyin.',
+      veri: 'Seçilen R, C; farklı V<sub>0</sub> ve V<sub>s</sub> değerlerinde ölçülen gecikmeler; v<sub>C</sub>(t) kaydı.',
+      tartisma: 'Aynı gecikmeyi büyük R–küçük C ile mi, küçük R–büyük C ile mi kurarsınız? Maliyet, boyut, tolerans ve kaçak akım açısından karşılaştırın; röle yerine LED kullanmanın enerji tüketimine etkisi nedir?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

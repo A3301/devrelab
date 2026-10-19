@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 13 · Paralel RLC Basamak Tepkisi — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 13 — Paralel RLC Basamak Tepkisi</h1>
+    <div class="sub">Son değer · Üç sönüm türü · Aşım ve yerleşme · Tasarım · Başlangıç koşulları</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Basamak ve Üç Tür</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Aşım ve Yerleşme</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Tasarım (%5 aşım)</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Başlangıç Koşulları</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 13 · Paralel RLC Devresinin Basamak Tepkisi</h2>
+  <p class="lead">Ders notu: <b>Bölüm 4.5 Paralel RLC: Basamak Tepkisi</b> (Örnek 4.5, 4.14, 4.15 ve “Önce tahmin et: aşım olur mu?”).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Akım kaynağı devreye girdiğinde bobin akımının neden <b>I<sub>s</sub></b> son değerine gittiğini açıklayıp i<sub>L</sub>(t)'yi üç sönüm türü için yazabileceksiniz.</li>
+        <li>α ve ω<sub>0</sub>'ı hesaplayıp yalnızca <b>R</b>'yi değiştirerek aşırı, kritik ve az sönümlü tepkileri elde edeceksiniz.</li>
+        <li>Osiloskop imleçleriyle <b>aşım</b>, <b>tepe anı</b> ve <b>yerleşme süresini</b> ölçüp kuramla karşılaştıracaksınız.</li>
+        <li>%5 aşım ve belirli bir yerleşme süresi hedefi için <b>R ve C'yi tasarlayacaksınız</b>.</li>
+        <li>Başlangıç koşullarının (I<sub>0</sub>, V<sub>0</sub>) katsayıları değiştirdiğini ama son değeri değiştirmediğini göreceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Ayarlı DC akım kaynağı (0–50 mA, uyum gerilimi ±60 V) ve elektronik anahtar · Direnç kutusu · Bobin kutusu (10 mH–2,5 H, iç dirençli) · Kondansatör kutusu (film, %5) · İki kanallı dijital osiloskop (imleçli) ve akım probu (100 mV/mA) · DMM.</p>
+      <div class="info">Basamak tepkisini gözle görebilmek için gerçek laboratuvarda anahtar yerine çoğu zaman <b>düşük frekanslı kare dalga</b> kullanılır; her kenar yeni bir basamaktır. Burada elektronik anahtar t = 0'da kapanır ve devre önceden ayarladığınız başlangıç koşullarından başlar.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b>'yi okuyun ve <b>Ön Hazırlık</b> sorularını çözün. Her deneyde soldaki föyü adım adım izleyin; adımlar siz doğru ayarı yaptığınızda kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile tabloya kaydedin, soruları kendi ölçümlerinizle yanıtlayın. Son bölümde raporunuzu yazdırın ya da PDF olarak kaydedin.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Kaynak Devreye Girince İkinci Dereceden Devre Ne Yapar?</h2>
+  <p class="lead">Deneylere başlamadan 10 dakikanızı ayırın: sezgi, formül kartı ve gerçek laboratuvarın tuzakları.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Sezgi: akım nereye gider?</h3>
+      <p style="font-size:14px;line-height:1.65">Paralel bağlı R, L ve C'ye t = 0'da sabit bir I<sub>s</sub> akımı verildiğini düşünün. İlk anda bobin akımı ani değişemez, kondansatör gerilimi de ani değişemez: akımın tamamı önce <b>kondansatörü doldurmaya</b> gider. Gerilim yükseldikçe bobin akımı artar. Sonunda (t → ∞) bobin <b>kısa devre</b> gibi davranır, gerilim sıfıra iner ve kaynağın bütün akımını bobin alır: <b>i<sub>L</sub>(∞) = I<sub>s</sub></b>.</p>
+      <p style="font-size:14px;line-height:1.65">Yolda ne olacağını α ve ω<sub>0</sub> belirler. R büyük (α küçük) ise enerji L ile C arasında gidip gelir, akım I<sub>s</sub>'yi <b>aşar</b> ve salınarak oturur. R küçük ise akım aşımsız ama yavaş yükselir. Bu, bir <b>kontrol sisteminin</b> (motor hız denetimi, süspansiyon, gerilim regülatörü) basamak tepkisiyle birebir aynı davranıştır: “hızlı ama aşımlı” ile “yavaş ama aşımsız” arasındaki seçim mühendisin işidir.</p>
+      <svg viewBox="0 0 420 170" style="width:100%;max-width:440px;display:block;margin:auto" aria-label="Üç sönüm türünde basamak tepkisi">
+        <line x1="40" y1="140" x2="410" y2="140" stroke="#99a"/><line x1="40" y1="10" x2="40" y2="140" stroke="#99a"/>
+        <line x1="40" y1="50" x2="410" y2="50" stroke="#888" stroke-dasharray="5 4"/><text x="8" y="54" font-size="11" fill="#555">I_s</text>
+        <path d="M40,140 C80,140 90,30 130,30 S180,62 210,55 S260,47 290,50 L410,50" fill="none" stroke="#c62828" stroke-width="2.4"/>
+        <path d="M40,140 C70,140 90,60 140,53 S220,50 410,50" fill="none" stroke="#1a8a4a" stroke-width="2.4"/>
+        <path d="M40,140 C70,130 110,90 170,70 S300,52 410,51" fill="none" stroke="#0b5cad" stroke-width="2.4"/>
+        <text x="135" y="24" font-size="11" fill="#c62828">az sönümlü (aşım)</text>
+        <text x="235" y="80" font-size="11" fill="#1a8a4a">kritik</text>
+        <text x="255" y="100" font-size="11" fill="#0b5cad">aşırı sönümlü</text>
+        <text x="380" y="156" font-size="11" fill="#555">t</text><text x="44" y="20" font-size="11" fill="#555">i_L</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Diferansiyel denklem</td><td class="l">d²i<sub>L</sub>/dt² + (1/RC) di<sub>L</sub>/dt + i<sub>L</sub>/LC = I<sub>s</sub>/LC</td></tr>
+        <tr><td class="l">Neper ve rezonans frekansı</td><td class="l">α = 1/(2RC), ω<sub>0</sub> = 1/√(LC)</td></tr>
+        <tr><td class="l">Kökler</td><td class="l">s<sub>1,2</sub> = −α ± √(α² − ω<sub>0</sub>²)</td></tr>
+        <tr><td class="l">Aşırı sönümlü (α &gt; ω<sub>0</sub>)</td><td class="l">i<sub>L</sub> = I<sub>s</sub> + A<sub>1</sub>e<sup>s<sub>1</sub>t</sup> + A<sub>2</sub>e<sup>s<sub>2</sub>t</sup></td></tr>
+        <tr><td class="l">Kritik (α = ω<sub>0</sub>)</td><td class="l">i<sub>L</sub> = I<sub>s</sub> + (D<sub>1</sub>t + D<sub>2</sub>)e<sup>−αt</sup></td></tr>
+        <tr><td class="l">Az sönümlü (α &lt; ω<sub>0</sub>)</td><td class="l">i<sub>L</sub> = I<sub>s</sub> + e<sup>−αt</sup>(B<sub>1</sub>cos ω<sub>d</sub>t + B<sub>2</sub>sin ω<sub>d</sub>t), ω<sub>d</sub> = √(ω<sub>0</sub>² − α²)</td></tr>
+        <tr><td class="l">Başlangıç koşulları</td><td class="l">i<sub>L</sub>(0<sup>+</sup>) = I<sub>0</sub>, di<sub>L</sub>/dt(0<sup>+</sup>) = v(0<sup>+</sup>)/L = V<sub>0</sub>/L</td></tr>
+        <tr><td class="l">Kritik direnç</td><td class="l">R = ½√(L/C)</td></tr>
+        <tr><td class="l">Aşım (boşta başlayan, az sönümlü)</td><td class="l">%OS = 100·e<sup>−απ/ω<sub>d</sub></sup>, t<sub>p</sub> = π/ω<sub>d</sub></td></tr>
+        <tr><td class="l">Sönüm oranı</td><td class="l">ζ = α/ω<sub>0</sub>; %5 aşım ↔ ζ ≈ 0,69</td></tr>
+        <tr><td class="l">Yerleşme süresi (%2 bandı)</td><td class="l">t<sub>s</sub> ≈ 4/α (az sönümlü, kaba kestirim)</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Bobin akımını kesmeyin.</b> Akım taşıyan bir bobinin yolu açılırsa v = L di/dt çok büyük olur: anahtarda kıvılcım, devrede yüzlerce voltluk ters EMK oluşur. Akım kaynağını kapatmadan önce bobine paralel bir yol (R ya da serbest geçiş diyodu) bulunduğundan emin olun.</div>
+    <div class="warnbox"><b>Akım kaynağının uyum (compliance) gerilimi.</b> İdeal akım kaynağı yoktur. Paralel devrede gerilim geçici olarak tepe yapar (Örnek 4.14'te 31,5 V); kaynağın uyum gerilimi bunun altındaysa kaynak gerilim sınırına girer ve ölçtüğünüz eğri kuramdan sapar.</div>
+    <div class="warnbox"><b>Kondansatörü boşaltın.</b> Deneyler arasında kondansatör yüklü kalabilir; eleman değiştirmeden önce 1 kΩ'luk bir dirençle birkaç saniye boşaltın. Başlangıç koşulu “boşta” varsayılıyorsa bu adım ölçümün parçasıdır.</div>
+    <div class="warnbox"><b>Elektrolitik kondansatör kullanmayın.</b> Paralel RLC'de gerilim yön değiştirebilir (az sönümlüde negatif yarı dalga). Kutuplu elektrolitik ters gerilimde ısınır ve patlayabilir; film ya da seramik (kutupsuz) kondansatör seçin.</div>
+    <div class="warnbox"><b>Osiloskop toprak klipsi.</b> İki probun toprak klipsi aynı düğüme bağlanmalıdır. Akımı direnç üzerinden ölçerken toprak klipsini “sıcak” bir düğüme takmak o düğümü toprağa kısa devre eder; akım probu ya da diferansiyel prob kullanın.</div>
+    <div class="warnbox"><b>Bobinin iç direnci ve çekirdeği.</b> 2,5 H'lik bir bobinin sargı direnci yüzlerce ohm olabilir: ek sönüm getirir, aşımı küçültür ve son değeri I<sub>s</sub>·R/(R + r<sub>L</sub>)'ye düşürür. Demir çekirdekli bobin büyük akımda doyar; L azalır, frekans kayar.</div>
+    <div class="warnbox"><b>Direnç güç değeri.</b> Geçici rejimde dirençteki tepe güç v<sup>2</sup>/R'dir. 400 Ω'da 16 V tepe yalnızca 0,64 W'tır ama kısa sürer; sürekli kare dalga uyarımında ortalama gücü hesaplayıp ¼ W yerine ½ W direnç seçin.</div>
+    <div class="info"><b>Sık hatalar:</b> katsayıları bulurken I<sub>s</sub>'yi çıkarmayı unutmak (A<sub>1</sub>+A<sub>2</sub> = I<sub>0</sub> − I<sub>s</sub>, I<sub>0</sub> değil!) · seri devrenin α = R/2L formülünü paralel devrede kullanmak · di<sub>L</sub>/dt(0<sup>+</sup>)'yı sıfır sanmak (V<sub>0</sub> ≠ 0 ise V<sub>0</sub>/L'dir) · aşımı son değer yerine başlangıca göre hesaplamak · mA ile A, µs ile ms karıştırmak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Örnek 4.5'in devresi: I<sub>s</sub> = 24 mA, R = 400 Ω, L = 25 mH, C = 25 nF.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Akım Kaynağı Basamağı ve Üç Sönüm Türü</h2>
+  <p class="lead">S anahtarı t = 0'da kaynağı devreye sokar. Eleman değerlerini seçin, <b>ANAHTARI KAPAT</b> ile basamağı uygulayın, imleçle eğriler üzerinde değer okuyun.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Kaynaklı denklemin sol tarafı doğal tepkiyle <b>aynıdır</b>: α, ω<sub>0</sub> ve kökler değişmez. Sağdaki sabit terim yalnızca son değeri (I<sub>s</sub>) belirler.</div>
+        <div class="info">Bobin gerilimi akımın türevidir: <span class="eq">v = L di<sub>L</sub>/dt</span> Akım sıfırdan başladığı için v(0) = 0'dır; gerilim yükselir, tepe yapar, sonra sıfıra iner.</div>
+        <div class="info">Paralel devrede <b>R büyüdükçe sönüm azalır</b>. R → ∞ ideal LC devresidir: akım sonsuza dek 0 ile 2I<sub>s</sub> arasında salınır.</div>
+        <div class="warnbox">Gerçek akım kaynağının uyum gerilimi sınırlıdır (burada ±60 V). L büyük, C küçük seçildiğinde gerilim tepesi bu sınırı aşabilir; şemada uyarı çıkarsa eğri artık kuramla uyuşmaz.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>i<sub>L</sub>(t)</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Kuramsal eğri</label></div>
+          <canvas id="d1plotI" width="560" height="300" style="width:100%"></canvas>
+        </div>
+        <div class="card">
+          <b>v(t) — bobin (düğüm) gerilimi</b>
+          <canvas id="d1plotV" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>İmleç</b><input type="range" id="d1cur" min="0" max="1000" value="200" style="flex:1"><span id="d1curTxt" style="font-family:Consolas,monospace;font-size:13px;min-width:280px"></span></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>I<sub>s</sub></th><th>R</th><th>L</th><th>C</th><th>imleç t</th><th>i<sub>L</sub>(t) (mA)</th><th>v(t) (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Aşım ve Yerleşme Süresinin Osiloskopla Ölçümü</h2>
+  <p class="lead">Örnek 4.15'in devresi. CH1 düğüm gerilimini, CH2 akım probuyla (100 mV/mA) bobin akımını gösterir. Basamak ekranın 1. bölmesinde uygulanır.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Aşım:</b> %OS = 100·(i<sub>maks</sub> − i(∞))/i(∞). Boşta başlayan az sönümlü devrede ilk tepe ω<sub>d</sub>t = π anındadır: <span class="eq">t<sub>p</sub> = π/ω<sub>d</sub>, %OS = 100·e<sup>−απ/ω<sub>d</sub></sup></span></div>
+        <div class="info"><b>Yerleşme süresi t<sub>s</sub>:</b> tepkinin son değerin ±%2 bandına girip bir daha çıkmadığı an. Zarf e<sup>−αt</sup> olduğundan kaba kestirim <span class="eq">t<sub>s</sub> ≈ 4/α</span></div>
+        <div class="info">İki ardışık tepe arası süre sönümlü periyottur: T<sub>d</sub> = 2π/ω<sub>d</sub>. Ardışık tepe oranının logaritması αT<sub>d</sub>'yi verir (logaritmik azalma).</div>
+        <div class="warnbox">Akım probunu takmadan önce sıfırlayın (DEGAUSS/ZERO) ve ok yönünü akım referans yönüne çevirin. Ters takılan prob eğriyi ters çevirir; aşımı “alt aşım” sanırsınız.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d2inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d2scopeRow"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>İmleç ölçümleri</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>R</th><th>Δt (a→b)</th><th>CH1 b (V)</th><th>CH2 a (V)</th><th>CH2 b (V)</th><th>i<sub>L</sub> b (mA)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Tasarım: %5 Aşım ve Yerleşme Süresi Hedefi</h2>
+  <p class="lead">Bir sürücü devresi için L = 100 mH'lik bobin verildi. Bobin akımı 10 mA'lik basamağa <b>%5 ± 1 aşımla</b> ve <b>t<sub>s</sub> ≤ 1,2 ms</b> içinde oturmalı. R ve C'yi siz seçin.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Tasarım iki adımdır: (1) aşım yalnızca <b>ζ = α/ω<sub>0</sub></b>'a bağlıdır: <span class="eq">%OS = 100·exp(−πζ/√(1−ζ²))</span> (2) yerleşme süresi α'yı belirler: <span class="eq">α ≈ 4/t<sub>s</sub></span> Sonra ω<sub>0</sub> = α/ζ, C = 1/(ω<sub>0</sub>²L), R = 1/(2αC).</div>
+        <div class="info">Hazır bir C ile yalnızca aşım isteniyorsa: <span class="eq">R = √(L/C)/(2ζ)</span></div>
+        <div class="warnbox">Gerçek bobinin sargı direnci (burada r<sub>L</sub> = 20 Ω) ek sönüm getirir: son değer I<sub>s</sub>R/(R + r<sub>L</sub>)'ye düşer; son değere göre ölçülen aşım ise yalnızca çok az azalır. Tasarımı her zaman gerçek elemanla doğrulayın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>i<sub>L</sub>/I<sub>s</sub> (%) — t (ms)</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3rL"> Gerçek bobin (r<sub>L</sub> = 20 Ω)</label></div>
+        <canvas id="d3plot" width="760" height="320" style="width:100%"></canvas>
+        <div id="d3meas" class="info" style="margin-top:6px"></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Tasarım tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d3del">Son satırı sil</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>R</th><th>C</th><th>r<sub>L</sub></th><th>%OS</th><th>t<sub>s</sub> (ms)</th><th>Hedef</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Başlangıç Koşullu Basamak Tepkisi</h2>
+  <p class="lead">Anahtar kapanmadan önce bobinde I<sub>0</sub> akımı, kondansatörde V<sub>0</sub> gerilimi var. Örnek 4.5'in devresiyle başlayın; her çalıştırmada iz saklanır, üst üste karşılaştırın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Katsayılar I<sub>s</sub> çıkarıldıktan sonra bulunur: <span class="eq">A<sub>1</sub> + A<sub>2</sub> = I<sub>0</sub> − I<sub>s</sub></span><span class="eq">s<sub>1</sub>A<sub>1</sub> + s<sub>2</sub>A<sub>2</sub> = V<sub>0</sub>/L</span></div>
+        <div class="info">Kondansatörün başlangıç türevi KCL'den gelir: <span class="eq">C dv/dt(0<sup>+</sup>) = I<sub>s</sub> − V<sub>0</sub>/R − I<sub>0</sub></span></div>
+        <div class="info">Son değer başlangıç koşuluna bağlı değildir: devre eninde sonunda i<sub>L</sub> = I<sub>s</sub>, v = 0'a gider. Başlangıç koşulu yalnızca <b>yolu</b> değiştirir.</div>
+        <div class="warnbox">Gerçekte I<sub>0</sub>'ı ayrı bir kaynakla bobine verip sonra o kaynağı ayırmak gerekir. Bobin akımı taşırken o kaynağın yolunu açmak ters EMK üretir: geçişi “önce kapat, sonra aç” (make-before-break) sırasıyla yapın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>i<sub>L</sub>(t) — saklanan izler</b><span class="grow"></span>
+          <label style="font-size:13px"><input type="checkbox" id="d4theo"> Kuramsal eğri (ideal bobin)</label>
+          <button class="btn small" id="d4rec">Çalıştır ve izi kaydet (R)</button>
+          <button class="btn sec small" id="d4clr">Temizle</button></div>
+        <canvas id="d4plot" width="760" height="320" style="width:100%"></canvas>
+        <div class="row" style="margin-top:6px"><b>İmleç</b><input type="range" id="d4cur" min="0" max="1000" value="100" style="flex:1"><span id="d4curTxt" style="font-family:Consolas,monospace;font-size:13px;min-width:260px"></span></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span><button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>R</th><th>I<sub>0</sub> (mA)</th><th>V<sub>0</sub> (V)</th><th>i<sub>L</sub> en küçük (mA)</th><th>i<sub>L</sub> en büyük (mA)</th><th>i<sub>L</sub>(300 µs) (mA)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="R'yi değiştirmek tepkiyi nasıl etkiledi? Tasarımınız hedefi gerçek bobinle de sağladı mı? Başlangıç koşulları neyi değiştirdi, neyi değiştirmedi?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop imleçleri (Deney 2):</b> İMLEÇ düğmesine basın, ekranda sürükleyin; size yakın imleç hareket eder.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta13.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd1h13', ders: 'Devre Kuramı I', hafta: 13,
+  doc: [
+    { id: 'DÖÇ1', t: 'Paralel RLC basamak tepkisinin denklemini kurar; α, ω<sub>0</sub> ile tepki türünü belirler ve i<sub>L</sub>(t)’yi çözer.', mc: [1, 2] },
+    { id: 'DÖÇ2', t: 'Aşım, tepe anı ve yerleşme süresini osiloskop imleçleriyle ölçer, kuramla karşılaştırır.', mc: [1, 4, 5] },
+    { id: 'DÖÇ3', t: 'Aşım ve yerleşme süresi hedefini sağlayan R ve C değerlerini tasarlar, gerçek eleman kusurlarıyla doğrular.', mc: [2, 3, 5] },
+    { id: 'DÖÇ4', t: 'Başlangıç koşullarının katsayılara etkisini analiz eder; son değerin kaynağa bağlı olduğunu gösterir.', mc: [1, 2, 5] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Akım kaynağı basamağında bobin akımının I<sub>s</sub>’ye yaklaşımını gözlemek ve yalnızca R ile üç sönüm türünü elde etmek.', doc: ['DÖÇ1'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Ayarlı DC akım kaynağı (uyum ±60 V), elektronik anahtar, direnç/bobin/kondansatör kutuları, osiloskop.',
+      guvenlik: 'Akım taşıyan bobinin yolunu açmayın (ters EMK, kıvılcım); kutupsuz kondansatör kullanın; uyum gerilimini aşan tepelere dikkat edin.',
+      veri: 'İmleçle okunan i<sub>L</sub>(t) ve v(t) değerleri, R’ye göre tepki türleri.',
+      tartisma: 'Paralel devrede R büyüdükçe neden sönüm azalır? Enerji hangi elemanda harcanıyor?' },
+    d2: { amac: 'Az sönümlü basamak tepkisinde aşım, tepe anı ve %2 yerleşme süresini osiloskop imleçleriyle ölçmek.', doc: ['DÖÇ2'], mc: [1, 4, 5],
+      gerec: 'Akım kaynağı, eleman kutuları, iki kanallı osiloskop, akım probu (100 mV/mA).',
+      guvenlik: 'Osiloskop toprak klipsini yalnızca devre toprağına bağlayın; akım probunu sıfırlayıp yönünü kontrol edin.',
+      veri: 'Δt ve CH2 imleç değerleri, t<sub>p</sub>, i<sub>maks</sub>, %OS, t<sub>s</sub>.',
+      tartisma: 'Ölçülen t<sub>s</sub> neden 4/α kestiriminden farklı çıkabilir?' },
+    d3: { amac: '%5 aşım ve t<sub>s</sub> ≤ 1,2 ms hedefi için R ve C tasarlamak; gerçek bobin direncinin etkisini değerlendirmek.', doc: ['DÖÇ3'], mc: [2, 3, 5, 10],
+      gerec: 'Dekad direnç ve kondansatör kutuları, 100 mH bobin (r<sub>L</sub> = 20 Ω), akım kaynağı, osiloskop.',
+      guvenlik: 'Direncin geçici tepe gücünü hesaplayıp güç değerini seçin; bobin doyumuna dikkat edin.',
+      veri: 'Tasarım tablosu: R, C, r<sub>L</sub>, %OS, t<sub>s</sub>, hedef sağlandı mı.',
+      tartisma: 'Standart (E12) değerlerle tasarımınızı nasıl gerçekleştirirdiniz; tolerans hedefi nasıl etkiler?' },
+    d4: { amac: 'Bobin ve kondansatördeki başlangıç enerjisinin basamak tepkisinin yolunu nasıl değiştirdiğini göstermek.', doc: ['DÖÇ4'], mc: [1, 2, 5],
+      gerec: 'Akım kaynağı, başlangıç koşulu ayarlayıcı, 25 mH bobin, 25 nF kondansatör, direnç kutusu.',
+      guvenlik: 'Başlangıç akımını veren kaynağı ayırırken önce-kapat-sonra-aç sırası kullanın; yüklü kondansatörü boşaltın.',
+      veri: 'Saklanan i<sub>L</sub>(t) izleri, en küçük/en büyük akım, kuram karşılaştırması.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

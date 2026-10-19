@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 8 · Ara Sınav Haftası — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>
+  .tp{cursor:pointer}
+  .tp circle{fill:#fff;stroke:#c62828;stroke-width:2.5}
+  .tp.sel circle{fill:#c62828}
+  .tp text{font-size:11px;font-weight:700;fill:#c62828}
+  .rsel{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:14px}
+  .timer{font:700 28px Consolas,monospace;color:#0b5cad}
+  .timer.low{color:#c62828}
+  .exq{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:6px 0;background:#fbfcfe;font-size:14px;line-height:1.5}
+  .exq.ok{border-color:#1a8a4a;background:#effaf2}
+  .exq.bad{border-color:#c62828;background:#fdf0f0}
+  .mist li{margin:5px 0;font-size:14px;line-height:1.5}
+</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 8 — Ara Sınav Haftası: Uygulamalı Sınav</h1>
+    <div class="sub">Arıza bulma · Tasarım görevi · Dalga biçimi tanıma · Süreli deneme sınavı (Bölüm 1–2)</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Sınava Hazırlık Özeti</button>
+  <button data-p="onhaz"><span class="dot"></span>1b · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>2 · Görev 1: Arıza Bul</button>
+  <button data-p="d2"><span class="dot"></span>3 · Görev 2: Sensör Arabirimi</button>
+  <button data-p="d3"><span class="dot"></span>4 · Görev 3: Dalga Biçimi Tanıma</button>
+  <button data-p="d4"><span class="dot"></span>5 · Görev 4: Deneme Sınavı</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, tekerlek ya da <kbd>↑</kbd><kbd>↓</kbd>. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü/tasarımı kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 8 · Ara Sınav Haftası — Uygulamalı Sınav ve Proje</h2>
+  <p class="lead">Kapsam: <b>Bölüm 1</b> (op-amp: uçlar, ideal model, eviren/evirmeyen/toplayan/fark yükselteci, gerçek sınırlar) ve <b>Bölüm 2</b> (bobin, kapasitör, seri/paralel bağlama, karşılıklı endüktans).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu haftanın sonunda</h3>
+      <ol class="steps">
+        <li>Bozuk bir op-amp devresinde <b>multimetreyle düğüm gerilimlerini ölçerek</b> arızayı sistematik biçimde bulabileceksiniz.</li>
+        <li>Bir sensör için <b>tampon + fark katı + evirmeyen kazanç</b> zincirini E12 dirençlerle tasarlayıp 0–10 V hedefine uydurabileceksiniz.</li>
+        <li>Osiloskop ekranından bir elemanın <b>R, L ya da C</b> olduğunu, ya da devrenin integral/türev aldığını tanıyıp değerini hesaplayabileceksiniz.</li>
+        <li>Rastgele sayılarla üretilen <b>20 soruluk süreli</b> deneme sınavında hızınızı ve doğruluğunuzu ölçeceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Simetrik ±15 V güç kaynağı (akım sınırlı) · Dijital multimetre (10 MΩ giriş) · Ayarlı DC kaynak · Hassas sensör simülatörü (köprü çıkışı, iç dirençli) · İki kanallı osiloskop (imleçli) ve 100 Ω akım şöntü · µA741 tabanlı hazır kartlar.</p>
+      <div class="info">Op-amp modeli: µA741, ±15 V beslemede gerçekçi doyum <b>±13,5 V</b>, giriş polarma akımı ≈ 80 nA. Deneme sınavı soruları ders kabulüyle (doyum = ±V<sub>CC</sub>) hazırlanmıştır; soruda aksi yazmıyorsa bu kabulü kullanın.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Sınava Hazırlık Özeti</b>'ni okuyun ve <b>Ön Hazırlık</b> sorularını çözün. Görev 1–3 birer uygulamalı sınav istasyonudur: her istasyonda föy adımları siz doğru işi yaptıkça işaretlenir; senaryolar her seferinde rastgele üretilir, ezber işe yaramaz. Görev 4'ü en sona bırakın ve sayaç başladıktan sonra notlara bakmadan çözmeye çalışın. Raporunuz bütün görevlerin sonuçlarını içerir.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Sınava Hazırlık Özeti · Bölüm 1 ve 2 Tek Sayfada</h2>
+  <p class="lead">Ara sınav öncesi son tekrar: iki bölümün ana fikri, bütün formüller tek kartta ve en sık yapılan 10 hata.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Bölüm 1'in özü: iki kısıt her şeyi çözer</h3>
+      <p style="font-size:14px;line-height:1.65">Op-amp iki girişinin <b>farkını</b> çok büyük kazançla yükseltir. Negatif geri besleme varsa çıkış, farkı sıfıra yaklaştıran değeri kendiliğinden bulur: <b>v<sub>p</sub> = v<sub>n</sub></b> ve <b>i<sub>p</sub> = i<sub>n</sub> = 0</b>. Bütün yükselteç çözümleri aynı tarifi izler: (1) sanal kısa devreyi yaz, (2) eviren uçta KCL yaz, (3) v<sub>o</sub>'yu çöz, (4) <b>sonucu ±V<sub>CC</sub> ile karşılaştır</b>.</p>
+      <p style="font-size:14px;line-height:1.65">Gerçek op-amp üç yerde idealden ayrılır: <b>doyum</b> (çıkış beslemeyi aşamaz), <b>bant genişliği</b> (kazanç × bant = GBW sabit) ve <b>yükselme hızı</b> (büyük işarette SR sınırı).</p>
+      <h3>2 · Bölüm 2'nin özü: eleman, değere değil eğime tepki verir</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Bobin</b> akımın değişimine karşı gerilim üretir (v = L di/dt): akımı <b>ani değişemez</b>, DC'de kısa devredir. <b>Kapasitör</b> gerilimin değişimine karşı akım çeker (i = C dv/dt): gerilimi <b>ani değişemez</b>, DC'de açık devredir. İkisi de enerjiyi saklar ve geri verir; ideal hâlde ortalama güçleri sıfırdır. Bu yüzden osiloskopta <b>üçgen akım → kare gerilim</b> görürseniz bobin, <b>üçgen gerilim → kare akım</b> görürseniz kapasitör vardır.</p>
+      <h3>3 · Arıza bulma tarifi</h3>
+      <svg viewBox="0 0 520 120" style="width:100%;max-width:520px;display:block" aria-label="Arıza bulma akışı">
+        <g font-family="Segoe UI,Arial" font-size="12" text-anchor="middle">
+          <rect x="4" y="30" width="110" height="56" rx="8" fill="#eaf2fc" stroke="#0b5cad"/><text x="59" y="54">1 · Besleme</text><text x="59" y="72">bacak 7 ve 4</text>
+          <rect x="140" y="30" width="110" height="56" rx="8" fill="#eaf2fc" stroke="#0b5cad"/><text x="195" y="54">2 · Girişler</text><text x="195" y="72">v_p = v_n mi?</text>
+          <rect x="276" y="30" width="110" height="56" rx="8" fill="#eaf2fc" stroke="#0b5cad"/><text x="331" y="54">3 · Çıkış</text><text x="331" y="72">doyumda mı?</text>
+          <rect x="412" y="30" width="104" height="56" rx="8" fill="#fff4e2" stroke="#e07a10"/><text x="464" y="54">4 · Kazanç</text><text x="464" y="72">v_o / v_g = ?</text>
+          <path d="M114,58 h22 m-6,-5 l6,5 l-6,5 M250,58 h22 m-6,-5 l6,5 l-6,5 M386,58 h22 m-6,-5 l6,5 l-6,5" stroke="#333" fill="none" stroke-width="1.5"/>
+          <text x="260" y="112" fill="#555">Her adım bir arıza sınıfını eler: önce enerji, sonra geri besleme, en son değerler.</text>
+        </g>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı (Bölüm 1 + 2)</h3>
+      <table class="data">
+        <tr><th colspan="2">Op-amp</th></tr>
+        <tr><td class="l">Açık çevrim / doyum</td><td class="l">v<sub>o</sub> = A(v<sub>p</sub>−v<sub>n</sub>), |v<sub>o</sub>| ≤ V<sub>CC</sub>, sınır |v<sub>p</sub>−v<sub>n</sub>| &lt; V<sub>CC</sub>/A</td></tr>
+        <tr><td class="l">İdeal kısıtlar</td><td class="l">v<sub>p</sub> = v<sub>n</sub>, i<sub>p</sub> = i<sub>n</sub> = 0 (negatif GB)</td></tr>
+        <tr><td class="l">Beş uç KCL</td><td class="l">i<sub>p</sub>+i<sub>n</sub>+i<sub>o</sub>+i<sub>C+</sub>+i<sub>C−</sub> = 0</td></tr>
+        <tr><td class="l">Eviren</td><td class="l">v<sub>o</sub> = −(R<sub>f</sub>/R<sub>s</sub>) v<sub>g</sub></td></tr>
+        <tr><td class="l">Evirmeyen / tampon</td><td class="l">v<sub>o</sub> = (1 + R<sub>f</sub>/R<sub>s</sub>) v<sub>g</sub>; tampon: v<sub>o</sub> = v<sub>g</sub></td></tr>
+        <tr><td class="l">Toplayan</td><td class="l">v<sub>o</sub> = −R<sub>f</sub>(v<sub>a</sub>/R<sub>a</sub> + v<sub>b</sub>/R<sub>b</sub> + …)</td></tr>
+        <tr><td class="l">Fark (R<sub>2</sub>/R<sub>1</sub> = R<sub>4</sub>/R<sub>3</sub>)</td><td class="l">v<sub>o</sub> = (R<sub>2</sub>/R<sub>1</sub>)(v<sub>b</sub> − v<sub>a</sub>)</td></tr>
+        <tr><td class="l">Sonlu A (eviren)</td><td class="l">(−R<sub>f</sub>/R<sub>s</sub>) / (1 + (1+R<sub>f</sub>/R<sub>s</sub>)/A)</td></tr>
+        <tr><td class="l">Bant / hız</td><td class="l">f<sub>3dB</sub> = GBW / A<sub>v</sub>; f ≤ SR / (2πV<sub>m</sub>)</td></tr>
+        <tr><td class="l">Ofset</td><td class="l">Δv<sub>o</sub> = (1 + R<sub>f</sub>/R<sub>s</sub>) V<sub>os</sub></td></tr>
+        <tr><td class="l">İntegral / türev alıcı</td><td class="l">v<sub>o</sub> = −(1/RC)∫v<sub>g</sub>dt ; v<sub>o</sub> = −RC dv<sub>g</sub>/dt</td></tr>
+        <tr><th colspan="2">Bobin ve kapasitör</th></tr>
+        <tr><td class="l">Bobin</td><td class="l">v = L di/dt, i = (1/L)∫v dτ + i(0), w = ½Li²</td></tr>
+        <tr><td class="l">Kapasitör</td><td class="l">i = C dv/dt, v = (1/C)∫i dτ + v(0), w = ½Cv², q = Cv</td></tr>
+        <tr><td class="l">Paralel levha</td><td class="l">C = εA/d (cm² → ×10⁻⁴ m²)</td></tr>
+        <tr><td class="l">Seri / paralel L</td><td class="l">L<sub>s</sub> = ΣL<sub>k</sub>; 1/L<sub>p</sub> = Σ1/L<sub>k</sub></td></tr>
+        <tr><td class="l">Seri / paralel C</td><td class="l">1/C<sub>s</sub> = Σ1/C<sub>k</sub>; C<sub>p</sub> = ΣC<sub>k</sub></td></tr>
+        <tr><td class="l">Sinüs (ω)</td><td class="l">L: V<sub>m</sub> = ωL I<sub>m</sub>, v akımdan 90° önde · C: I<sub>m</sub> = ωC V<sub>m</sub>, i gerilimden 90° önde</td></tr>
+        <tr><td class="l">Karşılıklı endüktans</td><td class="l">M = k√(L<sub>1</sub>L<sub>2</sub>), 0 ≤ k ≤ 1; v<sub>2</sub> = L<sub>2</sub>di<sub>2</sub>/dt ± M di<sub>1</sub>/dt</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">En sık 10 hata</h3>
+      <ol class="mist">
+        <li><b>Doyumu unutmak:</b> v<sub>o</sub> = 24 V yazmak. Her sonucu ±V<sub>CC</sub> ile karşılaştırın.</li>
+        <li><b>Eviren kazancın eksi işaretini</b> atlamak.</li>
+        <li>Evirmeyen kazancı <b>R<sub>f</sub>/R<sub>s</sub></b> sanmak; doğrusu <b>1 + R<sub>f</sub>/R<sub>s</sub></b>.</li>
+        <li><b>Sanal toprağı gerçek toprak</b> sanıp oraya akım akıtmak; i<sub>n</sub> = 0'dır.</li>
+        <li>Pozitif geri beslemede de <b>v<sub>p</sub> = v<sub>n</sub></b> kullanmak.</li>
+        <li>Fark yükseltecinde <b>direnç oranlarını eşitlemeden</b> v<sub>o</sub> = (R<sub>2</sub>/R<sub>1</sub>)(v<sub>b</sub>−v<sub>a</sub>) yazmak.</li>
+        <li><b>GBW ile SR'yi</b> karıştırmak: küçük işarette GBW, büyük işarette SR sınırlar; küçük olan geçerlidir.</li>
+        <li>Bobinde <b>gerilimin</b>, kapasitörde <b>akımın</b> ani değişemeyeceğini sanmak (tersi doğru).</li>
+        <li>Seri/paralel kurallarını <b>dirençle aynı</b> sanmak: kapasitörde kurallar <b>ters</b>tir.</li>
+        <li><b>Birim çevirmeleri:</b> mH, µF, nF, cm² → m² (×10⁻⁴), kHz ile rad/s (ω = 2πf).</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+      <div class="warnbox"><b>Arıza ararken önce beslemeyi ölçün.</b> Multimetrenin siyah ucu ortak toprakta (COM) kalsın; kırmızı uçla önce entegrenin 7 ve 4 numaralı bacaklarını ölçün. Kaynakta “CC” lambası yanıyorsa bir yer kısa devredir: çıkışı kapatın.</div>
+      <div class="warnbox"><b>Elektrolitik kondansatörün kutbu.</b> Uzun bacak / şeritsiz taraf (+). Ters takılan elektrolitik kaçak akım çeker, ısınır, şişer ve patlayabilir. Isınan bir kondansatöre dokunmayın, beslemeyi kesip soğumasını bekleyin.</div>
+      <div class="warnbox"><b>Çalışan devrede direnç ölçülmez.</b> Ohm kademesi kendi akımını basar; beslemeli devrede yanlış okur ve aleti zorlar. Direnç ölçmek için beslemeyi kesin, mümkünse elemanın bir bacağını devreden ayırın.</div>
+      <div class="warnbox"><b>Multimetrenin akım kademesi bir kısa devredir.</b> Uçlar A/mA soketindeyken gerilim ölçmeye kalkmak sigortayı attırır. Her ölçümden önce kademeyi ve soketi kontrol edin.</div>
+      <div class="warnbox"><b>Bobin akımını aniden kesmeyin.</b> L di/dt büyük olur: anahtarda kıvılcım ve yüzlerce voltluk ters EMK oluşur. Bobinli devrelerde serbest geçiş diyodu kullanın.</div>
+      <div class="warnbox"><b>Yüklü kapasitörü boşaltın.</b> Büyük kapasitörler beslemeyi kestikten sonra da enerji tutar. Dokunmadan önce bir dirençle (ör. 1 kΩ, 1 W) boşaltın; tornavidayla kısa devre etmeyin.</div>
+      <div class="warnbox"><b>Osiloskop toprak klipsi.</b> İki probun toprak klipsi aynı düğüme bağlanmalıdır; şönt direnci ölçerken toprak klipsini şöntün toprak tarafına takın, yoksa devrenin bir kısmını kısa devre edersiniz.</div>
+      <div class="warnbox"><b>Direnç seçimi.</b> E12 serisi %10 toleranslıdır; hassas kazanç için %1'lik (E96) direnç kullanın. Fark yükseltecinde oranların uyuşmaması ortak mod gerilimini çıkışa taşır.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Görevlere başlamadan çözün. Aksi belirtilmedikçe besleme ±15 V, doyum ±V<sub>CC</sub>, op-amp ideal.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= GÖREV 1 ================= -->
+<section class="page" id="d1">
+  <h2>Görev 1 · Arıza Bul: Evirmeyen Yükselteç Kartı</h2>
+  <p class="lead">Karttaki devre şemadaki gibi <b>olmalı</b>; ama her yeni kartta rastgele bir arıza (ya da hiç arıza) olabilir. Şemadaki kırmızı test noktalarına (TP) tıklayıp multimetreyle ölçün, sonra teşhisinizi seçin.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Sağlam kartta: v<sub>p</sub> = v<sub>g</sub>, <span class="eq">v<sub>n</sub> ≈ v<sub>p</sub></span> ve <span class="eq">v<sub>o</sub> = (1 + R<sub>f</sub>/R<sub>s</sub>) v<sub>g</sub></span> Bu üç bağıntıdan hangisinin bozulduğu, arızanın türünü söyler.</div>
+        <div class="info"><b>İpucu tablosu yok!</b> Belirtiyi kendiniz yorumlayın: v<sub>p</sub> ≠ v<sub>n</sub> ise op-amp doğrusal çalışmıyordur (doyum, geri besleme kopuk ya da pozitif, besleme yetersiz). v<sub>p</sub> = v<sub>n</sub> ama kazanç yanlışsa dirençlere bakın: R<sub>f</sub> = R<sub>s</sub>(v<sub>o</sub>/v<sub>n</sub> − 1).</div>
+        <div class="warnbox">Gerçek kartta arıza ararken entegreyi soketinden <b>besleme açıkken</b> çıkarıp takmayın; ölçümleri hep aynı toprak noktasına göre yapın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 320"></svg></div>
+      <div class="card">
+        <div class="row"><b>Teşhis</b> <span class="badge" id="d1card">Kart #1</span><span class="grow"></span><span id="d1score" class="badge"></span></div>
+        <div class="row" style="margin-top:8px">
+          <select id="d1diag" style="min-width:320px"></select>
+          <button class="btn" id="d1go">Teşhis et</button>
+          <button class="btn sec" id="d1next">Yeni kart</button>
+        </div>
+        <div id="d1fb" class="info" style="min-height:40px">Önce ölçün: en az iki test noktası.</div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Kart</th><th>Nokta</th><th>Okunan (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GÖREV 2 ================= -->
+<section class="page" id="d2">
+  <h2>Görev 2 · Tasarım: Sensör Arabirimi (0–10 V)</h2>
+  <p class="lead">Köprü tipi bir sensör, ölçülen büyüklük %0 → %100 değişirken 0 → S mV fark gerilimi verir; her iki ucu 2,5 V ortak mod gerilimindedir ve iç direnci R<sub>i</sub>'dir. Çıkış %0'da 0 V, %100'de 10 V olmalı.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Zincir: <b>iki tampon</b> → <b>fark katı</b> (R<sub>1</sub>…R<sub>4</sub>) → <b>evirmeyen kat</b> (R<sub>s</sub>, R<sub>f</sub>). Oranlar eşitse <span class="eq">v<sub>o</sub> = (R<sub>2</sub>/R<sub>1</sub>)(1 + R<sub>f</sub>/R<sub>s</sub>) v<sub>d</sub></span></div>
+        <div class="info">Tampon kaldırılırsa sensörün iç direnci R<sub>i</sub>, R<sub>1</sub> ve R<sub>3</sub>'e seri eklenir: kazanç değişir, iki kolun oranı bozulur ve 2,5 V'luk ortak mod gerilimi çıkışa sızar.</div>
+        <div class="info">Kabul ölçütleri: |v<sub>o</sub>(%0)| ≤ 0,15 V · v<sub>o</sub>(%100) = 10 V ± %4 · hiçbir kat doyumda değil · her katın kazancı ≤ 100 (GBW = 1 MHz ile bant ≥ 10 kHz).</div>
+        <div class="warnbox">Gerçek tasarımda E12 dirençleri %10 toleranslıdır; fark katında oranların tutması için %1'lik direnç ya da hazır <b>enstrümantasyon yükselteci</b> kullanılır. Tolerans burada nominal kabul edildi.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 300"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <b>Tasarım (E12 serisi)</b>
+          <div class="rsel" style="margin-top:8px">
+            <label for="d2R1">R<sub>1</sub></label><span><select id="d2R1"></select> · R<sub>3</sub> <select id="d2R3"></select></span>
+            <label for="d2R2">R<sub>2</sub></label><span><select id="d2R2"></select> · R<sub>4</sub> <select id="d2R4"></select></span>
+            <label for="d2Rs">R<sub>s</sub></label><span><select id="d2Rs"></select> · R<sub>f</sub> <select id="d2Rf"></select></span>
+            <span>Tamponlar</span><label><input type="checkbox" id="d2buf" checked> takılı</label>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn" id="d2eval">Sistemi değerlendir (R)</button>
+            <button class="btn sec small" id="d2new">Yeni sensör</button>
+          </div>
+          <div id="d2verdict" class="info" style="min-height:60px">Dirençleri seçip değerlendirin.</div>
+        </div>
+        <div class="card">
+          <div class="row"><b>v<sub>o</sub> – ölçülen büyüklük (%)</b></div>
+          <canvas id="d2plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Değerlendirilen tasarımlar</b><span class="grow"></span><button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>S (mV)</th><th>R<sub>i</sub></th><th>Tampon</th><th>R<sub>1</sub>/R<sub>2</sub></th><th>R<sub>3</sub>/R<sub>4</sub></th><th>R<sub>s</sub>/R<sub>f</sub></th><th>v<sub>o</sub>(%0)</th><th>v<sub>o</sub>(%100)</th><th>Sonuç</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GÖREV 3 ================= -->
+<section class="page" id="d3">
+  <h2>Görev 3 · Osiloskop Ekranından Eleman Tanıma (İntegral Alıcı Öncesi Isınma)</h2>
+  <p class="lead">Kara kutuda bir R, L ya da C; bazen de bir op-amp integral/türev alıcı var. Ekrandaki iki dalga biçimine bakıp elemanı, denklemini ve değerini bulun.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Pasif eleman ekranlarında CH1 eleman gerilimi v(t), CH2 ise seri <b>100 Ω şönt</b> üzerindeki gerilimdir: <span class="eq">i(t) = v<sub>CH2</sub>(t) / 100 Ω</span></div>
+        <div class="info">Bir dalga biçimi diğerinin <b>eğimiyle</b> orantılıysa türev ilişkisi vardır: üçgenin eğimi sabit → türevi kare. Sinüste türev 90° kaydırır; hangisinin önde olduğuna bakın.</div>
+        <div class="info">Op-amp ekranlarında CH1 giriş v<sub>g</sub>, CH2 çıkış v<sub>o</sub>'dur. Eviren yapı olduğu için işarete dikkat: giriş pozitifken çıkış <b>azalıyorsa</b> integral alıcıdır.</div>
+        <div class="warnbox">Gerçek bobinin iç direnci vardır: üçgen akımda bobin gerilimi tam kare değil, hafif eğik görünür. Değeri bulurken kare dalganın <b>ortalama</b> seviyesini kullanın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row">
+          <div class="inst dark scopewrap" style="flex:1;min-width:420px">
+            <div class="brand"><span>DSO-2C · Dijital Osiloskop</span><span><span class="led on g"></span> RUN</span></div>
+            <div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+              <canvas id="scope" width="640" height="400" style="width:100%;max-width:640px"></canvas>
+              <div style="min-width:150px">
+                <div class="ctrls" id="scopeKnobs"></div>
+                <div class="row" style="margin:6px 0">
+                  <button class="seg-btn on" id="ch1on">CH1</button>
+                  <button class="seg-btn on" id="ch2on">CH2</button>
+                  <button class="seg-btn" id="curon">İMLEÇ</button>
+                </div>
+                <div class="meas" id="scopeMeas"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 200"></svg></div>
+      <div class="card">
+        <div class="row"><b>Yanıtınız</b> <span class="badge" id="d3no">Ekran #1</span><span class="grow"></span><span class="badge" id="d3score"></span></div>
+        <div class="grid-half" style="margin-top:6px">
+          <div><div style="font-size:13px;font-weight:600">Kutudaki</div><div id="d3el"></div></div>
+          <div><div style="font-size:13px;font-weight:600">Geçerli denklem</div><div id="d3eq"></div></div>
+        </div>
+        <div class="row" style="margin-top:8px"><span id="d3ask"></span><input type="text" id="d3val" size="9" placeholder="sayı"><span id="d3unit"></span>
+          <button class="btn" id="d3go">Kontrol et</button><button class="btn sec" id="d3next">Yeni ekran</button></div>
+        <div id="d3fb" class="info" style="min-height:40px">Ekranı inceleyin; imleçlerle eğim ve zaman ölçün.</div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GÖREV 4 ================= -->
+<section class="page" id="d4">
+  <h2>Görev 4 · Süreli Deneme Sınavı (20 soru)</h2>
+  <p class="lead">Her denemede sayılar yeniden üretilir. Süre 40 dakika; süre bitince sınav kendiliğinden puanlanır. Ondalık için virgül kullanabilirsiniz. Her soru 5 puan; yanıt ±%2 içinde doğru sayılır.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Sınav</h3>
+        <div class="timer" id="exTimer">40:00</div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="exStart">Yeni sınav başlat</button>
+          <button class="btn warn" id="exFinish">Bitir ve puanla</button>
+        </div>
+        <div id="exInfo" class="info">Başlatınca sayaç işlemeye başlar. Sayfadan ayrılsanız da süre devam eder.</div>
+        <div class="warnbox">Sınav ortamı gibi çalışın: hesap makinesi serbest, ama formül kartına bakmadan. Birim soruda yazılıdır; sonucu o birimde girin.</div>
+        <h3>Deneme geçmişi</h3>
+        <table class="data" id="exHist"><thead><tr><th>#</th><th>Tarih</th><th>Puan</th><th>Süre</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div>
+      <div class="card" id="exBox"><p class="lead" style="margin:0">Henüz başlatılmış bir sınav yok.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz teşhislerinizden, tasarımlarınızdan, dalga biçimi yanıtlarınızdan ve sınav sonuçlarınızdan otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Arıza bulurken hangi ölçüm en çok bilgi verdi? Tampon olmadan tasarımınız neden bozuldu? Sınavda en çok hangi konuda hata yaptınız?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Görev 1:</b> şemadaki kırmızı TP dairelerine tıklayınca multimetrenin kırmızı ucu oraya değer.<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin.<br>
+    <kbd>R</kbd> ölçüm/tasarım kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta08.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd1h08', ders: 'Devre Kuramı I', hafta: 8,
+  doc: [
+    { id: 'DÖÇ1', t: 'Op-amp devresinde düğüm gerilimlerini ölçerek arızayı sistematik biçimde bulur ve gerekçelendirir.', mc: [1, 2, 4, 5] },
+    { id: 'DÖÇ2', t: 'Sensör arabirimi için tampon, fark ve evirmeyen katlardan oluşan zinciri standart (E12) elemanlarla tasarlar ve doğrular.', mc: [1, 3, 10] },
+    { id: 'DÖÇ3', t: 'Bobin, kapasitör, integral ve türev alıcıyı osiloskop dalga biçimlerinden tanır, eleman değerini hesaplar.', mc: [1, 2, 4] },
+    { id: 'DÖÇ4', t: 'Bölüm 1–2 problemlerini süre kısıtı altında doğru çözer.', mc: [1, 2] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Rastgele arızalı evirmeyen yükselteç kartlarında multimetreyle ölçüm yaparak arızayı (ters giriş, kopuk R<sub>f</sub>, ters elektrolitik, yanlış direnç) teşhis etmek.', doc: ['DÖÇ1'], mc: [1, 2, 4, 5, 6],
+      gerec: '±15 V akım sınırlı kaynak, ayarlı DC kaynak, DMM (10 MΩ), µA741 kartı (R<sub>s</sub> 10 kΩ, R<sub>f</sub> 47 kΩ, R<sub>L</sub> 10 kΩ, C1 100 µF).',
+      guvenlik: 'Ters elektrolitik ısınır ve patlayabilir; CC lambası yanınca beslemeyi kesin. Çalışan devrede ohm ölçümü yapmayın; arızalı elemanları e-atık olarak ayırın.',
+      veri: 'Test noktası gerilimleri tablosu, kart başına teşhis ve doğruluk oranı.',
+      tartisma: 'Hangi tek ölçüm en çok arıza sınıfını eledi? Ölçüm sıranızı nasıl iyileştirirdiniz?' },
+    d2: { amac: 'Köprü sensörü için 0–10 V çıkış veren tampon + fark + evirmeyen kazanç zincirini E12 dirençlerle tasarlamak ve yükleme etkisini göstermek.', doc: ['DÖÇ2'], mc: [1, 3, 4, 10],
+      gerec: 'Sensör simülatörü (iç dirençli köprü), üç/dört op-amp, E12 direnç seti, iki DMM, ±15 V kaynak.',
+      guvenlik: 'Besleme ±18 V\'u aşmamalı; sensöre op-amp çıkışından gerilim uygulanmamalı. Az sayıda standart eleman seçmek maliyeti ve atığı azaltır.',
+      veri: 'Tasarım tablosu (dirençler, %0 ve %100 çıkışı, uygunluk), v<sub>o</sub>–büyüklük grafiği.',
+      tartisma: 'E12 yerine %1\'lik E96 dirençler ya da hazır enstrümantasyon yükselteci kullanmanın maliyet/başarım dengesi nedir?' },
+    d3: { amac: 'Osiloskop ekranındaki gerilim–akım dalga biçimlerinden R, L, C ya da integral/türev alıcıyı tanımak ve değerini hesaplamak.', doc: ['DÖÇ3'], mc: [1, 2, 4],
+      gerec: 'Fonksiyon üreteci, 100 Ω şönt, iki kanallı imleçli osiloskop, kara kutu elemanlar.',
+      guvenlik: 'Probların toprak klipsleri aynı düğüme; bobin akımını aniden kesmeyin (ters EMK).',
+      veri: 'Ekran başına yanıt (eleman, denklem, değer) ve doğruluk.',
+      tartisma: 'Bobinin iç direnci dalga biçimini nasıl değiştirdi; değer hesabını nasıl etkiler?' },
+    d4: { amac: 'Rastgele sayılarla üretilen 20 soruluk süreli deneme sınavıyla Bölüm 1–2 hazırlığını ölçmek.', doc: ['DÖÇ4'], mc: [1, 2, 11],
+      gerec: 'Hesap makinesi, sayaç.',
+      guvenlik: '—',
+      veri: 'Deneme puanları ve süreleri.',
+      tartisma: 'Yanlışlarınız hangi konularda toplandı; sınava kadar nasıl bir çalışma planı yapacaksınız?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

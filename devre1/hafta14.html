@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 14 · Seri RLC ve Dönem Tekrarı — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 14 — Seri RLC Devreleri ve Dönem Tekrarı</h1>
+    <div class="sub">α = R/2L · Seri–paralel eşliği · Çınlama ve sönüm · Ateşleme bobini · Karma tekrar</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Seri ve Paralel</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Kare Dalga Çınlaması</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Ateşleme Bobini</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Dönem Tekrarı</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 14 · Seri RLC Devreleri ve Dönem Tekrarı</h2>
+  <p class="lead">Ders notu: <b>Bölüm 4.6 Seri RLC Devreleri</b> (Örnek 4.6, 4.16, 4.17, eşlik tablosu, “Sık hata: seri devrede α formülünü şaşırmak”) ve Bölüm 4 değerlendirmesi.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Seri RLC'nin doğal ve basamak tepkisini ölçüp <b>α = R/2L</b> ile paralel devrenin α = 1/2RC'sini aynı elemanlarla <b>yan yana</b> karşılaştıracaksınız.</li>
+        <li>Kare dalga ile sürülen bir hatta (kablo + yük) <b>çınlamayı</b> ölçecek ve seri sönüm direnciyle bastıracaksınız.</li>
+        <li>Araç <b>ateşleme bobininde</b> yüksek gerilimin LC salınımıyla nasıl üretildiğini, kondansatörün görevini ve kapalı kalma süresinin etkisini inceleyeceksiniz.</li>
+        <li>Rastgele devrelerde <b>hangi tepki?</b> sorusunu hızlı ve doğru yanıtlayarak dönemi toparlayacaksınız.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Ayarlı DC kaynak · Kare dalga üreteci (5 Ω / 50 Ω çıkış) · Direnç, bobin, kondansatör kutuları · İki kanallı dijital osiloskop (imleçli) · 12 V akü benzetimi, ateşleme bobini (L<sub>p</sub> = 5 mH, 1:100), platin ve kondansatör · 1000:1 yüksek gerilim probu.</p>
+      <div class="info">Ateşleme deneyi yalnızca benzetimdir. Gerçek bir ateşleme bobininin sekonderi on binlerce volt üretir; eğitim laboratuvarında bu deney yalnızca uygun yalıtımlı düzenekle ve sorumlu gözetiminde yapılır.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b>'deki karşılaştırma tablosunu inceleyin ve <b>Ön Hazırlık</b>'ı çözün. Her deneyde föy adımları siz doğru ayarı yaptığınızda işaretlenir. Ölçümleri <kbd>R</kbd> ile kaydedin. Deney 4 bir dönem sonu tekrarıdır: yeni devre isteyip türünü ve α'yı bulun.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Aynı Matematik, Tek Fark α'nın Formülü</h2>
+  <p class="lead">Seri RLC paralel devrenin “eşi”dir (dualite): gerilim ↔ akım, KCL ↔ KVL, R ↔ 1/R.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Sezgi: enerjiyi kim harcıyor?</h3>
+      <p style="font-size:14px;line-height:1.65">Seri devrede akım tek yoldan geçer ve her an R'nin içinden akar: R büyüdükçe daha çok enerji ısıya döner, sönüm <b>artar</b>. Paralel devrede ise R, L–C salınımına bir “kaçak yol”dur: R büyüdükçe kaçak azalır, sönüm <b>azalır</b>. Kolay kontrol: R → 0 yapın; seri devre kayıpsız LC olur (α → 0), paralel devrede ise R kısa devredir (α → ∞).</p>
+      <p style="font-size:14px;line-height:1.65">Seri RLC her yerdedir: uzun bir kablonun endüktansı ile alıcının giriş kapasitesi (sayısal hatlarda <b>çınlama</b>), anahtarlamalı güç kaynaklarında parazitik LC, araçlarda <b>ateşleme bobini</b>, defibrilatörlerin dalga biçimlendirme devresi, radyo alıcısının seri rezonans filtresi.</p>
+      <svg viewBox="0 0 440 150" style="width:100%;max-width:460px;display:block;margin:auto" aria-label="Seri ve paralel RLC">
+        <g fill="none" stroke="#222" stroke-width="2">
+          <circle cx="30" cy="75" r="14" fill="#fff"/><path d="M30,61 V25 H55 l5,-6 l10,12 l10,-12 l10,12 l5,-6 H110 a5,5 0 0 1 10,0 a5,5 0 0 1 10,0 a5,5 0 0 1 10,0 H180 V65 M168,65 h24 M168,73 h24 M180,73 V125 H30 V89"/>
+          <circle cx="260" cy="75" r="14" fill="#fff"/><path d="M260,61 V25 H420 M260,89 V125 H420 M310,25 V45 l-6,4 l12,8 l-12,8 l12,8 l-6,4 V125 M365,25 V50 a5,5 0 0 1 0,10 a5,5 0 0 1 0,10 a5,5 0 0 1 0,10 V125 M415,25 V70 M403,70 h24 M403,78 h24 M415,78 V125"/>
+        </g>
+        <text x="100" y="145" font-size="12" text-anchor="middle" fill="#0b5cad">Seri: akım ortak, α = R/2L</text>
+        <text x="340" y="145" font-size="12" text-anchor="middle" fill="#c62828">Paralel: gerilim ortak, α = 1/2RC</text>
+        <text x="75" y="15" font-size="11" text-anchor="middle">R</text><text x="125" y="15" font-size="11" text-anchor="middle">L</text><text x="196" y="72" font-size="11">C</text>
+        <text x="322" y="80" font-size="11">R</text><text x="375" y="80" font-size="11">L</text><text x="430" y="94" font-size="11">C</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Seri ve paralel RLC karşılaştırma tablosu</h3>
+      <table class="data">
+        <tr><th></th><th>Paralel RLC</th><th>Seri RLC</th></tr>
+        <tr><td class="l">Ortak büyüklük</td><td>gerilim v</td><td>akım i</td></tr>
+        <tr><td class="l">Temel yasa</td><td>KCL + türev</td><td>KVL + türev</td></tr>
+        <tr><td class="l">Neper frekansı</td><td>α = 1/(2RC)</td><td>α = R/(2L)</td></tr>
+        <tr><td class="l">Rezonans frekansı</td><td>ω<sub>0</sub> = 1/√(LC)</td><td>ω<sub>0</sub> = 1/√(LC)</td></tr>
+        <tr><td class="l">R büyürse</td><td>sönüm azalır</td><td>sönüm artar</td></tr>
+        <tr><td class="l">Kritik koşul</td><td>R = ½√(L/C)</td><td>R = 2√(L/C)</td></tr>
+        <tr><td class="l">Başlangıç koşulları</td><td>v(0) = V<sub>0</sub>, i<sub>L</sub>(0) = I<sub>0</sub></td><td>i(0) = I<sub>0</sub>, v<sub>C</sub>(0) = V<sub>0</sub></td></tr>
+        <tr><td class="l">Basamakta çözülen</td><td>i<sub>L</sub> → I<sub>s</sub></td><td>v<sub>C</sub> → V<sub>s</sub></td></tr>
+        <tr><td class="l">Başlangıç türevi</td><td>di<sub>L</sub>/dt = V<sub>0</sub>/L</td><td>dv<sub>C</sub>/dt = I<sub>0</sub>/C</td></tr>
+        <tr><td class="l">Doğal tepkide ikinci başlangıç koşulu</td><td>dv/dt = −(V<sub>0</sub>/R + I<sub>0</sub>)/C</td><td>di/dt = −(RI<sub>0</sub> + V<sub>0</sub>)/L</td></tr>
+      </table>
+      <h3>Ortak formüller</h3>
+      <table class="data">
+        <tr><td class="l">Kökler</td><td class="l">s<sub>1,2</sub> = −α ± √(α² − ω<sub>0</sub>²), ω<sub>d</sub> = √(ω<sub>0</sub>² − α²)</td></tr>
+        <tr><td class="l">Çözüm</td><td class="l">son değer + {A<sub>1</sub>e<sup>s<sub>1</sub>t</sup> + A<sub>2</sub>e<sup>s<sub>2</sub>t</sup> | (D<sub>1</sub>t + D<sub>2</sub>)e<sup>−αt</sup> | e<sup>−αt</sup>(B<sub>1</sub>cos + B<sub>2</sub>sin)}</td></tr>
+        <tr><td class="l">Aşım, tepe anı</td><td class="l">%OS = 100e<sup>−απ/ω<sub>d</sub></sup>, t<sub>p</sub> = π/ω<sub>d</sub></td></tr>
+        <tr><td class="l">LC enerji aktarımı</td><td class="l">½LI<sub>0</sub>² = ½CV<sub>maks</sub>² → V<sub>maks</sub> = I<sub>0</sub>√(L/C)</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Ateşleme bobini öldürücü olmasa da tehlikelidir.</b> Sekonder 15–40 kV üretir; çarpması kas kasılmasıyla düşmelere, kalp pili taşıyanlarda ciddi sonuçlara yol açar. Çalışan bobin devresine dokunmayın, buji kablosunu elle tutmayın, yalıtımlı pense ve uygun YG probu kullanın.</div>
+    <div class="warnbox"><b>Bobin akımını kesmek = yüksek gerilim.</b> Seri devrede anahtar açıldığında v = L di/dt kontaklar arasında belirir. Bir rölenin ya da motorun bobinini kesen her anahtara serbest geçiş diyodu veya RC sönümleyici (snubber) koyun.</div>
+    <div class="warnbox"><b>Kondansatörü boşaltın.</b> Seri RLC'de basamaktan sonra v<sub>C</sub> kaynak gerilimini aşabilir (Örnek 4.6: 48 V kaynakta 67 V). Kondansatörün gerilim değeri kaynağa göre değil <b>tepe değere</b> göre seçilmeli; deney sonunda dirençle boşaltılmalıdır.</div>
+    <div class="warnbox"><b>Osiloskop probu ve toprak yayı.</b> Nanosaniye mertebesindeki çınlamayı ölçerken uzun toprak klipsi kendisi 100–200 nH endüktans ekler ve sahte çınlama gösterir. Probun kısa toprak yayını kullanın, 10× konumunda ölçün.</div>
+    <div class="warnbox"><b>Elektrolitik kondansatör ve ters gerilim.</b> Az sönümlü seri devrede v<sub>C</sub> yön değiştirebilir (doğal tepki). Kutuplu kondansatör kullanmayın; film kondansatör seçin.</div>
+    <div class="warnbox"><b>Direnç güç değeri ve endüktansı.</b> Sönüm direnci tel sargılı olmamalıdır (kendi endüktansı çınlamayı artırır); karbon film ya da metal film seçin. Akü devresinde balast direnci watt'larca ısı üretir.</div>
+    <div class="info"><b>Sık hatalar:</b> seri devrede α = 1/2RC kullanmak (R → 0 kontrolü!) · kritik koşulları karıştırmak (½√(L/C) ↔ 2√(L/C)) · seri devrede R'ye üretecin iç direncini katmamak · seri basamakta v<sub>C</sub>(∞) = V<sub>s</sub> ve i(∞) = 0 olduğunu unutmak · aşımı kaynağı aşmamak sanmak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün (Bölüm 4 “Kendinizi sınayın” sorularıyla tutarlı).</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Seri ve Paralel RLC Yan Yana</h2>
+  <p class="lead">İki devre aynı R, L ve C'yi kullanır. <b>Doğal</b> modda kondansatörler V<sub>0</sub>'a dolu başlar; <b>Basamak</b> modunda seri devreye V<sub>s</sub>, paralel devreye 10 mA uygulanır. İmleç iki grafikte de aynı oransal konumdadır.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Seri devrenin denklemi (KVL): <span class="eq">d²i/dt² + (R/L) di/dt + i/(LC) = 0</span> α = R/2L, ω<sub>0</sub> = 1/√(LC).</div>
+        <div class="info">Seri doğal tepkide i(0) = 0 ise R'de gerilim düşmez; kapasitörün gerilimi tamamen bobine düşer: <span class="eq">di/dt(0<sup>+</sup>) = −V<sub>0</sub>/L</span></div>
+        <div class="info">Seri basamakta kapasitör gerilimi kaynağı <b>aşabilir</b>: bobin akımı sıfırlanana kadar kapasitörü doldurmayı sürdürür.</div>
+        <div class="warnbox">Doğal tepki deneyinde 100 V'a dolu kondansatör kullanılıyor: gerçek tezgâhta bu gerilim tehlikelidir. Kondansatörü yalıtımlı uçlarla bağlayın, deney sonunda dirençle boşaltın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><b style="color:#0b5cad">Seri RLC</b><svg id="d1schS" class="schem" viewBox="0 0 760 250"></svg><canvas id="d1plotS" width="560" height="300" style="width:100%"></canvas></div>
+        <div class="card"><b style="color:#c62828">Paralel RLC</b><svg id="d1schP" class="schem" viewBox="0 0 760 250"></svg><canvas id="d1plotP" width="560" height="300" style="width:100%"></canvas></div>
+      </div>
+      <div class="card"><div class="row"><b>İmleç</b><input type="range" id="d1cur" min="0" max="1000" value="200" style="flex:1"></div><div id="d1curTxt" style="font-family:Consolas,monospace;font-size:13px;margin-top:4px"></div></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Mod</th><th>V</th><th>R</th><th>L</th><th>C</th><th>t (seri)</th><th>seri değer</th><th>t (paralel)</th><th>paralel değer</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Kare Dalga ile Çınlama ve Sönüm Direnci</h2>
+  <p class="lead">Bir lojik kapı, 1 µH endüktanslı bir kablo üzerinden 1 nF'lik bir yükü sürüyor: bu bir <b>seri RLC</b>'dir. CH1 sürücü çıkışını, CH2 yükteki gerilimi gösterir; yükselen kenar 1. bölmededir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Seri R, sürücünün iç direnci + hat direnci + eklenen R<sub>d</sub>'dir: <span class="eq">α = (R<sub>g</sub> + r + R<sub>d</sub>)/(2L)</span> Hattın “karakteristik direnci” √(L/C) burada 31,6 Ω'dur.</div>
+        <div class="info">Çınlama frekansı neredeyse ω<sub>0</sub>'dır; iki ardışık tepe arası T<sub>d</sub> = 2π/ω<sub>d</sub>.</div>
+        <div class="info">Gerçek bir kablo dağılmış bir LC hattıdır; burada tek bir L ve C ile <b>yığışık</b> olarak benzetiliyor. Kenar süresi hattaki gecikmeden çok uzunsa bu benzetim iyidir.</div>
+        <div class="warnbox">5 V'luk lojik sinyalin çınlaması 8–9 V'a fırlayabilir: alıcının giriş koruma diyotları iletime geçer, entegre zarar görebilir. Çınlamayı osiloskopla görmek için probun <b>kısa toprak yayını</b> kullanın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d2inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d2scopeRow"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>R<sub>g</sub></th><th>R<sub>d</sub></th><th>L</th><th>C</th><th>Δt (imleç)</th><th>CH2 maks (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Ateşleme Bobini: LC ile Yüksek Gerilim Üretimi</h2>
+  <p class="lead">Platin kapalıyken akü, bobinin primerinden akım geçirir (RL yüklenmesi). t = 0'da platin açılır: primer endüktansı ile platine paralel kondansatör <b>seri RLC</b> oluşturur; primer gerilim yüzlerce volta, sekonder (×100) on binlerce volta çıkar.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Kapalı kalma (dwell) süresinde: <span class="eq">i<sub>p</sub>(t) = (V<sub>b</sub>/R)(1 − e<sup>−t/τ</sup>), τ = L<sub>p</sub>/R</span></div>
+        <div class="info">Platin açılınca enerji bobinden kondansatöre geçer: <span class="eq">½L<sub>p</sub>I<sub>0</sub>² ≈ ½Cv<sub>maks</sub>² → v<sub>maks</sub> ≈ I<sub>0</sub>√(L<sub>p</sub>/C)</span> Sekonder gerilimi ≈ N·v<sub>p</sub>.</div>
+        <div class="info">Aynı ilke <b>boost dönüştürücü</b>, kamera flaşı ve elektrikli çit sürücülerinde de kullanılır: bobinde biriken enerji, akım kesilince yüksek gerilim olarak ortaya çıkar.</div>
+        <div class="warnbox"><b>Güvenlik:</b> Gerçek ateşleme devresinde sekonder 15–40 kV'tur. Çalışırken bobine, buji kablosuna, distribütöre dokunmayın; ölçümü yalnızca uygun YG probuyla yapın; kalp pili taşıyanlar bu deneye katılmamalıdır. Elektronik ateşleme modülleri de primerde 300–400 V üretir.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 250"></svg><div id="d3stat" class="info"></div></div>
+      <div class="grid-half">
+        <div class="card"><b>Kapalı kalma: primer akım</b><canvas id="d3plotI" width="560" height="300" style="width:100%"></canvas></div>
+        <div class="card"><b>Platin açıldıktan sonra: primer v<sub>C</sub></b><canvas id="d3plotV" width="560" height="300" style="width:100%"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d3del">Son satırı sil</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Dwell (ms)</th><th>R<sub>b</sub> (Ω)</th><th>C</th><th>Kıvılcım</th><th>Platin arkı</th><th>Sekonder (kV)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Dönem Sonu Karma Tekrar: Hangi Tepki?</h2>
+  <p class="lead">Rastgele bir seri ya da paralel RLC devresi gelir. Türünü seçin, α'yı (rad/s) yazın, kontrol edin; ardından tepkinin eğrisini görün.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Yöntem: (1) devre seri mi paralel mi? (2) α'yı doğru formülle hesapla, (3) ω<sub>0</sub> = 1/√(LC), (4) karşılaştır: α &gt; ω<sub>0</sub> aşırı, α = ω<sub>0</sub> kritik, α &lt; ω<sub>0</sub> az sönümlü.</div>
+        <div class="info">Hızlı kontrol: kritik direnci (paralel ½√(L/C), seri 2√(L/C)) bulun ve R'yi onunla karşılaştırın; yön seri ve paralelde terstir.</div>
+        <div class="warnbox">Sınavda da tezgâhta da en sık hata birimlerdir: mH, µF, nF'yi temel birime çevirmeden hesap yapmayın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="card"><svg id="d4sch" class="schem" viewBox="0 0 760 250"></svg>
+        <div class="row" id="d4kind" style="margin-top:6px"><b>Tür:</b>
+          <button class="seg-btn" data-k="aşırı">Aşırı sönümlü</button><button class="seg-btn" data-k="kritik">Kritik</button><button class="seg-btn" data-k="az">Az sönümlü</button>
+          <label style="margin-left:12px">α = <input type="text" id="d4alpha" size="10" placeholder="rad/s"></label>
+          <button class="btn small" id="d4check">Kontrol et (R)</button><button class="btn sec small" id="d4new">Yeni devre</button>
+        </div>
+        <div id="d4fb" class="info"></div>
+        <div id="d4score" style="font-size:13px;font-weight:700"></div>
+        <canvas id="d4plot" width="760" height="300" style="width:100%"></canvas>
+      </div>
+      <div class="card">
+        <div class="row"><b>Yanıt geçmişi</b><span class="grow"></span><button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>Devre</th><th>R</th><th>L</th><th>C</th><th>Yanıt (tür)</th><th>Yanıt α</th><th></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Seri ve paralel devrede R'nin rolü neden zıttır? Çınlamayı nasıl bastırdınız? Ateşleme devresinde kondansatörün görevi nedir?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop imleçleri (Deney 2):</b> İMLEÇ düğmesine basın, ekranda sürükleyin; size yakın imleç hareket eder.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta14.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd1h14', ders: 'Devre Kuramı I', hafta: 14,
+  doc: [
+    { id: 'DÖÇ1', t: 'Seri RLC devresinin denklemini KVL ile kurar; α = R/2L ile tepki türünü belirler ve paralel devreyle karşılaştırır.', mc: [1, 2] },
+    { id: 'DÖÇ2', t: 'Kare dalga ile sürülen hatta çınlamayı osiloskopla ölçer ve sönüm direncini tasarlar.', mc: [2, 3, 4, 5] },
+    { id: 'DÖÇ3', t: 'Endüktif enerji depolamayla yüksek gerilim üretimini analiz eder, güvenlik risklerini değerlendirir.', mc: [1, 2, 6] },
+    { id: 'DÖÇ4', t: 'İkinci dereceden devrelerde tepki türünü hızlı ve doğru biçimde belirler (dönem tekrarı).', mc: [1, 2, 11] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Aynı R, L, C ile seri ve paralel RLC devrelerinin doğal ve basamak tepkilerini yan yana ölçüp R’nin zıt etkisini göstermek.', doc: ['DÖÇ1'], mc: [1, 2, 4, 5],
+      gerec: 'DC kaynak, direnç/bobin/kondansatör kutuları, osiloskop.',
+      guvenlik: '100 V’a dolu kondansatör tehlikelidir; yalıtımlı uç kullanın ve deney sonunda boşaltın; kondansatör gerilim değerini aşım tepesine göre seçin.',
+      veri: 'İmleçle okunan seri i/v<sub>C</sub> ve paralel v/i<sub>L</sub> değerleri.',
+      tartisma: 'R → 0 ve R → ∞ sınırlarında iki devre neye dönüşür?' },
+    d2: { amac: 'Kare dalga ile sürülen kablo–yük düzeneğinde çınlamayı ölçmek ve seri sönüm direnciyle kritik/%5 aşım tasarımı yapmak.', doc: ['DÖÇ2'], mc: [2, 3, 4, 5, 10],
+      gerec: 'Kare dalga üreteci (5 Ω/50 Ω), hat benzetimi (L, C), ayarlı sönüm direnci, iki kanallı osiloskop.',
+      guvenlik: 'Çınlama alıcı girişini aşırı gerilime sokabilir; prob toprak yayını kısa tutun.',
+      veri: 'Çınlama periyodu, CH2 tepe değeri, farklı R<sub>d</sub> ve sürücü empedanslarında aşım.',
+      tartisma: 'Seri sonlandırma direnci kenar hızını ve güç tüketimini nasıl etkiler; maliyet açısından hangi çözüm seçilir?' },
+    d3: { amac: 'Ateşleme bobininde RL yüklenmesi ve ardından seri LC salınımıyla yüksek gerilim üretimini incelemek; kondansatörün ve kapalı kalma süresinin etkisini görmek.', doc: ['DÖÇ3'], mc: [1, 2, 5, 6],
+      gerec: '12 V akü benzetimi, ateşleme bobini (5 mH, 1:100), platin, kondansatör, balast direnci, 1000:1 YG probu.',
+      guvenlik: 'Sekonder 15–40 kV üretir; çalışan devreye dokunmayın, yalnızca YG probu kullanın; kalp pili taşıyanlar katılmamalıdır; balast direnci ısınır.',
+      veri: 'Kapalı kalma süresi, C, kıvılcım ve platin arkı durumu, sekonder tepe gerilimi.',
+      tartisma: 'Platin arkı hem enerji kaybı hem de kontak aşınması (bakım, atık) demektir; elektronik ateşleme bu sorunu nasıl çözer?' },
+    d4: { amac: 'Rastgele seri/paralel RLC devrelerinde tepki türünü ve α’yı belirleyerek dönemi pekiştirmek.', doc: ['DÖÇ4'], mc: [1, 2, 11],
+      gerec: 'Benzetim (rastgele devre üreteci).',
+      guvenlik: 'Hesaplarda birimleri temel birime çevirin; yanlış birim gerçek devrede yanlış eleman seçimi demektir.',
+      veri: 'Yanıt geçmişi: devre, R, L, C, seçilen tür, α, doğruluk.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

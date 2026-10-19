@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 5 · İndüktör (Bobin) — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 5 — İndüktör (Bobin)</h1>
+    <div class="sub">v = L di/dt · Enerji ½Li² · Gerçek bobin ve kalite · Ters EMK ve serbest geçiş diyotu</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: v = L di/dt</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Akım Profili ve Enerji</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Gerçek Bobin</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Ters EMK ve Diyot</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 5 · Akım Değiştiğinde Gerilim Üreten Eleman</h2>
+  <p class="lead">Ders notu: <b>Bölüm 2.1 İndüktör (bobin)</b> (Örnek 2.1, 2.5, 2.7 ve “Önce tahmin edin” soruları).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Üçgen akımın bobinde <b>kare gerilim</b> ürettiğini osiloskopta görecek, eğimden L'yi ölçeceksiniz: gerilimi akımın değeri değil <b>eğimi</b> belirler.</li>
+        <li>Bir akım profili tasarlayıp gerilim, güç ve <b>enerji w = ½Li²</b> grafiklerini okuyacak; bobinin enerji alıp geri verdiği aralıkları bulacaksınız.</li>
+        <li>Gerçek bobini <b>ideal L + seri R<sub>L</sub></b> (ve yüksek frekansta sargı kapasitesi) olarak modelleyip R<sub>L</sub>, L ve kalite faktörü Q'yu ölçeceksiniz.</li>
+        <li>Bobin akımının <b>sıçrayamayacağını</b>, akımı kesince ortaya çıkan ters EMK'yı ve serbest geçiş (flyback) diyotunun nasıl koruduğunu göreceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Fonksiyon üreteci (üçgen/sinüs/kare, 50 Ω çıkış) · İki kanallı osiloskop (MATH: CH2 − CH1, imleçli, tek atım) · Programlanabilir akım kaynağı · DC güç kaynağı (akım sınırlı) · Multimetre (Ω, REL) · İki kanallı AC voltmetre (gerçek RMS) · Kızılötesi termometre · Akım probu · Bobinler: 1 mH, 10 mH, 47 mH, 100 mH/6 Ω, röle bobini, bilinmeyen bobin <b>X</b> · 1N4007 diyot, 24 V zener, 10 Ω şönt.</p>
+      <div class="info">Bu haftanın bilinmeyen bobini <b>X</b> size özeldir: endüktansı ve sargı direnci her öğrenci için farklıdır. Deney 1 ve Deney 3'te aynı bobini iki ayrı yöntemle ölçüp sonuçları karşılaştıracaksınız.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b>'yi okuyun (özellikle güvenlik uyarılarını) ve <b>Ön Hazırlık</b> sorularını çözün. Her deneyde soldaki föyü izleyin; adımlar doğru ayarı yaptığınızda kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile kaydedin. Son bölümde raporunuzu yazdırın.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Bobin Neden “Değişime” Karşı Koyar?</h2>
+  <p class="lead">Bobin, akımın değerine değil değişimine tepki veren ilk elemanımız. Bu farkı kavramak, Bölüm 3'teki geçici rejim analizinin temelidir.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Sezgisel anlatım</h3>
+      <p style="font-size:14px;line-height:1.65">Sargıdan geçen akım bir manyetik alan oluşturur; toplam akı bağı akımla orantılıdır: λ = Li. Faraday yasasına göre sargıda doğan gerilim akı bağının <b>değişim hızıdır</b>: v = dλ/dt = L di/dt. Akım sabitse akı sabittir, gerilim sıfırdır: <b>DC'de ideal bobin kısa devredir</b>. Akımı aniden değiştirmeye çalışırsanız di/dt çok büyür, gerilim de çok büyür: bobin akımı <b>sıçramaz</b>.</p>
+      <p style="font-size:14px;line-height:1.65">Bobin enerjiyi manyetik alanda <b>saklar</b> (w = ½Li²) ve geri verir; ideal bobin enerji tüketmez. Gerçek bobinde ise bakır telin direnci R<sub>L</sub> ısı üretir (P = I²R<sub>L</sub>).</p>
+      <p style="font-size:14px;line-height:1.65"><b>Nerede karşınıza çıkar?</b> Telefon şarj cihazlarındaki anahtarlamalı güç çeviricilerde enerji aktarıcı, hat filtrelerinde şok bobini, rölelerde mıknatıs, otomobil ateşleme bobininde 30 kV'luk kıvılcım üreteci, kablosuz şarjda verici/alıcı sargı olarak.</p>
+      <svg viewBox="0 0 420 200" style="width:100%;max-width:420px;display:block;margin:auto" aria-label="Üçgen akım ve kare gerilim">
+        <text x="8" y="22" font-size="12" fill="#0b5cad">i(t)</text>
+        <line x1="30" y1="60" x2="410" y2="60" stroke="#bbb"/>
+        <polyline points="30,90 105,30 180,90 255,30 330,90 405,30" fill="none" stroke="#0b5cad" stroke-width="2.5"/>
+        <text x="8" y="132" font-size="12" fill="#c62828">v<tspan font-size="9" dy="3">L</tspan></text>
+        <line x1="30" y1="150" x2="410" y2="150" stroke="#bbb"/>
+        <polyline points="30,125 105,125 105,175 180,175 180,125 255,125 255,175 330,175 330,125 405,125" fill="none" stroke="#c62828" stroke-width="2.5"/>
+        <text x="66" y="118" font-size="10" fill="#c62828">+L·eğim</text><text x="140" y="190" font-size="10" fill="#c62828">−L·eğim</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Temel ilişki (pasif işaret)</td><td class="l">v<sub>L</sub> = L di<sub>L</sub>/dt</td></tr>
+        <tr><td class="l">Ters ilişki</td><td class="l">i(t) = i(t<sub>0</sub>) + (1/L)∫<sub>t0</sub><sup>t</sup> v dτ</td></tr>
+        <tr><td class="l">Endüktans</td><td class="l">L = μN²A/ℓ ; 1 H = 1 V·s/A</td></tr>
+        <tr><td class="l">Güç</td><td class="l">p = vi = Li di/dt (p &gt; 0 alır, p &lt; 0 verir)</td></tr>
+        <tr><td class="l">Enerji</td><td class="l">w = ½Li² ≥ 0</td></tr>
+        <tr><td class="l">Süreklilik</td><td class="l">i<sub>L</sub>(0<sup>+</sup>) = i<sub>L</sub>(0<sup>−</sup>)</td></tr>
+        <tr><td class="l">Gerçek bobin</td><td class="l">ideal L + seri R<sub>L</sub> (+ paralel sargı kapasitesi C<sub>p</sub>)</td></tr>
+        <tr><td class="l">Empedans (sinüs)</td><td class="l">|Z| = √(R<sub>L</sub>² + (ωL)²)</td></tr>
+        <tr><td class="l">Kalite faktörü</td><td class="l">Q = ωL / R<sub>L</sub></td></tr>
+        <tr><td class="l">Üçgen akımda</td><td class="l">v<sub>L,tt</sub> = 4 f L i<sub>tt</sub> (tt: tepe-tepe)</td></tr>
+        <tr><td class="l">Diyotla söndürme</td><td class="l">τ ≈ L/(R<sub>L</sub> + R<sub>D</sub>)</td></tr>
+      </table>
+      <h3>Önce tahmin edin</h3>
+      <div class="info">L = 20 mH bobinden 0,5 A akarken anahtar açılıyor ve akım 1 µs'de sıfıra iniyor. Bobin gerilimi kaç volt olur: 0 V, −10 V, −10 000 V, sonsuz? Deney 4'te bunun neden <b>tehlikeli</b> olduğunu göreceksiniz.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Endüktif yükün akımını aniden kesmeyin.</b> Röle, solenoid, motor ya da büyük bir bobinden akım geçerken anahtarı açmak yüzlerce–binlerce voltluk ters EMK üretir: kontaklarda <b>ark/kıvılcım</b>, transistörde kalıcı hasar, elinizde elektrik çarpması. Her endüktif yükte serbest geçiş diyotu ya da söndürme devresi kullanın.</div>
+    <div class="warnbox"><b>Diyotun yönü hayati önemdedir.</b> Serbest geçiş diyotu bobine <b>ters paralel</b> bağlanır: katot beslemenin + ucuna, anot anahtara giden uca. Ters takılırsa anahtar kapanınca kaynağı kısa devre eder; diyot ve kaynak zarar görür.</div>
+    <div class="warnbox"><b>Bobinler ısınır.</b> Sargı direncindeki I²R kaybı bobini ısıtır; 100 mH/6 Ω'luk bir bobin 12 V'ta 24 W harcar ve dakikalar içinde vernik yalıtımı yanacak sıcaklığa ulaşır. Akım sınırını ayarlayın, bobine dokunmadan önce soğumasını bekleyin.</div>
+    <div class="warnbox"><b>Multimetrenin akım kademesi ve sigortası.</b> Akım ölçerken problar <b>seri</b> bağlanır ve 10 A soketi kullanılır. Akım kademesindeki multimetreyi kaynağa paralel bağlamak sigortayı attırır. Endüktif devrede DMM'yi seri bağlıyken devreyi açmak, ölçü aletine de ters EMK uygular.</div>
+    <div class="warnbox"><b>Osiloskop toprakları ortaktır.</b> İki probun toprak klipsi cihaz içinde birbirine ve şebeke toprağına bağlıdır. Bobin gerilimini doğrudan ölçmek için klipsi bobinin alt ucuna takarsanız şönt direnci kısa devre edersiniz. Doğru yöntem: iki probu da devre toprağına referanslayıp <b>MATH (CH2 − CH1)</b> kullanmak ya da diferansiyel prob.</div>
+    <div class="warnbox"><b>Yüksek gerilim probu.</b> Ters EMK ölçümünde standart ×10 prob (çoğunlukla 300–400 V sınırı) yetersiz kalabilir; ×100 yüksek gerilim probu kullanın, ilk ölçümü koruma elemanı takılıyken yapın.</div>
+    <div class="warnbox"><b>Şönt direnç ve güç değeri.</b> Akımı ölçmek için seri konan 10 Ω şöntte P = I²R harcanır: 0,3 A'de 0,9 W. ¼ W'lık bir direnç yanar; en az 1–2 W'lık direnç seçin.</div>
+    <div class="info"><b>Sık hatalar:</b> v = L·i yazmak (doğrusu v = L di/dt; L·i akı bağıdır, birimi V·s) · sabit akımda bobin gerilimini sıfırdan farklı sanmak · enerjiyi negatif bulmak (w = ½Li² hiçbir zaman negatif değildir; i = −2 A da enerji depolar) · pasif işaret kuralına uymayıp gerilimin işaretini ters almak · mH'yi H'ye çevirmeyi unutmak · gerçek bobinin DC'de “sıfır direnç” olduğunu sanmak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Pasif işaret kuralını kullanın.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Üçgen Akım, Kare Gerilim: v = L di/dt</h2>
+  <p class="lead">Fonksiyon üreteci → R<sub>seri</sub> → bobin → 10 Ω şönt → toprak. R<sub>seri</sub> ≫ ωL olduğunda akım üretecin dalga biçimini izler. CH1 şönt gerilimini (= 10 Ω × i), CH2 bobinin üst ucunu gösterir; bobin gerilimi <b>CH2 − CH1</b>'dir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Üçgen akımın eğimi her yarım periyotta sabittir: <span class="eq">di/dt = ± i<sub>tt</sub> / (T/2) = ± 2 f i<sub>tt</sub></span> Bu yüzden bobin gerilimi iki sabit değer arasında atlar: <span class="eq">v<sub>L,tt</sub> = 2 L (2 f i<sub>tt</sub>) = 4 f L i<sub>tt</sub></span></div>
+        <div class="info">Karenin üst kenarı tam düz değildir: gerçek bobinde v = L di/dt + R<sub>L</sub>i olduğundan, kareye küçük bir üçgen (R<sub>L</sub>i) biner. Deney 3'te bu direnci ölçeceksiniz.</div>
+        <div class="warnbox">Şönt direnç akım yolunda <b>toprağa en yakın</b> elemandır; böylece CH1'in toprak klipsi devre toprağında kalır. Klipsi bobinin alt ucuna takmak şöntü kısa devre eder ve akım ölçümünüz sıfır görünür.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d1scopeBox"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 240"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d1rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d1del">Son satırı sil</button>
+            <button class="btn sec small" id="d1csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Bobin</th><th>Dalga</th><th>f (Hz)</th><th>i<sub>tt</sub> (mA)</th><th>v<sub>L,tt</sub> (V)</th></tr></thead><tbody></tbody></table></div>
+          <div style="font-size:12px;color:#556">i<sub>tt</sub> = CH1 tepe-tepe / 10 Ω; v<sub>L,tt</sub> = MATH (CH2 − CH1) tepe-tepe.</div>
+        </div>
+        <div class="card">
+          <div class="row"><b>v<sub>L,tt</sub> – 4 f i<sub>tt</sub> grafiği</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Teorik doğru</label></div>
+          <canvas id="d1plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12px;color:#556">Yalnızca üçgen dalga kayıtları çizilir. Doğrunun eğimi L'dir (H).</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Akım Profili Tasarımı: Gerilim, Güç ve Enerji</h2>
+  <p class="lead">Programlanabilir akım kaynağı ideal bir bobini sürüyor. Kırılma noktalarını (t; i) yazarak bir akım profili tasarlayın; kaynak bu profili izlemeye çalışır. Kaynağın <b>uyum gerilimi</b> sınırlıdır: gereken gerilim bu sınırı aşarsa akım profili izleyemez.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Akım profili</h3>
+        <div style="font-size:13px;margin-bottom:4px">Her satıra bir nokta: <b>t (ms) ; i (A)</b>. Doğrusal birleştirilir. Aynı t'yi iki kez yazarak sıçrama deneyebilirsiniz.</div>
+        <textarea id="d2prof" rows="8" style="width:100%;font:14px Consolas,monospace;padding:6px;border:1px solid var(--line);border-radius:6px"></textarea>
+        <div class="row" style="margin-top:6px">
+          <button class="btn small" id="d2apply">Uygula</button>
+          <span class="grow"></span>
+          <button class="btn sec small" data-pre="ex21">Örnek 2.1</button>
+          <button class="btn sec small" data-pre="ex25a">Örnek 2.5a</button>
+          <button class="btn sec small" data-pre="ex25b">Örnek 2.5b</button>
+          <button class="btn sec small" data-pre="trap">Rampa–sabit–sıfır</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Gerilim akımın <b>eğimini</b>, enerji akımın <b>karesini</b> izler. Akım sabitken v = 0 (akım var, gerilim yok!). Akımın büyüklüğü artarken p &gt; 0 (bobin enerji alır), azalırken p &lt; 0 (geri verir).</div>
+        <div class="info">Sağlama: gücün integrali enerjiyi verir, <span class="eq">∫<sub>0</sub><sup>t</sup> p dτ = ½Li(t)² − ½Li(0)²</span></div>
+        <div class="warnbox">Gerçek bir akım kaynağı ancak uyum geriliminin izin verdiği hızda akım değiştirebilir (di/dt ≤ V<sub>uyum</sub>/L). Profilinize dik bir iniş koyduğunuzda kaynağın sınıra dayanması, Deney 4'teki ters EMK'nın kontrollü bir habercisidir.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><b>i(t) (A)</b><canvas id="d2pi" width="520" height="220" style="width:100%"></canvas></div>
+        <div class="card"><b>v(t) (V)</b><canvas id="d2pv" width="520" height="220" style="width:100%"></canvas></div>
+        <div class="card"><b>p(t) (W)</b><canvas id="d2pp" width="520" height="220" style="width:100%"></canvas></div>
+        <div class="card"><b>w(t) = ½Li² (J)</b><canvas id="d2pw" width="520" height="220" style="width:100%"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu (t* anındaki değerler)</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>L</th><th>t* (ms)</th><th>i (A)</th><th>v (V)</th><th>p (W)</th><th>w (J)</th><th>∫p dt (J)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Gerçek Bobin: Sargı Direnci, Isınma ve Kalite Faktörü</h2>
+  <p class="lead">Bir bobini üç yoldan ölçün: (A) ohmmetreyle DC direnci, (B) DC kaynakla sürekli durum akımı ve ısınma, (C) sinüsle empedans ve kalite faktörü.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Gerçek bobin ≈ ideal L + seri R<sub>L</sub>. DC sürekli durumda di/dt = 0 olduğundan akımı yalnızca R<sub>L</sub> belirler: <span class="eq">I = V / R<sub>L</sub>,&nbsp; P = I²R<sub>L</sub>,&nbsp; w = ½LI²</span> 24 W bir <b>akıştır</b> (her saniye ısıya giden enerji), 0,2 J bir <b>stoktur</b> (Örnek 2.7).</div>
+        <div class="info">Sinüs ölçümü: 100 Ω referans direnç üzerindeki gerilimden akım bulunur, I = V<sub>R</sub>/100 Ω. Bobinin empedansı |Z| = V<sub>L</sub>/I = √(R<sub>L</sub>² + (ωL)²) ⇒ <span class="eq">ωL = √(|Z|² − R<sub>L</sub>²),&nbsp; Q = ωL/R<sub>L</sub></span></div>
+        <div class="info">Yüksek frekansta sarımlar arasındaki kapasite (C<sub>p</sub>, birkaç on pF) bobine paralel görünür; öz-rezonans frekansının üstünde bobin artık kondansatör gibi davranır.</div>
+        <div class="warnbox">Ohmmetreyle birkaç ohmluk direnç ölçerken prob kablolarının direnci (≈0,2–0,3 Ω) hataya girer. Probları kısa devre edip <b>REL</b> (sıfırlama) tuşuna basın. Ölçümü bobin soğukken yapın: bakırın direnci her °C'de %0,39 artar.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>AC ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d3del">Son satırı sil</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Bobin</th><th>f (Hz)</th><th>V<sub>R</sub> (V rms)</th><th>V<sub>L</sub> (V rms)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>|Z| – log<sub>10</sub> f</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> İdeal L + R<sub>L</sub> modeli</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12px;color:#556">Noktalar: |Z| = V<sub>L</sub>/(V<sub>R</sub>/100 Ω). Kesikli eğri ideal L + R<sub>L</sub> modelidir (sargı kapasitesi C<sub>p</sub> yok): yüksek frekanstaki ayrılmaya dikkat edin.</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Anahtar Açılırken Ters EMK ve Serbest Geçiş Diyotu</h2>
+  <p class="lead">+V<sub>S</sub> → bobin → X düğümü → anahtar → toprak. Bobine paralel bir koruma elemanı seçebilirsiniz. Osiloskop tek atım modunda anahtarın her konum değişiminde kayıt alır: CH1 = X düğümü (×100 yüksek gerilim probu), CH2 = bobin akımı (akım probu, 1 V/A).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Bobin akımı sıçramaz: <span class="eq">i<sub>L</sub>(0<sup>+</sup>) = i<sub>L</sub>(0<sup>−</sup>)</span> Anahtar açılınca akım bir yol bulmak zorundadır. Yol yoksa yalnızca küçük parazitik kapasiteyi (≈100 pF) doldurur: gerilim I√(L/C) mertebesine, yani <b>kilovoltlara</b> çıkar; kontak aralığı delinir (ark) ya da transistör çığ kırılmasına girer.</div>
+        <div class="info"><b>Serbest geçiş diyotu:</b> akım diyot üzerinden bobinin içinde dolaşır; X düğümü yalnızca V<sub>S</sub> + 0,7 V'a çıkar. Bedeli: akım τ = L/R<sub>L</sub> ile yavaş söner, röle geç bırakır. <b>Zener + diyot</b> daha yüksek ama sınırlı bir gerilimde (V<sub>S</sub> + V<sub>Z</sub> + 0,7) enerjiyi hızlı söndürür.</div>
+        <div class="warnbox"><b>Güvenlik:</b> Gerçek laboratuvarda korumasız bir röle ya da solenoid devresini çıplak elle tutarken açmayın; ters EMK birkaç yüz voltu kolayca geçer. Bu deneyi önce koruma elemanı takılıyken yapın, korumasız ölçümü yalnızca ×100 prob ve yalıtılmış düzenekle, öğretim elemanı gözetiminde yapın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d4inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d4scopeBox"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 260"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu (son anahtar açma olayı)</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d4del">Son satırı sil</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>Bobin</th><th>Anahtar</th><th>Koruma</th><th>V<sub>S</sub> (V)</th><th>v<sub>X,tepe</sub> (V)</th><th>Sönme süresi (ms)</th><th>Anahtarda harcanan (mJ)</th></tr></thead><tbody></tbody></table></div>
+        <div style="font-size:12px;color:#556">Sönme süresi: açmadan sonra akımın başlangıç değerinin %10'una inmesine kadar geçen süre.</div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Bobin gerilimini neden akımın eğimi belirler? Bobin X için iki yöntemle bulduğunuz L değerleri uyumlu mu? Serbest geçiş diyotunun bedeli nedir?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop:</b> MATH düğmesi CH2 izini CH2 − CH1 yapar. İMLEÇ düğmesine basıp ekranda sürükleyin; ölçüm kutusu iki kanalın ΔV/Δt değerini verir.<br>
+    <b>Deney 4:</b> ANAHTAR düğmesi her basışta konumu değiştirir; osiloskop o anı yakalar.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta05.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd1h05', ders: 'Devre Kuramı I', hafta: 5,
+  doc: [
+    { id: 'DÖÇ1', t: 'Bobinin akım–gerilim ilişkisini (v = L di/dt) fiziksel nedeniyle açıklar ve osiloskop ölçümünden endüktansı belirler.', mc: [1, 4, 5] },
+    { id: 'DÖÇ2', t: 'Verilen bir akım profili için gerilim, güç ve depolanan enerjiyi hesaplar; enerji alma/verme aralıklarını yorumlar.', mc: [1, 2, 3] },
+    { id: 'DÖÇ3', t: 'Gerçek bobini ideal L + R<sub>L</sub> modeliyle temsil eder; sargı direnci, ısınma ve kalite faktörünü ölçer.', mc: [1, 4, 5, 6] },
+    { id: 'DÖÇ4', t: 'Endüktif yük anahtarlamasında ters EMK tehlikesini analiz eder ve uygun koruma elemanını seçerek güvenli devre tasarlar.', mc: [2, 3, 6, 10] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Üçgen akımın bobinde kare gerilim ürettiğini göstermek ve v<sub>L,tt</sub> = 4fLi<sub>tt</sub> bağıntısından bilinmeyen bobinin endüktansını ölçmek.', doc: ['DÖÇ1'], mc: [1, 4, 5],
+      gerec: 'Fonksiyon üreteci (50 Ω), seri direnç kutusu, bobinler (1–100 mH, X), 10 Ω/2 W şönt, iki kanallı osiloskop (MATH, imleç).',
+      guvenlik: 'Osiloskop toprak klipsleri yalnızca devre toprağına; bobin gerilimi MATH ile ölçülür. Şönt direncin güç değerini aşmayın.',
+      veri: 'Bobin, dalga biçimi, f, i<sub>tt</sub>, v<sub>L,tt</sub> tablosu; v<sub>L,tt</sub>–4fi<sub>tt</sub> grafiği ve eğimden L.',
+      tartisma: 'Kare dalganın düz kısımları neden hafif eğimli? R<sub>seri</sub> küçültülürse akım neden üçgen olmaktan çıkar?' },
+    d2: { amac: 'Bir akım profili tasarlayarak bobin gerilimi, gücü ve enerjisini incelemek; Örnek 2.1 ve 2.5\'i doğrulamak; akım sıçramasının neden imkânsız olduğunu görmek.', doc: ['DÖÇ2'], mc: [1, 2, 3],
+      gerec: 'Programlanabilir akım kaynağı (ayarlı uyum gerilimi), ideal bobin (10 mH–1 H).',
+      guvenlik: 'Akım kaynağının uyum gerilimi yüksek seçildiğinde dik akım inişleri yüzlerce volt üretir; çıkış uçlarına dokunmayın.',
+      veri: 't*, i, v, p, w ve ∫p dt tablosu; i, v, p, w grafikleri.',
+      tartisma: 'Bobin enerji alırken ve verirken akım ile gerilimin işaretleri hakkında ne söylenebilir? Enerji neden negatif olamaz?' },
+    d3: { amac: 'Gerçek bobinin sargı direncini, DC sürekli durum akımını, ısınmasını, empedansını ve kalite faktörünü ölçmek (Örnek 2.7).', doc: ['DÖÇ3'], mc: [1, 4, 5, 6],
+      gerec: 'Multimetre (Ω, REL), akım sınırlı DC kaynak, ampermetre, kızılötesi termometre, fonksiyon üreteci, 100 Ω referans direnç, iki kanallı AC voltmetre.',
+      guvenlik: 'Sürekli DC akımda bobin ısınır (I²R); akım sınırını ayarlayın, ısınan bobine dokunmayın. Gereksiz ısı kaybı enerji israfıdır: verimli tasarımda düşük R<sub>L</sub>\'li bobin seçilir.',
+      veri: 'R<sub>L</sub>, DC akım ve sıcaklık; f, V<sub>R</sub>, V<sub>L</sub> tablosu; |Z|–f grafiği, L ve Q hesapları.',
+      tartisma: 'Bobin ısındıkça DC akım neden azalır? Bir güç çeviricide düşük R<sub>L</sub>\'li (daha kalın telli, daha pahalı) bobin seçmenin enerji verimliliğine etkisi nedir?' },
+    d4: { amac: 'Endüktif yükün akımı kesildiğinde oluşan ters EMK\'yı ölçmek; serbest geçiş diyotu, zener ve direnç ile söndürme yöntemlerini gerilim tepesi ve sönme süresi açısından karşılaştırmak.', doc: ['DÖÇ4'], mc: [2, 3, 6, 10],
+      gerec: 'Akım sınırlı DC kaynak, röle bobini / solenoid, mekanik anahtar ve transistör, 1N4007 diyot, 24 V zener, 1 kΩ direnç, ×100 yüksek gerilim probu, akım probu, tek atımlı osiloskop.',
+      guvenlik: 'Korumasız endüktif devre açılırken yüzlerce–binlerce volt oluşur: ark, elektrik çarpması ve yarı iletken hasarı riski. Diyot yönünü kontrol edin; ters diyot kaynağı kısa devre eder. Bozulan elemanları elektronik atık olarak ayırın.',
+      veri: 'Koruma türüne göre v<sub>X</sub> tepe değeri, sönme süresi ve anahtarda harcanan enerji tablosu; tek atım osiloskop görüntüleri.',
+      tartisma: 'Bir röle sürücüsü için diyot mu, zener + diyot mu seçersiniz? Bırakma hızı, eleman maliyeti ve transistör gerilim değeri açısından gerekçelendirin.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

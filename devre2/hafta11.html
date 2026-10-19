@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 11 · Maksimum Güç Transferi — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>
+  .vd{width:100%;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:6px}
+  .vd text{font-size:12px;font-family:Segoe UI,Arial}
+  .seg{display:flex;gap:4px;flex-wrap:wrap}
+  .why{background:#fff8e6;border-left:4px solid #e0a100;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.55;border-radius:4px}
+  .solved{background:#f2f8f2;border-left:4px solid #2e8b57;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.6;border-radius:4px}
+</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 11 — Maksimum Güç Transferi</h1>
+    <div class="sub">Z<sub>L</sub> = Z<sub>Th</sub>* · P<sub>L</sub> yüzeyi · Kısıtlı yükler · Trafo ile uydurma · Verim</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: P<sub>L</sub> Yüzeyi</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Kısıtlı Yükler</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Trafo ve Verim</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–6</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 11 · Maksimum Ortalama Güç Transferi</h2>
+  <p class="lead">Ders notu: <b>Bölüm 2.6 Maksimum Güç Transferi</b> (Örnek 10.8 – 10.11, 2.23 – 2.27).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Yük direnci ve reaktansını iki düğmeyle tarayıp P<sub>L</sub>(R<sub>L</sub>, X<sub>L</sub>) yüzeyinin tepesini <b>ölçerek</b> bulacak, Z<sub>L</sub> = Z<sub>Th</sub>* koşulunu doğrulayacaksınız.</li>
+        <li>Bilinmeyen bir kaynağın Thevenin empedansını maksimum güç noktasından <b>geri çıkaracaksınız</b>.</li>
+        <li>Yalnız R’nin ayarlanabildiği, sınırlı ve açısı sabit yüklerde en iyi yükü bulacaksınız.</li>
+        <li>İdeal trafonun dönüştürme oranını seçerek bir hoparlörü yükseltece <b>uyduracaksınız</b>.</li>
+        <li>Maksimum güç noktasında verimin neden %50 olduğunu ve güç sistemlerinde neden bu noktada çalışılmadığını açıklayacaksınız.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Thevenin eşdeğer kaynak modülü (bilinen ve “gizli” kaynaklar) · Dekadlı direnç kutusu · Ayarlı reaktans kutusu (bobin/kondansatör, ± jX) · Wattmetre, AC voltmetre ve ampermetre (rms) · Ses yükselteci (40 V, 800 Ω çıkış) · Ayarlı oranlı uydurma trafosu · 4/8/16 Ω hoparlör yükü.</p>
+      <div class="info">Bu hafta tüm gerilimler aksi belirtilmedikçe <b>rms</b>’tir: P<sub>maks</sub> = |V<sub>Th</sub>|²/(4R<sub>Th</sub>). Tepe değerle verilirse 1/8 çarpanı kullanılır.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Ön Bilgi’deki R<sub>L</sub> kaydırıcısıyla güç ve verim eğrilerini izleyin, Ön Hazırlık’ı çözün. Deney 1’de yüzeyin tepesini arayın, Deney 2’de kısıtlar altında en iyi yükü bulun, Deney 3’te trafo oranını tasarlayın.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Kaynaktan En Çok Güç Nasıl Çekilir?</h2>
+  <p class="lead">Her doğrusal kaynak, yükün gözünden bir V<sub>Th</sub> ve bir Z<sub>Th</sub>’den ibarettir. Soru: yükü nasıl seçelim ki ortalama güç en büyük olsun?</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · İki dengeli istek</h3>
+      <p style="font-size:14px;line-height:1.65">Yük direnci çok küçükse akım büyük ama yükün gerilimi küçüktür; çok büyükse gerilim büyük ama akım küçüktür. Her iki uçta güç sıfırdır, arada bir tepe vardır. Reaktans ise yalnız akımı küçültür: en iyisi kaynağın reaktansını <b>yok etmektir</b>.</p>
+      <div class="eq">P<sub>L</sub> = |V<sub>Th</sub>|² R<sub>L</sub> / [ (R<sub>Th</sub>+R<sub>L</sub>)² + (X<sub>Th</sub>+X<sub>L</sub>)² ]</div>
+      <p style="font-size:14px;line-height:1.65">∂P/∂X<sub>L</sub> = 0 → X<sub>L</sub> = −X<sub>Th</sub>; ∂P/∂R<sub>L</sub> = 0 → R<sub>L</sub> = R<sub>Th</sub>. İkisi birlikte:</p>
+      <div class="eq">Z<sub>L</sub> = Z<sub>Th</sub>*,&nbsp;&nbsp; P<sub>maks</sub> = |V<sub>Th</sub>|²/(4R<sub>Th</sub>)</div>
+      <h3>2 · Bedeli: verim</h3>
+      <p style="font-size:14px;line-height:1.65">Uyumda aynı akım R<sub>Th</sub>’den de geçer ve yük kadar güç harcar: η = R<sub>L</sub>/(R<sub>Th</sub>+R<sub>L</sub>) = <b>%50</b>. Haberleşme ve ses devrelerinde (zayıf sinyal) bu kabul edilir; güç sistemlerinde asla: santralin ürettiğinin yarısını kendi içinde yakması kabul edilemez. Orada R<sub>L</sub> ≫ R<sub>Th</sub> seçilir.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Canlı: güç ve verim – R<sub>L</sub></h3>
+      <p style="font-size:14px;line-height:1.6;margin:0 0 6px">Kaynak: 10 V, R<sub>Th</sub> = 50 Ω (reaktans yok). Kaydırıcıyla R<sub>L</sub>’yi değiştirin.</p>
+      <label style="font-size:13px">R<sub>L</sub> <input type="range" id="obR" min="0" max="1" step="0.001" value="0.3" style="width:65%"> <span id="obRv"></span></label>
+      <canvas id="obPlot" width="620" height="280" style="width:100%;margin-top:6px"></canvas>
+      <div id="obTxt" style="font-size:13px"></div>
+      <svg class="vd" viewBox="0 0 420 130" style="margin-top:8px">
+        <g stroke="#333" stroke-width="2" fill="none">
+          <circle cx="50" cy="70" r="20"/><path d="M40,70 q5,-12 10,0 t10,0"/>
+          <path d="M50,50 V25 H100"/><rect x="100" y="15" width="70" height="20" fill="#eef4ff"/><path d="M170,25 H260"/>
+          <path d="M50,90 V115 H260"/><rect x="250" y="40" width="20" height="60" fill="#fff4e0"/><path d="M260,25 V40 M260,100 V115"/>
+        </g>
+        <g font-size="12" fill="#223"><text x="135" y="52" text-anchor="middle">Z<tspan font-size="9" dy="3">Th</tspan></text><text x="16" y="74">V<tspan font-size="9" dy="3">Th</tspan></text><text x="278" y="74">Z<tspan font-size="9" dy="3">L</tspan> = R<tspan font-size="9" dy="3">L</tspan> + jX<tspan font-size="9" dy="3">L</tspan></text>
+          <text x="300" y="30">a</text><text x="300" y="118">b</text></g>
+      </svg>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Kısıtsız yük</td><td class="l">Z<sub>L</sub> = Z<sub>Th</sub>*,&nbsp; P = |V<sub>Th</sub>|²/(4R<sub>Th</sub>) (rms)</td></tr>
+        <tr><td class="l">Tepe değerle</td><td class="l">P = V<sub>m</sub>²/(8R<sub>Th</sub>)</td></tr>
+        <tr><td class="l">Yalnız R<sub>L</sub> ayarlı (X<sub>L</sub> = 0)</td><td class="l">R<sub>L</sub> = |Z<sub>Th</sub>|</td></tr>
+        <tr><td class="l">R<sub>L</sub>, X<sub>L</sub> sınırlı</td><td class="l">Önce X<sub>L</sub>’yi −X<sub>Th</sub>’ye en yakın izinli değere, sonra R<sub>L</sub> = √(R<sub>Th</sub>² + (X<sub>Th</sub>+X<sub>L</sub>)²)</td></tr>
+        <tr><td class="l">Açı sabit, |Z<sub>L</sub>| ayarlı</td><td class="l">|Z<sub>L</sub>| = |Z<sub>Th</sub>|</td></tr>
+        <tr><td class="l">İdeal trafo (n:1)</td><td class="l">Z<sub>L</sub>’ = n² Z<sub>L</sub>;&nbsp; uyum: n = √(R<sub>Th</sub>/R<sub>L</sub>)</td></tr>
+        <tr><td class="l">Verim</td><td class="l">η = R<sub>L</sub>/(R<sub>Th</sub> + R<sub>L</sub>);&nbsp; uyumda %50</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Sık hatalar</h3>
+      <div class="info"><b>Z<sub>L</sub> = Z<sub>Th</sub> yazmak:</b> eşlenik alınmazsa reaktanslar toplanır (j4 + j4 = j8), akım küçülür. Doğrusu Z<sub>L</sub> = 3 − j4 olunca toplam 6 Ω, saf dirençtir.</div>
+      <div class="info"><b>Tepe ve rms karışması:</b> V<sub>m</sub> = 19,2 V tepe, R<sub>Th</sub> = 5,76 Ω iken P = V<sub>m</sub>²/(4R<sub>Th</sub>) = 16 W yanlış; V<sub>m</sub>²/(8R<sub>Th</sub>) = 8 W doğru.</div>
+      <div class="info"><b>Kısıtlıda eşlenik uygulamak:</b> açı −36,87° sabitken 3000 − j4000 (açı −53,13°) seçilemez. Doğrusu yalnız büyüklüğü eşlemek: 4000 − j3000 Ω.</div>
+      <div class="info"><b>“Maksimum güç = %100 verim” sanmak:</b> uyumda yarı yarıya paylaşılır, η = %50.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Yükselteç çıkışını yüksüz ya da kısa devre bırakmayın.</b> Ses yükseltecinin çıkışını kısa devre etmek çıkış transistörlerini yakar; tüp (lambalı) yükselteçlerde ise yükü açık bırakmak çıkış trafosunda aşırı gerilim oluşturur.</div>
+    <div class="warnbox"><b>Direnç kutusunun güç değeri.</b> Uyum noktasında yük, kaynağın verebileceği en büyük gücü çeker. Dekadlı direnç kutularının her kademesi tipik olarak 0,5–1 W’tır; deneyden önce P<sub>maks</sub>’ı hesaplayıp kutunun bunu taşıyabildiğini kontrol edin.</div>
+    <div class="warnbox"><b>Trafo sekonderi.</b> Uydurma trafosunda sekonderi kısa devre etmek primerden çok büyük akım çeker; akım trafolarında ise sekonder asla açık bırakılmaz. Trafo oranını değiştirirken kaynağı kapatın.</div>
+    <div class="warnbox"><b>RF uyumsuzluğu vericiyi yakabilir.</b> Bir antenin empedansı vericiye uymazsa güç geri yansır (yüksek SWR) ve çıkış katında ısınır. RF ölçümlerinde yük ve kablolar 50 Ω’a uygun olmalıdır.</div>
+    <div class="warnbox"><b>Şebeke tarafında “maksimum güç” denemesi yapmayın.</b> Şebekenin Thevenin empedansı miliohm mertebesindedir; uyumlu bir yük kısa devre demektir ve onlarca kA akım çeker. Güç sistemlerinde yük empedansı kaynak empedansından çok büyük tutulur.</div>
+    <div class="warnbox"><b>Ölçü aleti yüklemesi.</b> Kaynak empedansı kΩ mertebesindeyse voltmetrenin giriş direnci (10 MΩ) ve ampermetrenin iç direnci sonuçları etkiler; yüksek empedanslı kaynakta wattmetrenin akım devresini dikkatle seçin.</div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Değerler rms’tir.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · P<sub>L</sub>(R<sub>L</sub>, X<sub>L</sub>) Yüzeyinde Tepe Avı</h2>
+  <p class="lead">Thevenin kaynak modülüne seri bir direnç kutusu ve reaktans kutusu bağlı. İki düğmeyi çevirerek wattmetrenin gösterdiği gücü en büyük yapın. Haritada her ölçümünüz bir nokta olarak görünür.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Sabit R<sub>L</sub>’de P, X<sub>L</sub> = −X<sub>Th</sub> iken en büyüktür (paydanın ikinci terimi sıfır). Bu yüzden kontur çizgileri X<sub>L</sub> = −X<sub>Th</sub> doğrusuna göre <b>simetriktir</b>.</div>
+        <div class="info">Tarama stratejisi: önce X<sub>L</sub>’yi tarayıp gücün en büyük olduğu yeri bulun, onu sabitleyip R<sub>L</sub>’yi tarayın, sonra tekrar X<sub>L</sub>’ye dönün (koordinat iniş yöntemi). İki tur genellikle yeter.</div>
+        <div class="why"><b>Neden reaktans önce?</b> X<sub>Th</sub> + X<sub>L</sub> ≠ 0 kaldığı sürece çevrimde, güç tüketmeyen ama akımı sınırlayan bir “fren” vardır. Eşlenik reaktans onu rezonansla yok eder; geriye yalnız R<sub>Th</sub> ile R<sub>L</sub>’nin paylaşması kalır.</div>
+        <div class="solved"><b>Çözümlü mini örnek (Örnek 10.9a):</b> 10 V, Z<sub>Th</sub> = 3000 + j4000 Ω. Z<sub>L</sub> = 3000 − j4000 Ω; çevrim 6000 Ω saf direnç; I = 10/6000 = 1,667 mA; P = I²·3000 = 8,33 mW = 10²/(4·3000) ✓.</div>
+        <div class="warnbox">Gizli kaynakla çalışırken tarama sırasında yük direncini sıfıra indirmeyin: gerçek bir kaynakta bu kısa devre demektir ve kaynağın akım sınırını aşabilir. Direnç kutusunda hep küçük bir seri koruma direnci bırakın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 210"></svg></div>
+      <div class="card">
+        <div class="row"><b>P<sub>L</sub> haritası (yatay R<sub>L</sub>, dikey X<sub>L</sub>)</b><span class="grow"></span>
+          <button class="btn small" id="d1scan">Otomatik ızgara taraması</button>
+          <label style="font-size:13px"><input type="checkbox" id="d1theo"> Kuramsal konturlar</label></div>
+        <canvas id="d1map" width="760" height="420" style="width:100%"></canvas>
+        <div style="font-size:12px;color:#556">Renk: ızgara taramasında ölçülen güç (koyu = büyük). Mavi noktalar: kaydettiğiniz ölçümler. Artı işareti: şu anki yük. Haritaya tıklayarak yükü o noktaya taşıyabilirsiniz.</div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Kaynak</th><th>R<sub>L</sub> (Ω)</th><th>X<sub>L</sub> (Ω)</th><th>|V<sub>L</sub>| (V)</th><th>I (mA)</th><th>P<sub>L</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Kısıtlı Yükler: Eşlenik Mümkün Değilse?</h2>
+  <p class="lead">Gerçek yüklerin her parametresi ayarlanamaz. Üç durumu deneyin: yalnız direnç ayarlı, sınırlı R ve X, açısı sabit yük.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Yalnız R<sub>L</sub>:</b> X<sub>L</sub> = 0 iken dP/dR<sub>L</sub> = 0 → <span class="eq">R<sub>L</sub> = √(R<sub>Th</sub>² + X<sub>Th</sub>²) = |Z<sub>Th</sub>|</span></div>
+        <div class="info"><b>Sınırlı R ve X:</b> önce X<sub>L</sub>’yi −X<sub>Th</sub>’ye <b>en yakın</b> izinli değere getirin; sonra R<sub>L</sub> = √(R<sub>Th</sub>² + (X<sub>Th</sub>+X<sub>L</sub>)²) (izinli aralığa kırpılmış).</div>
+        <div class="info"><b>Açı sabit:</b> Z<sub>L</sub> = |Z<sub>L</sub>|∠θ<sub>L</sub>, yalnız büyüklük ayarlı → <span class="eq">|Z<sub>L</sub>| = |Z<sub>Th</sub>|</span></div>
+        <div class="why"><b>Neden açı sabitken büyüklükler eşitlenir?</b> P’yi |Z<sub>L</sub>|’ye göre türetince sonuç, R<sub>L</sub> = |Z<sub>Th</sub>| kuralının genelleşmiş hâlidir: tek bir serbestlik derecesi kaldığında yük, kaynağın empedansının <b>büyüklüğüne</b> uyar. Saf dirençli yük (θ<sub>L</sub> = 0) bunun özel durumudur.</div>
+        <div class="solved"><b>Çözümlü mini örnek (Örnek 2.23):</b> 100 V, Z<sub>Th</sub> = 3 + j4 Ω, yalnız R<sub>L</sub>. R<sub>L</sub> = 5 Ω; I = 100/|8 + j4| = 11,18 A; P = 11,18² × 5 = 625 W. Eşlenik uyumda 833 W olurdu.</div>
+        <div class="warnbox">Reaktans kutusundaki bobinin iç direnci (gerçekte birkaç Ω) yükün gerçel kısmına eklenir; ölçülen en iyi R<sub>L</sub> kuramdan bu kadar küçük çıkabilir. Ölçümden önce bobini LCR metreyle ölçün.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 200"></svg></div>
+      <div class="card">
+        <div class="row"><b>P<sub>L</sub> – ayarlı büyüklük</b><span class="grow"></span>
+          <button class="btn small" id="d2sweep">Tara</button>
+          <label style="font-size:13px"><input type="checkbox" id="d2theo"> Kısıtsız P<sub>maks</sub> çizgisi</label></div>
+        <canvas id="d2plot" width="760" height="300" style="width:100%"></canvas>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Kaynak</th><th>Kısıt</th><th>R<sub>L</sub> (Ω)</th><th>X<sub>L</sub> (Ω)</th><th>|Z<sub>L</sub>| (Ω)</th><th>θ<sub>L</sub> (°)</th><th>P<sub>L</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Trafo ile Empedans Uydurma ve Verim</h2>
+  <p class="lead">Örnek 2.25: Ses yükseltecinin Thevenin eşdeğeri 40 V (rms), 800 Ω. Hoparlör 8 Ω. Araya oranı ayarlanabilen bir uydurma trafosu (n:1) koyuyoruz.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">İdeal trafoda V<sub>1</sub> = nV<sub>2</sub>, I<sub>1</sub> = I<sub>2</sub>/n; primerden görülen empedans <span class="eq">Z’ = V<sub>1</sub>/I<sub>1</sub> = n² Z<sub>L</sub></span> Uyum için n²R<sub>L</sub> = R<sub>Th</sub>.</div>
+        <div class="info">Verim (ideal trafo): <span class="eq">η = n²R<sub>L</sub>/(R<sub>Th</sub> + n²R<sub>L</sub>)</span> n büyüdükçe η artar ama yükteki güç azalır.</div>
+        <div class="why"><b>Neden trafo?</b> Hoparlörü doğrudan bağlamak, 800 Ω’luk kaynağı 8 Ω ile neredeyse kısa devre etmektir: akımın çoğu kaynağın iç direncinde ısıya döner. Trafo, hoparlörü kaynağa 800 Ω gibi “gösterir”; güç yansıtılır, empedans dönüştürülür. Kayıpsız trafo kendisi güç tüketmez.</div>
+        <div class="solved"><b>Çözümlü mini örnek:</b> R<sub>Th</sub> = 600 Ω kaynak, 16 Ω hoparlör: n = √(600/16) = 6,12. Gerçek trafolarda en yakın standart oran seçilir; n = 6 için Z’ = 576 Ω, güç kaybı %0,04 kadar küçüktür. Tepenin yassı olması, uyumun yaklaşık olmasına izin verir.</div>
+        <div class="warnbox">Gerçek trafonun sargı dirençleri (bakır kaybı) ve mıknatıslanma akımı vardır; verim %100 değildir. “Gerçek trafo” seçeneğini açıp sargı kayıplarının en iyi n’yi ve gücü nasıl değiştirdiğine bakın. Ses frekansında trafo çekirdeğinin doymaması için düşük frekansta aşırı sürmeyin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 210"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>P<sub>L</sub> – n</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Kuramsal eğriler</label></div>
+          <canvas id="d3plotP" width="560" height="300" style="width:100%"></canvas>
+        </div>
+        <div class="card">
+          <b>Verim η – n</b>
+          <canvas id="d3plotE" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d3del">Son satırı sil</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Bağlantı</th><th>n</th><th>R<sub>L</sub> (Ω)</th><th>I<sub>1</sub> (mA)</th><th>P<sub>L</sub> (W)</th><th>P<sub>iç</sub> (W)</th><th>P<sub>trafo</sub> (W)</th><th>η (%)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Gizli kaynağın Z_Th değerini nasıl buldunuz? Kısıtlı yüklerde kaybedilen güç ne kadardı? Maksimum güç ile verim arasındaki ödünleşimi yorumlayın."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Harita (Deney 1):</b> tıklayınca yük o noktaya taşınır.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>6</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta11.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h11', ders: 'Devre Kuramı II', hafta: 11,
+  doc: [
+    { id: 'DÖÇ1', t: 'Sinüsoidal kararlı halde maksimum ortalama güç koşulunu (Z<sub>L</sub> = Z<sub>Th</sub>*) türetir ve ölçerek doğrular.', mc: [1, 2, 5] },
+    { id: 'DÖÇ2', t: 'Ölçümlerden bilinmeyen bir kaynağın Thevenin empedansını belirler.', mc: [2, 4, 5] },
+    { id: 'DÖÇ3', t: 'Kısıtlı yükler ve trafo ile empedans uydurma problemlerinde en iyi yükü tasarlar.', mc: [1, 3] },
+    { id: 'DÖÇ4', t: 'Maksimum güç ile verim arasındaki ödünleşimi yorumlar; güç sistemleri ile işaret devrelerini ayırt eder.', mc: [2, 6] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Yük direnci ve reaktansını tarayarak P<sub>L</sub> yüzeyinin tepesini bulmak, Z<sub>L</sub> = Z<sub>Th</sub>* koşulunu doğrulamak ve gizli bir kaynağın Z<sub>Th</sub> değerini belirlemek.', doc: ['DÖÇ1', 'DÖÇ2'], mc: [1, 2, 4, 5],
+      gerec: 'Thevenin kaynak modülü (bilinen ve gizli), dekadlı direnç kutusu, ± jX reaktans kutusu, wattmetre, AC voltmetre ve ampermetre.',
+      guvenlik: 'Yükü sıfır dirence indirmeyin; direnç kutusunun güç değerini P<sub>maks</sub> ile karşılaştırın; bağlantıyı enerjisizken değiştirin.',
+      veri: 'R<sub>L</sub>, X<sub>L</sub>, |V<sub>L</sub>|, I, P<sub>L</sub> tablosu; ölçülen güç haritası ve kontur karşılaştırması.',
+      tartisma: 'Bir antenin vericiye uydurulmaması (yansıyan güç) enerji israfı ve cihaz güvenliği açısından hangi sonuçlar doğurur?' },
+    d2: { amac: 'Yalnız direnç ayarlı, sınırlı ve açısı sabit yüklerde aktarılan gücü en büyük yapan yükü bulmak ve kısıtsız maksimumla karşılaştırmak.', doc: ['DÖÇ3'], mc: [1, 2, 3, 5],
+      gerec: 'Thevenin kaynak modülü, direnç kutusu, sınırlı reaktans kutusu, sabit açılı yük modeli, wattmetre.',
+      guvenlik: 'Reaktans kutusundaki bobin ve kondansatörlerin akım/gerilim sınırlarını aşmayın; bobin iç direncini hesaba katın.',
+      veri: 'Her kısıt için P<sub>L</sub>–ayarlı büyüklük eğrisi, en iyi nokta ve kısıtsız P<sub>maks</sub>’a oranı.' },
+    d3: { amac: 'Ses yükseltecini hoparlöre ideal ve gerçek trafo ile uydurmak; dönüştürme oranının gücü ve verimi nasıl etkilediğini ölçmek.', doc: ['DÖÇ3', 'DÖÇ4'], mc: [1, 3, 5, 6],
+      gerec: 'Ses yükselteci (40 V, 800 Ω), ayarlı oranlı uydurma trafosu, 4/8/16 Ω hoparlör, wattmetreler.',
+      guvenlik: 'Yükselteç çıkışını kısa devre etmeyin, yüksüz bırakmayın; trafo oranını enerjisizken değiştirin; yüksek ses seviyesinde kulak koruyucu kullanın.',
+      veri: 'n’ye karşı P<sub>L</sub>, iç kayıp, trafo kaybı ve verim; en iyi n.',
+      tartisma: 'Bir elektrik santrali neden yüküne “uydurulmaz”? Maksimum güç ile maksimum verim arasındaki seçimi enerji sürdürülebilirliği açısından tartışın.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 9 · RMS Değer ve Kompleks Güç — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>
+  .vd{width:100%;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:6px}
+  .vd text{font-size:12px;font-family:Segoe UI,Arial}
+  .seg{display:flex;gap:4px;flex-wrap:wrap}
+  .why{background:#fff8e6;border-left:4px solid #e0a100;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.55;border-radius:4px}
+  .solved{background:#f2f8f2;border-left:4px solid #2e8b57;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.6;border-radius:4px}
+</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 9 — RMS Değer ve Kompleks Güç</h1>
+    <div class="sub">Etkin değer · Gerçek rms ölçüm · S = P + jQ · Güç üçgeni · Güç analizörü</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Dalga Biçimi ve rms</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Kompleks Güç</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Paralel Yükler</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–6</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 9 · RMS Değer ve Kompleks Güç</h2>
+  <p class="lead">Ders notu: <b>Bölüm 2.3 RMS Değeri ve Güç Hesaplamaları</b> ve <b>2.4 Kompleks Güç</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Sinüs, kare, üçgen ve doğrultulmuş dalgaların <b>rms değerini</b> ölçüp tanımla (√ ortalama v²) karşılaştırabileceksiniz.</li>
+        <li><b>Gerçek rms</b> ile <b>ortalama duyarlı</b> multimetre arasındaki farkı, biçim çarpanı ve tepe çarpanı ile açıklayabileceksiniz.</li>
+        <li>Bir yükün P, Q, |S| ve güç faktörünü <b>güç analizörüyle</b> ölçüp güç üçgenini çizebileceksiniz.</li>
+        <li>İstenen P ve güç faktörünü veren yük empedansını <b>tasarlayıp</b> kurabileceksiniz.</li>
+        <li>Paralel yüklerde P ve Q’nun ayrı ayrı toplandığını, |S|’lerin toplanmadığını ölçerek göstereceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Fonksiyon üreteci (sinüs/kare/üçgen/yarım ve tam dalga doğrultulmuş, DC kayma) · Gerçek rms (TRMS) multimetre · Ortalama duyarlı (ucuz) multimetre · İki kanallı osiloskop (MATH kanalı) · Yük direnci ve wattmetre · Yalıtım trafolu ayarlı AC kaynak (varyak, 50 Hz) · Ayarlı R–L–C yük kutusu · Tek fazlı güç analizörü (V, I, P, Q, S, pf).</p>
+      <div class="info">Türkiye şebekesi: 230 V (rms), 50 Hz, tepe değer ≈ 325 V. Etiketteki “230 V” bir <b>rms</b> değerdir.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b> bölümündeki iki canlı şekli kurcalayın, sonra <b>Ön Hazırlık</b> sorularını çözün. Her deneyde soldaki föyü adım adım izleyin; adımlar siz doğru ayarı yaptığınızda kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile tabloya kaydedin, soruları yanıtlayın. Son bölümde raporunuzu yazdırın ya da PDF olarak kaydedin.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Isıtma Eşdeğerinden Güç Üçgenine</h2>
+  <p class="lead">Deneylere başlamadan 15 dakikanızı ayırın: iki canlı şekil, formül kartı ve gerçek laboratuvardaki tuzaklar.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Neden “etkin” (rms) değer?</h3>
+      <p style="font-size:14px;line-height:1.65">Gerilimi her an değişen bir AC kaynağı DC ile nasıl kıyaslarız? Fikir basit: <b>aynı dirençte aynı ortalama ısıyı</b> üreten DC gerilim, AC’nin etkin değeridir. Isı v²/R ile orantılı olduğundan önce <b>kare</b> alınır, periyot boyunca <b>ortalanır</b>, sonra <b>karekök</b> alınır: Root–Mean–Square.</p>
+      <div class="eq">V<sub>rms</sub> = √( (1/T) ∫ v² dt ),&nbsp;&nbsp; sinüste V<sub>rms</sub> = V<sub>m</sub>/√2 ≈ 0,707 V<sub>m</sub></div>
+      <p style="font-size:14px;line-height:1.65">Aşağıdaki şekilde mavi eğri v(t), turuncu eğri v²(t)’dir. Kesik çizgi v²’nin <b>ortalaması</b>, yeşil çizgi bunun karekökü olan V<sub>rms</sub>’tir. Kayan imleç ortalamayı adım adım biriktirir. Dalga biçimini değiştirip yeşil çizginin tepeye göre nerede durduğuna bakın.</p>
+      <div class="row seg" id="obWave"></div>
+      <canvas id="obRms" width="620" height="260" style="width:100%;border:1px solid var(--line);border-radius:6px;margin-top:6px"></canvas>
+      <div id="obRmsTxt" style="font-size:13px;margin-top:4px"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">2 · Kompleks güç ve güç üçgeni</h3>
+      <p style="font-size:14px;line-height:1.65">Endüktif ya da kapasitif bir yükte akım ile gerilim arasında θ = θ<sub>v</sub> − θ<sub>i</sub> açısı vardır. Anlık güç p(t), ortalaması <b>P</b> olan ve 2ω ile salınan bir dalgadır. Salınan kısmın bir bölümü kaynak ile yük arasında gidip gelen enerjidir: bunun genliği <b>reaktif güç Q</b>’dur. İkisini tek bir kompleks sayıda toplarız:</p>
+      <div class="eq">S = P + jQ = V<sub>rms</sub> I<sub>rms</sub>* = |S|∠θ,&nbsp;&nbsp; pf = cos θ = P/|S|</div>
+      <p style="font-size:14px;line-height:1.65">Kaydırıcılarla P ve Q’yu değiştirin; üçgenin dik kenarları P (yatay, iş yapan) ve Q (dikey, gidip gelen), hipotenüs |S|’tir. Q &gt; 0 ise akım geride (<b>geri</b> pf, endüktif); Q &lt; 0 ise ileride (<b>ileri</b> pf, kapasitif).</p>
+      <div class="row" style="font-size:13px">
+        <label>P <input type="range" id="obP" min="0" max="10" step="0.1" value="8"></label>
+        <label>Q <input type="range" id="obQ" min="-10" max="10" step="0.1" value="6"></label>
+      </div>
+      <svg id="obTri" class="vd" viewBox="0 0 420 230"></svg>
+      <div id="obTriTxt" style="font-size:13px;margin-top:4px"></div>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Etkin değer (tanım)</td><td class="l">V<sub>rms</sub> = √(ortalama v²)</td></tr>
+        <tr><td class="l">Sinüs / Kare / Üçgen</td><td class="l">V<sub>m</sub>/√2 · V<sub>m</sub> · V<sub>m</sub>/√3</td></tr>
+        <tr><td class="l">Yarım / Tam dalga doğrultulmuş</td><td class="l">V<sub>m</sub>/2 · V<sub>m</sub>/√2</td></tr>
+        <tr><td class="l">DC + AC bileşen</td><td class="l">V<sub>rms</sub> = √(V<sub>DC</sub>² + V<sub>ac,rms</sub>²)</td></tr>
+        <tr><td class="l">Biçim çarpanı / Tepe çarpanı</td><td class="l">FF = V<sub>rms</sub>/V<sub>ort</sub> (sinüs 1,111) · CF = V<sub>m</sub>/V<sub>rms</sub> (sinüs 1,414)</td></tr>
+        <tr><td class="l">Dirençte ortalama güç</td><td class="l">P = V<sub>rms</sub>²/R = I<sub>rms</sub>² R = V<sub>m</sub>²/(2R)</td></tr>
+        <tr><td class="l">Ortalama ve reaktif güç</td><td class="l">P = V<sub>rms</sub>I<sub>rms</sub> cos θ,&nbsp; Q = V<sub>rms</sub>I<sub>rms</sub> sin θ</td></tr>
+        <tr><td class="l">Kompleks güç (rms fazör)</td><td class="l">S = V I* = I<sub>rms</sub>² Z = V<sub>rms</sub>²/Z*</td></tr>
+        <tr><td class="l">Kompleks güç (tepe fazör)</td><td class="l">S = ½ V I*</td></tr>
+        <tr><td class="l">Birimler</td><td class="l">P: W · Q: VAR · |S|: VA</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Ortalama duyarlı ölçer neden yanılır?</h3>
+      <p style="font-size:14px;line-height:1.65">Ucuz multimetreler gerçekte rms hesaplamaz: sinyali doğrultup <b>ortalamasını</b> alır, sonra sinüs için geçerli biçim çarpanı <b>π/(2√2) ≈ 1,111</b> ile çarpar. Sinüste doğru sonuç verir; başka dalga biçiminde hata yapar. Kare dalganın ortalaması ile rms’i eşittir (FF = 1), ama ölçer yine 1,111 ile çarptığından <b>%11 fazla</b> okur. Üçgende FF = 1,155 olduğundan <b>%3,8 az</b> okur.</p>
+      <svg class="vd" viewBox="0 0 420 150">
+        <g font-size="12">
+          <rect x="10" y="50" width="80" height="40" fill="#eef4ff" stroke="#335"/><text x="50" y="74" text-anchor="middle">Doğrultucu |v|</text>
+          <rect x="120" y="50" width="80" height="40" fill="#eef4ff" stroke="#335"/><text x="160" y="74" text-anchor="middle">Ortalama (RC)</text>
+          <rect x="230" y="50" width="80" height="40" fill="#fff4e0" stroke="#a60"/><text x="270" y="74" text-anchor="middle">× 1,111</text>
+          <rect x="340" y="50" width="70" height="40" fill="#e9f7ee" stroke="#285"/><text x="375" y="74" text-anchor="middle">Gösterge</text>
+          <path d="M90,70 H120 M200,70 H230 M310,70 H340" stroke="#333" stroke-width="2"/>
+          <text x="210" y="125" text-anchor="middle" fill="#a33">Yalnız sinüs için “kalibre” edilmiştir.</text>
+          <text x="210" y="30" text-anchor="middle" fill="#335">Gerçek rms ölçer: v² → ortalama → √ (her dalga biçiminde doğru)</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Şebeke gerilimi öldürür.</b> 230 V’un tepe değeri 325 V’tur. Şebekeye bağlı deneylerde yalnız yalıtımlı (CAT II/III işaretli) problar ve korumalı banan uçlar kullanın; enerji varken bağlantı değiştirmeyin, tek elle çalışın, yüzük/saat takmayın.</div>
+    <div class="warnbox"><b>Yalıtım trafosu ve varyak.</b> Yük deneylerini daima yalıtım trafosunun arkasından ve varyakı sıfırdan başlatarak yapın. Varyak tek başına yalıtım sağlamaz: çıkışının bir ucu doğrudan şebeke fazına bağlı olabilir.</div>
+    <div class="warnbox"><b>Osiloskop toprak klipsi şebekeye değmez.</b> Osiloskobun toprak klipsi binanın koruma toprağına bağlıdır. Şebeke tarafındaki bir noktaya takılırsa faz–toprak kısa devresi olur: prob yanar, sigorta atar, kıvılcım yaralar. Şebeke ölçümünde <b>diferansiyel prob</b> kullanın.</div>
+    <div class="warnbox"><b>Akım ölçümü seri ya da pens ile.</b> Multimetre akım kademesindeyken uçları gerilime paralel bağlamak, ölçerin sigortasını (ya da kendisini) yakar. 10 A üstündeki akımlar için <b>akım pensi</b> ya da akım trafosu kullanın; akım trafosunun sekonderini yük varken asla açık bırakmayın.</div>
+    <div class="warnbox"><b>Ölçerin sınırlarını okuyun.</b> TRMS ölçerlerin tepe çarpanı sınırı (tipik CF ≤ 3) ve bant genişliği (tipik 1–100 kHz) vardır. İnce darbeli sinyallerde ya da yüksek frekansta gerçek rms ölçer de hata yapar.</div>
+    <div class="warnbox"><b>Yük direncinin güç değeri.</b> 10 V rms’i 100 Ω’a uygulamak 1 W eder: ¼ W’lık direnç yanar. Tepe değerle hesaplarsanız gücü 2 kat yanlış bulursunuz; direnç seçimini <b>rms</b> ile yapın.</div>
+    <div class="warnbox"><b>Kondansatörlü yükü boşaltın.</b> AC yük kutusundaki büyük kondansatörler (yüzlerce µF) enerji kesildikten sonra tepe gerilimde (≈325 V) yüklü kalabilir. Dokunmadan önce deşarj direnciyle boşaltın.</div>
+    <div class="info"><b>Sık hatalar:</b> tepe değerle P = V<sub>m</sub>²/R yazmak (2 kat fazla) · “sinüsün ortalaması sıfır, rms’i de sıfırdır” sanmak · S = V I yazıp eşleniği unutmak (Q’nun işareti ters çıkar) · “geri pf”yi kapasitif sanmak (geri = akım geride = endüktif, Q &gt; 0) · iki yükün |S| değerlerini doğrudan toplamak · tepe fazörle S = V I* yazıp ½’yi unutmak.</div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Aksi belirtilmedikçe değerler rms’tir.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Dalga Biçimi, rms Değer ve İki Multimetre</h2>
+  <p class="lead">Fonksiyon üreteci bir yük direncini besliyor. İki multimetre aynı gerilimi ölçüyor: biri gerçek rms (TRMS), diğeri ortalama duyarlı. Osiloskopta CH1 = v(t), CH2 = MATH kanalı p(t) = v²/R.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Tanım her dalga biçiminde aynıdır: <span class="eq">V<sub>rms</sub> = √( (1/T)∫v² dt )</span> Değişen yalnız sonuçtur: kare dalga her an ±V<sub>m</sub>’de olduğundan V<sub>rms</sub> = V<sub>m</sub>; üçgen çoğu zaman tepeden uzakta olduğundan V<sub>m</sub>/√3.</div>
+        <div class="info">TRMS ölçerde <b>AC</b> kuplajı DC bileşeni atar (kondansatör kuplajı); <b>AC+DC</b> ise toplam rms’i verir: <span class="eq">V<sub>rms</sub> = √(V<sub>DC</sub>² + V<sub>ac,rms</sub>²)</span></div>
+        <div class="why"><b>Neden böyle?</b> Isıtma gücü ortalama v²’ye bağlıdır, ortalama |v|’ye değil. Ortalama duyarlı ölçer |v|’nin ortalamasını ölçüp sinüs varsayımıyla 1,111’le çarpar; dalga sinüs değilse bu çarpan yanlıştır. Ölçer “yalan söylemez”, yanlış bir varsayım yapar.</div>
+        <div class="solved"><b>Çözümlü mini örnek (Örnek 2.11):</b> R = 25 Ω’dan i(t) = 4cos(ωt+30°) A geçiyor. I<sub>rms</sub> = 4/√2 = 2,828 A; P = I<sub>rms</sub>²R = 8 × 25 = 200 W; eşdeğer DC gerilim = I<sub>rms</sub>R = 70,71 V. Faz açısı (30°) dirençteki gücü etkilemez.</div>
+        <div class="warnbox">Fonksiyon üretecinin iç direnci 50 Ω’dur. Yük direncini çok küçük seçerseniz (ör. 10 Ω) üretecin çıkışı çöker ve ekrandaki ayar ile yükteki gerilim farklı olur. Ölçümü her zaman <b>yük uçlarında</b> yapın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+        <div class="bench-row" style="margin-top:12px">
+          <div class="inst dark scopewrap" style="flex:1;min-width:420px">
+            <div class="brand"><span>DSO-2C · Dijital Osiloskop</span><span><span class="led on g"></span> RUN</span></div>
+            <div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+              <canvas id="d1scope" width="640" height="360" style="width:100%;max-width:640px"></canvas>
+              <div style="min-width:150px">
+                <div class="ctrls" id="d1scopeKnobs"></div>
+                <div class="meas" id="d1scopeMeas"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 210"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d1rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d1del">Son satırı sil</button>
+            <button class="btn sec small" id="d1csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Dalga</th><th>V<sub>m</sub> (V)</th><th>V<sub>DC</sub> (V)</th><th>f (Hz)</th><th>TRMS (V)</th><th>Kuplaj</th><th>Ort. duyarlı (V)</th><th>P<sub>R</sub> (W)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>Okunan değer / V<sub>m</sub></b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Kuramsal V<sub>rms</sub>/V<sub>m</sub></label></div>
+          <canvas id="d1plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12px;color:#556">Yatay eksen: 1 sinüs · 2 kare · 3 üçgen · 4 yarım dalga · 5 tam dalga. Mavi: TRMS, turuncu: ortalama duyarlı (yalnız V<sub>DC</sub> = 0 satırları).</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Kompleks Güç, Güç Üçgeni ve Yük Tasarımı</h2>
+  <p class="lead">Yalıtım trafolu varyak, seri R–L–C yük kutusunu besliyor. Güç analizörü kaynak ile yük arasında: V, I, P, Q, |S| ve pf’yi gösterir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Seri yük: <span class="eq">Z = R + j(ωL − 1/(ωC)),&nbsp; S = V<sub>rms</sub>²/Z* = I<sub>rms</sub>² Z</span> Q’nun işareti Z’nin sanal kısmının işaretidir: endüktif baskınsa Q &gt; 0.</div>
+        <div class="info">Anlık güç (gerilim referans, θ<sub>v</sub> = 0): <span class="eq">p(t) = P + P cos 2ωt + Q sin 2ωt</span> (Ders notundaki p = P + P cos 2ωt − Q sin 2ωt, zaman sıfırı akım tepesine alındığında geçerlidir; iki ifade yalnız zaman ekseninin kaydırılmasıyla ayrılır.) Ortalaması P’dir; Q, kaynak ile yük arasında gidip gelen enerjinin genliğidir. Grafikte p(t) negatife indiğinde yük enerjiyi kaynağa <b>geri</b> veriyordur.</div>
+        <div class="why"><b>Neden S = V I*?</b> V = |V|∠θ<sub>v</sub>, I = |I|∠θ<sub>i</sub> ise V I* = |V||I|∠(θ<sub>v</sub>−θ<sub>i</sub>). Eşlenik, açıyı <b>farka</b> çevirir; böylece gerçel kısım P = |V||I|cos θ, sanal kısım Q = |V||I|sin θ olur. Eşleniği unutursanız açı θ<sub>v</sub>+θ<sub>i</sub> çıkar ve anlamsızdır.</div>
+        <div class="solved"><b>Çözümlü mini örnek (Örnek 2.12):</b> 240 V, P = 8 kW, pf = 0,8 geri. |S| = 8/0,8 = 10 kVA, Q = +√(10²−8²) = +6 kVAR → S = 8 + j6 kVA. Empedans: Z = V²/S* = 240²/(8000 − j6000) = 5,76∠36,87° Ω. Gerçel ve sanal kısmı ile L’yi siz bulun ve kurun.</div>
+        <div class="warnbox">Bu deneyde akım 40 A’i bulabilir. Gerçekte bu düzeyde akım için kablo kesiti (≥ 6 mm²), klemens sıkılığı ve güç analizörünün akım girişi ya da pensi uygun seçilmelidir. Gevşek bir klemens ısınıp yangın çıkarır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 220"></svg><div id="d2hint" class="info" style="margin-bottom:0"></div></div>
+      <div class="grid-half">
+        <div class="card"><b>Fazör diyagramı</b> <span style="font-size:12px;color:#556">(V referans, I ölçekli)</span><svg id="d2fz" class="vd" viewBox="0 0 420 260"></svg></div>
+        <div class="card"><b>Güç üçgeni</b><svg id="d2tri" class="vd" viewBox="0 0 420 260"></svg></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Anlık güç p(t) (kW) — iki periyot</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d2vi" checked> v ve i (ölçeksiz)</label></div>
+        <canvas id="d2pt" width="760" height="260" style="width:100%"></canvas>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>V (V)</th><th>R (Ω)</th><th>L (mH)</th><th>C (µF)</th><th>I (A)</th><th>P (W)</th><th>Q (VAR)</th><th>|S| (VA)</th><th>pf</th><th>Tür</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Paralel Yükler: Güçler Nasıl Toplanır?</h2>
+  <p class="lead">240 V’luk bir baraya K1 ve K2 anahtarlarıyla iki yük bağlanıyor. Güç analizörünün akım pensini kaynak hattına, Yük 1’e ya da Yük 2’ye takabilirsiniz.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Kompleks güç korunur (Tellegen): <span class="eq">S<sub>T</sub> = S<sub>1</sub> + S<sub>2</sub> → P<sub>T</sub> = P<sub>1</sub>+P<sub>2</sub>, Q<sub>T</sub> = Q<sub>1</sub>+Q<sub>2</sub></span> Ama genel olarak <span class="eq">|S<sub>T</sub>| ≤ |S<sub>1</sub>| + |S<sub>2</sub>|</span></div>
+        <div class="info">Her yük 240 V’ta verilen P ve pf’ye göre sabit bir empedans olarak modellenmiştir. Bara gerilimini değiştirirseniz güçler V² ile değişir.</div>
+        <div class="why"><b>Neden |S| toplanmaz?</b> S bir vektördür. Endüktif yükün Q’su (+) ile kapasitif yükün Q’su (−) birbirini götürür; toplam üçgen “basıklaşır”. Görünür güçlerin aritmetik toplamı yalnız iki yükün pf’si aynıysa doğrudur.</div>
+        <div class="solved"><b>Çözümlü mini örnek:</b> Yük A: 6 kW, pf 0,6 geri → |S| = 10 kVA, Q = +8 kVAR. Yük B: 6 kW, pf 1 → Q = 0. Toplam: 12 + j8 kVA, |S<sub>T</sub>| = 14,42 kVA (16 değil); pf<sub>T</sub> = 12/14,42 = 0,832 geri.</div>
+        <div class="warnbox">Akım pensini takarken çenesinin <b>tam kapandığından</b> ve içinden yalnız bir iletkenin (faz ya da nötr) geçtiğinden emin olun. Faz ve nötrü birlikte kavrarsanız akımlar birbirini götürür ve pens sıfır okur.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 240"></svg></div>
+      <div class="grid-half">
+        <div class="card"><b>Güç vektörleri (uç uca)</b><svg id="d3tri" class="vd" viewBox="0 0 420 260"></svg></div>
+        <div class="card"><b>Akım fazörleri</b> <span style="font-size:12px;color:#556">(V referans)</span><svg id="d3fz" class="vd" viewBox="0 0 420 260"></svg></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d3del">Son satırı sil</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Pens</th><th>K1</th><th>K2</th><th>V (V)</th><th>I (A)</th><th>P (kW)</th><th>Q (kVAR)</th><th>|S| (kVA)</th><th>pf</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Hangi dalga biçiminde ortalama duyarlı ölçer ne kadar yanıldı, neden? Paralel yüklerde |S| neden toplanmadı? Gözlemlerinizi yazın."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>6</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta09.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h09', ders: 'Devre Kuramı II', hafta: 9,
+  doc: [
+    { id: 'DÖÇ1', t: 'Periyodik bir sinyalin rms değerini tanımdan hesaplar; farklı dalga biçimleri için ölçerek doğrular.', mc: [1, 2, 5] },
+    { id: 'DÖÇ2', t: 'Gerçek rms ve ortalama duyarlı ölçerlerin çalışma ilkesini ve sınırlarını bilir, uygun ölçeri seçer.', mc: [4, 5] },
+    { id: 'DÖÇ3', t: 'Bir yükün kompleks gücünü ve güç üçgenini ölçer; istenen P ve pf için yük empedansı tasarlar.', mc: [1, 2, 3, 4] },
+    { id: 'DÖÇ4', t: 'Paralel yüklerde güç korunumunu uygular; şebeke deneylerinde güvenlik önlemlerini gözetir.', mc: [2, 5, 6] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Sinüs, kare, üçgen ve doğrultulmuş dalgaların rms değerini ölçmek; gerçek rms ve ortalama duyarlı ölçerlerin farkını biçim çarpanıyla açıklamak.', doc: ['DÖÇ1', 'DÖÇ2'], mc: [1, 4, 5],
+      gerec: 'Fonksiyon üreteci (50 Ω iç direnç), yük direnci, TRMS multimetre, ortalama duyarlı multimetre, MATH kanallı iki kanallı osiloskop.',
+      guvenlik: 'Yük direncinin güç değerini rms ile seçin; üreteci kısa devre etmeyin; osiloskop toprağını devre toprağına bağlayın.',
+      veri: 'Her dalga biçimi için V<sub>m</sub>, V<sub>DC</sub>, f, iki ölçerin okuması, yük gücü; okunan/V<sub>m</sub> grafiği.',
+      tartisma: 'Bir elektrik tesisatında harmonikli (kare dalgaya benzeyen) akımları ortalama duyarlı pensle ölçmek hangi sonuçlara yol açabilir?' },
+    d2: { amac: 'Seri R–L–C yükün P, Q, |S| ve pf değerlerini güç analizörüyle ölçmek, güç üçgenini çizmek ve verilen P ile pf’yi sağlayan yükü tasarlamak.', doc: ['DÖÇ3'], mc: [1, 2, 3, 4, 6],
+      gerec: 'Yalıtım trafolu varyak (0–250 V, 50 Hz), ayarlı R–L–C yük kutusu, tek fazlı güç analizörü, akım pensi.',
+      guvenlik: 'Varyakı sıfırdan başlatın; yüksek akımda kablo kesitine ve klemens sıkılığına dikkat edin; kondansatörleri deşarj edin; osiloskop toprağını şebekeye bağlamayın.',
+      veri: 'V, I, P, Q, |S|, pf tablosu; fazör diyagramı, güç üçgeni ve p(t) eğrisi.',
+      tartisma: 'Aynı P için pf düşerse kaynak akımı ve kablo ısınması nasıl değişir? Bu, enerji verimliliği açısından ne anlama gelir?' },
+    d3: { amac: 'Paralel bağlı iki yükte kompleks gücün korunduğunu, P ve Q’nun ayrı ayrı toplandığını ve |S|’lerin toplanmadığını ölçerek göstermek.', doc: ['DÖÇ4'], mc: [1, 2, 5],
+      gerec: '240 V AC bara, K1/K2 anahtarları, iki ayarlı yük (P, pf, geri/ileri), akım pensli güç analizörü.',
+      guvenlik: 'Pensi enerji varken takıp çıkarmak güvenlidir ama çene içinde tek iletken olmalıdır; anahtarlamayı yük altında hızlı ve kararlı yapın.',
+      veri: 'Kaynak, Yük 1 ve Yük 2 noktalarında P, Q, |S|, pf ve I ölçümleri; güç vektör diyagramı.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

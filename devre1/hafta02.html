@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 2 · Eviren ve Evirmeyen Yükselteç — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 2 — Eviren ve Evirmeyen Yükselteç</h1>
+    <div class="sub">Ters faz · Aynı faz · Doyum sınırı · Gerilim izleyici · Yükleme etkisi · Tasarım</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Eviren Yükselteç</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Evirmeyen Yükselteç</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Yükleme ve Tampon</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Tasarım Görevi</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 2 · Eviren ve Evirmeyen Yükselteç, Gerilim İzleyici</h2>
+  <p class="lead">Ders notu: <b>Bölüm 1.3 Eviren Yükselteç</b> ve <b>1.4 Evirmeyen Yükselteç ve İzleyici</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Eviren yükseltecin kazancını ve <b>180° faz farkını</b> osiloskopta ölçüp −R<sub>f</sub>/R<sub>s</sub> ile karşılaştırabileceksiniz.</li>
+        <li>Giriş genliğini artırarak <b>kırpılma (doyum) sınırını</b> bulacak, besleme ve akım sınırının etkisini ayırt edeceksiniz.</li>
+        <li>Evirmeyen yükseltecin aktarım eğrisini çıkarıp kazancın neden <b>1'den küçük olamayacağını</b> göreceksiniz.</li>
+        <li>Yüksek iç dirençli bir sensörde <b>yükleme etkisini</b> ölçecek, gerilim izleyicinin (tampon) bunu nasıl ortadan kaldırdığını göreceksiniz.</li>
+        <li>İstenen kazanç ve giriş direncini sağlayan <b>E12 dirençleri</b> seçerek doyum paylı bir yükselteç tasarlayacaksınız.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Simetrik DC güç kaynağı · Fonksiyon üreteci (50 Ω çıkış direnci) · Ayarlı DC kaynak · İki dijital multimetre (10 MΩ giriş) · İki kanallı imleçli osiloskop · Direnç kutusu ve E12 direnç çekmecesi · µA741 · Sensör modeli (Thévenin eşdeğeri).</p>
+      <h3>Op-amp modeli (tüm deneylerde)</h3>
+      <div class="row" style="font-size:14px">
+        <label>Doyum kabulü
+          <select id="satModel">
+            <option value="ideal">Ders kabulü: v_o = ±V_CC</option>
+            <option value="real">Gerçek 741: v_o = ±(V_CC − 1,5 V)</option>
+          </select></label>
+      </div>
+      <div class="info">µA741: A = 10<sup>5</sup>, R<sub>i</sub> = 2 MΩ, giriş polarma akımı ≈ 80 nA, SR = 0,5 V/µs, çıkış akım sınırı ≈ 25 mA. Sayısal sorular ders kabulüyle (±V<sub>CC</sub>) hazırlanmıştır.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b>'yi okuyun ve <b>Ön Hazırlık</b> sorularını çözün. Her deneyde soldaki föyü izleyin; doğru ayarı yaptığınızda adımlar kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile tabloya kaydedin, soruları kendi ölçümlerinizden yanıtlayın. Son bölümde raporunuzu yazdırın ya da PDF olarak kaydedin.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · İki Direnç, Bir Kazanç</h2>
+  <p class="lead">Geçen hafta açık çevrimde op-ampın kullanışsız olduğunu gördünüz. Bu hafta iki dirençle onu kazancı belli, kararlı bir yükseltece çeviriyoruz.</p>
+  <div class="card">
+    <svg id="obFig" class="schem" viewBox="0 0 945 190"></svg>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Eviren yükselteç: neden eksi?</h3>
+      <p style="font-size:14px;line-height:1.65">Evirmeyen uç toprakta, negatif geri besleme var: sanal kısa devreyle <b>v<sub>n</sub> = 0</b> (sanal toprak). R<sub>s</sub>'den v<sub>g</sub>/R<sub>s</sub> akımı girer; op-ampın girişine akım giremez, bu akımın tamamı R<sub>f</sub>'den çıkışa akar. Akım 0 V'luk düğümden çıkışa doğru aktığı için çıkış <b>negatif</b> olur: giriş tepedeyken çıkış çukurdadır (180°).</p>
+      <div class="eq">v<sub>o</sub> = −(R<sub>f</sub>/R<sub>s</sub>)·v<sub>g</sub>,&nbsp;&nbsp; R<sub>giriş</sub> = R<sub>s</sub></div>
+      <p style="font-size:14px;line-height:1.65">Kazanç yalnızca <b>iki direncin oranıdır</b>: A on kat değişse de, sıcaklık kaysa da çıkış neredeyse aynı kalır. Bedeli: kaynak R<sub>s</sub>'yi görür, yani eviren yapının giriş direnci sınırlıdır.</p>
+      <h3>2 · Evirmeyen yükselteç ve izleyici</h3>
+      <p style="font-size:14px;line-height:1.65">Giriş doğrudan v<sub>p</sub>'ye bağlanır. R<sub>s</sub>–R<sub>f</sub> çıkışı böler, op-amp bu bölünmüş değeri v<sub>g</sub>'ye eşitler. Çıkışın bir <b>parçası</b> girişe eşit olduğundan çıkış girişten büyük olmalıdır: kazanç <b>≥ 1</b>. Kaynaktan akım çekilmez; hassas sensörler için idealdir. R<sub>f</sub> = 0 (ya da R<sub>s</sub> = ∞) yapılırsa <b>gerilim izleyici (tampon)</b> elde edilir.</p>
+      <div class="eq">v<sub>o</sub> = (1 + R<sub>f</sub>/R<sub>s</sub>)·v<sub>g</sub>,&nbsp;&nbsp; tampon: v<sub>o</sub> = v<sub>g</sub></div>
+      <h3>3 · Gerçek hayatta</h3>
+      <p style="font-size:14px;line-height:1.65">Mikrofon ön yükselteçleri, pH elektrotları (iç direnci yüzlerce MΩ!), termokupl arabirimleri, ADC sürücüleri, osiloskop probları… Hepsi bu iki temel yapının üzerine kurulur. Tamponun “kazancı 1 olan işe yaramaz devre” olmadığını Deney 3'te göreceksiniz.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Eviren kazanç</td><td class="l">v<sub>o</sub>/v<sub>g</sub> = −R<sub>f</sub>/R<sub>s</sub></td></tr>
+        <tr><td class="l">Eviren giriş direnci</td><td class="l">R<sub>giriş</sub> = R<sub>s</sub></td></tr>
+        <tr><td class="l">Evirmeyen kazanç</td><td class="l">v<sub>o</sub>/v<sub>g</sub> = 1 + R<sub>f</sub>/R<sub>s</sub> ≥ 1</td></tr>
+        <tr><td class="l">Gerilim izleyici</td><td class="l">v<sub>o</sub> = v<sub>g</sub>, i<sub>p</sub> ≈ 0</td></tr>
+        <tr><td class="l">Doğrusal çalışma</td><td class="l">|G|·|v<sub>g</sub>|<sub>tepe</sub> ≤ V<sub>sat</sub> (pratikte %10 pay)</td></tr>
+        <tr><td class="l">Çıkış akımı (eviren)</td><td class="l">i<sub>o</sub> = v<sub>o</sub>/R<sub>L</sub> + v<sub>o</sub>/R<sub>f</sub></td></tr>
+        <tr><td class="l">Yükleme (bölücü)</td><td class="l">v<sub>L</sub> = v<sub>Th</sub>·R<sub>L</sub>/(R<sub>iç</sub>+R<sub>L</sub>)</td></tr>
+        <tr><td class="l">Faz farkı (imleçle)</td><td class="l">Δφ = 360°·f·Δt</td></tr>
+        <tr><td class="l">Sonlu A ile eviren</td><td class="l">(−R<sub>f</sub>/R<sub>s</sub>)/(1 + (1+R<sub>f</sub>/R<sub>s</sub>)/A)</td></tr>
+        <tr><td class="l">E12 dizisi</td><td class="l">10 12 15 18 22 27 33 39 47 56 68 82 (×10<sup>n</sup>)</td></tr>
+      </table>
+      <div class="info" style="margin-top:12px"><b>Dört adımlı çözüm:</b> (1) Geri besleme eviren uca mı gidiyor? (2) v<sub>p</sub>'yi bulun, v<sub>n</sub> = v<sub>p</sub> yazın. (3) Eviren düğümde KCL (i<sub>n</sub> = 0). (4) Sonucu besleme sınırıyla kontrol edin.</div>
+      <div class="info"><b>Sık hatalar:</b> eviren kazancın eksi işaretini düşürmek · evirmeyen kazancı R<sub>f</sub>/R<sub>s</sub> yazmak (1 + unutuluyor) · doyum kontrolü yapmamak · “kazanç 1 ise devre gereksiz” sanmak · giriş direnci şartını unutup R<sub>s</sub>'yi küçültmek · osiloskopta Vpp ile tepe değeri karıştırmak (Vpp = 2·tepe).</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Önce bağla, kontrol et, sonra besle.</b> Breadboard'da devreyi besleme kapalıyken kurun. Direnç değiştirirken beslemeyi kesin; canlı devrede eleman sökmek op-ampı geçici olarak açık çevrime bırakır.</div>
+    <div class="warnbox"><b>Osiloskop toprak klipsi.</b> İki probun toprak klipsi de osiloskopun içinde şebeke toprağına bağlıdır. Klipsi devrenin <u>yalnızca</u> ortak toprağına takın; R<sub>f</sub>'nin ucuna ya da çıkışa takarsanız o noktayı toprağa kısa devre edersiniz.</div>
+    <div class="warnbox"><b>Fonksiyon üretecinin 50 Ω'u ve “High-Z” ayarı.</b> Üretecin göstergesi genellikle 50 Ω yük varsayar; yüksek empedanslı bir girişte ekrandaki genliğin iki katını görebilirsiniz. Giriş genliğini her zaman <b>osiloskopla</b> ölçün.</div>
+    <div class="warnbox"><b>Direnç rengini ve gücünü kontrol edin.</b> 8,2 kΩ (gri-kırmızı-kırmızı) ile 82 kΩ (gri-kırmızı-turuncu) yalnızca bir halkayla ayrılır. Takmadan önce multimetreyle ölçün. Op-amp devrelerinde 1/4 W yeterlidir, ama küçük yük dirençlerinde P = v<sup>2</sup>/R'yi hesaplayın.</div>
+    <div class="warnbox"><b>Çıkışı kısa devre etmeyin, küçük yükten kaçının.</b> 741 çıkışı ≈25 mA ile sınırlıdır; 100 Ω'luk yükte bile 2,5 V'ta tıkanır ve ısınır. Hoparlör, röle gibi yükler için güç katı (transistör/tampon) gerekir.</div>
+    <div class="warnbox"><b>Multimetrenin de bir iç direnci vardır.</b> DMM girişleri tipik 10 MΩ'tur. MΩ mertebesinde iç dirençli bir kaynağı ölçerken aletin kendisi gerilimi düşürür; akım kademesinde ölçüm yaparken ise sigortalı mA girişini kullanın ve kabloyu ölçüm sonunda V girişine geri alın.</div>
+    <div class="warnbox"><b>Dekuplaj ve boş girişler.</b> Her besleme bacağına 100 nF seramik kondansatör koyun. Evirmeyen yapıda girişi asla havada bırakmayın: kaynak sökülünce giriş polarma akımı yol bulamaz, çıkış doyuma kayar. Girişe 100 kΩ–1 MΩ'luk bir direnç toprağa bağlanabilir.</div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. İdeal op-amp, doyum ±V<sub>CC</sub> kabul edin.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Eviren Yükselteç: Kazanç, Faz ve Kırpılma</h2>
+  <p class="lead">CH1 üretecin uç gerilimini (v<sub>g</sub>), CH2 çıkışı (v<sub>o</sub>) gösterir. R<sub>s</sub>, R<sub>f</sub> ve R<sub>L</sub>'yi direnç kutusundan seçin.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Kazancı Vpp oranından bulun: <span class="eq">|G| = CH2 Vpp / CH1 Vpp</span> İşareti ise fazdan okunur: imleçlerden birini giriş tepesine, diğerini en yakın çıkış çukuruna koyun; <span class="eq">Δφ = 360°·f·Δt</span></div>
+        <div class="info">Kırpılma iki farklı nedenle olur: <b>besleme sınırı</b> (|v<sub>o</sub>| → V<sub>sat</sub>) ya da <b>çıkış akım sınırı</b> (i<sub>o</sub> = v<sub>o</sub>/R<sub>L</sub> + v<sub>o</sub>/R<sub>f</sub> → 25 mA). Şemadaki |v<sub>n</sub>|<sub>maks</sub> değerine bakın: kırpılma başlayınca sanal toprak bozulur.</div>
+        <div class="info">Üretecin 50 Ω iç direnci R<sub>s</sub> ile seri girer. CH1'i üretecin <b>ucuna</b> bağladığımız için ölçülen oran yine R<sub>f</sub>/R<sub>s</sub> çıkar; ama küçük R<sub>s</sub> seçerseniz üretecin uç gerilimi düşer.</div>
+        <div class="warnbox">Gerçek devrede kırpılmayı uzun süre bırakmayın; bazı op-amplar doyumdan çıkarken gecikir (faz dönmesi, “latch-up”). Ölçümü yapın, genliği hemen düşürün.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d1scope"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 290"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Evirmeyen Yükselteç ve Kazancın Alt Sınırı</h2>
+  <p class="lead">DC kaynak v<sub>g</sub> evirmeyen uca bağlı. DMM-1 çıkışı, DMM-2 kaynaktan çekilen akımı ölçer. R<sub>s</sub> açık devre (∞), R<sub>f</sub> kısa devre (0) yapılabilir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Eviren düğümde KCL (i<sub>n</sub> = 0): <span class="eq">(0 − v<sub>n</sub>)/R<sub>s</sub> + (v<sub>o</sub> − v<sub>n</sub>)/R<sub>f</sub> = 0</span> v<sub>n</sub> = v<sub>g</sub> koyunca <span class="eq">v<sub>o</sub> = (1 + R<sub>f</sub>/R<sub>s</sub>) v<sub>g</sub></span></div>
+        <div class="info">Op-ampın gördüğü yük, R<sub>L</sub> ile <b>R<sub>s</sub> + R<sub>f</sub></b> kolunun paralelidir. Çok küçük geri besleme dirençleri çıkışı gereksiz yere yükler.</div>
+        <div class="warnbox">Kaynağı sökerken evirmeyen girişi havada bırakmayın; 741 girişinin polarma akımı (≈80 nA) yol bulamaz ve çıkış yavaşça doyuma kayar. Gerçek devrede girişi bir dirençle toprağa bağlayın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 290"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d2rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d2del">Son satırı sil</button>
+            <button class="btn sec small" id="d2csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d2tab"><thead></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>v<sub>o</sub> – v<sub>g</sub> aktarım eğrisi</b><span class="grow"></span>
+            <label style="font-size:13px"><input type="checkbox" id="d2theo"> İdeal eğri</label>
+            <button class="btn small" id="d2sweep">Otomatik tara</button>
+            <button class="btn sec small" id="d2clr">Temizle</button></div>
+          <canvas id="d2plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Yükleme Etkisi ve Gerilim İzleyici (Tampon)</h2>
+  <p class="lead">Sensör, açık devre gerilimi v<sub>Th</sub> ve iç direnci R<sub>iç</sub> olan bir Thévenin kaynağıdır. Yükü doğrudan ya da bir µA741 izleyici üzerinden bağlayın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Tampon yokken iç direnç ile yük bir <b>gerilim bölücü</b> oluşturur: <span class="eq">v<sub>L</sub> = v<sub>Th</sub> · R<sub>L</sub>/(R<sub>iç</sub> + R<sub>L</sub>)</span> Kural: yük direnci kaynağın iç direncinin en az 10–100 katı olmalıdır.</div>
+        <div class="info">Tamponun giriş direnci ≈ A·R<sub>i</sub> = 10<sup>5</sup> × 2 MΩ (pratikte sonsuz). Sensörden akım çekilmez; yükün akımını op-amp <b>beslemeden</b> sağlar. Gerilim kazancı 1, güç kazancı çok büyüktür.</div>
+        <div class="info">Grafikte yatay eksen R<sub>L</sub>'nin logaritmasıdır: 2 → 100 Ω, 4 → 10 kΩ, 6 → 1 MΩ, 7 → yalnızca DMM.</div>
+        <div class="warnbox">Yüksek iç dirençli kaynakları (pH elektrodu, piezo sensör, yüklü kondansatör) ölçerken DMM'nin 10 MΩ'u bile hata yaratır. Bu tür ölçümlerde ölçü aletinden önce bir tampon kullanın ya da elektrometre tipi alet seçin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 290"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d3del">Son satırı sil</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>v<sub>L</sub> – R<sub>L</sub> grafiği</b><span class="grow"></span>
+            <label style="font-size:13px"><input type="checkbox" id="d3theo"> Teorik eğriler</label>
+            <button class="btn small" id="d3sweep">R<sub>L</sub> taraması</button>
+            <button class="btn sec small" id="d3clr">Temizle</button></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12px;color:#556">Turuncu: tamponsuz tarama · mavi: tamponlu tarama · kırmızı/lacivert noktalar: kayıtlarınız</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Tasarım Görevi: Direnç Seçimi ve Doyum Payı</h2>
+  <p class="lead">Size özel bir tasarım görevi verildi. Topolojiyi seçin, E12 çekmecesinden R<sub>s</sub> ve R<sub>f</sub>'yi seçin, osiloskopta doğrulayın. Dirençlerin gerçek değerleri etiketlerinden %5'e kadar farklıdır.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Görev</h3><div id="d4task" class="info"></div><button class="btn sec small" id="d4new">Yeni görev al</button></div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Tasarım sırası:</b> (1) Faz şartından topoloji. (2) Giriş direnci şartından R<sub>s</sub> (eviren yapıda R<sub>giriş</sub> = R<sub>s</sub>). (3) Kazançtan R<sub>f</sub>'nin ideal değeri. (4) E12'de en yakın değer, kazanç hatasını kontrol edin. (5) Doyum payı: |G|·v<sub>g,tepe</sub> ≤ 0,9·V<sub>sat</sub>.</div>
+        <div class="info">E12 oranlarını bir arada düşünün: tek bir R<sub>f</sub> tutmuyorsa R<sub>s</sub>'yi de bir basamak kaydırın. Örneğin −10 için 4,7 k / 47 k, −12 için 4,7 k / 56 k ya da 3,3 k / 39 k.</div>
+        <div class="warnbox">Gerçek tasarımda direnç değerini yalnızca etiketten okumayın: devreye takmadan önce multimetreyle ölçün. %5'lik iki direncin oranı en kötü durumda %10 sapabilir.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d4inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d4scope"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 290"></svg></div>
+      <div class="card">
+        <div class="row"><b>Tasarım kayıtları</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Tasarımı kaydet (R)</button>
+          <button class="btn sec small" id="d4del">Son satırı sil</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Eviren ve evirmeyen yapıyı giriş direnci, faz ve kazanç sınırı açısından karşılaştırın. Tampon ne zaman şarttır? Tasarımınızda hangi ödünleşimi yaptınız?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop:</b> AUTO ölçeği ayarlar; İMLEÇ düğmesine basıp ekranda sürükleyerek Δt ve anlık gerilimleri okuyun.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta02.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd1h02', ders: 'Devre Kuramı I', hafta: 2,
+  doc: [
+    { id: 'DÖÇ1', t: 'Eviren yükseltecin kazancını, faz ilişkisini ve giriş direncini sanal toprak kavramıyla çözümler ve osiloskopla ölçer.', mc: [1, 2, 4, 5] },
+    { id: 'DÖÇ2', t: 'Evirmeyen yükselteç ve gerilim izleyicinin aktarım eğrisini çıkarır; kazancın alt sınırını ve doyumu açıklar.', mc: [1, 2, 5] },
+    { id: 'DÖÇ3', t: 'Yükleme etkisini ölçer, tamponun (izleyicinin) kaynağı yükten yalıtmasını ve sınırlarını değerlendirir.', mc: [1, 2, 4, 5, 6] },
+    { id: 'DÖÇ4', t: 'İstenen kazanç ve giriş direnci için standart (E12) dirençlerle doyum paylı bir yükselteç tasarlar.', mc: [2, 3, 10] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Eviren yükselteçte R<sub>s</sub>, R<sub>f</sub> seçimiyle kazancı ayarlamak; 180° faz farkını, kazancı ve kırpılma sınırını osiloskopla ölçmek (Örnek 1.2–1.3).', doc: ['DÖÇ1'], mc: [1, 2, 4, 5],
+      gerec: 'Fonksiyon üreteci (50 Ω), direnç kutusu, ±V<sub>CC</sub> kaynağı, µA741, iki kanallı imleçli osiloskop.',
+      guvenlik: 'Osiloskop toprak klipsi yalnızca devre toprağına; küçük R<sub>L</sub> ile çıkışı 25 mA sınırına zorlamayın; direnç değiştirirken beslemeyi kesin.',
+      veri: 'CH1/CH2 Vpp, imleçle Δt ve faz, kırpılma başlangıcı; ölçüm tablosu.',
+      tartisma: 'Kazancı iki katına çıkarmanın iki yolu (R<sub>s</sub>/2 veya 2R<sub>f</sub>) hangi açıdan farklıdır?' },
+    d2: { amac: 'Evirmeyen yükseltecin aktarım eğrisini çıkarmak, kaynak akımını ölçmek ve kazancın 1’den küçük olamayacağını göstermek (Örnek 1.4).', doc: ['DÖÇ2'], mc: [1, 2, 5],
+      gerec: 'Ayarlı DC kaynak, direnç kutusu (R<sub>s</sub> = ∞, R<sub>f</sub> = 0 seçenekli), iki DMM, µA741.',
+      guvenlik: 'Evirmeyen girişi havada bırakmayın; DMM akım ölçümünde sigortalı mA girişini kullanın.',
+      veri: 'v<sub>g</sub>–v<sub>o</sub> tablosu ve aktarım grafiği, kaynak akımı.',
+      tartisma: 'Zayıflatma (kazanç &lt; 1) gerekiyorsa hangi devreyi kullanırsınız?' },
+    d3: { amac: '100 kΩ iç dirençli bir sensörün 10 kΩ yükte uğradığı yükleme kaybını ölçmek ve gerilim izleyiciyle gidermek (Örnek 1.5).', doc: ['DÖÇ3'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Thévenin sensör modeli, yük direnci seçici, µA741 izleyici, iki DMM (10 MΩ).',
+      guvenlik: 'Tampon çıkışını küçük dirençli yüklere bağlamayın (akım sınırı, ısınma); gereksiz düşük yük enerji israfıdır.',
+      veri: 'Tamponlu/tamponsuz v<sub>L</sub> ve i<sub>L</sub>; v<sub>L</sub>–R<sub>L</sub> grafiği.',
+      tartisma: 'Ölçü aletinin giriş direnci ne zaman ihmal edilemez?' },
+    d4: { amac: 'Verilen kazanç, giriş direnci ve doyum payı şartlarını sağlayan yükselteci E12 dirençlerle tasarlamak ve doğrulamak.', doc: ['DÖÇ4'], mc: [2, 3, 10],
+      gerec: 'E12 direnç çekmecesi (%5), test sinyali, ±V<sub>CC</sub> kaynağı, osiloskop.',
+      guvenlik: 'Dirençleri takmadan önce ölçün; çok büyük dirençler gürültü ve ofset getirir, çok küçükler çıkışı yükler.',
+      veri: 'Seçilen R<sub>s</sub>, R<sub>f</sub>; nominal ve ölçülen kazanç; çıkış tepe değeri ve doyum payı.',
+      tartisma: 'Standart değer (maliyet, bulunabilirlik) ile kazanç doğruluğu arasında nasıl bir ödünleşim yaptınız?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

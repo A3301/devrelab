@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 6 · Kapasitör — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>
+  .boom{animation:shake .08s linear 8}
+  @keyframes shake{0%{transform:translate(0,0)}25%{transform:translate(3px,-2px)}50%{transform:translate(-3px,2px)}75%{transform:translate(2px,3px)}100%{transform:translate(0,0)}}
+  .readout{font-family:Consolas,monospace;font-size:13px;background:#0c1a10;color:#7dff8f;padding:8px 10px;border-radius:6px;line-height:1.6}
+</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 6 — Kapasitör (Kondansatör)</h1>
+    <div class="sub">i = C dv/dt · Gerilim sıçramaz · w = ½Cv² · Gerçek kapasitör · Güvenli boşaltma</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: i = C dv/dt</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Gerilim Profili ve Enerji</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Gerçek Kapasitör</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Güvenli Boşaltma</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 6 · Kapasitör (Kondansatör)</h2>
+  <p class="lead">Ders notu: <b>Bölüm 2.2 Kapasitör</b> — yapı ve türler, q = Cv, i = C dv/dt, gerilimin sürekliliği, enerji, DC sürekli durum ve güvenlik.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Üçgen gerilimin kapasitörde <b>kare akım</b> ürettiğini osiloskopta şönt direnç yardımıyla görecek, eğimden <b>bilinmeyen bir C</b> değerini ölçeceksiniz.</li>
+        <li>Kendi tasarladığınız bir gerilim profili için akım, güç ve <b>w = ½Cv²</b> enerji eğrilerini çıkaracak, kapasitör geriliminin neden <b>sıçrayamadığını</b> göreceksiniz.</li>
+        <li>Seramik, film ve elektrolitik kapasitörlerin tolerans, sızıntı, ESR ve gerilim değerini inceleyecek; <b>ters kutuplanan elektrolitiğin</b> neden patladığını (güvenle!) göreceksiniz.</li>
+        <li>Yüklü bir kapasitörü uygun dirençle <b>güvenli boşaltmayı</b>, boşaltma süresini ve direnç güç değerinin önemini öğreneceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Fonksiyon üreteci (iç direnç 50 Ω) · Keyfi dalga üreteci (AWG) · İki kanallı osiloskop (imleçli, 1 MΩ giriş) · Ayarlı DC güç kaynağı (0–60 V, akım sınırlı, kutup değiştirici) · İki dijital multimetre (10 MΩ giriş) · LCR metre (1 kHz) · Kızılötesi termometre · Kapasitör kutusu ve kapasitör çekmecesi (seramik, film, elektrolitik, tantal) · Şönt dirençler (1/10/100 Ω) · Boşaltma dirençleri (0,25–10 W) · Koruyucu gözlük.</p>
+      <div class="info">Bu haftada pasif işaret kuralı kullanılır: akım, kapasitör geriliminin “+” ucundan girer. Bu yönde <span class="eq">i<sub>C</sub> = C dv<sub>C</sub>/dt</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b> sayfasını okuyun ve <b>Ön Hazırlık</b> sorularını çözün. Her deneyde soldaki föyü adım adım izleyin; adımlar doğru ayarı yaptığınızda kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile tabloya kaydedin, soruları kendi ölçümlerinizden yanıtlayın. Son bölümde raporunuzu yazdırın ya da PDF olarak kaydedin.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Kapasitör: Gerilimin Hafızası</h2>
+  <p class="lead">Deneylere başlamadan 10 dakikanızı ayırın: sezgi, formül kartı ve gerçek laboratuvarda sizi bekleyen tuzaklar.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Kapasitör ne yapar?</h3>
+      <p style="font-size:14px;line-height:1.65">İki iletken plaka ve aralarındaki yalıtkandan (dielektrik) oluşur. Bir plakaya giren her yük kadar yük öbür plakadan çıkar; dielektrikten yük geçmez ama dış devrede akım <b>akıyormuş gibi</b> görünür. Plakalarda biriken yük gerilimle orantılıdır: <b>q = Cv</b>. Akım yükün akış hızı olduğundan</p>
+      <div class="eq">i<sub>C</sub> = dq/dt = C dv<sub>C</sub>/dt</div>
+      <p style="font-size:14px;line-height:1.65">Akımı belirleyen gerilimin <b>değeri değil eğimidir</b>. Sabit gerilimde akım sıfırdır: DC sürekli durumda kapasitör <b>açık devre</b> gibidir. Gerilimin anında değişmesi sonsuz akım isterdi; bu yüzden <b>kapasitör gerilimi sıçramaz</b>. Bobinle tam bir ikilik vardır: orada sıçramayan büyüklük akımdı.</p>
+      <h3>2 · Nerede karşımıza çıkar?</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Güç kaynağı filtresi</b> (doğrultulmuş gerilimi düzleştirir), <b>dekuplaj</b> (entegrenin yanındaki 100 nF seramik), <b>flaş ve defibrilatör</b> (enerjiyi yavaş toplar, milisaniyede verir), <b>dokunmatik ekran</b> (parmak kapasiteyi değiştirir), zamanlama devreleri (RC, Bölüm 3).</p>
+      <svg viewBox="0 0 420 170" class="schem" style="max-width:420px">
+        <rect x="120" y="30" width="12" height="110" fill="#c62828"/><rect x="250" y="30" width="12" height="110" fill="#1d4ed8"/>
+        <rect x="132" y="30" width="118" height="110" fill="#fff4cf" stroke="#d9c37a"/>
+        <g stroke="#b8860b" stroke-width="1.5">
+          <line x1="140" y1="50" x2="240" y2="50"/><line x1="140" y1="72" x2="240" y2="72"/><line x1="140" y1="94" x2="240" y2="94"/><line x1="140" y1="116" x2="240" y2="116"/>
+          <path d="M236,46 l6,4 l-6,4 M236,68 l6,4 l-6,4 M236,90 l6,4 l-6,4 M236,112 l6,4 l-6,4" fill="none"/>
+        </g>
+        <text x="126" y="24" text-anchor="middle" style="font-size:13px;fill:#c62828;font-weight:700">+q</text>
+        <text x="256" y="24" text-anchor="middle" style="font-size:13px;fill:#1d4ed8;font-weight:700">−q</text>
+        <text x="191" y="158" text-anchor="middle" class="lbl">dielektrik (ε), kalınlık d — enerji alanda: w = ½Cv²</text>
+        <path d="M40,85 H120 M262,85 H380" class="w"/>
+        <text x="60" y="76" class="lbl">i →</text><text x="330" y="76" class="lbl">i →</text>
+        <text x="40" y="110" class="lbl" style="font-size:12px">C = εA/d</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Tanım</td><td class="l">q = C v<sub>C</sub> &nbsp;(1 F = 1 C/V)</td></tr>
+        <tr><td class="l">Paralel levha</td><td class="l">C = εA/d, &nbsp;ε<sub>0</sub> = 8,854×10<sup>−12</sup> F/m</td></tr>
+        <tr><td class="l">Akım–gerilim</td><td class="l">i<sub>C</sub> = C dv<sub>C</sub>/dt</td></tr>
+        <tr><td class="l">Gerilim–akım</td><td class="l">v<sub>C</sub>(t) = v<sub>C</sub>(t<sub>0</sub>) + (1/C)∫<sub>t0</sub><sup>t</sup> i dτ</td></tr>
+        <tr><td class="l">Güç</td><td class="l">p = v i = C v dv/dt</td></tr>
+        <tr><td class="l">Enerji</td><td class="l">w = ½ C v<sup>2</sup> = q<sup>2</sup>/(2C)</td></tr>
+        <tr><td class="l">Süreklilik</td><td class="l">v<sub>C</sub>(0<sup>+</sup>) = v<sub>C</sub>(0<sup>−</sup>)</td></tr>
+        <tr><td class="l">DC sürekli durum</td><td class="l">dv/dt = 0 → i<sub>C</sub> = 0 (açık devre)</td></tr>
+        <tr><td class="l">Üçgen gerilim (V<sub>pp</sub>, f)</td><td class="l">|dv/dt| = 2V<sub>pp</sub>f → |i| = 2CV<sub>pp</sub>f (kare akım)</td></tr>
+        <tr><td class="l">Sinüs v = V<sub>m</sub> sin ωt</td><td class="l">i = ωCV<sub>m</sub> cos ωt (90° önde)</td></tr>
+        <tr><td class="l">Direnç üzerinden boşalma</td><td class="l">v(t) = V<sub>0</sub> e<sup>−t/RC</sup>, &nbsp;t<sub>güvenli</sub> = RC ln(V<sub>0</sub>/V<sub>g</sub>)</td></tr>
+        <tr><td class="l">Elektrolitik izin verilen sızıntı (tipik)</td><td class="l">I<sub>sız</sub> ≤ 0,01·C[µF]·V<sub>R</sub>[V] µA (ya da 3 µA)</td></tr>
+      </table>
+      <h3>Kapasitör türleri (özet)</h3>
+      <table class="data">
+        <tr><th>Tür</th><th>Aralık</th><th>Kutup</th><th>Tolerans</th><th>Not</th></tr>
+        <tr><td class="l">Seramik</td><td>pF–µF</td><td>yok</td><td>±10…20 %</td><td class="l">ucuz, yüksek frekansta iyi, dekuplaj</td></tr>
+        <tr><td class="l">Film</td><td>nF–µF</td><td>yok</td><td>±5 %</td><td class="l">kararlı, düşük sızıntı; ses/zamanlama</td></tr>
+        <tr><td class="l">Elektrolitik (Al)</td><td>µF–mF</td><td><b>var</b></td><td>±20 %</td><td class="l">büyük C, ESR ve sızıntı yüksek, ters bağlanırsa patlar</td></tr>
+        <tr><td class="l">Tantal</td><td>µF</td><td><b>var</b></td><td>±10 %</td><td class="l">küçük hacim; ters/aşırı gerilimde kısa devre olup yanar</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Elektrolitik ve tantal kapasitörün kutbu vardır.</b> Gövdedeki şerit (“−” işaretleri) eksi ucu gösterir; uzun bacak artıdır. Ters bağlanan elektrolitiğin oksit tabakası çözülür, sızıntı akımı artar, kapasitör ısınır, şişer ve tepedeki emniyet çentiği açılarak patlayabilir. Devreye enerji vermeden önce kutbu ikinci kez kontrol edin ve <b>koruyucu gözlük</b> takın.</div>
+    <div class="warnbox"><b>Gerilim değerini aşmayın.</b> Gövdede yazan gerilim (ör. 25 V) mutlak üst sınırdır; %20–50 pay bırakın. Aşıldığında dielektrik delinir ve kapasitör kısa devre olur. Seri bağlı kapasitörlerde gerilim eşit paylaşılmaz: küçük kapasite büyük gerilim alır.</div>
+    <div class="warnbox"><b>Yüklü kapasitör tehlikelidir — fişi çekilmiş cihazda bile.</b> Uçları açık bir kapasitör yükünü saatlerce tutar. Güç kaynağı içindeki 470 µF/400 V'luk bir kondansatör ≈25 J saklar. Dokunmadan önce uygun güçte bir dirençle boşaltın, ardından multimetreyle 0 V olduğunu <b>ölçerek</b> doğrulayın.</div>
+    <div class="warnbox"><b>Tornavidayla kısa devre yapmayın.</b> Dirençsiz boşaltma yüzlerce amperlik bir akım darbesi, kıvılcım, erimiş metal sıçraması ve kapasitörün iç bağlantılarında hasar demektir. Boşaltma direncinin hem değerine hem de <b>güç/enerji dayanımına</b> bakın (0,25 W'lık direnç 25 J'u kaldırmaz).</div>
+    <div class="warnbox"><b>LCR metreyi yüklü kapasitöre bağlamayın.</b> LCR metre ve multimetrenin kapasite kademesi kendi küçük sinyaliyle ölçer; yüklü bir kondansatör ölçü aletinin giriş katını yakar. Önce boşaltın.</div>
+    <div class="warnbox"><b>Osiloskop toprağı tek noktadadır.</b> Akımı ölçmek için kullandığınız şönt direnci toprağa bağlı uca koyun; osiloskop toprak klipsini devrede başka bir düğüme takarsanız o düğümü fonksiyon üretecinin toprağı üzerinden kısa devre edersiniz.</div>
+    <div class="warnbox"><b>Ani yükleme akımı (inrush).</b> Boş bir kapasitör dirençsiz bir kaynağa bağlandığında akımı yalnızca kablo ve kaynak direnci sınırlar. Büyük kapasitörleri ön-şarj direnci ya da NTC üzerinden doldurun; güç kaynağının akım sınırını düşük tutun.</div>
+    <div class="info"><b>Sık hatalar:</b> i = C·v yazmak (C·v akım değil <b>yüktür</b>); sabit gerilimde de akım akar sanmak; cm² → m² çevirisinde 10<sup>−2</sup> ile çarpmak (doğrusu 10<sup>−4</sup>); integralde başlangıç gerilimini unutmak; pasif işaret kuralına göre eksi akımın kapasitörü <b>boşalttığını</b> fark etmemek; µF, nF, pF ön eklerini karıştırmak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Sorular ders notundaki örneklerle aynı değerleri kullanır.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · i = C dv/dt: Üçgen Gerilim → Kare Akım</h2>
+  <p class="lead">Fonksiyon üreteci → kapasitör → şönt direnç R<sub>sh</sub> → toprak. CH1 üreteç çıkışını (≈ v<sub>C</sub>), CH2 şönt gerilimini (= i·R<sub>sh</sub>) gösterir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Osiloskop akım ölçemez; akımı küçük bir <b>şönt direnç</b> üzerindeki gerilimden okuruz: <span class="eq">i = v<sub>CH2</sub> / R<sub>sh</sub></span> Şönt, kapasitörün gerilimini bozmayacak kadar küçük seçilir (R<sub>sh</sub> ≪ 1/(ωC)).</div>
+        <div class="info">Üçgen dalganın her yarısında eğim sabittir: <span class="eq">|dv/dt| = ΔV/(T/2) = 2V<sub>pp</sub>f</span> Sabit eğim → sabit akım. Eğim işaret değiştirince akım da işaret değiştirir: <b>kare dalga</b>.</div>
+        <div class="info">Kare akımın köşelerindeki yuvarlanma, üretecin 50 Ω iç direnci ile kapasitörün oluşturduğu zaman sabitinden (τ = (50 Ω + R<sub>sh</sub>)C) gelir. Bölüm 3'te ayrıntılı göreceksiniz.</div>
+        <div class="warnbox">Şönt direnci mutlaka <b>toprak tarafına</b> koyun. Kapasitör ile üreteç arasına koyup osiloskop toprağını şöntün bir ucuna takarsanız kapasitörü toprak üzerinden kısa devre edersiniz ve yanlış bir eğri görürsünüz.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+        <div class="bench-row" style="margin-top:12px">
+          <div class="inst dark scopewrap" style="flex:1;min-width:420px">
+            <div class="brand"><span>DSO-2C · Dijital Osiloskop</span><span><span class="led on g"></span> RUN</span></div>
+            <div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+              <canvas id="scope" width="640" height="400" style="width:100%;max-width:640px"></canvas>
+              <div style="min-width:150px">
+                <div class="ctrls" id="scopeKnobs"></div>
+                <div class="row" style="margin:6px 0">
+                  <button class="seg-btn on" id="ch1on">CH1</button>
+                  <button class="seg-btn on" id="ch2on">CH2</button>
+                  <button class="seg-btn" id="curon">İMLEÇ</button>
+                </div>
+                <div class="meas" id="scopeMeas"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Dalga</th><th>f</th><th>Üreteç (açık devre)</th><th>C</th><th>R<sub>sh</sub></th><th>CH1 V<sub>pp</sub></th><th>CH2 V<sub>pp</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Gerilim Profili Tasarla: Akım, Güç ve Enerji</h2>
+  <p class="lead">Keyfi dalga üreteci (AWG), yazdığınız parçalı doğrusal gerilim profilini iç direnci R<sub>s</sub> üzerinden kapasitöre uygular. Akım probu ve hesaplayıcı v<sub>C</sub>, i, p ve w eğrilerini çizer.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Profil biçimi: <code>t(ms):v(V)</code> çiftleri, virgülle ayrılmış. Örnek: <code>0:0, 2:20, 4:20, 7:-10, 9:-10</code>. Aynı zamana iki farklı gerilim yazarsanız (<code>3:0, 3:10</code>) bir <b>basamak</b> (sıçrama) istemiş olursunuz.</div>
+        <div class="info">Güç <span class="eq">p = v i</span> pozitifken kapasitör enerji <b>alır</b>, negatifken <b>geri verir</b>. Enerji <span class="eq">w = ½Cv²</span> yalnızca gerilime bağlıdır; akımın geçmişini hatırlamaz. Gerilim sıfırdan geçerken enerji sıfırdır.</div>
+        <div class="info">İdeal bir kaynak gerilimi basamakla değiştirebilseydi <span class="eq">i = C·Δv/0 → ∞</span> olurdu. Gerçekte akımı kaynağın iç direnci sınırlar: tepe akım ≈ Δv/R<sub>s</sub>, gerilim ise ≈5R<sub>s</sub>C sürede yeni değerine ulaşır.</div>
+        <div class="warnbox">Gerçek bir kaynağı büyük bir kapasitöre basamak gerilimle bağlamak, kaynağın akım sınırını, sigortaları ve anahtar kontaklarını zorlar (kontaklar kaynaklanabilir). Pratikte ön-şarj direnci ya da yumuşak başlatma kullanılır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div>
+        <div class="inst" style="margin-top:12px">
+          <div class="brand"><span>AWG · PROFİL DÜZENLEYİCİ</span><span>t (ms) : v (V)</span></div>
+          <div class="row" style="width:100%"><input type="text" id="d2prof" style="flex:1;min-width:280px;font-family:Consolas,monospace"><button class="btn small" id="d2apply">Uygula</button></div>
+          <div class="row" id="d2presets" style="margin-top:6px"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 200"></svg></div>
+      <div class="card">
+        <div class="row"><b>v<sub>C</sub>(t)</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d2theo"> İdeal (R<sub>s</sub> = 0) eğri</label></div>
+        <canvas id="d2plotV" width="700" height="230" style="width:100%"></canvas>
+        <div class="row"><b>İkinci grafik:</b>
+          <span class="row" id="d2sel" style="gap:4px"><button class="seg-btn on" data-k="i">Akım i</button><button class="seg-btn" data-k="p">Güç p</button><button class="seg-btn" data-k="w">Enerji w</button></span>
+          <span style="font-size:12px;color:#667">(p ve w grafikleri, ilgili soruyu kendi hesabınızla doğru yanıtlayınca açılır)</span></div>
+        <canvas id="d2plotX" width="700" height="230" style="width:100%"></canvas>
+        <div class="row" style="margin-top:6px"><label style="flex:1">Zaman imleci <input type="range" id="d2t" min="0" max="1000" value="250" style="width:100%"></label></div>
+        <div class="readout" id="d2read"></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>C</th><th>R<sub>s</sub></th><th>t (ms)</th><th>v<sub>C</sub> (V)</th><th>i (A)</th><th>i<sub>tepe</sub> (A)</th><th>Profil</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Kapasitör Türleri ve Gerçek Kapasitör Modeli</h2>
+  <p class="lead">Çekmeceden bir kapasitör seçin, LCR metreyle ölçün, DC kaynağa seri dirençle bağlayıp sızıntı akımını, kutup ve gerilim sınırını inceleyin. Gerçek modelde C'ye paralel bir sızıntı direnci ve seri bir ESR vardır.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Gerçek kapasitör modeli:</b> ideal C + seri <b>ESR</b> (eşdeğer seri direnç: plaka, elektrolit ve bağlantı dirençleri) + paralel <b>R<sub>sız</sub></b> (sızıntı: dielektrik kusursuz yalıtkan değildir). Elektrolitikte ESR ve sızıntı en büyüktür.</div>
+        <div class="info"><b>Neden kutuplu?</b> Elektrolitiğin dielektriği, artı uçtaki alüminyumun üzerinde elektrokimyasal olarak büyütülmüş çok ince bir oksittir. Ters gerilim bu oksidi çözer: sızıntı katlanarak artar, elektrolit ısınıp gaz üretir, gövde şişer, emniyet çentiği açılır.</div>
+        <div class="info">Kapasitör DC'de dolduktan sonra ideal olarak akım sıfıra iner. Ampermetrede okunan kalıcı küçük akım <b>sızıntı akımıdır</b>; elektrolitikte ilk bağlamada büyüktür, birkaç dakikada azalır.</div>
+        <div class="warnbox">Gerçek laboratuvarda ters kutuplama ya da aşırı gerilim denemesi <b>yapılmaz</b>. Bu deneyi yalnızca sanal ortamda yapıyoruz. Kutbu bilinmeyen bir elektrolitiği devreye takmayın; şişkin ya da tepesi kabarmış kapasitörü hemen değiştirin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="row" id="d3parts" style="margin-bottom:8px"></div>
+        <div class="bench-row" id="d3inst"></div>
+      </div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><svg id="d3vis" viewBox="0 0 320 260" style="width:100%;display:block;background:#f3f1ea;border-radius:8px"></svg></div>
+        <div class="card"><svg id="d3sch" class="schem" viewBox="0 0 420 260"></svg></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d3del">Son satırı sil</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Kapasitör</th><th>Kutup</th><th>V<sub>kaynak</sub></th><th>R</th><th>v<sub>C</sub> (V)</th><th>i</th><th>T (°C)</th><th>LCR: C / ESR</th><th>Durum</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Yüklü Kapasitörü Güvenli Boşaltma</h2>
+  <p class="lead">Fişi çekilmiş bir cihazdaki filtre kondansatörü yüklü kalmıştır. Uygun bir boşaltma direnci seçip S anahtarını kapatın; voltmetreyle 50 V'un (dokunma için güvenli kabul edilen sınır) altına inmesini izleyin.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">R direnci üzerinden boşalma: <span class="eq">v(t) = V<sub>0</sub> e<sup>−t/τ</sup>, &nbsp;τ = RC</span> Tepe akım V<sub>0</sub>/R, tepe güç V<sub>0</sub><sup>2</sup>/R anahtar kapandığı anda oluşur. Kapasitörün tüm enerjisi ½CV<sub>0</sub><sup>2</sup> dirençte ısıya dönüşür.</div>
+        <div class="info">Güvenli gerilime iniş süresi: <span class="eq">t<sub>g</sub> = RC ln(V<sub>0</sub>/V<sub>g</sub>)</span> 5τ sonra gerilim başlangıcın %0,7'sine iner.</div>
+        <div class="info">Direnç seçimi bir uzlaşmadır: küçük R hızlı boşaltır ama tepe akım ve tepe güç büyür; büyük R güvenlidir ama yavaştır. Direncin <b>enerjiyi</b> (J) ısıl kütlesiyle kaldırabilmesi gerekir; sürekli güç değeri (W) tek başına yeterli ölçüt değildir.</div>
+        <div class="warnbox">Gerçekte boşaltma direncini yalıtımlı uçlu bir probla (ya da timsah kıskaçla, gerilim yokken takarak) bağlayın, tek elle çalışın, diğer eliniz cebinizde olsun. Boşaltmadan sonra multimetreyle ölçün; bazı büyük kapasitörlerde dielektrik soğurma nedeniyle gerilim birkaç volt geri gelir.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 260"></svg></div>
+      <div class="card">
+        <div class="row"><b>v<sub>C</sub>(t) — voltmetre kaydı</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d4theo"> Teorik eğri V<sub>0</sub>e<sup>−t/RC</sup></label></div>
+        <canvas id="d4plot" width="700" height="280" style="width:100%"></canvas>
+      </div>
+      <div class="card">
+        <div class="row"><b>Boşaltma kayıtları</b> <span style="font-size:12px;color:#667">(her boşaltma bittiğinde ya da R ile kaydettiğinizde eklenir)</span><span class="grow"></span>
+          <button class="btn small" id="d4rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d4del">Son satırı sil</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>C</th><th>V<sub>0</sub> (V)</th><th>R</th><th>P<sub>R</sub></th><th>t (s)</th><th>v<sub>son</sub> (V)</th><th>t<sub>50V</sub> (s)</th><th>T<sub>R,maks</sub> (°C)</th><th>Sonuç</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Kapasitör gerilimi neden sıçramaz? Elektrolitik kapasitör neden kutupludur? Boşaltma direnci seçerken nelere dikkat ettiniz?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin.<br>
+    <b>Deney 2:</b> profili yazıp “Uygula”ya basın; zaman imlecini kaydırıp <kbd>R</kbd> ile kaydedin.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta06.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd1h06', ders: 'Devre Kuramı I', hafta: 6,
+  doc: [
+    { id: 'DÖÇ1', t: 'Kapasitörün akım–gerilim ilişkisini (i = C dv/dt) açıklar ve osiloskopla şönt direnç kullanarak ölçer.', mc: [1, 4, 5] },
+    { id: 'DÖÇ2', t: 'Verilen gerilim profili için akım, güç ve enerjiyi hesaplar; kapasitör geriliminin sürekliliğini yorumlar.', mc: [1, 2, 3] },
+    { id: 'DÖÇ3', t: 'Kapasitör türlerini, gerçek modeli (ESR, sızıntı, tolerans, gerilim değeri, kutup) tanır ve uygulamaya uygun kapasitör seçer.', mc: [1, 4, 6, 10] },
+    { id: 'DÖÇ4', t: 'Yüklü kapasitörü uygun direnç ve güç değeriyle güvenli biçimde boşaltır, boşaltma süresini hesaplar.', mc: [2, 3, 6] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Üçgen gerilim altında kapasitör akımının kare dalga olduğunu göstermek ve eğimden bilinmeyen bir kapasiteyi ölçmek.', doc: ['DÖÇ1'], mc: [1, 4, 5],
+      gerec: 'Fonksiyon üreteci (50 Ω), kapasitör kutusu, şönt dirençler (1/10/100 Ω), iki kanallı osiloskop.',
+      guvenlik: 'Şönt direnci toprak tarafına koyun; osiloskop toprak klipsini yalnızca devre toprağına bağlayın.',
+      veri: 'CH1/CH2 Vpp, imleçle Δt ve ΔV, C<sub>x</sub> hesabı.',
+      tartisma: 'Kare akımın köşeleri neden yuvarlanıyor; şönt direnci büyütmek ölçümü nasıl bozar?' },
+    d2: { amac: 'Tasarlanan parçalı doğrusal gerilim profili için i, p ve w eğrilerini çıkarmak; basamak gerilimde kaynak direncinin tepe akımı sınırladığını göstermek.', doc: ['DÖÇ2'], mc: [1, 2, 3, 5],
+      gerec: 'Keyfi dalga üreteci (ayarlı iç direnç), kapasitörler, akım probu, voltmetre.',
+      guvenlik: 'Büyük kapasitörü basamak gerilimle doğrudan bağlamak yüksek ani akım üretir; ön-şarj direnci kullanın.',
+      veri: 'İmleç ölçümleri (t, v<sub>C</sub>, i), tepe akım, hesaplanan p ve w.',
+      tartisma: 'Güç negatifken kapasitörün enerjisi nereye gider?' },
+    d3: { amac: 'Seramik, film, elektrolitik ve tantal kapasitörlerin tolerans, sızıntı, ESR, gerilim değeri ve kutup özelliklerini incelemek.', doc: ['DÖÇ3'], mc: [1, 4, 6, 10],
+      gerec: 'DC güç kaynağı (0–60 V, kutup değiştirici), seri direnç, iki DMM, LCR metre, IR termometre, kapasitör çekmecesi.',
+      guvenlik: 'Elektrolitik/tantalı ters bağlamayın, gerilim değerini aşmayın, koruyucu gözlük takın; şişmiş kapasitörü e-atık olarak ayırın.',
+      veri: 'LCR ölçümü (C, ESR), sızıntı akımı, gövde sıcaklığı, arıza durumu.',
+      tartisma: 'Bir dekuplaj ve bir filtre uygulaması için hangi türü, hangi gerilim payıyla ve hangi maliyetle seçerdiniz?' },
+    d4: { amac: 'Yüklü kapasitörü uygun değer ve güç dayanımlı dirençle güvenli gerilime boşaltmak; boşaltma süresini ölçmek.', doc: ['DÖÇ4'], mc: [2, 3, 6],
+      gerec: '470 µF/400 V kapasitör, şarj ünitesi, boşaltma dirençleri (0,25–10 W), anahtar, DMM, IR termometre.',
+      guvenlik: 'Tornavidayla kısa devre yapmayın; yalıtımlı prob ve uygun güçte direnç kullanın; boşaltmayı multimetreyle doğrulayın.',
+      veri: 'v<sub>C</sub>(t) eğrisi, t<sub>50V</sub>, direnç sıcaklığı, sonuç.',
+      tartisma: 'Boşaltma direnci seçiminde hız ile güvenlik arasındaki uzlaşmayı nasıl kurarsınız?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

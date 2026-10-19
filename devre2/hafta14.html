@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 14 · Güç Ölçme ve Dönem Tekrarı — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>.why{background:#eef8ef;border-left:4px solid var(--ok);padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}.ex{background:#f7f4ff;border-left:4px solid #6a4fc9;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 14 — Güç Ölçme: Wattmetre ve İki-Wattmetre Yöntemi</h1>
+    <div class="sub">Akım ve gerilim bobini · Ters sapma · W₁, W₂ ile P ve Q · pf &lt; 0,5 · Dengesiz yük · Dönem tekrarı</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Tek Wattmetre</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: İki Wattmetre</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Dengesiz Yük</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Kara Kutu + Tekrar</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, tekerleği kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd>. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<section class="page" id="giris">
+  <h2>Hafta 14 · Güç Ölçme ve Dönem Tekrarı</h2>
+  <p class="lead">Ders notu: <b>Bölüm 3 · Kısım 5</b> — 3.6 Güç ölçme (wattmetre, iki-wattmetre yöntemi) ve bölüm özeti; Bölüm 1–3 karma tekrar.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Wattmetrenin <b>akım bobinini seri, gerilim bobinini paralel</b> bağlayacak; yanlış bağlantının (ters sapma, kısa devre) sonuçlarını göreceksiniz.</li>
+        <li>Düşük güç faktöründe wattmetrenin <b>akım kademesinin</b> neden ayrıca izlenmesi gerektiğini öğreneceksiniz.</li>
+        <li>İki wattmetreyle P ve Q’yu ölçecek, <b>tan θ = √3(W₂ − W₁)/(W₁ + W₂)</b> ile güç faktörünü bulacaksınız.</li>
+        <li><b>pf &lt; 0,5</b>’te bir wattmetrenin negatif okuduğunu görüp okumayı doğru işaretle kaydedeceksiniz.</li>
+        <li>Dengesiz yükte toplam gücü ölçecek, tek wattmetreyle dengeli yükün Q’sunu bulacak ve bir <b>kara kutu</b> yükü tanımlayıp kompanze edeceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Elektrodinamik (analog) wattmetreler: 300/600 V gerilim, 1–50 A akım kademeli, ayna skalalı · Dijital (işaretli) wattmetreler · Tek ve üç fazlı kaynaklar · R–X yük kutuları · Pens ampermetreler, voltmetre · Δ kondansatör bankası · Kara kutu yük.</p>
+      <div class="info">Bu bölümde iki wattmetre sunumdaki gibi bağlıdır: <b>W₁</b> akımı <b>a</b> hattından, gerilimi <b>a–b</b> arasından; <b>W₂</b> akımı <b>c</b> hattından, gerilimi <b>c–b</b> arasından alır (ortak hat b).</div>
+    </div>
+  </div>
+  <div class="card"><h3 style="margin-top:0">Çalışma sırası</h3><p style="font-size:14px;line-height:1.6;margin:0">Ön Bilgi’deki W₁–W₂ grafiğinde θ’yı değiştirerek eğrileri tanıyın, Ön Hazırlık’ı çözün. Deney 4’ün sonunda dönemin tamamını yoklayan <b>karma tekrar</b> soruları vardır.</p></div>
+</section>
+
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Wattmetre Nasıl Çalışır, İki Wattmetre Neden Yeter?</h2>
+  <p class="lead">Bir ölçü aletinin içini anlamak, onu yanlış bağlamamanın en iyi yoludur.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Elektrodinamik wattmetre</h3>
+      <svg viewBox="0 0 360 210" style="width:100%;max-width:400px" class="schem">
+        <polyline class="w" points="20,40 90,40"/><path class="w" d="M90,40 h15 q8,-12 16,0 q8,12 16,0 q8,-12 16,0 h15"/><polyline class="w" points="174,40 330,40 330,80"/>
+        <rect x="320" y="80" width="20" height="70" fill="#fff" stroke="#222" stroke-width="2"/><text x="346" y="120" class="lbl">Z</text>
+        <polyline class="w" points="330,150 330,180 20,180"/>
+        <polyline class="w" points="200,40 200,80"/><rect x="190" y="80" width="20" height="60" fill="#fff" stroke="#222" stroke-width="2"/><polyline class="w" points="200,140 200,180"/>
+        <text x="128" y="68" class="lbl" text-anchor="middle">akım bobini (seri, ≈0 Ω)</text>
+        <text x="215" y="115" class="lbl">gerilim bobini</text><text x="215" y="132" class="lbl">(paralel, ≈10 kΩ)</text>
+        <text x="86" y="34" class="val">±</text><text x="190" y="34" class="val">±</text>
+        <circle cx="200" cy="40" r="3.5" class="node"/><circle cx="200" cy="180" r="3.5" class="node"/>
+      </svg>
+      <p style="font-size:14px;line-height:1.65">Sabit (akım) bobininin manyetik alanı i ile, hareketli (gerilim) bobinin akımı v ile orantılıdır. İbreyi döndüren moment ikisinin çarpımına, yani <b>p(t) = v·i</b>’ye orantılıdır; ibrenin ataleti bunun <b>ortalamasını</b> gösterir: W = V I cos θ. “±” işaretli uçlar aynı noktaya (kaynak tarafına) bağlanmalıdır; biri ters olursa ibre ters sapar.</p>
+      <div class="why"><b>Neden iki wattmetre yeter? (Blondel)</b> 3 telli sistemde I<sub>a</sub> + I<sub>b</sub> + I<sub>c</sub> = 0. Gerilimleri b hattına göre ölçersek p = v<sub>ab</sub>i<sub>a</sub> + v<sub>cb</sub>i<sub>c</sub> olur; b’nin terimi sıfıra iner. n telli sistem için n − 1 wattmetre yeter; yük dengesiz olsa bile.</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Tek wattmetre</td><td class="l">W = V I cos(θ<sub>v</sub> − θ<sub>i</sub>) = Re{V I*}</td></tr>
+        <tr><td class="l">W₁ (a, V<sub>ab</sub>), dengeli abc</td><td class="l">W₁ = V<sub>L</sub>I<sub>L</sub>cos(θ + 30°)</td></tr>
+        <tr><td class="l">W₂ (c, V<sub>cb</sub>), dengeli abc</td><td class="l">W₂ = V<sub>L</sub>I<sub>L</sub>cos(θ − 30°)</td></tr>
+        <tr><td class="l">Toplam güç (her 3 telli yük)</td><td class="l">P = W₁ + W₂</td></tr>
+        <tr><td class="l">Reaktif güç (dengeli)</td><td class="l">Q = √3(W₂ − W₁)</td></tr>
+        <tr><td class="l">Güç açısı (dengeli)</td><td class="l">tan θ = √3(W₂ − W₁)/(W₁ + W₂)</td></tr>
+        <tr><td class="l">Dengesiz yük</td><td class="l">W₁ = Re{V<sub>AB</sub>I<sub>aA</sub>*}, W₂ = Re{V<sub>CB</sub>I<sub>cC</sub>*}</td></tr>
+        <tr><td class="l">Tek wattmetreyle Q (dengeli)</td><td class="l">akım a, gerilim b–c: Q = √3·W</td></tr>
+      </table>
+      <p style="font-size:13px;color:var(--muted)">acb sırasında W₁ ve W₂ yer değiştirir. Bazı kaynaklar W₁ ve W₂ adlarını ters kullanır (tan θ = √3(W₁ − W₂)/(W₁ + W₂)); hangi wattmetrenin hangi hatta olduğunu her zaman belirtin.</p>
+      <div class="ex"><b>Çözümlü mini örnek (Örnek 3.28):</b> abc, V<sub>L</sub> = 400 V, W₁ = 2000 W, W₂ = 4000 W. ① P = 6000 W. ② Q = √3·2000 = 3464 VAR. ③ tan θ = 0,577 ⇒ θ = 30°, pf = 0,866 geri (W₂ &gt; W₁ ⇒ endüktif). ④ |S| = 6928 VA ⇒ I<sub>L</sub> = 6928/(√3·400) = 10 A ⇒ Z<sub>φ</sub> = 230,9/10∠30° = 20 + j11,55 Ω.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">2 · W₁ ve W₂ yük açısıyla nasıl değişir?</h3>
+    <div class="row" style="margin-bottom:6px"><label style="font-size:14px">θ <input type="range" id="obTh" min="-90" max="90" step="1" value="37"></label> <b id="obThV"></b></div>
+    <canvas id="obAnim" width="900" height="300" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px"></canvas>
+    <p style="font-size:14px;line-height:1.65">θ = 0’da iki wattmetre eşit okur. Endüktif yükte W₂ büyür, W₁ küçülür; θ = 60°’de (pf = 0,5) W₁ sıfırdır, ötesinde <b>negatiftir</b>. Kapasitif yükte tersi olur. Okumaların oranına bakarak pf’yi bir bakışta kestirebilirsiniz.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Akım bobinini asla kaynağa paralel bağlamayın.</b> Akım bobini neredeyse sıfır dirençlidir: paralel bağlamak kısa devredir, bobin anında yanar. Bağlantıyı enerjisizken yapın ve şemayla tek tek karşılaştırın.</div>
+    <div class="warnbox"><b>Wattmetre aşırı yükü ibreden anlaşılmaz.</b> Düşük güç faktörlü yükte ibre ölçeğin ortasındayken bile akım ya da gerilim bobini kademesini aşmış olabilir. Devreye daima bir ampermetre ve voltmetre ekleyin; kademeleri önce en büyük seçip sonra küçültün.</div>
+    <div class="warnbox"><b>Ters sapan ibre.</b> İbre sıfırın soluna dayanırsa bobin yayı zorlanır. Hemen enerjiyi kesin, gerilim (ya da akım) bobininin uçlarını değiştirin ve okumayı <b>eksi</b> işaretle not edin; bazı wattmetrelerde bunun için polarite anahtarı vardır.</div>
+    <div class="warnbox"><b>Akım trafolu ölçüm.</b> Büyük akımlarda wattmetre akım trafosuyla bağlanır; trafonun sekonderi devre enerjiliyken asla açılmaz (yüksek gerilim, yalıtım delinmesi). Gerilim trafosunun sekonderi ise asla kısa devre edilmez.</div>
+    <div class="warnbox"><b>Kondansatör bankası ve kara kutu.</b> İçini bilmediğiniz bir yükte kondansatör olabilir; ayırdıktan sonra uçlarını ölçmeden dokunmayın. 400 V’luk sistemde tepe gerilimi 565 V’tur.</div>
+    <div class="info"><b>Sık hatalar:</b> negatif okumayı mutlak değerle toplamak · dengesiz yükte cos(θ ± 30°) formülünü kullanmak · θ’yı hat gerilimi–hat akımı açısı sanmak · faz sırasını bilmeden tan θ’nın işaretine güvenmek · Q = √3·W formülünü dengesiz yükte uygulamak · wattmetrenin “±” uçlarını farklı tarafa bağlamak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Sayılar sunumdaki örneklerden alınmıştır.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<section class="page" id="d1">
+  <h2>Deney 1 · Tek Wattmetre: Doğru ve Yanlış Bağlantı</h2>
+  <p class="lead">Tek fazlı 230 V kaynak, R–X yük, analog wattmetre (300 V; 1/5/10 A). Akım bobini ve gerilim bobini bağlantısını kendiniz seçin.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Analog wattmetrenin tam ölçeği <span class="eq">W<sub>tam</sub> = V<sub>kademe</sub> × I<sub>kademe</sub></span> (pf = 1 için) değeridir. 300 V × 5 A = 1500 W.</div>
+        <div class="why"><b>Neden ibre ters sapar?</b> Moment v·i’nin ortalamasıyla orantılıdır. Gerilim bobininin uçları ters bağlanınca v’nin işareti değişir, ortalama da negatif olur. Gerçek bir güç akış yönü değişikliği (ör. jeneratör çalışan motor) de aynı sonucu verir.</div>
+        <div class="ex"><b>Mini örnek:</b> 40 + j30 Ω ⇒ |Z| = 50 Ω, I = 4,6 A, cos θ = 0,8 ⇒ W = 230·4,6·0,8. Ölçmeden önce hesaplayın, ibreyle karşılaştırın.</div>
+        <div class="warnbox">Kademe seçimi: önce akımı ampermetreyle görün. Örneğin 4,6 A için 5 A kademesi uygundur; 1 A kademesi bobini yakar, 10 A kademesi okuma çözünürlüğünü yarıya indirir.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 680 240"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span><button class="btn small" id="d1rec">Kaydet (R)</button><button class="btn sec small" id="d1del">Son satırı sil</button><button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Z (Ω)</th><th>Kademe</th><th>± uç</th><th>W (ibre)</th><th>V (V)</th><th>I (A)</th><th>V·I (VA)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d2">
+  <h2>Deney 2 · İki-Wattmetre Yöntemi (Dengeli Yük)</h2>
+  <p class="lead">3 telli üç fazlı sistem, dengeli Y ya da Δ yük. W₁ ve W₂ analog; ters sapan wattmetrenin gerilim bobinini ters çevirip okumayı eksi kaydedin (tabloya otomatik eksi yazılır).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Dengeli abc yükte: <span class="eq">W₁ = V<sub>L</sub>I<sub>L</sub>cos(θ + 30°), W₂ = V<sub>L</sub>I<sub>L</sub>cos(θ − 30°)</span> θ, faz empedansının açısıdır (Y’de de Δ’da da).</div>
+        <div class="why"><b>Neden ±30°?</b> W₁ hat gerilimi V<sub>ab</sub>’yi görür; o da V<sub>an</sub>’dan 30° ileridedir. I<sub>a</sub> ise V<sub>an</sub>’dan θ geride: aradaki açı θ + 30°. W₂ için V<sub>cb</sub>, V<sub>cn</sub>’dan 30° geride: açı θ − 30°.</div>
+        <div class="ex"><b>Örnek 3.27 tablosu (hesaplayıp karşılaştırın):</b> (a) 8 + j6 · (b) 8 − j6 · (c) 5 + j5√3 = 5 + j8,66 · (d) 10∠−75° = 2,59 − j9,66 Ω. X düğmesine çift tıklayıp değeri yazabilirsiniz.</div>
+        <div class="warnbox">pf &lt; 0,5 olan hafif yüklü motorlarda bir wattmetre <b>her zaman</b> ters sapar; bu bir arıza değildir. Okumayı eksi işaretle toplamayı unutursanız güç birkaç kat büyük çıkar.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px">
+        <div class="row"><b>W / (V<sub>L</sub>I<sub>L</sub>) – θ</b> <span style="font-size:12px;color:#0b5cad">● W₁</span> <span style="font-size:12px;color:#e07a10">● W₂</span><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d2theo"> Teorik eğriler</label></div>
+        <canvas id="d2plot" width="760" height="300" style="width:100%"></canvas>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span><button class="btn small" id="d2rec">Kaydet (R)</button><button class="btn sec small" id="d2del">Son satırı sil</button><button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Sıra</th><th>Bağl.</th><th>V<sub>φ</sub></th><th>Z (Ω)</th><th>θ (°)</th><th>W₁ (W)</th><th>W₂ (W)</th><th>V<sub>L</sub></th><th>I<sub>L</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d3">
+  <h2>Deney 3 · Dengesiz Yükte Güç ve Tek Wattmetreyle Q</h2>
+  <p class="lead">3 telli dengesiz Y yük (Örnek 3.30) ve bağlantısı serbest üçüncü bir wattmetre (W₃). Dijital wattmetreler işaretli okur.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Dengesiz yükte genel ifade: <span class="eq">W₁ = Re{V<sub>AB</sub>I<sub>aA</sub>*}</span> Önce yük yıldız noktasının kayması V<sub>N</sub> bulunur, sonra her hat akımı ayrı hesaplanır (Hafta 12 Deney 4).</div>
+        <div class="why"><b>Neden Q = √3·W?</b> Akım a hattından, gerilim b–c arasından alınırsa V<sub>bc</sub>, V<sub>an</sub>’a dik düşer (−90°). W = V<sub>L</sub>I<sub>L</sub>cos(90° − θ) = V<sub>L</sub>I<sub>L</sub>sin θ ⇒ Q<sub>T</sub> = √3 V<sub>L</sub>I<sub>L</sub>sin θ = √3·W. Yalnız dengeli yükte.</div>
+        <div class="warnbox">Dijital wattmetrenin akım girişi genellikle 10–20 A ile sınırlıdır; daha büyük akımlarda akım klipsi ya da akım trafosu kullanın ve klips yönünü (kaynak → yük) kontrol edin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><b>Hat akımları (fazör)</b><svg id="d3ph" class="schem" viewBox="0 0 320 320"></svg></div>
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span><button class="btn small" id="d3rec">Kaydet (R)</button><button class="btn sec small" id="d3del">Sil</button><button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>V<sub>L</sub></th><th>Z<sub>A</sub> | Z<sub>B</sub> | Z<sub>C</sub></th><th>W₁</th><th>W₂</th><th>W₃ (bağl.)</th><th>I<sub>a</sub>/I<sub>b</sub>/I<sub>c</sub></th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d4">
+  <h2>Deney 4 · Kara Kutu Yükü ve Dönem Sonu Karma Tekrar</h2>
+  <p class="lead">İçini göremediğiniz dengeli bir üç fazlı yükü yalnızca uç ölçümleriyle tanımlayın, sonra güç faktörünü düzeltin. Ardından dönemin tamamından karma sorular.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Yol haritası:</b> ① P = W₁ + W₂ ② Q = √3(W₂ − W₁) ③ pf = P/√(P² + Q²) ④ |Z<sub>Y</sub>| = (V<sub>L</sub>/√3)/I<sub>L</sub>, ∠Z<sub>Y</sub> = θ ⑤ Q<sub>C</sub> = P(tan θ<sub>1</sub> − tan θ<sub>2</sub>) ⑥ C<sub>Δ</sub> = Q<sub>C</sub>/(3ωV<sub>L</sub>²).</div>
+        <div class="why"><b>Neden Y mi Δ mı olduğunu bulamazsınız?</b> Uçlardan bakan her ölçüm Z<sub>Y</sub> = Z<sub>Δ</sub>/3 eşdeğerliği yüzünden aynıdır. İç bağlantıyı ancak kutuyu açıp (ya da sargı uçlarına erişip) anlayabilirsiniz.</div>
+        <div class="warnbox">Kondansatör eklendikten sonra W₁ + W₂ değişmemeli: değişiyorsa bağlantı ya da okuma hatası vardır. Bu, sahada ölçümün tutarlılığını sınamanın pratik bir yoludur.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span><button class="btn small" id="d4rec">Kaydet (R)</button><button class="btn sec small" id="d4del">Son satırı sil</button><button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>C<sub>Δ</sub> (µF)</th><th>I<sub>L</sub> (A)</th><th>W₁ (W)</th><th>W₂ (W)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Kara kutu soruları</h3><div id="d4Q"></div></div>
+      <div class="card"><h3 style="margin-top:0">Dönem sonu karma tekrar (Bölüm 1–3)</h3><div id="d4R"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Wattmetre bağlantısında hangi hatalar en tehlikeliydi? İki-wattmetre yönteminin sınırları nelerdir? Kara kutu yükünü nasıl tanımladınız? Dönem boyunca öğrendiklerinizi kısaca değerlendirin."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd>. <kbd>Shift</kbd> ile ince ayar; çift tıklayıp değer yazabilirsiniz (ör. X = 8,66).<br>
+    <b>Analog wattmetre:</b> ibrenin altındaki değer ayna skaladan okunan değerdir; ibre ölçek dışındaysa okunamaz.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta14.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h14', ders: 'Devre Kuramı II', hafta: 14,
+  doc: [
+    { id: 'DÖÇ1', t: 'Wattmetreyi doğru bağlar; ters sapma ve kademe aşımı gibi ölçüm hatalarını tanır ve giderir.', mc: [4, 5, 6] },
+    { id: 'DÖÇ2', t: 'İki-wattmetre yöntemiyle dengeli yükte P, Q ve güç faktörünü ölçer ve hesaplar.', mc: [1, 2, 4, 5] },
+    { id: 'DÖÇ3', t: 'Dengesiz yükte toplam gücü ölçer; tek wattmetreyle reaktif gücü belirler ve yöntemlerin sınırlarını tartışır.', mc: [1, 2, 5] },
+    { id: 'DÖÇ4', t: 'Bilinmeyen bir üç fazlı yükü uç ölçümleriyle tanımlar ve güç faktörü düzeltmesi tasarlar; Bölüm 1–3 bilgisini bütünleştirir.', mc: [2, 3, 10, 11] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Tek fazlı yükte wattmetrenin doğru bağlantısını uygulamak; ters sapma, akım bobininin paralel bağlanması ve düşük pf’de kademe aşımı hatalarını gözlemek.', doc: ['DÖÇ1'], mc: [4, 5, 6],
+      gerec: 'Tek fazlı 230 V kaynak (yalıtım trafolu, sigortalı), R–X yük kutusu, analog wattmetre (300 V, 1/5/10 A), voltmetre, ampermetre.',
+      guvenlik: 'Akım bobini asla paralel bağlanmaz; bağlantılar enerjisizken yapılır; ters sapmada enerji kesilip uçlar değiştirilir; kademe önce en büyük seçilir.',
+      veri: 'Farklı yükler için wattmetre okuması, V, I, V·I; ters bağlantı ve aşırı yük gözlemleri.' },
+    d2: { amac: 'İki-wattmetre yöntemiyle dengeli üç fazlı yükte P, Q ve pf’yi ölçmek; W₁, W₂’nin θ ile değişimini ve pf &lt; 0,5’te negatif okumayı doğrulamak.', doc: ['DÖÇ2'], mc: [1, 2, 4, 5],
+      gerec: 'Üç fazlı 3 telli kaynak, dengeli R–X yük (Y/Δ), iki analog wattmetre (600 V, 5–50 A), voltmetre, ampermetre.',
+      guvenlik: 'Ters sapan wattmetrede enerji kesilerek gerilim bobini ters çevrilir; akım kademesi hat akımına göre seçilir.',
+      veri: 'θ’ya göre W₁, W₂ tablosu ve grafiği; abc/acb karşılaştırması; Örnek 3.27 durumları.' },
+    d3: { amac: 'Dengesiz 3 telli yükte iki wattmetreyle toplam gücü ölçüp ΣI²R ile doğrulamak; dengeli yükte tek wattmetreyle Q’yu ölçmek.', doc: ['DÖÇ3'], mc: [1, 2, 4, 5],
+      gerec: 'Üç fazlı kaynak (208/400 V), üç ayrı R–X yük, üç dijital wattmetre, pens ampermetreler.',
+      guvenlik: 'Dijital wattmetre akım girişi sınırı aşılmaz; klips yönü kontrol edilir.',
+      veri: 'W₁, W₂, W₃ (farklı bağlantılar) ve hat akımları; Örnek 3.30 ve 3.31 ölçümleri.' },
+    d4: { amac: 'Bilinmeyen dengeli bir yükü uç ölçümleriyle (V, I, W₁, W₂) tanımlamak; pf’yi 0,95’e çıkaracak Δ kondansatör bankasını tasarlayıp doğrulamak; dönemi tekrar etmek.', doc: ['DÖÇ4'], mc: [2, 3, 4, 6, 10, 11],
+      gerec: 'Kara kutu yük, üç fazlı 400 V kaynak, iki wattmetre, voltmetre, ampermetre, Δ kondansatör bankası.',
+      guvenlik: 'Kara kutu ve kondansatör bankası ayrıldıktan sonra yüklü olabilir; deşarj kontrolü yapılmadan dokunulmaz.',
+      veri: 'C<sub>Δ</sub> = 0 ve kompanzasyonlu ölçümler; hesaplanan P, Q, pf, Z<sub>Y</sub>, C<sub>Δ</sub>.',
+      tartisma: 'Kompanzasyonun işletmeye ekonomik getirisi (reaktif enerji bedeli, kayıp azalması) ile banka maliyetini karşılaştırın. Ölçümünüzün belirsizliği tasarımı nasıl etkiler?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

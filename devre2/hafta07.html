@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 7 · Anlık, Ortalama ve Reaktif Güç — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>
+  .why{background:#f3f0fb;border-left:4px solid #7a4cc2;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}
+  .solved{background:#f2faf4;border-left:4px solid #1a8a4a;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}
+  .demo-ctl{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:14px;margin:6px 0}
+  .demo-ctl input[type=range]{width:220px}
+  .chk{font-size:12px;color:#dfe3ea;display:block;margin-top:4px}
+  .chk.l{color:#223}
+  .mist li{margin:5px 0;font-size:14px;line-height:1.5}
+</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 7 — Anlık, Ortalama ve Reaktif Güç</h1>
+    <div class="sub">p(t) = v·i · MATH kanalı · R, L, C yüklerinde güç · P ve Q · Wattmetre ve V·I</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>1b · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>2 · Deney 1: Dirençte p(t)</button>
+  <button data-p="d2"><span class="dot"></span>3 · Deney 2: L ve C’de p(t)</button>
+  <button data-p="d3"><span class="dot"></span>4 · Deney 3: P ve Q’yu Okumak</button>
+  <button data-p="d4"><span class="dot"></span>5 · Deney 4: Wattmetre ve V·I</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 7 · Sinüzoidal Kararlı Hâlde Güç: p(t), P ve Q</h2>
+  <p class="lead">Ders notu: <b>Bölüm 2.1 Anlık Güç</b> ve <b>2.2 Ortalama ve Reaktif Güç</b> (Devre Kuramı II, Prof. Dr. Ali AKDAĞLI).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Osiloskopun <b>MATH</b> kanalıyla v ve i’yi çarpıp anlık güç <b>p(t) = v·i</b>’yi görecek, frekansının <b>2ω</b> olduğunu ölçeceksiniz.</li>
+        <li>Dirençte p(t)’nin hiç negatif olmadığını, <b>bobin ve kapasitörde ortalamasının sıfır</b> olduğunu, enerjinin gidip geldiğini göreceksiniz.</li>
+        <li>p(t)’nin tepe ve çukur değerlerinden <b>P</b> ve <b>Q</b>’yu okuyacak, v–i arasındaki zaman kaymasından θ<sub>v</sub> − θ<sub>i</sub>’yi bulacaksınız.</li>
+        <li>Gerçek bir <b>wattmetrenin</b> okuduğu P ile voltmetre × ampermetre çarpımı V·I’nın neden farklı olduğunu ölçerek göstereceksiniz.</li>
+        <li>Wattmetrenin akım ve gerilim bobinlerini doğru bağlamayı, sigorta sınırını ve kompanzasyon kondansatörünün etkisini deneyimleyeceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">AC güç yükselteci (0–100 V rms, 10 Hz–5 kHz, gerilim regülasyonlu, 10 A akım korumalı) · Yük kutusu (güç direnci 500 W, hava çekirdekli bobin, film kondansatör) · Gerçek rms voltmetre ve ampermetre · Akım probu (1 V/A) · Dört kanallı osiloskop (CH1, CH2 ve <b>MATH = CH1 × CH2</b>, imleçli) · Yalıtım trafosu + varyak (0–250 V, 50 Hz) · Elektrodinamik wattmetre · 16 A sigortalı priz grubu.</p>
+      <div class="info">Osiloskobun MATH kanalı CH1 (V) ile CH2’yi (akım probu, 1 V/A → A) çarpar; ekranda <b>watt</b> olarak okunur. Ölçüm panelindeki <b>ORT</b> değeri, ekrandaki tam periyotların ortalamasıdır (osiloskoplarda “Cycle Mean”).</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b> sayfasındaki etkileşimli p(t) gösterimiyle oynayın ve <b>Ön Hazırlık</b> sorularını çözün. Her deneyde soldaki föyü adım adım izleyin; adımlar doğru ayarı yaptığınızda kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile kaydedin, P, Q ve güç faktörünü <b>kendiniz hesaplayın</b>; sorular ekranda doğrudan yazmayan büyüklükleri ister. Son bölümde raporunuzu yazdırın.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Güç Nereye Gidiyor?</h2>
+  <p class="lead">Bölüm 1’de fazörlerle “ne kadar gerilim, ne kadar akım?” sorusunu çözdük. Şimdi soru değişiyor: devre <b>ne kadar enerjiyi, ne hızla</b> kullanıyor? Isınma, ışık, motor milindeki iş ve elektrik faturası hep bu sorunun cevabıdır.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Anlık güç: her an değişen bir enerji akışı</h3>
+      <p style="font-size:14px;line-height:1.65">DA’da p = vi sabittir. Sinüzoidal kararlı hâlde v ve i her an değişir; çarpımları da değişir. <b>Pasif işaret düzeninde</b> (akım + uçtan girer) p &gt; 0 ise eleman o an enerji <b>alır</b>, p &lt; 0 ise kaynağa <b>geri verir</b>. Akım + uçtan çıkıyorsa p = −vi yazılır.</p>
+      <div class="eq">v = V<sub>m</sub> cos(ωt + θ<sub>v</sub>),&nbsp; i = I<sub>m</sub> cos(ωt + θ<sub>i</sub>)</div>
+      <p style="font-size:14px;line-height:1.65">Zaman sıfırını akımın tepesine kaydırıp (ders sunusundaki seçim) cos α cos β özdeşliğini uygulayınca:</p>
+      <div class="eq">p = P + P cos 2ωt − Q sin 2ωt</div>
+      <div class="eq">P = ½ V<sub>m</sub>I<sub>m</sub> cos(θ<sub>v</sub> − θ<sub>i</sub>),&nbsp; Q = ½ V<sub>m</sub>I<sub>m</sub> sin(θ<sub>v</sub> − θ<sub>i</sub>)</div>
+      <p style="font-size:14px;line-height:1.65"><b>Üç ders:</b> (1) p(t), v ve i’nin <b>iki katı frekansla</b> salınır. (2) Ortalaması yalnızca P’dir: Q’lu terimin ortalaması sıfırdır. (3) Salınımın genliği √(P² + Q²) = ½V<sub>m</sub>I<sub>m</sub>’dir; yani p<sub>maks</sub> = P + ½V<sub>m</sub>I<sub>m</sub>, p<sub>min</sub> = P − ½V<sub>m</sub>I<sub>m</sub>.</p>
+      <h3>2 · Sezgi: kova ile su taşımak</h3>
+      <p style="font-size:14px;line-height:1.65">Kaynak bir yüke kova kova su (enerji) taşıyor düşünün. <b>Direnç</b> her kovayı içer: enerji ısıya döner, geri gelmez (p ≥ 0). <b>Bobin ve kapasitör</b> kovayı alıp çeyrek periyot sonra geri döker: alıp verdikleri eşittir, ortalama sıfır. Gerçek yükte ikisi birden olur: bir kısmı içilir (<b>P</b>, watt), bir kısmı gidip gelir (<b>Q</b>, VAR). Gidip gelen enerji ısıya dönüşmez ama <b>kabloyu yine yorar</b>: aynı P için daha büyük akım demektir.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Etkileşimli gösterim · θ<sub>v</sub> − θ<sub>i</sub>’yi değiştirin</h3>
+      <div class="demo-ctl">
+        <label>θ<sub>v</sub> − θ<sub>i</sub> = <b id="obThV">60°</b> <input type="range" id="obTheta" min="-90" max="90" step="1" value="60"></label>
+        <label><input type="checkbox" id="obParts"> Bileşenler</label>
+      </div>
+      <svg id="obDemo" viewBox="0 0 520 300" style="width:100%;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:8px"></svg>
+      <div id="obTxt" style="font-size:13px;margin-top:6px;line-height:1.5"></div>
+      <h3>Güç üçgeni</h3>
+      <svg id="obTri" viewBox="0 0 520 170" style="width:100%;display:block"></svg>
+      <div class="info">V<sub>m</sub> = 40 V, I<sub>m</sub> = 5 A sabit tutuldu (Örnek 2.1’in değerleri). θ = 60°’de (zaman sıfırı akım tepesinde) p(t) = 50 + 50 cos 2ωt − 86,6 sin 2ωt W olur; salınım genliği √(50² + 86,6²) = 100 W, ortalama 50 W. Örnek 2.1’deki fazlarla (θ<sub>v</sub> + θ<sub>i</sub> = 0) aynı p(t), 50 + 100 cos 2ωt W biçiminde yazılır.</div>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Anlık güç (pasif düzen)</td><td class="l">p = vi (W); aktif düzende p = −vi</td></tr>
+        <tr><td class="l">p(t) ayrışımı</td><td class="l">p = P + P cos2ωt − Q sin2ωt</td></tr>
+        <tr><td class="l">Ortalama (aktif) güç</td><td class="l">P = ½V<sub>m</sub>I<sub>m</sub> cos(θ<sub>v</sub>−θ<sub>i</sub>) = V<sub>rms</sub>I<sub>rms</sub> cos θ</td></tr>
+        <tr><td class="l">Reaktif güç</td><td class="l">Q = ½V<sub>m</sub>I<sub>m</sub> sin(θ<sub>v</sub>−θ<sub>i</sub>) (VAR)</td></tr>
+        <tr><td class="l">p<sub>maks</sub>, p<sub>min</sub></td><td class="l">P ± ½V<sub>m</sub>I<sub>m</sub> → P = (p<sub>maks</sub>+p<sub>min</sub>)/2, ½V<sub>m</sub>I<sub>m</sub> = (p<sub>maks</sub>−p<sub>min</sub>)/2</td></tr>
+        <tr><td class="l">|Q| p(t)’den</td><td class="l">|Q| = √((½V<sub>m</sub>I<sub>m</sub>)² − P²); işaret L/C’den</td></tr>
+        <tr><td class="l">Güç faktörü</td><td class="l">pf = cos(θ<sub>v</sub>−θ<sub>i</sub>) = P / (V<sub>rms</sub>I<sub>rms</sub>); geri: Q &gt; 0, ileri: Q &lt; 0</td></tr>
+        <tr><td class="l">R / L / C</td><td class="l">θ = 0° / +90° / −90° → Q = 0 / +½V<sub>m</sub>I<sub>m</sub> / −½V<sub>m</sub>I<sub>m</sub></td></tr>
+        <tr><td class="l">Seri RL yük</td><td class="l">P = ½I<sub>m</sub>²R, Q = ½I<sub>m</sub>²X<sub>L</sub></td></tr>
+        <tr><td class="l">Zaman kayması → açı</td><td class="l">θ = 360° · Δt · f (v, i’den önce tepe yapıyorsa θ &gt; 0)</td></tr>
+        <tr><td class="l">Enerji</td><td class="l">E = P·t (kWh); sigorta sınırı P<sub>sınır</sub> = V·I<sub>sigorta</sub></td></tr>
+      </table>
+      <div class="solved"><b>Çözümlü mini örnek (Örnek 2.2):</b> v = 100 cos(ωt + 15°) V, i = 4 sin(ωt − 15°) A. <br>① Sinüsü kosinüse çevir: i = 4 cos(ωt − 105°). ② θ<sub>v</sub> − θ<sub>i</sub> = 15° − (−105°) = 120°. ③ P = ½·100·4·cos120° = −100 W → kutu 100 W <b>verir</b>. ④ Q = 200·sin120° = +173,2 VAR → kutu reaktif güç <b>çeker</b>. Sinüsü dönüştürmeden −15° alsaydınız P’nin işaretini yanlış bulurdunuz (sık hata).</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+      <div class="warnbox"><b>Şebekeye osiloskopla doğrudan bağlanmayın.</b> Osiloskobun prob toprağı koruma toprağına bağlıdır; 230 V şebekede toprak klipsini faz ya da nötr dışındaki bir noktaya takmak kısa devre ve ark demektir. Şebeke ölçümünde <b>yalıtım trafosu</b> ve <b>diferansiyel prob</b> kullanın.</div>
+      <div class="warnbox"><b>Akımı şöntle ölçüyorsanız toprak klipsine dikkat.</b> CH1 ve CH2’nin toprak klipsleri aynı düğüme bağlanmalıdır; şöntün öbür ucuna takılan ikinci toprak klipsi yükü kısa devre eder. Bu yüzden bu deneyde yalıtımlı <b>akım probu</b> kullanılıyor.</div>
+      <div class="warnbox"><b>Wattmetrede akım bobini SERİ, gerilim bobini PARALEL.</b> Akım bobininin direnci çok küçüktür; prize paralel bağlanırsa kaynağı kısa devre eder. Bağlantıyı enerji yokken kurun, akım kademesini yükün akımına göre seçin.</div>
+      <div class="warnbox"><b>Direncin güç değeri.</b> 10 Ω’luk bir dirence 10 V rms uygulamak 10 W demektir. ½ W’lık bir karbon direnç saniyeler içinde yanar. Yük direnci ısınır; deney sonrası dokunmadan önce bekleyin.</div>
+      <div class="warnbox"><b>Kondansatörü deşarj edin, bobin akımını aniden kesmeyin.</b> Yükselteci kapattıktan sonra kondansatörde tepe gerilim kalabilir: bir dirençle boşaltın. Bobin akımını anahtarla aniden kesmek L di/dt ile kıvılcım üretir; önce genliği sıfıra indirin.</div>
+      <div class="warnbox"><b>Kondansatörün AC gerilim değeri.</b> Polarlı elektrolitik kondansatör AC yükte <b>kullanılmaz</b>: ters yarım periyotta ısınır ve patlayabilir. AC için polarsız film kondansatör seçin; tepe gerilim (√2·V<sub>rms</sub>) etiket değerinin altında kalmalıdır.</div>
+      <div class="warnbox"><b>Sigortayı köprülemeyin.</b> 230 V, 16 A sigorta yaklaşık 3,7 kW’a izin verir. Isıtıcıları aynı prize üst üste takmak sigortayı atar; sigortayı daha büyüğüyle değiştirmek kabloyu yangın riskine sokar.</div>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Sık hatalar</h3>
+      <ol class="mist">
+        <li><b>Sinüslü ifadeyi dönüştürmeden faz almak:</b> i = 4 sin(ωt − 15°) için θ<sub>i</sub> = −105°’dir, −15° değil.</li>
+        <li><b>Güç faktörünü işaretsiz kullanmak:</b> cos θ = cos(−θ); geri/ileri sıfatı olmadan Q’nun işareti kaybolur.</li>
+        <li><b>Q’yu “kayıp” sanmak:</b> Q ısıya dönüşmez; enerji alan ile kaynak arasında gidip gelir. Isıya yalnız P döner.</li>
+        <li><b>P = V<sub>m</sub>I<sub>m</sub> yazmak:</b> tepe değerlerle P = ½V<sub>m</sub>I<sub>m</sub>cos θ; rms ile P = V<sub>rms</sub>I<sub>rms</sub>cos θ.</li>
+        <li><b>p(t)’nin frekansını f sanmak:</b> anlık güç 2f ile salınır.</li>
+        <li><b>Voltmetre × ampermetre = watt sanmak:</b> V·I görünür güçtür (VA); watt yalnız pf = 1’de eşittir.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Neden önemli? Gerçek hayattan</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Elektrik sayacı</b> P’yi zamanla çarpıp kWh olarak toplar; faturadaki sayı P’nin integralidir. <b>Motor ve trafolar</b> sargıları nedeniyle endüktiftir: Q &gt; 0 çekerler. Sanayi tesisleri <b>kondansatör bankasıyla</b> bu Q’yu yerinde karşılar; Türkiye’de belirli bir reaktif/aktif oranını aşan aboneye <b>reaktif bedel</b> uygulanır. Ev aletlerinin etiketindeki watt değeri ortalama güçtür; sigortanın baktığı ise akımdır.</p>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Pasif işaret düzeni; kosinüs referansı. Açılar derece.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Dirençli Yükte Anlık Güç ve Ortalama Değer</h2>
+  <p class="lead">AC güç yükselteci yük kutusunu besliyor. CH1 yük gerilimini, CH2 akım probuyla yük akımını, MATH ikisinin çarpımı p(t)’yi gösterir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Dirençte v ve i aynı fazdadır (θ = 0): <span class="eq">p = V<sub>m</sub>I<sub>m</sub> cos²ωt = P(1 + cos 2ωt)</span> p(t) 0 ile 2P arasında salınır, hiç negatif olmaz.</div>
+        <div class="why"><b>Neden böyle?</b> v ile i hep aynı işaretlidir: v &lt; 0 iken i de &lt; 0’dır, çarpım yine pozitif. Direnç enerjiyi her an <b>tüketir</b>; geri veremez, çünkü ısıyı elektriğe çeviren bir mekanizması yoktur.</div>
+        <div class="solved"><b>Mini örnek (Örnek 1.3):</b> 220 V rms, 50 Hz şebekede R = 100 Ω ısıtıcı: V<sub>m</sub> = 311,1 V, P = 220²/100 = 484 W, p<sub>maks</sub> = 968 W, p(t) 100 Hz ile salınır.</div>
+        <div class="warnbox">Yük direnci 500 W’lık bir güç direncidir. P = V²/R bu değeri aşarsa direnç aşırı ısınır: deneyde de uyarı alırsınız. 1 Ω’luk dirence 30 V uygulamak 900 W demektir! Örnek 2.3’teki 300 W sıradan bir 1/4 W dirence uygulansa anında yanardı.</div>
+      </div>
+    </div>
+    <div id="d1bench"></div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Bobin ve Kapasitörde Anlık Güç: Ortalama Sıfır</h2>
+  <p class="lead">Aynı tezgâh; yük kutusunda saf bobin ya da saf kapasitör. “Gerçek bobin” seçeneği sargı direncini (r) ekler.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Bobin: θ = +90° → <span class="eq">p = −Q sin 2ωt,&nbsp; Q = +½V<sub>m</sub>I<sub>m</sub></span> Kapasitör: θ = −90° → aynı biçim, <b>Q &lt; 0</b>. İkisinde de P = 0.</div>
+        <div class="why"><b>Neden böyle?</b> Bobin, akım büyürken manyetik alanında ½Li² enerji biriktirir (p &gt; 0), akım küçülürken aynı enerjiyi geri verir (p &lt; 0). Kapasitör aynı oyunu elektrik alanıyla (½Cv²) ve <b>zıt zamanlamayla</b> oynar: bobin alırken kapasitör verir. Kompanzasyonun sırrı budur.</div>
+        <div class="solved"><b>Mini örnek (Örnek 2.4):</b> L = 50 mH, i = 4 cos 200t A. v = L di/dt = 40 cos(200t + 90°) V, p = −80 sin 400t W, P = 0, Q = 80 VAR. Bir pozitif lobda bobine giren enerji ∫80 sin 400t dt = 0,4 J.</div>
+        <div class="warnbox">Bobin akımı varken yükselteci aniden kapatmayın ya da bobin bağlantısını sökmeyin: ters EMK kıvılcım yapar. Kapasitörü söküp dokunmadan önce deşarj edin.</div>
+      </div>
+    </div>
+    <div id="d2bench"></div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Genel Yük: P ve Q’yu p(t)’den ve Faz Kaymasından Okumak</h2>
+  <p class="lead">Seri RL, RC ve RLC yükler. p(t)’nin ortalaması ve salınım genliğinden P ile Q’yu, imleçlerle ölçtüğünüz Δt’den θ<sub>v</sub> − θ<sub>i</sub>’yi bulun ve iki yolu karşılaştırın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Ekrandan okuma tarifi: <span class="eq">P = (p<sub>maks</sub> + p<sub>min</sub>)/2</span> <span class="eq">½V<sub>m</sub>I<sub>m</sub> = (p<sub>maks</sub> − p<sub>min</sub>)/2</span> <span class="eq">|Q| = √((½V<sub>m</sub>I<sub>m</sub>)² − P²)</span> Q’nun işareti: akım geride (endüktif) ise +, ileride (kapasitif) ise −.</div>
+        <div class="info">İmleç yöntemi: v’nin tepesinden i’nin tepesine Δt; <span class="eq">θ = 360° · Δt · f</span> i, v’den sonra tepe yapıyorsa akım geridedir (θ &gt; 0).</div>
+        <div class="why"><b>Neden iki yöntem?</b> Birincisi yalnızca güç ölçümüne, ikincisi yalnızca zaman ölçümüne dayanır. Uyuşmaları formülün (P = ½V<sub>m</sub>I<sub>m</sub>cos θ) deneysel doğrulamasıdır; uyuşmazlık ölçüm hatanızı gösterir.</div>
+        <div class="solved"><b>Mini örnek (Örnek 2.3):</b> v = 100 cos 1000t V, R = 6 Ω, L = 8 mH. X<sub>L</sub> = 8 Ω, Z = 10∠53,13° Ω, I = 10∠−53,13° A. P = 500·cos53,13° = 300 W, Q = 500·sin53,13° = 400 VAR, pf = 0,6 geri. Doğrulama: ½I<sub>m</sub>²R = 300 W ✓.</div>
+        <div class="warnbox">Seri RLC’de rezonansa yaklaşınca akım büyür ve bobin ile kapasitör gerilimi kaynaktan <b>çok daha büyük</b> olabilir (Q kat). Kondansatörün gerilim değerini aşmayın; yükseltecin 10 A korumasına dikkat edin.</div>
+      </div>
+    </div>
+    <div id="d3bench"></div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Wattmetre Okuması ile V·I Çarpımı</h2>
+  <p class="lead">Varyak + yalıtım trafosu üzerinden 50 Hz şebeke gerilimi bir priz grubuna gelir. Wattmetre, voltmetre ve ampermetre aynı anda okunur; prize ev aletlerini takıp çıkarın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Elektrodinamik wattmetrenin hareketli bobini gerilimle, sabit bobini akımla beslenir; ibrenin ataleti çarpımın <b>ortalamasını</b> gösterir: <span class="eq">W = (1/T)∫ v i dt = P</span> Voltmetre ve ampermetre rms okur: <span class="eq">V·I = S (VA),&nbsp; pf = P / (V·I)</span></div>
+        <div class="why"><b>Neden P ≠ V·I?</b> V·I, akımın gerilimle aynı fazda olduğunu varsayar. Motorda akımın bir kısmı yalnızca manyetik alanı kurmak için gidip gelir: kabloyu ısıtır, sigortayı zorlar, ama ortalama güce katkı vermez.</div>
+        <div class="solved"><b>Mini örnek (Örnek 2.8):</b> 230 V, 16 A sigorta → P<sub>sınır</sub> = 3680 W. Su ısıtıcı 2000 W + tost 1146 W + saç kurutma 600 W = 3746 W → I = 16,29 A &gt; 16 A: sigorta atar. Herhangi birini çıkarmak yeter.</div>
+        <div class="warnbox">Bu deney 230 V ile yapılır: bağlantıları <b>yalnızca enerji kesikken</b> değiştirin, yalıtımlı (güvenlik tipi) banana kablo kullanın, tek elle çalışın. Kaçak akım rölesi (30 mA) devrede olmalıdır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 270"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d4del">Son satırı sil</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th class="l">Takılı yükler</th><th>V (V)</th><th>I (A)</th><th>P<sub>W</sub> (W)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve osiloskop ekranlarınızdan otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="p(t)’nin ortalaması neden yalnızca P’ye eşit? Bobinde ölçtüğünüz küçük P nereden geldi? Wattmetre ile V·I arasındaki farkı hangi yükte en büyük buldunuz?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz (ör. frekans 159,15).<br>
+    <b>Osiloskop:</b> MATH = CH1 × CH2 (W). ORT çizgisi MATH’ın tam periyot ortalamasıdır. İMLEÇ ile ekranda iki dikey çizgiyi sürükleyip Δt ölçün.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta07.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h07', ders: 'Devre Kuramı II', hafta: 7,
+  doc: [
+    { id: 'DÖÇ1', t: 'Sinüzoidal kararlı hâlde anlık gücü p = vi olarak yazar; p(t)’yi osiloskobun MATH kanalıyla ölçer ve 2ω frekansını doğrular.', mc: [1, 4, 5] },
+    { id: 'DÖÇ2', t: 'R, L ve C yüklerinde p(t)’nin biçimini açıklar; enerjinin tüketildiği ve gidip geldiği durumları ayırt eder.', mc: [1, 2, 5] },
+    { id: 'DÖÇ3', t: 'Ortalama ve reaktif gücü p(t) bileşenlerinden ve v–i faz farkından hesaplar, iki yöntemi karşılaştırır.', mc: [1, 2, 4, 5] },
+    { id: 'DÖÇ4', t: 'Wattmetreyi doğru bağlar; P ile V·I farkından güç faktörünü bulur, sigorta sınırı ve kompanzasyonu değerlendirir.', mc: [1, 4, 5, 6, 10] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Dirençli yükte v, i ve p(t) = v·i dalga biçimlerini gözlemek; p(t)’nin negatif olmadığını, 2f frekansını ve ortalamanın V<sub>rms</sub>I<sub>rms</sub> olduğunu doğrulamak.', doc: ['DÖÇ1', 'DÖÇ2'], mc: [1, 4, 5],
+      gerec: 'AC güç yükselteci, 500 W güç direnci kutusu, akım probu (1 V/A), MATH kanallı osiloskop, rms voltmetre/ampermetre.',
+      guvenlik: 'Direncin güç değerini (500 W) aşmayın; ısınan dirence dokunmayın. Osiloskop toprakları aynı düğümde.',
+      veri: 'V<sub>rms</sub>, I<sub>rms</sub>, p<sub>maks</sub>, p<sub>min</sub>, p ortalaması; frekans karşılaştırması.',
+      tartisma: 'Frekansı değiştirdiğinizde dirençteki ortalama güç neden değişmedi? Bobinli bir yükte değişir miydi?' },
+    d2: { amac: 'Saf bobin ve kapasitörde p(t)’nin ortalamasının sıfır olduğunu, enerjinin alan ile kaynak arasında gidip geldiğini ve Q’nun işaretini göstermek.', doc: ['DÖÇ2'], mc: [1, 2, 4, 5],
+      gerec: 'AC güç yükselteci, hava çekirdekli bobin (sargı direnci r), polarsız film kondansatör, akım probu, osiloskop.',
+      guvenlik: 'Bobin akımını aniden kesmeyin (ters EMK); kondansatörü sökmeden önce deşarj edin; AC’de polarlı elektrolitik kullanmayın.',
+      veri: 'L ve C için V<sub>m</sub>, I<sub>m</sub>, p<sub>maks</sub>, p<sub>min</sub>, ortalama; gerçek bobinde küçük P.',
+      tartisma: 'Gerçek bobinde ölçtüğünüz küçük ortalama güç nereye gidiyor? Bunu kullanarak r’yi nasıl hesaplarsınız?' },
+    d3: { amac: 'Seri RL, RC ve RLC yüklerde P ve Q’yu p(t)’nin tepe/çukur değerlerinden ve imleçle ölçülen faz farkından bulup karşılaştırmak; rezonansta Q = 0 durumunu tasarlamak.', doc: ['DÖÇ3'], mc: [1, 2, 3, 4, 5],
+      gerec: 'AC güç yükselteci, yük kutusu (R, L, C), akım probu, imleçli osiloskop.',
+      guvenlik: 'Rezonansta eleman gerilimleri kaynağı aşabilir: kondansatörün gerilim değerini kontrol edin; 10 A korumasını zorlamayın.',
+      veri: 'Her yük için p<sub>maks</sub>, p<sub>min</sub>, ortalama, Δt; P, Q, pf hesap tablosu.',
+      tartisma: 'Güç yöntemiyle ve zaman yöntemiyle bulduğunuz θ farklıysa hangi ölçüm daha güvenilirdir, neden?' },
+    d4: { amac: 'Wattmetre okumasını V·I çarpımıyla karşılaştırarak güç faktörünü ölçmek; sigorta sınırını ve kompanzasyon kondansatörünün akıma etkisini göstermek.', doc: ['DÖÇ4'], mc: [1, 4, 5, 6, 10],
+      gerec: 'Yalıtım trafosu + varyak (0–250 V), elektrodinamik wattmetre (5 A / 20 A), rms voltmetre ve ampermetre, 16 A sigortalı priz grubu, ev aletleri, 10 µF kompanzasyon kondansatörü.',
+      guvenlik: '230 V: bağlantıları enerjisizken kurun, güvenlik tipi kablo, kaçak akım rölesi. Akım bobini seri, gerilim bobini paralel. Sigortayı köprülemeyin. Reaktif akımı azaltmak kablo kayıplarını ve enerji israfını düşürür.',
+      veri: 'Yük kombinasyonları için V, I, P<sub>W</sub>; hesaplanan S, pf ve Q.',
+      tartisma: 'Kondansatör takıldığında wattmetre neden değişmedi de ampermetre düştü? Bunun işletme faturasına ve kablo kesitine etkisi nedir?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

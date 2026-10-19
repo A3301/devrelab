@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 6 · Transformatör ve Fazör Diyagramı — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 6 — Transformatör ve Fazör Diyagramı</h1>
+    <div class="sub">Doğrusal trafo · Yansıyan empedans · İdeal trafo · Boşta/kısa devre deneyi · Empedans uydurma · Nokta kuralı · Fazör diyagramı</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Doğrusal Trafo</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Boşta ve Kısa Devre</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Empedans Uydurma</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Polarite (Nokta) Testi</button>
+  <button data-p="d5"><span class="dot"></span>7 · Deney 5: Fazör Diyagramı</button>
+  <button data-p="rapor"><span class="dot"></span>8 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–8</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 6 · Transformatör (Doğrusal ve İdeal) ve Fazör Diyagramı</h2>
+  <p class="lead">Ders notu: <b>Bölüm 1.8 Doğrusal Transformatör</b>, <b>1.9 İdeal Transformatör</b> ve <b>1.10 Fazör Diyagramları</b> (Örnek 1.35–1.43).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Doğrusal trafonun primerinden görülen empedansı ölçerek <b>yansıyan empedansı</b> bulacak, sanal kısmının neden işaret değiştirdiğini göreceksiniz.</li>
+        <li>Bir şebeke trafosunun <b>boşta ve kısa devre deneylerini</b> güvenli biçimde yapıp dönüştürme oranını ve eşdeğer devre parametrelerini çıkaracaksınız.</li>
+        <li>Hoparlörü yükseltece bağlamak için <b>sarım oranı tasarlayacak</b>, en büyük güç aktarımını ölçerek doğrulayacaksınız.</li>
+        <li>Bilinmeyen bir trafonun <b>nokta (polarite) işaretini</b> voltmetre ve osiloskop yöntemiyle bulacaksınız.</li>
+        <li>Canlı <b>fazör diyagramı</b> ile bir devre değerini geometriyle tasarlayacak, osiloskopla faz farkını ölçeceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Yalıtım trafosu (230/230 V) · Ayarlı oto-trafo (varyak, 0–250 V) · Sigortalı dağıtım kutusu · Güç analizörü / wattmetre (P, V, I) · True-rms AC voltmetre ve ampermetre · İki kanallı osiloskop (akım probu, diferansiyel prob) · Doğrusal (hava çekirdekli, ayarlı k) trafo · 230/24 V, 100 VA şebeke trafosu · Sarım oranı seçilebilir çıkış trafosu · 8 Ω hoparlör · R, L, C kutuları.</p>
+      <div class="info"><b>Genlik kabulü:</b> Bu haftanın trafo deneylerinde kaynaklar ve ölçü aletleri <b>etkin (rms)</b> değerle verilir (ders notundaki Örnek 1.35, 1.38, 1.39 gibi). Fazör diyagramı deneyinde ise ders notuna uygun olarak <b>tepe</b> değerler kullanılır.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b> bölümündeki güvenlik uyarılarını mutlaka okuyun: bu hafta şebeke gerilimiyle çalışan bir deney (Deney 2) var. Her deneyde soldaki föyü izleyin; adımlar doğru ayar ve ölçümle kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile kaydedin, soruları yanıtlayın, raporu yazdırın.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · İki Sargı, Ortak Bir Manyetik Alan</h2>
+  <p class="lead">Transformatör, enerjiyi tel ile değil <b>manyetik akı</b> ile taşır. Bu yüzden gerilim seviyesini değiştirir, devreleri yalıtır ve yükü kaynağa “başka bir empedans” gibi gösterir.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Neden önemli, nerede kullanılır?</h3>
+      <p style="font-size:14px;line-height:1.65">Türkiye’de santralde ~11–20 kV üretilen enerji <b>400 kV</b>’a yükseltilerek taşınır, dağıtım merkezlerinde 34,5 kV’a ve mahalle trafosunda <b>400/230 V</b>’a indirilir. Neden? Aynı güçte gerilim a kat artarsa akım a kat azalır, hat kaybı RI² ise <b>a² kat</b> azalır. Elektronikte ise küçük trafolar DC’yi keser, hatları yalıtır ve empedans uydurur (mikrofon, hoparlör, Ethernet hattı, anten balun’u).</p>
+      <h3>2 · İki model</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Doğrusal trafo:</b> R<sub>1</sub>, R<sub>2</sub>, L<sub>1</sub>, L<sub>2</sub>, M = k√(L<sub>1</sub>L<sub>2</sub>). Hava çekirdekli, haberleşme trafoları. İki çevre denklemi:<br>
+      <span class="eq">V<sub>s</sub> = Z<sub>11</sub>I<sub>1</sub> − jωM I<sub>2</sub>,&nbsp; 0 = −jωM I<sub>1</sub> + Z<sub>22</sub>I<sub>2</sub></span><br>
+      <b>İdeal trafo:</b> k = 1, L → ∞, kayıpsız. Yalnız sarım oranı kalır: V<sub>1</sub>/N<sub>1</sub> = V<sub>2</sub>/N<sub>2</sub>, N<sub>1</sub>I<sub>1</sub> = N<sub>2</sub>I<sub>2</sub> (işaretler noktaya göre).</p>
+      <svg id="obTr" viewBox="0 0 520 210" class="schem"></svg>
+      <div class="row" style="font-size:13px;margin-top:6px">
+        <label>Nokta yeri (sekonder) <select id="obDot"><option value="1">üst uç (X1)</option><option value="-1">alt uç (X2)</option></select></label>
+        <label>N<sub>1</sub>:N<sub>2</sub> <select id="obN"><option value="2">2:1</option><option value="0.5">1:2</option><option value="4">4:1</option></select></label>
+      </div>
+      <div class="info">Animasyon: v<sub>1</sub> ve v<sub>2</sub> fazörleri aynı akıdan doğar; nokta ters uçtaysa v<sub>2</sub> fazörü 180° döner. Genlik oranı sarım oranıdır, faz farkı ya 0° ya 180°’dir: ideal trafo fazı döndürmez.</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Karşılıklı endüktans</td><td class="l">M = k√(L<sub>1</sub>L<sub>2</sub>), 0 ≤ k ≤ 1</td></tr>
+        <tr><td class="l">Özempedanslar</td><td class="l">Z<sub>11</sub> = Z<sub>s</sub> + R<sub>1</sub> + jωL<sub>1</sub>, Z<sub>22</sub> = R<sub>2</sub> + jωL<sub>2</sub> + Z<sub>L</sub></td></tr>
+        <tr><td class="l">Yansıyan empedans</td><td class="l">Z<sub>r</sub> = ω²M²/Z<sub>22</sub> = (ω²M²/|Z<sub>22</sub>|²)(R<sub>22</sub> − jX<sub>22</sub>)</td></tr>
+        <tr><td class="l">Giriş empedansı</td><td class="l">Z<sub>ab</sub> = R<sub>1</sub> + jωL<sub>1</sub> + Z<sub>r</sub></td></tr>
+        <tr><td class="l">Sekonder akımı</td><td class="l">I<sub>2</sub> = jωM I<sub>1</sub>/Z<sub>22</sub></td></tr>
+        <tr><td class="l">İdeal trafo, a = N<sub>2</sub>/N<sub>1</sub></td><td class="l">V<sub>2</sub> = aV<sub>1</sub>, I<sub>2</sub> = I<sub>1</sub>/a, Z<sub>IN</sub> = Z<sub>L</sub>/a² = (N<sub>1</sub>/N<sub>2</sub>)²Z<sub>L</sub></td></tr>
+        <tr><td class="l">Maksimum güç (uydurma)</td><td class="l">R<sub>L</sub>/a² = R<sub>s</sub> ⇒ a = √(R<sub>L</sub>/R<sub>s</sub>), verim %50</td></tr>
+        <tr><td class="l">Boşta deney</td><td class="l">R<sub>c</sub> ≈ V<sub>1</sub>²/P<sub>0</sub>, X<sub>m</sub> ≈ V<sub>1</sub>²/Q<sub>0</sub></td></tr>
+        <tr><td class="l">Kısa devre deneyi</td><td class="l">R<sub>eş</sub> = P<sub>k</sub>/I<sub>k</sub>², Z<sub>eş</sub> = V<sub>k</sub>/I<sub>k</sub>, X<sub>eş</sub> = √(Z<sub>eş</sub>² − R<sub>eş</sub>²)</td></tr>
+        <tr><td class="l">Fazör diyagramı</td><td class="l">Seride I, paralelde V referans; θ<sub>Z</sub> = θ<sub>V</sub> − θ<sub>I</sub></td></tr>
+      </table>
+      <h3>3 · Nokta kuralı (iki cümle)</h3>
+      <p style="font-size:14px;line-height:1.65;margin:0"><b>Gerilim:</b> V<sub>1</sub> ve V<sub>2</sub>’nin + uçlarının ikisi de noktalıysa (ya da ikisi de değilse) V<sub>1</sub>/N<sub>1</sub> = +V<sub>2</sub>/N<sub>2</sub>; biri noktalı biri değilse eksi.<br>
+      <b>Akım:</b> I<sub>1</sub> ve I<sub>2</sub>’nin ikisi de noktalı uca giriyorsa (ya da ikisi de çıkıyorsa) N<sub>1</sub>I<sub>1</sub> = −N<sub>2</sub>I<sub>2</sub>; biri girip biri çıkıyorsa artı. Çünkü ideal çekirdekte net manyetomotor kuvvet sıfırdır.</p>
+      <h3>4 · Yansıyan reaktans neden ters işaretli?</h3>
+      <p style="font-size:14px;line-height:1.65;margin:0">Z<sub>r</sub> ∝ 1/Z<sub>22</sub> ve 1/(R + jX) = (R − jX)/|Z|². Sekonder kapasitifse primerden <b>indüktif</b>, indüktifse <b>kapasitif</b> görünür. Gerçel kısım ise hep ≥ 0’dır: pasif sekonder kaynağa güç geri veremez.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çözümlü mini örnek (Örnek 1.38)</h3>
+    <p style="font-size:14px;line-height:1.65;margin:0">Kaynak 220∠0° V rms, Z<sub>g</sub> = 2 + j1 Ω; ideal trafo 5:1 (noktalar üstte); Z<sub>L</sub> = 4 + j3 Ω.<br>
+    a = N<sub>2</sub>/N<sub>1</sub> = 0,2 ⇒ Z<sub>IN</sub> = Z<sub>L</sub>/a² = 25(4 + j3) = 100 + j75 Ω. <i>Neden büyüdü?</i> Gerilim düşüren trafo yükü kaynağa büyük gösterir.<br>
+    I<sub>1</sub> = 220/(102 + j76) = 1,730∠−36,69° A; I<sub>2</sub> = I<sub>1</sub>/a = 8,65 A; P<sub>L</sub> = 8,648² · 4 = 299,1 W. Denetim: |I<sub>1</sub>|²·102 = 305,1 W = 5,98 W (Z<sub>g</sub>) + 299,1 W (yük) ✓</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Şebeke gerilimi öldürür.</b> 230 V AC, kalpten geçen 30 mA mertebesinde akımla ölümcül olabilir. Bağlantılar <b>enerji kesikken</b> kurulur, yalnız yalıtımlı (güvenlik tipi, kılıflı) banana kablolar kullanılır, tek el kuralı uygulanır, devreye enerji vermeden önce sorumluya kontrol ettirilir. Kaçak akım rölesi (30 mA) çalışır durumda olmalıdır.</div>
+    <div class="warnbox"><b>Yalıtım trafosu ve osiloskop toprağı.</b> Osiloskobun prob toprağı koruma toprağına bağlıdır. Şebekeye doğrudan bağlı bir devrede toprak klipsini nötr dışında bir noktaya takmak <b>faz–toprak kısa devresi</b> yaratır: prob yanar, ark oluşur. Önce devreyi <b>yalıtım trafosu</b> üzerinden besleyin ya da <b>diferansiyel prob</b> kullanın. Osiloskobun toprak bağlantısını iptal etmek kesinlikle yasaktır.</div>
+    <div class="warnbox"><b>Kısa devre deneyine varyak sıfırdayken başlanır.</b> Sekonder kısa devreyken primere tam gerilim uygulamak anma akımının 10–20 katını çeker: sigorta atar, sargılar ısınır. Varyağı <b>0 V’ta</b> başlatın, ampermetreye bakarak anma akımına kadar <b>yavaşça</b> artırın.</div>
+    <div class="warnbox"><b>Boşta deneyde yüksek gerilim tarafı canlıdır.</b> Boşta deney alçak gerilim tarafından yapılsa bile yüksek gerilim uçlarında <b>anma gerilimi</b> oluşur. Açık sekonder uçlarına dokunmayın; ölçü aletinin kategori (CAT II/III) ve gerilim değerinin uygun olduğundan emin olun.</div>
+    <div class="warnbox"><b>Akım trafosunun sekonderi asla açık bırakılmaz.</b> Ölçü amaçlı akım trafosunda (CT) primer akımı yük belirler; sekonder açılırsa mıknatıslama akımı sınırlanmaz, sekonderde <b>binlerce volt</b> oluşur ve çekirdek aşırı ısınır. CT sekonderi her zaman kısa devre köprüsüyle ya da ampermetreyle kapalı tutulur. Gerilim trafosunun sekonderi ise asla kısa devre edilmez.</div>
+    <div class="warnbox"><b>Ani akım (inrush) ve kıvılcım.</b> Trafoya enerji verildiği anda çekirdek kalıcı mıknatıslık nedeniyle doyuma girebilir ve anma akımının birkaç katı kısa süreli akım çekilir. Bu nedenle sigortalar gecikmeli (T tipi) seçilir. Enerji kesilirken ise mıknatıslama akımının ani kesilmesi anahtarda kıvılcım yapar.</div>
+    <div class="warnbox"><b>Ölçü aleti bağlantısı.</b> Ampermetre seri, voltmetre paralel bağlanır; wattmetrenin akım bobini seri, gerilim bobini paralel. Multimetrenin akım girişinde iken gerilim ölçmek sigortayı (ve aleti) yakar. Wattmetrenin akım sınırı anma akımından büyük seçilmelidir.</div>
+    <div class="info"><b>Sık hatalar:</b> yansıtmada (ωM)² yerine ωM yazmak; Z<sub>22</sub>’nin işaretini korumak (eşlenik alınır); empedansı a² ile çarpmak (a = N<sub>2</sub>/N<sub>1</sub> ise a²’ye bölünür); noktalara bakmadan hep artı işaret yazmak; fazör genliklerini doğrudan toplamak (60 + 80 ≠ 100); θ<sub>Z</sub> &lt; 0 iken akımı geride sanmak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Örnek 1.35: R<sub>1</sub> = 200 Ω, R<sub>2</sub> = 100 Ω, L<sub>1</sub> = 9 H, L<sub>2</sub> = 4 H, k = 0,5, Z<sub>L</sub> = 800 Ω + 1 µF, ω = 400 rad/s.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Doğrusal Trafo ve Yansıyan Empedans</h2>
+  <p class="lead">Örnek 1.35 düzeneği: 300 V rms, ω = 400 rad/s (f = 63,7 Hz), Z<sub>s</sub> = 500 + j100 Ω. Bağ katsayısı çekirdek aralığıyla ayarlanabiliyor. a–b uçlarında gerilim, primer akımı ve faz farkını ölçüp Z<sub>r</sub>’yi bulun.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Ölçümden Z<sub>r</sub>’ye:</b> <span class="eq">Z<sub>ab</sub> = (V<sub>ab</sub>/I<sub>1</sub>)∠θ,&nbsp; θ = 360°·Δt/T</span> Δt: CH1 (v<sub>ab</sub>) tepesinden CH2 (i<sub>1</sub>) tepesine geçen süre (akım geride ise Δt &gt; 0). Sonra <span class="eq">Z<sub>r</sub> = Z<sub>ab</sub> − (R<sub>1</sub> + jωL<sub>1</sub>) = Z<sub>ab</sub> − (200 + j3600) Ω</span></div>
+        <div class="info"><b>Neden böyle?</b> Sekonder akımı, primerde −jωM I<sub>2</sub> kadar bir gerilim indükler. Bu gerilim I<sub>1</sub> ile orantılı olduğundan primer devre onu fazladan bir empedans gibi “hisseder”. Akım iki kez bağlanır (primer → sekonder → primer), bu yüzden M² çıkar.</div>
+        <div class="info"><b>Kontrol:</b> Sekonder açıkken I<sub>2</sub> = 0, Z<sub>r</sub> = 0 olmalı: Z<sub>ab</sub> = 200 + j3600 Ω. Bu, ölçüm düzeninizin doğruluğunu sınamanın en kolay yoludur.</div>
+        <div class="warnbox">Sekonderi kısa devre etmeden ya da yükü değiştirmeden önce kaynağı kapatın. Doğrusal trafoda k küçük olduğundan kısa devre akımı sınırlıdır, ama demir çekirdekli bir güç trafosunda aynı işlem yüksek akım ve kıvılcım demektir.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" id="d1scopeHost" style="margin-top:12px"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 260"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d1rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d1del">Son satırı sil</button>
+            <button class="btn sec small" id="d1csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>k</th><th>Sekonder</th><th>V<sub>ab</sub> (V)</th><th>I<sub>1</sub> (mA)</th><th>I<sub>2</sub> (mA)</th><th>P<sub>ab</sub> (W)</th><th>Δt</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>Yük gücü P<sub>L</sub> – k</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Teorik eğri</label></div>
+          <canvas id="d1plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12.5px;color:var(--muted)">Noktalar: Z<sub>L</sub> = 800 Ω + 1 µF ile kaydedilen satırlar, P<sub>L</sub> = I<sub>2</sub>² · 800 Ω.</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Şebeke Trafosunda Boşta ve Kısa Devre Deneyleri</h2>
+  <p class="lead">230/24 V, 100 VA trafo (her öğrenciye üretim toleransı farklı bir trafo düşer). Boşta deneyle dönüştürme oranını ve demir kaybını, kısa devre deneyiyle sargı kaybını ve eşdeğer empedansı bulun. <b>Bu deney şebeke gerilimiyle yapılır.</b></p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Boşta (açık devre) deney:</b> sekonder açık, primere anma gerilimi. Akım yalnız mıknatıslama akımıdır (anma akımının %2–10’u); sargı kaybı ihmal edilir, wattmetre <b>demir (çekirdek) kaybını</b> gösterir. V<sub>1</sub>/V<sub>2</sub> ≈ N<sub>1</sub>/N<sub>2</sub>.</div>
+        <div class="info"><b>Kısa devre deneyi:</b> sekonder ampermetre üzerinden kısa devre, primere anma akımını akıtacak kadar <b>düşük</b> gerilim (anmanın %5–10’u). Çekirdekteki akı küçük olduğundan demir kaybı ihmal edilir; wattmetre <b>bakır kaybını</b> gösterir. V<sub>k</sub>/V<sub>n</sub> oranı “kısa devre gerilimi” u<sub>k</sub>’dır.</div>
+        <div class="info"><b>Neden iki deney?</b> Tam yükte trafoyu sınamak büyük güç ve gerçek yük ister. İki deneyin toplam gücü ise yalnız kayıplar kadardır (birkaç watt): fabrikalarda büyük güç trafoları da böyle sınanır.</div>
+        <div class="warnbox"><b>Bu deneye özel:</b> Kısa devre bağlantısını yalnız ENERJİ KAPALI iken kurun. Varyağı sıfırlamadan enerji vermeyin. Anma akımı 0,435 A’dir; primer akımı 0,8 A’i aşarsa gecikmeli sigorta (0,8 A T) atar.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Deney</th><th>V<sub>1</sub> (V)</th><th>I<sub>1</sub> (mA)</th><th>P<sub>1</sub> (W)</th><th>V<sub>2</sub> (V)</th><th>I<sub>2</sub> (A)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Empedans Uydurma: Hoparlör Eşlemesi</h2>
+  <p class="lead">Örnek 1.39: 40 V rms kaynak, iç direnci R<sub>s</sub> (ör. bir tüplü yükseltecin çıkışı, 800 Ω); yük 8 Ω hoparlör. Sarım oranını seçerek hoparlöre en çok gücü aktarın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">İdeal trafo yükü primere <span class="eq">R<sub>IN</sub> = (N<sub>1</sub>/N<sub>2</sub>)² R<sub>L</sub></span> olarak taşır. Kaynak R<sub>IN</sub> = R<sub>s</sub> gördüğünde güç en büyüktür: <span class="eq">N<sub>1</sub>/N<sub>2</sub> = √(R<sub>s</sub>/R<sub>L</sub>)</span></div>
+        <div class="info"><b>Neden böyle?</b> R<sub>IN</sub> çok küçükse akım büyük ama yükteki gerilim küçüktür; çok büyükse gerilim büyük ama akım küçüktür. Çarpım (güç) arada bir yerde en büyüktür. Eşleşmede kaynak gücünün yarısı R<sub>s</sub>’de ısıya döner: verim %50’dir. Bu yüzden şebekede uydurma yapılmaz, yalnız küçük işaretli/ses devrelerinde yapılır.</div>
+        <div class="warnbox">Çıkış trafolu bir yükselteci <b>hoparlörsüz</b> çalıştırmayın: yük kalkınca primerden görülen empedans çok büyür, primerde gerilim tepeleri oluşur ve çıkış katı/trafo yalıtımı zarar görebilir. Ayrıca yüksek güçte hoparlör bobini ısınır; ses seviyesini kademeli artırın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 220"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d3del">Son satırı sil</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>R<sub>s</sub></th><th>R<sub>L</sub></th><th>N<sub>1</sub>:N<sub>2</sub></th><th>I<sub>1</sub> (mA)</th><th>V<sub>2</sub> (V)</th><th>I<sub>2</sub> (mA)</th><th>P<sub>L</sub> (mW)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>P<sub>L</sub> – N<sub>1</sub>/N<sub>2</sub></b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Teorik eğri</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12.5px;color:var(--muted)">Yalnız şu anki R<sub>s</sub> ve R<sub>L</sub> ile kaydedilen satırlar gösterilir. Trafosuz ölçüm N<sub>1</sub>/N<sub>2</sub> = 1 olarak çizilir.</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Nokta Kuralı: Polarite Testi</h2>
+  <p class="lead">Etiketi silinmiş bir trafonun uçları H1–H2 (primer) ve X1–X2 (sekonder). Hangi sekonder ucunun H1 ile aynı anda pozitif olduğunu (noktayı) voltmetre ve osiloskop yöntemiyle bulun.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Voltmetre yöntemi:</b> Primerin bir ucunu (H2) sekonderin bir ucuna köprüleyin, primere düşük AC gerilim verin, H1 ile sekonderin serbest ucu arasını ölçün. <span class="eq">V<sub>test</sub> = V<sub>1</sub> − V<sub>2</sub> (çıkarmalı) ya da V<sub>1</sub> + V<sub>2</sub> (toplamalı)</span> Hangi durumun hangi noktalamaya karşılık geldiğini sargı gerilimlerinin yönünden kendiniz çıkarın.</div>
+        <div class="info"><b>Osiloskop yöntemi:</b> CH1 H1–H2’yi, CH2 X1–X2’yi gösterir (iki probun toprağı H2 ve X2’dedir; bu yüzden H2–X2 ortak olmalıdır). Dalgalar aynı fazdaysa X1, H1 ile aynı kutupludur.</div>
+        <div class="info"><b>Neden önemli?</b> İki sekonderi seri bağlayıp gerilimi artırmak, iki trafoyu paralel çalıştırmak ya da üç faz trafo bağlantısı yapmak için polarite bilinmelidir. Ters bağlanan paralel sargılar arasında kısa devre akımı dolaşır.</div>
+        <div class="warnbox">Polarite testini <b>düşük gerilimle</b> (varyakla 10–30 V) yapın. Toplamalı bağlantıda voltmetre V<sub>1</sub> + V<sub>2</sub> görür; yüksek oranlı bir trafoda ve şebeke geriliminde bu değer ölçü aletinin kademesini aşabilir.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div><div class="bench-row" id="d4scopeHost" style="margin-top:12px"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d4del">Son satırı sil</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>V<sub>varyak</sub> (V)</th><th>Köprü</th><th>Voltmetre uçları</th><th>Okuma (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Kararınız</h3>
+        <div class="row" id="d4dec"></div>
+        <div id="d4decfb" style="font-size:13.5px;margin-top:6px"></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 5 ================= -->
+<section class="page" id="d5">
+  <h2>Deney 5 · Fazör Diyagramıyla Devre Çözümü</h2>
+  <p class="lead">Devreyi seçin; canlı fazör diyagramı, osiloskoptaki dalgalarla birlikte değişir. Örnek 1.40’ta R’yi geometriyle tasarlayın; 1.41–1.43’te diyagramı ölçümle doğrulayın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d5steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Referans seçimi:</b> seride ortak büyüklük akımdır (I yatay eksene), paralelde gerilim (V yatay eksene). Gerilim ve akım okları <b>ayrı ölçeklerle</b> çizilir: karşılaştırılabilen yalnız açılardır.</div>
+        <div class="info"><b>Örnek 1.40 fikri:</b> I<sub>L</sub> ve I<sub>C</sub> zıt yönlüdür, toplamları dikey bir oktur. I<sub>s</sub> ile I<sub>R</sub> arasında 45° olması için dik üçgenin iki dik kenarı eşit olmalıdır: |I<sub>R</sub>| = |I<sub>C</sub> + I<sub>L</sub>|.</div>
+        <div class="info"><b>Osiloskopta faz:</b> φ = 360°·Δt/T. Tepeye <b>önce</b> ulaşan dalga ileridedir. Δt’yi CH1 tepesinden CH2 tepesine ölçün; Δt &lt; 0 ise CH2 ileridedir.</div>
+        <div class="warnbox">Akımı osiloskopta görmek için ya akım probu ya da küçük bir şönt direnç (ör. 0,1 Ω) kullanılır. Şönt kullanırken iki probun toprağı aynı noktada olmalıdır; aksi hâlde devrenin bir kısmı toprak üzerinden kısa devre olur. Paralel devrede dal akımlarını ayrı ayrı görmek için akım probu daha güvenlidir.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d5inst"></div><div class="bench-row" id="d5scopeHost" style="margin-top:12px"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><b>Canlı fazör diyagramı</b><svg id="d5ph" viewBox="0 0 420 420" class="schem" style="margin-top:6px"></svg>
+          <label style="font-size:13px"><input type="checkbox" id="d5poly"> Okları uç uca ekle (KGY/KAY poligonu)</label></div>
+        <div class="card"><b>Devre</b><svg id="d5sch" class="schem" viewBox="0 0 420 260" style="margin-top:6px"></svg>
+          <div id="d5desc" style="font-size:13px;margin-top:6px;line-height:1.5"></div></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d5rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d5del">Son satırı sil</button>
+          <button class="btn sec small" id="d5csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d5tab"><thead><tr><th>#</th><th>Devre</th><th>Ayar</th><th>ω (rad/s)</th><th>CH1 tepe</th><th>CH2 tepe</th><th>Δt</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d5Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Yansıyan empedansın işareti ölçümünüzde nasıl göründü? Kısa devre deneyini neden düşük gerilimle yaptınız? Uydurma trafosu hoparlör gücünü kaç kat artırdı?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin. Ekranın sol kenarı t = 0’dır (tetik: CH1 tepesi).<br>
+    <b>Deney 2:</b> bağlantı (boşta/kısa devre) yalnız ENERJİ kapalıyken değiştirilebilir.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>8</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta06.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h6', ders: 'Devre Kuramı II', hafta: 6,
+  doc: [
+    { id: 'DÖÇ1', t: 'Doğrusal trafo devresinin çevre denklemlerini kurar; yansıyan ve giriş empedansını hesaplar ve ölçümle doğrular.', mc: [1, 2, 5] },
+    { id: 'DÖÇ2', t: 'Şebeke trafosunda boşta ve kısa devre deneylerini güvenlik kurallarına uyarak yapar; eşdeğer devre parametrelerini çıkarır.', mc: [4, 5, 6] },
+    { id: 'DÖÇ3', t: 'İdeal trafo bağıntılarını ve nokta kuralını uygular; en büyük güç aktarımı için sarım oranı tasarlar.', mc: [1, 2, 3] },
+    { id: 'DÖÇ4', t: 'Fazör diyagramı çizerek devre büyüklüklerini geometriyle bulur ve osiloskopla faz ölçerek doğrular.', mc: [1, 2, 4, 5] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Doğrusal trafonun a–b uçlarından görülen empedansı ölçerek yansıyan empedansı bulmak; yük türüne ve bağ katsayısına göre değişimini incelemek.', doc: ['DÖÇ1'], mc: [1, 2, 4, 5],
+      gerec: 'Fonksiyon üreteci + güç yükselteci (300 V rms, Z<sub>s</sub> = 500 + j100 Ω), ayarlı bağlı hava çekirdekli trafo, 800 Ω yük, 1 µF film kondansatör, AC voltmetre, iki ampermetre, wattmetre, osiloskop (akım probu).',
+      guvenlik: '300 V rms tehlikeli gerilimdir: yalıtımlı kablolar, enerji kesikken bağlantı; sekonder değişikliği enerji kapalıyken; osiloskop ölçümü diferansiyel probla.',
+      veri: 'V<sub>ab</sub>, I<sub>1</sub>, I<sub>2</sub>, P<sub>ab</sub>, imleçle Δt; Z<sub>ab</sub> ve Z<sub>r</sub> hesabı; P<sub>L</sub>–k grafiği.' },
+    d2: { amac: 'Şebeke trafosunun boşta ve kısa devre deneyleriyle dönüştürme oranını, demir ve bakır kayıplarını ve eşdeğer devre parametrelerini belirlemek.', doc: ['DÖÇ2'], mc: [1, 4, 5, 6],
+      gerec: 'Yalıtım trafosu, varyak (0–250 V), sigortalı dağıtım kutusu (0,8 A T), wattmetre, AC voltmetre ve ampermetreler, 230/24 V 100 VA trafo.',
+      guvenlik: 'Şebeke gerilimi: kaçak akım rölesi, tek el kuralı, enerji kesikken bağlantı; kısa devre deneyine varyak 0 V’ta başlanır; boşta deneyde açık sekonder uçları canlıdır; akım trafosu sekonderi asla açık bırakılmaz.',
+      veri: 'Boşta: V<sub>1</sub>, I<sub>0</sub>, P<sub>0</sub>, V<sub>2</sub>. Kısa devre: V<sub>k</sub>, I<sub>k</sub>, P<sub>k</sub>, I<sub>2</sub>. R<sub>c</sub>, X<sub>m</sub>, R<sub>eş</sub>, X<sub>eş</sub>, u<sub>k</sub>.',
+      tartisma: 'Ölçtüğünüz demir ve bakır kayıplarına göre bu trafonun tam yükteki verimi yaklaşık yüzde kaçtır? Boşta bekleyen (yüksüz) trafoların yıl boyunca harcadığı enerji neden önemli bir verimlilik ve çevre konusudur?' },
+    d3: { amac: 'İdeal trafo ile kaynak ve yük empedansını uydurarak hoparlöre en büyük gücü aktaran sarım oranını tasarlamak ve ölçerek doğrulamak.', doc: ['DÖÇ3'], mc: [1, 2, 3, 5, 10],
+      gerec: 'Fonksiyon üreteci + iç direnç kutusu (R<sub>s</sub>), sarım oranı seçilebilir çıkış trafosu, 4/8/16 Ω hoparlör yükleri, AC voltmetre ve ampermetre.',
+      guvenlik: 'Çıkış trafolu yükselteç hoparlörsüz çalıştırılmaz; hoparlör gücü aşılmaz.',
+      veri: 'Sarım oranına göre I<sub>1</sub>, V<sub>2</sub>, I<sub>2</sub>, P<sub>L</sub>; P<sub>L</sub>–oran grafiği; tasarım doğrulaması.',
+      tartisma: 'Tasarladığınız sarım oranı standart bir trafoda bulunmasaydı en yakın hangi oranı seçerdiniz ve güçte ne kadar kayıp olurdu? Uydurmanın %50 verim sınırı hangi uygulamalarda kabul edilebilir?' },
+    d4: { amac: 'Bilinmeyen bir trafonun nokta (polarite) işaretini voltmetre ve osiloskop yöntemiyle belirlemek ve nokta kuralının işaret bağıntılarını doğrulamak.', doc: ['DÖÇ3'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Varyak, 230/24 V trafo (etiketsiz), köprü kablosu, AC voltmetre, iki kanallı osiloskop.',
+      guvenlik: 'Test düşük gerilimle (10–30 V) yapılır; toplamalı bağlantıda ölçü aleti kademesi aşılmamalı; köprü enerji kesikken değiştirilir.',
+      veri: 'İki köprü bağlantısında test gerilimleri, sargı gerilimleri, osiloskopta faz ilişkisi; nokta kararı.' },
+    d5: { amac: 'Fazör diyagramı ile paralel ve seri devrelerde akım–gerilim ilişkisini görselleştirmek; Örnek 1.40’taki R’yi geometriyle tasarlayıp osiloskopla doğrulamak.', doc: ['DÖÇ4'], mc: [1, 2, 3, 4, 5],
+      gerec: 'Fonksiyon üreteci, R kutusu (0,05–5 Ω), 0,2 mH bobin, 800 µF film kondansatör, R, L, C elemanları, osiloskop (akım probu).',
+      guvenlik: 'Küçük dirençli paralel devrede kaynak akımı büyüktür (amperler); eleman güç değerleri ve üretecin akım sınırı kontrol edilir; prob toprakları tek noktada.',
+      veri: 'Her devre için CH1/CH2 tepe değerleri ve Δt; faz açıları; fazör diyagramı çizimi.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

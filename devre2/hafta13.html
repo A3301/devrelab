@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 13 · Y–Δ Bağlantı ve Üç Fazlı Güç — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>.why{background:#eef8ef;border-left:4px solid var(--ok);padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}.ex{background:#f7f4ff;border-left:4px solid #6a4fc9;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 13 — Y–Δ Bağlantı ve Üç Fazlı Güç</h1>
+    <div class="sub">Δ yükte faz/hat akımı · Δ–Y dönüşümü · P, Q, S · Sabit anlık güç · Hat kaybı · pf düzeltmesi</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Δ Yükte Akımlar</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Y mi Δ mı?</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Üç Fazlı Güç</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: pf Düzeltmesi</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, tekerleği kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd>. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<section class="page" id="giris">
+  <h2>Hafta 13 · Y–Δ Bağlantı ve Üç Fazlı Güç</h2>
+  <p class="lead">Ders notu: <b>Bölüm 3 · Kısım 3–4</b> — 3.4 Y–Δ bağlı devre, 3.5 Üç fazlı güç (P, Q, S, anlık güç, hat kaybı, güç faktörü düzeltmesi).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Δ yükte kol (faz) ve hat akımlarını ölçerek <b>I<sub>L</sub> = √3 I<sub>φ</sub></b> ve ∓30° ilişkisini doğrulayacaksınız.</li>
+        <li>Aynı sargıları Y ve Δ bağlayarak akım ve gücün <b>3 kat</b> değiştiğini, LCR köprüsüyle <b>Z<sub>Y</sub> = Z<sub>Δ</sub>/3</b> olduğunu göreceksiniz.</li>
+        <li>Güç analizörüyle P, Q, S’yi yük, generatör ve iç emk’da ölçüp <b>güç dengesini</b> kuracaksınız.</li>
+        <li>Osiloskopta p<sub>a</sub> + p<sub>b</sub> + p<sub>c</sub>’nin <b>sabit</b> olduğunu, dengesiz yükte bu özelliğin bozulduğunu göreceksiniz.</li>
+        <li>Bir fabrika yükünde hat kaybını ölçüp <b>Δ kondansatör bankası</b> tasarlayarak güç faktörünü düzelteceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Üç fazlı kaynak (abc/acb) · Ayarlı Δ yük kutusu ve kol ampermetreleri · Pens ampermetreler · Motor klemens kutusu (Y/Δ köprüleri) · LCR köprüsü · Üç fazlı güç analizörü · Akım problu ve MATH (v·i) fonksiyonlu osiloskop · Δ kondansatör bankası · Enerji analizörleri.</p>
+      <div class="info">Deney 4’teki fabrika yükü gerçek ölçekte (600 V, 480 kW) bir <b>şebeke modelidir</b>; bu güçte deney yalnızca sahada, yetkili personelle yapılır.</div>
+    </div>
+  </div>
+  <div class="card"><h3 style="margin-top:0">Çalışma sırası</h3><p style="font-size:14px;line-height:1.6;margin:0">Ön Bilgi’deki anlık güç animasyonunu açısını değiştirerek inceleyin, Ön Hazırlık’ı çözün, sonra deneylere geçin. Adımlar doğru ayarı yaptığınızda kendiliğinden işaretlenir; <kbd>R</kbd> ile kaydedin.</p></div>
+</section>
+
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Üçgen Bağlantı ve Üç Fazlı Gücün Sırrı</h2>
+  <p class="lead">Δ yükte akımlar nasıl paylaşılır, güç neden sabit akar, hat kaybı neden güç faktörüne bağlıdır?</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Δ (üçgen) bağlantı</h3>
+      <svg viewBox="0 0 340 230" style="width:100%;max-width:380px" class="schem">
+        <polyline class="w" points="170,30 70,200 270,200 170,30"/>
+        <circle cx="170" cy="30" r="4" class="node"/><circle cx="70" cy="200" r="4" class="node"/><circle cx="270" cy="200" r="4" class="node"/>
+        <text x="170" y="20" class="val" text-anchor="middle">A</text><text x="52" y="210" class="val">B</text><text x="280" y="210" class="val">C</text>
+        <line x1="170" y1="30" x2="300" y2="30" class="w"/><text x="305" y="35" class="lbl">I<tspan font-size="10">aA</tspan> →</text>
+        <text x="95" y="110" class="lbl">I<tspan font-size="10">AB</tspan></text><text x="225" y="110" class="lbl">I<tspan font-size="10">CA</tspan></text><text x="155" y="222" class="lbl">I<tspan font-size="10">BC</tspan></text>
+        <text x="110" y="160" class="lbl" style="font-size:11px">Z<tspan font-size="9">Δ</tspan></text>
+      </svg>
+      <p style="font-size:14px;line-height:1.65">Δ’da her yük kolu iki hat arasına bağlıdır: <b>kol gerilimi = hat gerilimi</b>. Ama bir hat iki kolu birden besler; A düğümünde KCL: I<sub>aA</sub> = I<sub>AB</sub> − I<sub>CA</sub>. İki eşit, 120° aralı akımın farkı √3 kat büyük ve (abc’de) 30° geridedir. Nötr yoktur: Δ yük 3 telle beslenir.</p>
+      <div class="why"><b>Neden Δ–Y dönüşümü?</b> Dengeli Δ yükü Z<sub>Y</sub> = Z<sub>Δ</sub>/3 kollu bir Y yükle değiştirirsek uçlardan bakan her ölçüm aynı kalır; böylece Hafta 12’deki tek-faz eşdeğer devreyi aynen kullanabiliriz.</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Δ’da gerilim</td><td class="l">V<sub>φ</sub> = V<sub>L</sub></td></tr>
+        <tr><td class="l">Δ’da akım (abc)</td><td class="l">I<sub>aA</sub> = √3 I<sub>AB</sub>∠−30° (acb: ∠+30°)</td></tr>
+        <tr><td class="l">Δ → Y (dengeli)</td><td class="l">Z<sub>Y</sub> = Z<sub>Δ</sub>/3</td></tr>
+        <tr><td class="l">Toplam aktif güç</td><td class="l">P<sub>T</sub> = 3V<sub>φ</sub>I<sub>φ</sub>cos θ = √3 V<sub>L</sub>I<sub>L</sub>cos θ</td></tr>
+        <tr><td class="l">Reaktif / görünür</td><td class="l">Q<sub>T</sub> = √3V<sub>L</sub>I<sub>L</sub>sin θ, |S<sub>T</sub>| = √3V<sub>L</sub>I<sub>L</sub></td></tr>
+        <tr><td class="l">Kompleks güç</td><td class="l">S<sub>T</sub> = 3 V<sub>φ</sub> I<sub>φ</sub>* = P<sub>T</sub> + jQ<sub>T</sub></td></tr>
+        <tr><td class="l">Anlık toplam güç</td><td class="l">p<sub>a</sub>+p<sub>b</sub>+p<sub>c</sub> = P<sub>T</sub> (sabit)</td></tr>
+        <tr><td class="l">Hat kaybı</td><td class="l">P<sub>hat</sub> = 3I<sub>L</sub>²R<sub>ℓ</sub>, I<sub>L</sub> = P<sub>T</sub>/(√3V<sub>L</sub>pf)</td></tr>
+        <tr><td class="l">pf düzeltmesi</td><td class="l">Q<sub>C</sub> = P(tan θ<sub>1</sub> − tan θ<sub>2</sub>), C<sub>Δ</sub> = Q<sub>C</sub>/(3ωV<sub>L</sub>²)</td></tr>
+      </table>
+      <p style="font-size:13px;color:var(--muted)">θ her zaman <b>faz empedansının açısıdır</b> (hat gerilimi–hat akımı açısı değil).</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">2 · Anlık güç: tek faz titreşir, üç faz akar</h3>
+    <div class="row" style="margin-bottom:6px"><label style="font-size:14px">Yük açısı θ <input type="range" id="obTh" min="0" max="90" step="1" value="37"></label> <b id="obThV"></b><label style="font-size:13px"><input type="checkbox" id="obTot" checked> Toplamı göster</label></div>
+    <canvas id="obAnim" width="900" height="260" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px"></canvas>
+    <p style="font-size:14px;line-height:1.65">Tek fazda p(t) = VI cos θ + VI cos(2ωt − θ): güç 100 Hz’de titreşir, θ ≠ 0 ise kısa süre <b>negatif</b> olur (enerji kaynağa geri döner). Üç fazda üç titreşim terimi 120°·2 = 240° aralıklıdır ve toplamları sıfırdır: <b>p<sub>T</sub> = 3V<sub>φ</sub>I<sub>φ</sub>cos θ sabit</b>. Büyük motorların titreşimsiz çalışması, üç fazın asıl üstünlüğüdür.</p>
+    <div class="ex"><b>Çözümlü mini örnek (Örnek 3.18):</b> Z = 30 + j40 Ω, 400 V. <b>Y:</b> V<sub>φ</sub> = 230,9 V, I = 4,62 A, P = 3·4,62²·30 = 1920 W. <b>Δ:</b> V<sub>φ</sub> = 400 V, I<sub>φ</sub> = 8 A, I<sub>L</sub> = 13,86 A, P = 3·8²·30 = 5760 W. Oran: 3. Aynı motor Y’de yol alıp Δ’da çalıştırılırsa kalkış akımı üçte birine iner.</div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Motor klemens kutusundaki köprüler.</b> Y/Δ köprülerini yalnızca şebeke ayrılmış ve kilitlenmişken değiştirin. 230/400 V etiketli bir motoru 400 V şebekede Δ bağlamak sargılara √3 kat gerilim uygular ve motoru yakar.</div>
+    <div class="warnbox"><b>Kondansatör bankaları şebekeden ayrıldıktan sonra da yüklüdür.</b> Deşarj dirençlerinin çalıştığını ölçün; dokunmadan önce en az 1–5 dakika bekleyip uçları topraklı bir çubukla kısa devre edin. Kondansatör tepe gerilimi √2·V<sub>L</sub> = 849 V’tur (600 V sistem).</div>
+    <div class="warnbox"><b>Akım trafosu sekonderi asla açık bırakılmaz.</b> Güç analizörleri büyük akımları akım trafosuyla ölçer; ölçü aleti sökülürken sekonder önce kısa devre edilmelidir, aksi hâlde binlerce volt indüklenir.</div>
+    <div class="warnbox"><b>Ölçü aleti sınırları.</b> Güç analizörünün gerilim girişleri genellikle 600 V–1000 V CAT III ile sınırlıdır. Akım klipslerinin yönü (ok işareti kaynaktan yüke) yanlışsa güç negatif görünür.</div>
+    <div class="warnbox"><b>Aşırı kompanzasyon ve rezonans.</b> Fazla kondansatör gerilimi yükseltir, harmonikli şebekede rezonansa girip sigortaları attırabilir. Pratikte kademeli, reaktif güç rölesiyle kumandalı bankalar ve gerekirse harmonik filtreleri kullanılır.</div>
+    <div class="info"><b>Sık hatalar:</b> Y ve Δ’da hat/faz büyüklüklerini karıştırmak · θ yerine θ ± 30° kullanmak · Δ’da I<sub>L</sub>’yi kol akımı sanmak · “gerilimler toplamı sıfır, güç de sıfır” sanmak · pf düzeltmesinde P’nin de değiştiğini düşünmek · Δ banka için Y formülünü kullanmak (3 kat fark).</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Sayılar sunumdaki örneklerden alınmıştır.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<section class="page" id="d1">
+  <h2>Deney 1 · Δ Yükte Faz ve Hat Akımları</h2>
+  <p class="lead">İdeal Y kaynak, dengeli Δ yük. Hat akımları pens ampermetreyle, kol akımları kola seri ampermetrelerle ölçülür. Osiloskopta CH1 = i<sub>AB</sub>, CH2 = i<sub>aA</sub>.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">A düğümünde KCL: <span class="eq">I<sub>aA</sub> = I<sub>AB</sub> − I<sub>CA</sub></span> Fazör panelinde gri kesikli ok −I<sub>CA</sub>’dır; I<sub>AB</sub>’nin ucuna eklendiğinde I<sub>aA</sub>’ya ulaşır.</div>
+        <div class="why"><b>Neden bir kol kopunca bir hat akımı aynı kalır?</b> Kopuk CA kolunda akım sıfırdır; A ve C hatları artık yalnızca birer kolu besler (I<sub>aA</sub> = I<sub>AB</sub>), B hattı ise hâlâ iki kolu. Δ yük tek kol kopunca da çalışmaya devam eder, ama dengesizleşir.</div>
+        <div class="ex"><b>Örnek 3.17 (yol gösterici):</b> I<sub>AB</sub> = 8∠20° A ⇒ I<sub>aA</sub> = √3·8∠(20° − 30°) = 13,86∠−10° A; I<sub>bB</sub> = 13,86∠−130°, I<sub>cC</sub> = 13,86∠110° A.</div>
+        <div class="warnbox">Kol akımını ölçmek için Δ’yı açıp ampermetreyi araya sokmak gerekir: bu işlem <b>enerjisizken</b> yapılır. Ampermetreyi asla iki hat arasına (paralel) bağlamayın; sigortası atar ya da alet yanar.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" id="d1scope" style="margin-top:12px"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><svg id="d1sch" class="schem" viewBox="0 0 760 280"></svg></div>
+        <div class="card"><b>Fazör paneli</b> <span style="font-size:12px;color:var(--muted)">(düz: kol, kesikli: hat akımları)</span><svg id="d1ph" class="schem" viewBox="0 0 320 320"></svg></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span><button class="btn small" id="d1rec">Kaydet (R)</button><button class="btn sec small" id="d1del">Son satırı sil</button><button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Sıra</th><th>V<sub>an</sub></th><th>Z<sub>Δ</sub> (Ω)</th><th>CA</th><th>I<sub>aA</sub></th><th>I<sub>bB</sub></th><th>I<sub>cC</sub></th><th>I<sub>AB</sub></th><th>I<sub>BC</sub></th><th>I<sub>CA</sub></th><th>V<sub>AB</sub></th><th>Δt (ms)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d2">
+  <h2>Deney 2 · Δ–Y Dönüşümü: Aynı Sargılar, Y mi Δ mı?</h2>
+  <p class="lead">Üç özdeş sargı klemens kutusunda Y ya da Δ bağlanır. Şebeke bağlıyken akım ve güç, şebeke ayrıkken LCR köprüsüyle uçtan görülen empedans ölçülür.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Y’de sargı V<sub>L</sub>/√3 görür, I<sub>L</sub> = I<sub>φ</sub>. Δ’da sargı V<sub>L</sub> görür, I<sub>L</sub> = √3 I<sub>φ</sub>. Sonuç: <span class="eq">I<sub>L,Δ</sub> = 3 I<sub>L,Y</sub>, P<sub>Δ</sub> = 3 P<sub>Y</sub></span></div>
+        <div class="why"><b>Neden Z<sub>Y</sub> = Z<sub>Δ</sub>/3?</b> Uçtan iki terminal arası bakınca Y’de iki kol seridir (2Z<sub>Y</sub>); Δ’da bir kol, diğer ikisinin serisine paraleldir: Z ∥ 2Z = 2Z/3. İkisi eşit olmalı: 2Z<sub>Y</sub> = 2Z<sub>Δ</sub>/3.</div>
+        <div class="warnbox">LCR köprüsü yalnızca <b>enerjisiz</b> devrede kullanılır; şebekeye bağlı bir sargıya takılan LCR köprüsü anında bozulur. Büyük motor sargılarında ölçümden önce artık gerilimin boşaldığından emin olun.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 270"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span><button class="btn small" id="d2rec">Kaydet (R)</button><button class="btn sec small" id="d2del">Son satırı sil</button><button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Bağl.</th><th>V<sub>L</sub></th><th>Z (Ω)</th><th>I<sub>L</sub> (A)</th><th>I<sub>φ</sub> (A)</th><th>V<sub>φ</sub> (V)</th><th>P<sub>T</sub> (W)</th><th>Z<sub>AB</sub> (LCR)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d3">
+  <h2>Deney 3 · Üç Fazlı Güç ve Sabit Anlık Toplam Güç</h2>
+  <p class="lead">Örnek 3.19 devresi: generatör (Z<sub>g</sub>), hat (Z<sub>ℓ</sub>), Y yük (4 telli). Güç analizörü üç noktaya bağlanabilir; osiloskop MATH fonksiyonuyla p = v·i gösterir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Güç dengesi: <span class="eq">S<sub>emk</sub> = S<sub>iç</sub> + S<sub>hat</sub> + S<sub>yük</sub></span> Her bölümün aktif payı 3|I|²R, reaktif payı 3|I|²X’tir.</div>
+        <div class="why"><b>Neden p<sub>T</sub> sabit?</b> p<sub>k</sub> = V I [cos θ + cos(2ωt − θ − 2·120°k)]. Üç kosinüsün fazları 0°, −240°, −480° (≡ −120°): dengeli üç fazör gibi toplamları sıfırdır. Dengesizlik bu simetriyi bozar.</div>
+        <div class="ex"><b>Çözüm yolu (Örnek 3.19):</b> I = 2,4 A (Hafta 12). P<sub>yük</sub> = 3·5,76·39 = 673,9 W; Q<sub>yük</sub> = 3·5,76·28 = 483,8 VAR; P<sub>hat</sub> = 3·5,76·0,8 = 13,8 W; S<sub>emk</sub> = 3·120·2,4∠36,87°.</div>
+        <div class="warnbox">Güç analizörünün akım klipslerinin <b>ok yönü</b> kaynaktan yüke bakmalı, faz sırası gerilim uçlarıyla eşleşmelidir (a klipsi a hattında). Aksi hâlde P negatif ya da anlamsız çıkar.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" id="d3scope" style="margin-top:12px"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><b>Yük faz değerleri (rms)</b><table class="data" id="d3pwr" style="margin-top:6px"></table><p style="font-size:13px;color:var(--muted)">Osiloskop: CH1–3 faz güçleri, CH4 toplam. “ort.” değerleri ortalama güçtür.</p></div>
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span><button class="btn small" id="d3rec">Kaydet (R)</button><button class="btn sec small" id="d3del">Sil</button><button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>E<sub>φ</sub></th><th>Z (Ω)</th><th>C ±</th><th>Seri</th><th>Nokta</th><th>P (W)</th><th>Q (VAR)</th><th>|S| (VA)</th><th>pf</th><th>|Δp<sub>T</sub>|</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d4">
+  <h2>Deney 4 · Hat Kaybı ve Üç Fazlı Güç Faktörü Düzeltmesi</h2>
+  <p class="lead">480 kW, pf = 0,8 geri bir fabrika yükü; hat 0,005 + j0,025 Ω/faz; yük barasında V<sub>L</sub> = 600 V (Örnek 3.21–3.24). Yük barasına Δ bağlı kondansatör bankası eklenir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Kondansatör aktif güç çekmez; yalnızca yükün endüktif reaktif akımını yerinde karşılar. Hat artık yalnızca P ve kalan Q’yu taşır: <span class="eq">I<sub>L</sub> = P/(√3 V<sub>L</sub> pf)</span> pf yükselince akım, kayıp ve gerilim düşümü azalır.</div>
+        <div class="why"><b>Neden Δ bağlanır?</b> Δ’da her kondansatör V<sub>L</sub> görür; Q ∝ V² olduğundan aynı Q için Y’ye göre üçte bir kapasite yeter (ama kondansatör daha yüksek gerilime dayanmalıdır).</div>
+        <div class="ex"><b>Tasarım adımları:</b> ① tan θ<sub>1</sub> = 0,75, tan θ<sub>2</sub> = 0,3287. ② Q<sub>C</sub> = 480(0,75 − 0,3287) kVAR. ③ C<sub>Δ</sub> = Q<sub>C</sub>/(3·ω·600²). ④ Bulduğunuz değeri düğmeye çift tıklayıp yazın.</div>
+        <div class="warnbox">Kondansatör bankasını devreden çıkardıktan hemen sonra yeniden devreye almayın: yüklü kondansatör ters fazda bağlanırsa çok büyük ani akım oluşur. Bankalar deşarj direnci ve kontaktör kilitlemesiyle donatılır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><b>Güç üçgeni</b><svg id="d4tri" class="schem" viewBox="0 0 360 200"></svg></div>
+        <div class="card">
+          <div class="row"><b>Hat kaybı – C<sub>Δ</sub></b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d4theo"> Teorik eğri</label></div>
+          <canvas id="d4plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span><button class="btn small" id="d4rec">Kaydet (R)</button><button class="btn sec small" id="d4del">Son satırı sil</button><button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>P (kW)</th><th>pf yük</th><th>C<sub>Δ</sub> (µF)</th><th>I<sub>L</sub> (A)</th><th>pf bara</th><th>P<sub>hat</sub> (kW)</th><th>V<sub>L</sub> gönderen</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Y ve Δ bağlantıyı akım, güç ve kullanım yeri açısından karşılaştırın. Anlık toplam gücün sabitliği neden önemlidir? pf düzeltmesinin ekonomik ve çevresel getirisini ölçümlerinizle yorumlayın."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd>. <kbd>Shift</kbd> ile ince ayar; çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin. Δt = t<sub>B</sub> − t<sub>A</sub>.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta13.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h13', ders: 'Devre Kuramı II', hafta: 13,
+  doc: [
+    { id: 'DÖÇ1', t: 'Δ yükte faz ve hat akımlarını ilişkilendirir; Δ–Y dönüşümüyle tek-faz eşdeğer devre kurar.', mc: [1, 2, 5] },
+    { id: 'DÖÇ2', t: 'Y ve Δ bağlantının akım, gerilim ve güç üzerindeki etkisini ölçümle karşılaştırır.', mc: [1, 4, 5] },
+    { id: 'DÖÇ3', t: 'Üç fazlı sistemde P, Q, S ve güç dengesini hesaplar; anlık toplam gücün sabitliğini gösterir.', mc: [1, 2, 4] },
+    { id: 'DÖÇ4', t: 'Hat kaybını hesaplar ve güç faktörü düzeltmesi için kondansatör bankası tasarlar.', mc: [2, 3, 6, 10] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Dengeli Δ yükte kol ve hat akımlarını ölçerek I<sub>L</sub> = √3I<sub>φ</sub> ve ∓30° ilişkisini doğrulamak; bir kolun kopmasının etkisini incelemek.', doc: ['DÖÇ1'], mc: [1, 2, 4, 5],
+      gerec: 'Üç fazlı ideal kaynak, ayarlı Δ yük kutusu, kol ampermetreleri, pens ampermetreler, akım problu osiloskop.',
+      guvenlik: 'Kol ampermetreleri enerjisizken bağlanır; ampermetre asla hatlar arasına paralel bağlanmaz.',
+      veri: 'Hat ve kol akımları, V<sub>AB</sub>, i<sub>AB</sub>–i<sub>aA</sub> zaman farkı (abc ve acb), kopuk kol ölçümü.' },
+    d2: { amac: 'Aynı sargıların Y ve Δ bağlantısında hat akımını ve gücü karşılaştırmak; LCR ölçümüyle Z<sub>Y</sub> = Z<sub>Δ</sub>/3 dönüşümünü doğrulamak.', doc: ['DÖÇ1', 'DÖÇ2'], mc: [1, 3, 4, 5],
+      gerec: 'Şebeke (230/380/400 V), motor klemens kutusu modeli, ampermetre, voltmetre, wattmetre, LCR köprüsü.',
+      guvenlik: 'Klemens köprüleri enerjisizken değiştirilir; 230/400 V motor 400 V’ta Δ bağlanmaz; LCR köprüsü enerjili devreye takılmaz.',
+      veri: 'Y ve Δ için I<sub>L</sub>, I<sub>φ</sub>, V<sub>φ</sub>, P<sub>T</sub>; Z<sub>AB</sub> LCR okumaları.',
+      tartisma: 'Yıldız–üçgen yol verme hangi motor güçlerinde tercih edilir? Sürücülü (VFD) yol vermeyle karşılaştırın.' },
+    d3: { amac: 'Üç fazlı sistemde P, Q, S’yi farklı noktalarda ölçerek güç dengesini kurmak; dengeli yükte anlık toplam gücün sabit olduğunu osiloskopta göstermek.', doc: ['DÖÇ3'], mc: [1, 2, 4, 5],
+      gerec: 'Generatör modeli, hat empedansı, Y yük, üç fazlı güç analizörü, MATH fonksiyonlu dört kanallı osiloskop.',
+      guvenlik: 'Akım klipsi yönü ve faz eşleşmesi doğru olmalı; analizör gerilim girişinin CAT sınıfı aşılmamalı.',
+      veri: 'Yük, generatör ve emk’da P, Q, S, pf; p<sub>a</sub>, p<sub>b</sub>, p<sub>c</sub>, p<sub>T</sub> dalga biçimleri, dengeli/dengesiz p<sub>T</sub> dalgalanması.' },
+    d4: { amac: 'Bir endüstriyel yükte hat akımı, kaybı ve gerilim düşümünü ölçmek; güç faktörünü 0,95’e çıkaracak Δ kondansatör bankasını tasarlayıp etkisini doğrulamak.', doc: ['DÖÇ4'], mc: [2, 3, 4, 6, 10],
+      gerec: 'Fabrika yükü modeli (480 kW), hat modeli, Δ kondansatör bankası, enerji analizörleri.',
+      guvenlik: 'Kondansatörler ayrıldıktan sonra da yüklüdür (849 V tepe); deşarj edilmeden dokunulmaz. Akım trafosu sekonderi açık bırakılmaz.',
+      veri: 'Farklı C<sub>Δ</sub> için I<sub>L</sub>, pf, P<sub>hat</sub>, gönderen uç gerilimi; kayıp–C<sub>Δ</sub> grafiği.',
+      tartisma: 'Yıllık 6000 saat çalışmada hat kaybındaki azalma kaç kWh eder? Banka maliyetini ve reaktif enerji cezalarını göz önüne alarak geri ödeme süresini tartışın.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

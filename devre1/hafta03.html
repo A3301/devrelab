@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 3 · Toplayan ve Fark Yükselteci — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 3 — Toplayan ve Fark Yükselteci</h1>
+    <div class="sub">Ağırlıklı toplam · Ses mikseri · Oran koşulu · CMRR · Gürültülü hat</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Toplayan Yükselteç</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Fark Yükselteci</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Uyumsuzluk ve CMRR</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Gürültülü Hat</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 3 · Toplayan ve Fark Yükselteci, Ortak İşaret Bastırma</h2>
+  <p class="lead">Ders notu: <b>Bölüm 1.5 Toplayan ve Fark Yükselteci</b> (Örnek 1.6, 1.7, 1.14, 1.20).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Üç girişli toplayan yükselteçte her kolun ağırlığını (−R<sub>f</sub>/R<sub>k</sub>) ölçecek, sinüs + DC + kare dalgayı osiloskopta toplayacaksınız.</li>
+        <li>Toplayanı bir <b>ses mikseri</b> gibi ayarlayıp doyum sınırını göreceksiniz.</li>
+        <li>Fark yükseltecinde <b>oran koşulunu</b> (R<sub>2</sub>/R<sub>1</sub> = R<sub>4</sub>/R<sub>3</sub>) doğrulayacak, v<sub>n</sub>'nin sıfır olmadığı durumu ölçeceksiniz.</li>
+        <li>Direnç uyumsuzluğunun ortak işaret bastırmayı nasıl bozduğunu ölçüp <b>CMRR</b>'yi hesaplayacak, %5/%1/%0,1 toleransları karşılaştıracaksınız.</li>
+        <li>50 Hz şebeke gürültüsü binmiş bir hattan küçük bir sinyali fark yükselteciyle <b>kurtaracaksınız</b>.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">İki fonksiyon üreteci (50 Ω) · İki ayarlı DC kaynak · Simetrik besleme · İki DMM (5½ haneli) · İki kanallı imleçli osiloskop · Direnç kutusu · %5, %1, %0,1 toleranslı direnç takımları · µA741 (CMRR = 90 dB).</p>
+      <h3>Op-amp modeli (tüm deneylerde)</h3>
+      <div class="row" style="font-size:14px">
+        <label>Doyum kabulü
+          <select id="satModel">
+            <option value="ideal">Ders kabulü: v_o = ±V_CC</option>
+            <option value="real">Gerçek 741: v_o = ±(V_CC − 1,5 V)</option>
+          </select></label>
+      </div>
+      <div class="info">µA741: A = 10<sup>5</sup>, op-ampın kendi CMRR'si 90 dB, çıkış akım sınırı ≈ 25 mA, SR = 0,5 V/µs. Sayısal sorular ders kabulüyle hazırlanmıştır.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b>'yi okuyun, <b>Ön Hazırlık</b> sorularını çözün. Her deneyde föyü izleyin; adımlar doğru ayarda kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile kaydedin, soruları kendi ölçümlerinizden yanıtlayın.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Toplamak, Çıkarmak ve Gürültüyü Silmek</h2>
+  <p class="lead">Op-ampa adını veren “işlemler”in ikisi: toplama ve çıkarma. İkincisi, endüstride ölçümün kalbidir.</p>
+  <div class="card"><svg id="obFig" class="schem" viewBox="0 0 945 190"></svg></div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Toplayan yükselteç: akımlar sanal toprakta buluşur</h3>
+      <p style="font-size:14px;line-height:1.65">Eviren yükseltecin girişine birden çok kol bağlayın. Düğüm sanal toprak (0 V) olduğundan her kolun akımı yalnızca kendi v<sub>k</sub>/R<sub>k</sub> değeridir; girişler <b>birbirini etkilemez</b>. Akımlar düğümde toplanır ve R<sub>f</sub>'den geçer.</p>
+      <div class="eq">v<sub>o</sub> = −(R<sub>f</sub>/R<sub>a</sub>·v<sub>a</sub> + R<sub>f</sub>/R<sub>b</sub>·v<sub>b</sub> + R<sub>f</sub>/R<sub>c</sub>·v<sub>c</sub>)</div>
+      <p style="font-size:14px;line-height:1.65"><b>Nerede?</b> Ses mikserleri (her kanalın seviyesi kendi direnciyle), sinyal karıştırma, ofset ekleme, ağırlıklı dirençli D/A çeviriciler.</p>
+      <h3>2 · Fark yükselteci: yalnızca farkı yükselt</h3>
+      <p style="font-size:14px;line-height:1.65">v<sub>b</sub> bir bölücüyle evirmeyen uca, v<sub>a</sub> R<sub>1</sub> üzerinden eviren uca gelir. Süperpozisyonla:</p>
+      <div class="eq">v<sub>o</sub> = (1 + R<sub>2</sub>/R<sub>1</sub>)·R<sub>4</sub>/(R<sub>3</sub>+R<sub>4</sub>)·v<sub>b</sub> − (R<sub>2</sub>/R<sub>1</sub>)·v<sub>a</sub></div>
+      <p style="font-size:14px;line-height:1.65">R<sub>2</sub>/R<sub>1</sub> = R<sub>4</sub>/R<sub>3</sub> ise <b>v<sub>o</sub> = (R<sub>2</sub>/R<sub>1</sub>)(v<sub>b</sub> − v<sub>a</sub>)</b>. İki tele aynı biçimde binen gürültü (ortak işaret) silinir, aradaki küçük sinyal kalır. Termokupllar, köprü devreleri (gerinim ölçer), EKG, uzun hatlı sensörler hep bu ilkeyle ölçülür.</p>
+      <h3>3 · CMRR: bastırmanın ölçüsü</h3>
+      <p style="font-size:14px;line-height:1.65">Gerçek dirençler tam eşit değildir; ortak işaretin küçük bir kısmı çıkışa sızar. Ortak kazanç A<sub>cm</sub> = v<sub>o</sub>/v<sub>cm</sub>, fark kazancı A<sub>d</sub> = v<sub>o</sub>/v<sub>d</sub>. <b>CMRR = |A<sub>d</sub>/A<sub>cm</sub>|</b>, desibelde 20·log<sub>10</sub>(·). Fark yükseltecinin CMRR'sini çoğu zaman op-amp değil <b>direnç eşleşmesi</b> belirler.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Toplayan</td><td class="l">v<sub>o</sub> = −Σ (R<sub>f</sub>/R<sub>k</sub>)·v<sub>k</sub></td></tr>
+        <tr><td class="l">Kolun ağırlığı</td><td class="l">−R<sub>f</sub>/R<sub>k</sub> (küçük R<sub>k</sub> = büyük ağırlık)</td></tr>
+        <tr><td class="l">Fark (genel)</td><td class="l">v<sub>o</sub> = (1+R<sub>2</sub>/R<sub>1</sub>)v<sub>p</sub> − (R<sub>2</sub>/R<sub>1</sub>)v<sub>a</sub>, v<sub>p</sub> = v<sub>b</sub>R<sub>4</sub>/(R<sub>3</sub>+R<sub>4</sub>)</td></tr>
+        <tr><td class="l">Oran koşulu</td><td class="l">R<sub>2</sub>/R<sub>1</sub> = R<sub>4</sub>/R<sub>3</sub> ⇒ v<sub>o</sub> = (R<sub>2</sub>/R<sub>1</sub>)(v<sub>b</sub> − v<sub>a</sub>)</td></tr>
+        <tr><td class="l">Fark ve ortak bileşen</td><td class="l">v<sub>d</sub> = v<sub>b</sub> − v<sub>a</sub>, v<sub>cm</sub> = (v<sub>a</sub> + v<sub>b</sub>)/2</td></tr>
+        <tr><td class="l">CMRR</td><td class="l">|A<sub>d</sub>/A<sub>cm</sub>|, dB: 20·log<sub>10</sub>|A<sub>d</sub>/A<sub>cm</sub>|</td></tr>
+        <tr><td class="l">En kötü durum (tolerans t)</td><td class="l">CMRR ≈ (1 + A<sub>d</sub>)/(4t)</td></tr>
+        <tr><td class="l">Çıkıştaki kalıntı</td><td class="l">v<sub>o,cm</sub> = A<sub>cm</sub>·v<sub>cm</sub></td></tr>
+      </table>
+      <div class="info" style="margin-top:12px"><b>Sık hatalar:</b> farkı ters yazmak (v<sub>a</sub> − v<sub>b</sub>) · fark yükseltecinde v<sub>n</sub> = 0 sanmak (v<sub>n</sub> = v<sub>p</sub>, sıfır değil!) · toplayanın eksi işaretini unutmak · oran koşulunu kontrol etmeden sadeleştirilmiş formülü kullanmak · ortak bileşenin de doyuma yol açabileceğini unutmak (giriş ortak mod aralığı).</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Osiloskop probu bir fark ölçer değildir.</b> İki probun toprak klipsi osiloskop içinde birleşiktir ve şebeke toprağına bağlıdır. “v<sub>b</sub> − v<sub>a</sub>”yi ölçmek için bir klipsi v<sub>a</sub>'ya takmayın: v<sub>a</sub>'yı toprağa kısa devre edersiniz. İki kanalı topraklı ölçüp osiloskobun <b>MATH (CH1 − CH2)</b> işlevini ya da diferansiyel prob kullanın.</div>
+    <div class="warnbox"><b>Şebekeye doğrudan bağlanmayın.</b> 50 Hz gürültü deneyini <u>asla</u> prizden aldığınız gerilimle yapmayın; gürültüyü bir sinyal üreteci veya yalıtım trafolu düşük gerilimli bir kaynakla taklit edin. 230 V hayati tehlikedir.</div>
+    <div class="warnbox"><b>Toleransı ölçerek eşleştirin.</b> %5'lik dirençlerle iyi bir fark yükselteci kurulamaz. Elinizde yalnızca bunlar varsa dirençleri DMM'nin en hassas kademesinde ölçüp R<sub>2</sub>/R<sub>1</sub> ile R<sub>4</sub>/R<sub>3</sub> oranı en yakın olanları eşleştirin; ya da R<sub>4</sub> yerine seri bir trimpot koyup ortak modda çıkışı sıfırlayın.</div>
+    <div class="warnbox"><b>Birden çok üreteç = birden çok toprak.</b> İki fonksiyon üretecinin şasi toprakları da şebeke toprağı üzerinden birleşir; topraklama döngüleri kendi başına 50 Hz uğultu üretir. Tüm toprakları tek bir noktada (yıldız toprak) birleştirin.</div>
+    <div class="warnbox"><b>Giriş ortak mod aralığı.</b> Fark sıfır olsa bile v<sub>p</sub> = v<sub>n</sub> ortak gerilimi op-ampın izin verdiği aralıkta kalmalıdır (741: beslemenin ≈3 V içinde). Ayrıca toplayan yükselteçte DC ofsetler toplanır: sinüs küçük görünse de çıkış DC yüzünden doyabilir.</div>
+    <div class="warnbox"><b>Ölçü aletini doğru kademede kullanın.</b> Ortak mod kalıntısı mV mertebesindedir; DMM'yi otomatik aralıkta ve DC kademesinde kullanın, AC kademesinde 50 Hz'i ayrıca ölçün. Akım ölçerken sigortalı mA girişini kullanın ve işiniz bitince kabloyu V girişine geri takın.</div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. İdeal op-amp, doyum ±V<sub>CC</sub> kabul edin.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Üç Girişli Toplayan Yükselteç ve Ses Mikseri</h2>
+  <p class="lead">v<sub>a</sub>: sinüs üreteci, v<sub>b</sub>: DC kaynak, v<sub>c</sub>: kare dalga üreteci. CH1 probunu istediğiniz girişe, CH2'yi çıkışa bağlayın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Bir üreteci DC kaynak gibi kullanmak için genliğini 0 yapıp yalnızca ofseti ayarlayın. Çıkışın DC değerini tablodaki <b>ortalama</b> sütunundan okuyun.</div>
+        <div class="info">Süperpozisyon: her seferinde yalnızca bir girişi açık bırakın, katkıyı ölçün; sonra hepsini açın. Toplam, katkıların toplamına eşit olmalıdır (doyum yoksa).</div>
+        <div class="info">Mikserde her kanalın kazancı −R<sub>f</sub>/R<sub>k</sub>'dir. Kanal ağırlıkları eşitse dirençler de eşittir; ana seviye R<sub>f</sub> ile ayarlanır.</div>
+        <div class="warnbox">Gerçek mikserde kullanılmayan kanal girişini havada bırakmayın; uzun kablolar anten gibi gürültü toplar. Girişleri kısa devre soketli jak ya da 10 kΩ ile toprağa bağlayın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d1scope"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 312"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Fark Yükselteci, Oran Koşulu ve Ortak İşaret</h2>
+  <p class="lead">v<sub>a</sub> eviren kola (R<sub>1</sub>), v<sub>b</sub> evirmeyen kola (R<sub>3</sub>–R<sub>4</sub> bölücüsü) bağlı. DMM'ler v<sub>p</sub>, v<sub>n</sub>, v<sub>o</sub> ve R<sub>1</sub> akımını ölçer.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Çözüm sırası: önce bölücüden <span class="eq">v<sub>p</sub> = v<sub>b</sub>·R<sub>4</sub>/(R<sub>3</sub>+R<sub>4</sub>)</span> sonra sanal kısa devre v<sub>n</sub> = v<sub>p</sub>, sonra eviren düğümde KCL.</div>
+        <div class="info">“ORTAK” düğmesi v<sub>b</sub>'yi v<sub>a</sub>'ya bağlar: iki giriş aynı gerilimi görür. Koşul sağlanıyorsa çıkış sıfır olmalıdır; bu, fark yükseltecinin en basit testidir.</div>
+        <div class="warnbox">Fark yükseltecinin giriş dirençleri eşit değildir: v<sub>a</sub> kaynağı R<sub>1</sub>'i (sanal kısa devre v<sub>n</sub>'ye göre), v<sub>b</sub> kaynağı R<sub>3</sub>+R<sub>4</sub>'ü görür. İç dirençli kaynaklar bu dirençlere seri eklenir ve oran koşulunu bozar; gerekirse girişlere tampon koyun (ölçü yükselteci).</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 300"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Direnç Uyumsuzluğu ve CMRR Ölçümü</h2>
+  <p class="lead">Nominal R<sub>1</sub> = R<sub>3</sub> = 20 kΩ, R<sub>2</sub> = R<sub>4</sub> = 100 kΩ (A<sub>d</sub> = 5). R<sub>4</sub>'ü elle bozun ya da belirli toleransta rastgele direnç takımları takın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Fark modu:</b> v<sub>a</sub> = −v<sub>d</sub>/2, v<sub>b</sub> = +v<sub>d</sub>/2 (ortak bileşen sıfır) → A<sub>d</sub> = v<sub>o</sub>/v<sub>d</sub>.<br><b>Ortak mod:</b> v<sub>a</sub> = v<sub>b</sub> = v<sub>cm</sub> → A<sub>cm</sub> = v<sub>o</sub>/v<sub>cm</sub>.</div>
+        <div class="info">“Kaydet” o anki direnç takımı için iki standart ölçümü (v<sub>d</sub> = 1 V ve v<sub>cm</sub> = 2 V) yapar. CMRR'yi tablodan siz hesaplayın: <span class="eq">CMRR<sub>dB</sub> = 20·log<sub>10</sub>|A<sub>d</sub>/A<sub>cm</sub>|</span></div>
+        <div class="info">Uyumlu dirençlerde de çıkış tam sıfır değildir: op-ampın kendi CMRR'si (90 dB) küçük bir kalıntı bırakır.</div>
+        <div class="warnbox">Yüksek CMRR ölçümünde kalıntı µV–mV mertebesindedir. Gerçek tezgâhta ölçü kablolarının topraklama döngüsü ve DMM'nin ofseti bu değeri kolayca bozar; önce girişleri kısa devre edip sıfır okumasını not edin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 300"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Direnç takımları</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d3del">Son satırı sil</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>CMRR – tolerans</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> En kötü durum sınırı</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12px;color:#556">x: −1 → %0,1 · 0 → %1 · 0,7 → %5</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Gürültülü Hattan Sinyal Kurtarma</h2>
+  <p class="lead">Uzaktaki bir sensör iki telle küçük bir 500 Hz sinyal gönderiyor. Hat boyunca şebekeden her iki tele eşit 50 Hz gürültü biniyor. CH1 v<sub>b</sub> telini (toprağa göre), CH2 alıcının çıkışını gösterir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Tek uçlu ölçüm:</b> alıcı tek teli toprağa göre ölçer ve gürültüyü de sinyalle aynı kazançla yükseltir.<br><b>Fark ölçümü:</b> alıcı iki tel arasındaki farkı ölçer; ortak 50 Hz silinir.</div>
+        <div class="info">Kalıntı gürültü: <span class="eq">v<sub>o,50Hz</sub> = A<sub>cm</sub>·v<sub>cm</sub></span> Sinyal/gürültü oranı, fark kazancı ile A<sub>cm</sub> arasındaki orana, yani CMRR'ye bağlıdır.</div>
+        <div class="info">50 Hz'i görmek için zaman ölçeğini 5 ms/d, 500 Hz sinyali incelemek için 0,5 ms/d yapın.</div>
+        <div class="warnbox">Endüstride sensör kablosu bükümlü çift ve ekranlı seçilir; ekran yalnızca <b>bir uçtan</b> topraklanır. İki uçtan topraklanan ekran bir toprak döngüsü oluşturur ve tam da bastırmaya çalıştığınız 50 Hz akımını taşır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d4inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d4scope"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 300"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d4del">Son satırı sil</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Toplayan yükselteçte girişler neden birbirini etkilemez? Direnç toleransı CMRR'yi nasıl belirliyor? Gürültülü bir hattan ölçüm için ne önerirsiniz?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop:</b> AUTO ölçeği ayarlar; İMLEÇ düğmesine basıp ekranda sürükleyerek Δt ve anlık gerilimleri okuyun.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta03.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd1h03', ders: 'Devre Kuramı I', hafta: 3,
+  doc: [
+    { id: 'DÖÇ1', t: 'Toplayan yükselteci sanal toprak ve KCL ile çözümler; kol ağırlıklarını ve süperpozisyonu ölçerek doğrular.', mc: [1, 2, 4, 5] },
+    { id: 'DÖÇ2', t: 'Fark yükseltecinin oran koşulunu ve ortak işaret bastırmasını analiz eder; v<sub>n</sub> ≠ 0 durumunda uç gerilim ve akımlarını hesaplar.', mc: [1, 2, 5] },
+    { id: 'DÖÇ3', t: 'Direnç toleransının CMRR’ye etkisini ölçer, eleman sınıfı (maliyet/doğruluk) seçimini gerekçelendirir.', mc: [2, 4, 5, 10] },
+    { id: 'DÖÇ4', t: 'Gürültülü bir hattan sinyal kurtarmak için uygun ölçüm yöntemini seçer ve tasarlar; güvenli ölçüm uygulamalarını gözetir.', mc: [2, 3, 5, 6] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Üç girişli toplayan yükselteçte sinüs, DC ve kare dalgayı toplamak; kol ağırlıklarını ve doyumu ölçmek, ses mikseri ayarı yapmak (Örnek 1.6).', doc: ['DÖÇ1'], mc: [1, 2, 4, 5],
+      gerec: 'İki fonksiyon üreteci (50 Ω), DC kaynak, direnç kutusu, ±V<sub>CC</sub> kaynağı, µA741, iki kanallı osiloskop.',
+      guvenlik: 'Üreteç topraklarını tek noktada birleştirin; DC ofsetlerin çıkışı doyurabileceğini unutmayın; kullanılmayan girişleri toprağa bağlayın.',
+      veri: 'Her ayar için çıkışın maks/min/ortalama değerleri; süperpozisyon karşılaştırması.',
+      tartisma: 'Bir mikserde kanalların birbirini etkilememesi neden önemlidir; eviren yapı yerine evirmeyen toplayıcı aynı özelliği verir miydi?' },
+    d2: { amac: 'Fark yükseltecinde oran koşulunu doğrulamak, ortak işaretin silindiğini göstermek ve v<sub>n</sub> ≠ 0 iken uç akımlarını ölçmek (Örnek 1.7, 1.14).', doc: ['DÖÇ2'], mc: [1, 2, 5],
+      gerec: 'İki ayarlı DC kaynak, direnç kutusu, iki DMM, µA741.',
+      guvenlik: 'Osiloskopla fark ölçerken toprak klipsini v<sub>a</sub> ucuna takmayın; MATH ya da diferansiyel prob kullanın.',
+      veri: 'v<sub>a</sub>, v<sub>b</sub>, v<sub>p</sub>, i<sub>1</sub>, v<sub>o</sub> tablosu.',
+      tartisma: 'Kaynakların iç direnci oran koşulunu nasıl etkiler?' },
+    d3: { amac: 'R<sub>4</sub> = 110 kΩ uyumsuzluğunda ve %5/%1/%0,1 toleranslı rastgele direnç takımlarında A<sub>d</sub>, A<sub>cm</sub> ve CMRR’yi ölçmek (Örnek 1.20).', doc: ['DÖÇ3'], mc: [2, 4, 5, 10],
+      gerec: 'Nominal 20 k/100 k direnç takımları (%5, %1, %0,1), elle ayarlı R<sub>4</sub>, test kaynağı, 5½ haneli DMM.',
+      guvenlik: 'Hassas dirençleri lehimlerken aşırı ısıtmayın (değer kayar); kullanılmayan elemanları e-atık kurallarına göre ayırın.',
+      veri: 'Her takım için fark ve ortak mod çıkışları; CMRR – tolerans grafiği.',
+      tartisma: '%0,1 dirençler %5’liklerden çok daha pahalıdır. Hangi uygulamada bu maliyet haklıdır, alternatifler (trimpot, ölçü yükselteci entegresi) nelerdir?' },
+    d4: { amac: '50 Hz ortak gürültü binmiş bir hattan küçük bir sinyali tek uçlu ve fark ölçümüyle karşılaştırmak, uygun alıcı yapısını seçmek.', doc: ['DÖÇ4'], mc: [2, 3, 5, 6],
+      gerec: 'Sensör sinyal üreteci (500 Hz), gürültü üreteci (50 Hz, düşük gerilim), seçilebilir alıcı yükselteç, osiloskop.',
+      guvenlik: 'Şebeke gerilimini asla doğrudan kullanmayın; gürültüyü düşük gerilimli yalıtılmış kaynakla taklit edin. Kablo ekranını tek uçtan topraklayın.',
+      veri: 'Her yapılandırma için CH2 Vpp ve maks; doyum durumu.',
+      tartisma: 'Endüstriyel ortamda (motorlar, inverterler) uzun sensör hatları için hangi kablo ve alıcı yapısını önerirsiniz?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

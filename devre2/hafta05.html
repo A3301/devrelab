@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 5 · AC Düğüm ve Çevre Yöntemleri — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 5 — Düğüm ve Çevre Yöntemleri (AC)</h1>
+    <div class="sub">Fazör düğüm denklemleri · [Y][V]=[I] · Süperpozisyon · Farklı frekanslı kaynaklar · Bağımlı kaynak</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: İki Kaynaklı Düğüm Analizi</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Denklem Kurucu [Y][V]=[I]</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Farklı Frekanslı Kaynaklar</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Bağımlı Kaynak</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 5 · Sinüsoidal Kararlı Hâlde Düğüm ve Çevre Yöntemleri</h2>
+  <p class="lead">Ders notu: <b>Bölüm 1.7 Düğüm Gerilimi ve Çevre Akımı Yöntemleri</b> (Örnek 1.29–1.34).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>İki kaynaklı (aynı frekanslı) bir AC devrede düğüm gerilimlerini <b>ölçüp</b> fazör düğüm denklemlerinin çözümüyle karşılaştıracaksınız.</li>
+        <li>Admitans matrisini <b>kendiniz kuracak</b>, sistemin çözümünü ölçümle sınayacak, işaret ve 1/j hatalarını ayıklayacaksınız.</li>
+        <li>Osiloskop imleçleriyle <b>faz farkı</b> ölçüp fazörün açısını bulacaksınız.</li>
+        <li>Farklı frekanslı iki kaynakta fazörlerin neden <b>toplanamadığını</b>, etkin değerin nasıl bulunduğunu göreceksiniz.</li>
+        <li>Bağımlı kaynağın admitans matrisinin <b>simetrisini</b> nasıl bozduğunu ölçeceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Fonksiyon üreteci + güç yükselteci (gerilim kaynağı, 50 Ω çıkış devre dışı) · Senkron AC akım kaynağı (transiletkenlik yükselteci, faz ayarlı) · Gerçek etkin değer (true-rms) AC voltmetre ve ampermetre · Fazmetre · İki kanallı osiloskop (imleçli) · Direnç, bobin ve kondansatör kutuları.</p>
+      <div class="info"><b>Genlik kabulü:</b> Ders notundaki gibi fazörler <b>tepe değer</b> (kosinüs genliği) ile yazılır: V<sub>s</sub> = 10∠0° V ⇔ v<sub>s</sub>(t) = 10 cos ωt V. AC voltmetre ise <b>etkin (rms)</b> değer gösterir: V<sub>rms</sub> = V<sub>m</sub>/√2. Ölçümü fazörle karşılaştırırken bu dönüşümü unutmayın.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b> ve <b>Ön Hazırlık</b> bölümlerini bitirin. Her deneyde soldaki föyü adım adım izleyin; adımlar doğru ayar ve ölçümü yaptığınızda kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile kaydedin, soruları yanıtlayın. Son bölümde raporunuzu yazdırın ya da PDF olarak kaydedin.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Bildiğimiz Yöntemler, Bu Kez Kompleks Sayılarla</h2>
+  <p class="lead">Direnç devrelerinde öğrendiğiniz KCL/KVL kuralları değişmiyor; yalnızca R yerine Z, gerçel sayı yerine fazör geliyor.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Neden düğüm ve çevre yöntemi?</h3>
+      <p style="font-size:14px;line-height:1.65">Gerçek devrelerde (ses kartının filtre katı, bir şebeke dağıtım ağı, motor sürücüsünün giriş filtresi) birden çok kaynak ve onlarca eleman bulunur. Seri–paralel indirgeme kısa sürede tıkanır. Düğüm ve çevre yöntemleri, <b>her devre için işleyen sistematik bir reçete</b> verir: N−1 düğüm için N−1 denklem. Devre benzetim programları (SPICE) da AC analizde tam olarak bunu yapar: admitans matrisini kurar ve kompleks doğrusal sistemi çözer.</p>
+      <div class="eq">[Y][V] = [I]&nbsp;&nbsp;&nbsp;⇔&nbsp;&nbsp;&nbsp;[Z][I] = [V]</div>
+      <h3>2 · Adım adım reçete (düğüm)</h3>
+      <ol style="font-size:14px;line-height:1.65;margin:0;padding-left:20px">
+        <li>Referans düğümü seçin (genellikle en çok elemanın bağlandığı düğüm).</li>
+        <li>Kaynakları fazöre, elemanları Z = R, jωL, 1/(jωC) ya da Y = 1/Z biçimine çevirin.</li>
+        <li><b>Y<sub>kk</sub></b> = düğüm k’ya bağlı tüm admitansların toplamı.</li>
+        <li><b>Y<sub>km</sub></b> = k ile m arasındaki admitansın <b>eksisi</b>.</li>
+        <li><b>I<sub>k</sub></b> = düğüme <b>giren</b> kaynak akımlarının toplamı (gerilim kaynağı + seri Z → Norton: V<sub>s</sub>/Z).</li>
+        <li>Çözün (Cramer ya da Gauss) ve sonucu bir denkleme geri koyarak denetleyin.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Admitanslar</td><td class="l">Y<sub>R</sub> = 1/R, Y<sub>L</sub> = 1/(jωL) = −j/(ωL), Y<sub>C</sub> = jωC</td></tr>
+        <tr><td class="l">Sanal birimle bölme</td><td class="l">1/j = −j,&nbsp; 1/(j2) = −j0,5</td></tr>
+        <tr><td class="l">2×2 Cramer</td><td class="l">Δ = Y<sub>11</sub>Y<sub>22</sub> − Y<sub>12</sub>Y<sub>21</sub>,&nbsp; V<sub>1</sub> = (I<sub>1</sub>Y<sub>22</sub> − Y<sub>12</sub>I<sub>2</sub>)/Δ</td></tr>
+        <tr><td class="l">Kompleks bölme</td><td class="l">(a+jb)/(c+jd) = (a+jb)(c−jd)/(c²+d²)</td></tr>
+        <tr><td class="l">Etkin değer</td><td class="l">V<sub>rms</sub> = V<sub>m</sub>/√2</td></tr>
+        <tr><td class="l">Faz (osiloskop)</td><td class="l">φ = 360° · f · Δt (önce tepeye ulaşan <b>ileridedir</b>)</td></tr>
+        <tr><td class="l">Farklı ω’lu kaynaklar</td><td class="l">i(t) = Σ |I<sub>k</sub>| cos(ω<sub>k</sub>t + φ<sub>k</sub>),&nbsp; I<sub>rms</sub> = √(Σ I<sub>k,rms</sub>²)</td></tr>
+        <tr><td class="l">Bağımlı kaynak</td><td class="l">Matrise girer, Y<sub>km</sub> ≠ Y<sub>mk</sub> olabilir</td></tr>
+      </table>
+      <h3>3 · Bir bakışta: farklı frekanslı iki fazör</h3>
+      <svg id="obAnim" viewBox="0 0 520 230" class="schem" style="max-width:520px"></svg>
+      <div class="row" style="font-size:13px;margin-top:6px">
+        <label>ω<sub>2</sub>/ω<sub>1</sub> <select id="obRatio"><option value="1">1 (aynı frekans)</option><option value="3" selected>3</option><option value="2">2</option></select></label>
+        <span style="color:var(--muted)">Sol: iki fazör ve toplamları (siyah). Sağ: toplamın zaman dalgası.</span>
+      </div>
+      <div class="info">Aynı frekansta iki ok <b>birlikte</b> döner, aralarındaki açı sabit kalır: toplam da sabit boylu bir fazördür. Farklı frekansta aradaki açı (ω<sub>2</sub>−ω<sub>1</sub>)t ile açılır; toplamın boyu sürekli değişir, <b>tek bir fazörle temsil edilemez</b>.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çözümlü mini örnek (Örnek 1.30)</h3>
+    <p style="font-size:14px;line-height:1.65;margin:0">V<sub>s</sub> = 10∠0° V, 1 Ω seri; düğüm 1–toprak 5 Ω; düğüm 1–2 arası j2 Ω; düğüm 2–toprak 10 Ω; I<sub>s</sub> = 2∠0° A düğüm 2’ye giriyor.<br>
+    Düğüm 1: (1 + 0,2 − j0,5)V<sub>1</sub> + j0,5V<sub>2</sub> = 10 &nbsp;·&nbsp; Düğüm 2: j0,5V<sub>1</sub> + (0,1 − j0,5)V<sub>2</sub> = 2.<br>
+    Neden köşegen dışı terim <b>+j0,5</b>? Çünkü Y<sub>12</sub> = −1/(j2) = −(−j0,5) = +j0,5. İşaret iki kez döndü: biri “komşu eksi” kuralından, biri 1/j = −j’den.<br>
+    Δ = 0,12 − j0,65 ⇒ V<sub>1</sub> = 9,20 − j0,16 V, V<sub>2</sub> = 9,59 + j1,92 V. Deney 1’de bu sonuçları tezgâhta sınayacaksınız.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Osiloskop toprağı tek noktadır.</b> İki probun toprak klipsi osiloskop içinde birbirine ve şebeke koruma toprağına bağlıdır. CH2 toprağını düğüm 1’e takarsanız düğüm 1’i toprağa kısa devre edersiniz ve devre değişir. İki düğüm arası gerilimi (V<sub>1</sub>−V<sub>2</sub>) görmek için <b>matematik kanalı (CH1−CH2)</b> ya da <b>diferansiyel prob</b> kullanın.</div>
+    <div class="warnbox"><b>Şebekeden beslenen devrede ölçüm.</b> Bu deneylerdeki güç yükselteci şebekeden yalıtılmıştır. Şebekeye doğrudan bağlı bir devrede osiloskop toprağı faz iletkenine değerse kısa devre ve ark oluşur; böyle ölçümler yalnızca <b>yalıtım trafosu</b> ya da yalıtımlı diferansiyel probla yapılır. Osiloskobun koruma topraklamasını kesmek (“fişin toprağını iptal etmek”) asla çözüm değildir.</div>
+    <div class="warnbox"><b>Akım kaynağının çıkışı açık bırakılmaz.</b> Bir akım kaynağı yük açılınca akımı sürdürebilmek için gerilimini yükseltir (uyum gerilimi sınırına kadar). Deneyde düğüm 2’yi değiştirmeden önce I<sub>s</sub>’yi sıfırlayın; açık devrede kaynağın “OVL” uyarısı yanar.</div>
+    <div class="warnbox"><b>Multimetrenin AC kademesi ve frekans sınırı.</b> Ucuz multimetreler “ortalama yanıtlı”dır ve yalnız saf sinüste doğru rms gösterir; ayrıca çoğu 400 Hz–1 kHz üstünde hatalıdır. Deney 3’teki iki frekanslı dalga için <b>true-rms</b> cihaz şarttır. Akım ölçerken ucun 10 A girişine ve sigortasına dikkat edin; gerilim ölçmeye dönmeden ucu V girişine geri takın.</div>
+    <div class="warnbox"><b>Eleman güç ve akım değerleri.</b> 1 Ω’luk dirençte 1 A rms yaklaşık 1 W demektir: ¼ W direnç yanar. Bobinin tel çapı da akımı sınırlar ve bobin ısındıkça iç direnci artar. Seçtiğiniz elemanın gücünü P = I<sub>rms</sub>²R ile önceden kontrol edin.</div>
+    <div class="warnbox"><b>Elektrolitik kondansatör AC’de kullanılmaz.</b> Kutuplu elektrolitik kondansatör ters yarım periyotta bozulur, şişer ve patlayabilir. AC devrelerde film (polipropilen) ya da kutupsuz (bipolar) kondansatör seçin; deney sonunda büyük kondansatörleri dirençle boşaltın.</div>
+    <div class="info"><b>Sık hatalar:</b> 1/(jωL)’yi +j/(ωL) yazmak; köşegen dışı terimi eksi almayı unutmak; ortak kolda çevre akımlarını toplamak (fark alınır); voltmetrenin rms değerini tepe fazörüyle karşılaştırmak; farklı frekanslı fazörleri toplamak; etkin değerleri doğrudan toplamak (kareler toplanır).</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Fazörler tepe değerdir; açılar derece.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · İki Kaynaklı Devrede Düğüm Gerilimleri</h2>
+  <p class="lead">Örnek 1.30 devresi tezgâhta: gerilim kaynağı ve aynı frekansta senkron çalışan akım kaynağı. Ölçün, fazörlere çevirin, denklem çözümüyle karşılaştırın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info"><b>Ölçümden fazöre:</b> genlik = V<sub>rms</sub>·√2; açı = osiloskopta referans (CH1 = v<sub>s</sub>, açısı 0°) ile ölçülen kanal arasındaki zaman farkından: <span class="eq">φ = −360° · Δt / T</span> Δt, CH1 tepesinden CH2 tepesine olan süredir; CH2 önce tepe yapıyorsa (Δt &lt; 0) fazör <b>ileride</b>, açı pozitiftir.</div>
+        <div class="info"><b>Neden böyle?</b> Bobin (j2 Ω) akıma 90° ileri gerilim ekler; bu yüzden V<sub>1</sub> ve V<sub>2</sub> artık aynı fazda değildir. DC çözümünde (Örnek 1.29) ikisi de aynı işaretli gerçel sayıydı.</div>
+        <div class="info"><b>Süperpozisyon (aynı frekans):</b> Kaynakları tek tek açıp ölçtüğünüz fazörleri <b>kompleks olarak</b> toplarsanız iki kaynak birlikteyken ölçtüğünüz fazörü bulursunuz. Etkin değerleri toplamak yanlıştır; açıları da hesaba katılmalıdır.</div>
+        <div class="warnbox">İkinci osiloskop probunun toprak klipsini düğüm 1’e takmayın: düğüm 1 toprağa kısa devre olur. V<sub>1</sub>−V<sub>2</sub> için “prob noktası” seçicisindeki <b>fark (CH1−CH2 matematik)</b> konumunu kullanın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" id="d1scopeHost" style="margin-top:12px"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 270"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>V<sub>s</sub> (V)</th><th>I<sub>s</sub></th><th>ω (rad/s)</th><th>Bobin</th><th>Nokta</th><th>V<sub>rms</sub> (V)</th><th>Δt (imleç)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Etkileşimli Denklem Kurucu: [Y][V] = [I]</h2>
+  <p class="lead">Devreyi siz tasarlayın: üç kolun elemanını ve frekansı seçin, admitans matrisini girin. Sistem sizin matrisinizi çözer ve tezgâhtaki ölçümle karşılaştırır.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Gerilim kaynağı V<sub>s</sub> ile seri R<sub>s</sub> = 1 Ω, Norton eşdeğerine çevrilir: düğüm 1’e <b>V<sub>s</sub>/R<sub>s</sub></b> akımı girer, 1/R<sub>s</sub> ise Y<sub>11</sub>’e eklenir.</div>
+        <div class="info"><b>Kontrol listesi:</b> (1) Y<sub>11</sub> ve Y<sub>22</sub>’nin gerçel kısmı ≥ 0 olmalı (pasif elemanlar). (2) Bobin admitansının sanal kısmı <b>negatif</b>, kondansatörünkü <b>pozitif</b>. (3) Bağımlı kaynak yoksa Y<sub>12</sub> = Y<sub>21</sub>.</div>
+        <div class="info"><b>Neden ölçümle karşılaştırıyoruz?</b> Matristeki tek bir işaret hatası “makul görünen” ama yanlış bir sonuç verir. Mühendislikte hesap her zaman bağımsız bir yoldan (ölçüm, ikinci yöntem, enerji dengesi) doğrulanır.</div>
+        <div class="warnbox">Bobini ve kondansatörü değiştirirken kaynakları kapatın (ENERJİ düğmesi). Yüklü büyük kondansatör (1000 µF) dokunulduğunda kıvılcım yapar; değiştirmeden önce boşaltma direnciyle deşarj edin.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <h3 style="margin-top:0">Denklem kurucu</h3>
+        <div id="d2mat"></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Karşılaştırma tablosu</b><span class="grow"></span>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Devre</th><th>ω</th><th>Matris</th><th>V<sub>1</sub> (çözüm)</th><th>V<sub>1</sub> (ölçüm)</th><th>V<sub>2</sub> (çözüm)</th><th>V<sub>2</sub> (ölçüm)</th><th>Hata</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Süperpozisyon ve Farklı Frekanslı İki Kaynak</h2>
+  <p class="lead">Örnek 1.34: seri 10 Ω ve 10 mH; v<sub>1</sub> = 10 cos 1000t V ve v<sub>2</sub> = 6 cos(ω<sub>2</sub>t − 30°) V. Kaynakları tek tek açın, akımı osiloskop ve true-rms ampermetreyle inceleyin.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Fazör tek bir ω için tanımlıdır. Her kaynağı <b>kendi frekansında</b> ayrı çözün (Z = R + jωL her ω için farklıdır), sonra <b>zaman bölgesinde</b> toplayın: <span class="eq">i(t) = |I<sub>1</sub>|cos(ω<sub>1</sub>t+φ<sub>1</sub>) + |I<sub>2</sub>|cos(ω<sub>2</sub>t+φ<sub>2</sub>)</span></div>
+        <div class="info"><b>Etkin değer:</b> farklı frekanslı sinüslerin çarpımının ortalaması sıfırdır (ortogonallik). Bu yüzden <span class="eq">I<sub>rms</sub> = √(I<sub>1,rms</sub>² + I<sub>2,rms</sub>²)</span> Aynı frekansta ise çapraz terim kalır; önce fazörler toplanır.</div>
+        <div class="info">Kapalı bir gerilim kaynağı <b>kısa devre</b> ile yer değiştirir (akım kaynağı açık devre). Gerçek tezgâhta kaynağı devreden söküp yerine bir köprü takarsınız; “çıkışı kapat” düğmesi de iç direnci küçük tutar.</div>
+        <div class="warnbox">İki güç kaynağının çıkışını doğrudan paralel bağlamayın: farklı frekanslı iki gerilim kaynağı arasında yalnızca iç dirençlerle sınırlanan büyük bir akım dolaşır. Seri bağlarken her kaynağın yalıtımlı (yüzer) çıkışlı olduğundan emin olun.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" id="d3scopeHost" style="margin-top:12px"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 220"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d3del">Son satırı sil</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Kaynak 1</th><th>Kaynak 2</th><th>ω<sub>2</sub></th><th>I<sub>rms</sub> (mA)</th><th>i maks (A)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>i(t) karşılaştırma</b><span class="grow"></span>
+            <label style="font-size:13px"><input type="checkbox" id="d3theo"> Doğru çözüm (zaman bölgesinde toplam)</label>
+            <label style="font-size:13px"><input type="checkbox" id="d3wrong"> Hatalı: fazörleri topla</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12.5px;color:var(--muted)">Mavi noktalar: ölçülen akım (osiloskop, iki ω<sub>1</sub> periyodu).</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Bağımlı Kaynaklı Devre ve Simetrisi Bozulan Matris</h2>
+  <p class="lead">Düğüm 2’ye, düğüm 1 geriliminin denetlediği bir akım kaynağı (VCCS, i = g·v<sub>1</sub>) bağlıdır. Transistörlü yükselteçlerin küçük işaret modeli tam olarak budur.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Bağımlı kaynak önce bağımsız kaynak gibi yazılır (I<sub>2</sub> tarafına +gV<sub>1</sub>), sonra denetleyen değişken bilinmeyen olduğu için <b>sol tarafa taşınır</b>: <span class="eq">−(Y<sub>b</sub> + g)V<sub>1</sub> + (Y<sub>b</sub> + Y<sub>c</sub>)V<sub>2</sub> = 0</span> Böylece Y<sub>21</sub> ≠ Y<sub>12</sub> olur.</div>
+        <div class="info"><b>Neden simetri bozulur?</b> Pasif bir kol iki düğümü karşılıklı ve eşit biçimde bağlar. Bağımlı kaynak ise tek yönlüdür: V<sub>1</sub>, düğüm 2’yi etkiler ama V<sub>2</sub> düğüm 1’i bu yoldan etkilemez. Yükseltecin girişten çıkışa iletip geri iletmemesi budur.</div>
+        <div class="warnbox">Gerçek bir yükselteçte g büyüdükçe kazanç artar ama bir geri besleme yolu (burada 4 Ω’luk kol) varsa devre <b>kararsızlığa</b> yaklaşabilir: Δ → 0 iken gerilimler çok büyür. Tezgâhta bu, çıkış katının doyuma gitmesi ve elemanların ısınması demektir; g’yi yavaş artırın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d4rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d4del">Son satırı sil</button>
+            <button class="btn sec small" id="d4csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>g (S)</th><th>V<sub>1,rms</sub></th><th>∠V<sub>1</sub></th><th>V<sub>2,rms</sub></th><th>∠V<sub>2</sub></th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>|V<sub>2</sub>| – g grafiği</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d4theo"> Teorik eğri</label></div>
+          <canvas id="d4plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Denklem kurucu (bağımlı kaynaklı)</h3><div id="d4mat"></div></div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Fazör düğüm çözümü ölçümle ne kadar uyuştu? Farklı frekanslı kaynaklarda neden fazörleri toplayamadınız? Bağımlı kaynak matrisi nasıl değiştirdi?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin. Ekranın sol kenarı t = 0’dır (tetik: v<sub>s</sub>’nin tepesi).<br>
+    <b>Denklem kurucu:</b> kompleks sayıyı gerçel ve sanal kısım kutularına ayrı yazın (ör. 1,2 ve −0,5). Ondalık için virgül kullanabilirsiniz.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta05.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h5', ders: 'Devre Kuramı II', hafta: 5,
+  doc: [
+    { id: 'DÖÇ1', t: 'Sinüsoidal kararlı hâldeki çok kaynaklı devrelerde fazör düğüm ve çevre denklemlerini kurar ve çözer.', mc: [1, 2] },
+    { id: 'DÖÇ2', t: 'AC voltmetre ve iki kanallı osiloskopla genlik ve faz ölçerek fazörleri deneysel olarak belirler.', mc: [4, 5] },
+    { id: 'DÖÇ3', t: 'Kendi seçtiği devre için admitans matrisini kurar, çözümünü ölçümle doğrular ve hataları ayıklar.', mc: [2, 3, 5] },
+    { id: 'DÖÇ4', t: 'Farklı frekanslı kaynaklarda süperpozisyonu zaman bölgesinde uygular; bağımlı kaynağın matrise etkisini çözümler.', mc: [1, 2, 5] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'İki kaynaklı (aynı frekanslı) AC devrede düğüm gerilimlerinin genlik ve fazını ölçmek, fazör düğüm denklemlerinin çözümüyle ve süperpozisyonla karşılaştırmak.', doc: ['DÖÇ1', 'DÖÇ2'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Fonksiyon üreteci + güç yükselteci, senkron AC akım kaynağı, true-rms AC voltmetre, iki kanallı osiloskop, 1 Ω, 5 Ω, 10 Ω dirençler, 2 mH bobin.',
+      guvenlik: 'Osiloskop toprak klipsi yalnız referans düğüme; fark gerilimi matematik kanalı ya da diferansiyel probla ölçülür. 1 Ω direnç birkaç watt harcar, güç değeri uygun seçilmeli. Akım kaynağı açık devre bırakılmaz.',
+      veri: 'Düğüm gerilimlerinin rms değerleri, imleçle Δt, fazör genlik ve açıları; tek kaynaklı ölçümlerin kompleks toplamı.' },
+    d2: { amac: 'Seçilen R, L, C elemanları ve frekans için admitans matrisini kurmak; çözümü ölçümle doğrulayıp işaret ve 1/j hatalarını ayıklamak.', doc: ['DÖÇ1', 'DÖÇ3'], mc: [1, 2, 3, 4, 5],
+      gerec: 'Direnç, bobin ve kondansatör kutuları; gerilim ve akım kaynağı; AC voltmetre ve fazmetre.',
+      guvenlik: 'Eleman değiştirirken enerji kesilir; büyük kondansatörler boşaltma direnciyle deşarj edilir; AC devrede elektrolitik kondansatör kullanılmaz.',
+      veri: 'Öğrencinin girdiği [Y] ve [I], çözüm ile ölçüm karşılaştırma tablosu, bağıl hata.',
+      tartisma: 'Matrisinizde ilk denemede hangi terim yanlıştı ve ölçüm bunu nasıl ortaya çıkardı? Tasarladığınız devrede frekansı değiştirmek düğüm gerilimlerini neden değiştirdi?' },
+    d3: { amac: 'Farklı frekanslı iki kaynağın tepkisini süperpozisyonla zaman bölgesinde bulmak; fazör toplamanın neden geçersiz olduğunu ve etkin değerin nasıl hesaplandığını ölçmek.', doc: ['DÖÇ2', 'DÖÇ4'], mc: [1, 2, 4, 5],
+      gerec: 'İki yüzer çıkışlı fonksiyon üreteci, 10 Ω direnç, 10 mH bobin, true-rms ampermetre, osiloskop (akım probu).',
+      guvenlik: 'Gerilim kaynakları doğrudan paralel bağlanmaz; ortalama yanıtlı multimetre sinüs olmayan dalgada yanlış okur.',
+      veri: 'Tek ve çift kaynaklı I<sub>rms</sub> değerleri, akım dalga biçimi, kareler toplamı denetimi.' },
+    d4: { amac: 'Gerilim denetimli akım kaynağı içeren devrenin düğüm denklemlerini kurmak, simetrik olmayan admitans matrisini ölçümle doğrulamak.', doc: ['DÖÇ1', 'DÖÇ4'], mc: [1, 2, 4, 5],
+      gerec: 'Gerilim kaynağı, VCCS modülü (ayarlı g), dirençler, 250 µF film kondansatör, 2 mH bobin, AC voltmetre, fazmetre.',
+      guvenlik: 'g büyütüldükçe devre kararsızlığa yaklaşabilir; çıkış gerilimi izlenerek g yavaş artırılır.',
+      veri: 'g’ye göre V<sub>1</sub>, V<sub>2</sub> genlik ve açıları, |V<sub>2</sub>|–g grafiği, öğrencinin kurduğu bağımlı kaynaklı [Y].' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

@@ -1,0 +1,6 @@
+DEVRE KURAMI SANAL LABORATUVARI
+Hak sahibi: Ali AKDAĞLI
+Sürüm: 1.0
+© 2026 Ali AKDAĞLI. Tüm hakları saklıdır.
+
+Bu paket, Ali AKDAĞLI tarafından paylaşıldığı biçimiyle kişisel ve eğitim amaçlı kullanılmak üzere sunulmuştur. Bu paylaşım, yazılımın telif haklarının devri veya açık kaynak lisansı anlamına gelmez. Ticari kullanım, değiştirilmiş sürümlerin dağıtılması ve hak sahibi bilgisinin kaldırılması için hak sahibinin izni gerekir.

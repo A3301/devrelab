@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 12 · Paralel RLC Doğal Tepki — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 12 — Paralel RLC Devresinin Doğal Tepkisi</h1>
+    <div class="sub">α ve ω<sub>0</sub> · Aşırı, az ve kritik sönüm · s-düzlemi · Logaritmik azalma · Gerçek bobin</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Üç Tepki ve s-Düzlemi</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: ω<sub>d</sub> ve α Ölçümü</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Kritik Sönüm Tasarımı</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Gerçek Bobin</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<section class="page" id="giris">
+  <h2>Hafta 12 · Paralel RLC Devresinin Doğal Tepkisi</h2>
+  <p class="lead">Ders notu: <b>Bölüm 4.1 Paralel RLC: Doğal Tepki</b>, <b>4.2 Aşırı</b>, <b>4.3 Az</b> ve <b>4.4 Kritik Sönümlü Tepki</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Yalnızca R'yi değiştirerek aşırı, kritik ve az sönümlü tepkileri osiloskopta görecek, köklerin <b>s-düzlemindeki</b> hareketiyle ilişkilendireceksiniz.</li>
+        <li>Az sönümlü tepkiden <b>ω<sub>d</sub></b>'yi periyottan, <b>α</b>'yı ardışık tepelerin oranından (logaritmik azalma) ölçecek, bilinmeyen bir kondansatörü bulacaksınız.</li>
+        <li>Verilen L ve C için <b>kritik sönüm</b> direncini tasarlayacak, oturma süresini R'ye karşı ölçeceksiniz.</li>
+        <li>Gerçek bobinin <b>sargı direncinin</b> sönümü nasıl değiştirdiğini ölçüp modele katacaksınız.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Başlangıç koşulu yükleyici (V<sub>0</sub> ve I<sub>0</sub> ayarlı, t = 0'da devreden ayrılır) · İki kanallı dijital osiloskop (imleçli; CH2'de 1 V/mA akım probu) · Dijital multimetre (Ω) · Direnç kutusu · Bobinler (8 H, 50 mH vb.) · Kondansatörler · Bilinmeyen kondansatör C<sub>x</sub>.</p>
+      <div class="info">Deney 1–3'te bobin ideal kabul edilir; Deney 4'te sargı direnci r<sub>L</sub> devreye girer. v: kapasitör (düğüm) gerilimi, i<sub>L</sub>: bobin akımı (aşağı yön +).</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b> ve <b>Ön Hazırlık</b>. Her deneyde föyü adım adım izleyin; adımlar doğru ayarda kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile kaydedin; soruları kendi ölçümlerinizden yanıtlayın. Son bölümde raporu yazdırın.</p>
+  </div>
+</section>
+
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · İki Enerji Deposu, Bir Direnç</h2>
+  <p class="lead">Bobin boşalırken kapasitörü doldurur, sonra tersi olur; direnç her turda enerjinin bir kısmını ısıya çevirir. Tepkinin biçimini tek bir karşılaştırma belirler: <b>α ile ω<sub>0</sub></b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Neden önemli, nerede karşımıza çıkar?</h3>
+      <p style="font-size:14px;line-height:1.65">Gerçek sistemlerin çoğu ikinci derecedendir: bir anahtarlamalı güç kaynağının çıkışındaki çınlama (ringing), bir radyo alıcısının ayar devresi, bir kapı kapatıcının ya da ölçü aleti ibresinin oturması, bir kamera sarsıntı dengeleyicisi… Aşım, salınım ve oturma süresi burada doğar. Tasarımcı L ve C'yi çoğu zaman başka nedenlerle (frekans, boyut, maliyet) seçer; <b>sönümü ayarlayan kol R'dir</b>.</p>
+      <div class="eq">d²v/dt² + (1/RC) dv/dt + v/(LC) = 0 &nbsp;⇒&nbsp; s² + s/RC + 1/LC = 0</div>
+      <h3>Üç durum</h3>
+      <p style="font-size:14px;line-height:1.65"><b>α &gt; ω<sub>0</sub> (aşırı sönüm):</b> iki gerçek kök; salınım yok, ekseni en fazla bir kez keser; yavaş kök uzun kuyruk bırakır.<br>
+      <b>α = ω<sub>0</sub> (kritik):</b> çakışık kök; aşımsız en hızlı dönüş; v = (D<sub>1</sub>t + D<sub>2</sub>)e<sup>−αt</sup>.<br>
+      <b>α &lt; ω<sub>0</sub> (az sönüm):</b> karmaşık kökler −α ± jω<sub>d</sub>; zarfı e<sup>−αt</sup> olan sinüs.</p>
+      <svg viewBox="0 0 400 220" style="width:100%;max-width:420px;display:block;margin:auto">
+        <line x1="20" y1="110" x2="390" y2="110" stroke="#99a"/><line x1="320" y1="10" x2="320" y2="210" stroke="#99a"/>
+        <text x="385" y="104" font-size="12" text-anchor="end">σ</text><text x="326" y="20" font-size="12">jω</text>
+        <circle cx="320" cy="110" r="80" fill="none" stroke="#0b5cad" stroke-dasharray="5 4"/>
+        <text x="250" y="40" font-size="11" fill="#0b5cad">|s| = ω₀</text>
+        <g stroke="#1a8a4a" stroke-width="2.5"><path d="M273,49 l8,8 m0,-8 l-8,8"/><path d="M273,163 l8,8 m0,-8 l-8,8"/></g>
+        <text x="285" y="50" font-size="11" fill="#1a8a4a">az sönüm</text>
+        <g stroke="#e07a10" stroke-width="2.5"><path d="M236,106 l8,8 m0,-8 l-8,8"/></g><text x="218" y="130" font-size="11" fill="#e07a10">kritik (−ω₀)</text>
+        <g stroke="#c62828" stroke-width="2.5"><path d="M286,106 l8,8 m0,-8 l-8,8"/><path d="M66,106 l8,8 m0,-8 l-8,8"/></g><text x="40" y="100" font-size="11" fill="#c62828">aşırı sönüm (s₂, s₁)</text>
+        <text x="200" y="205" font-size="11" text-anchor="middle">R küçüldükçe (paralel) kökler daire üzerinde eksene iner, sonra eksende ayrılır</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı (paralel RLC)</h3>
+      <table class="data">
+        <tr><td class="l">Neper frekansı</td><td class="l">α = 1/(2RC)</td></tr>
+        <tr><td class="l">Rezonans frekansı</td><td class="l">ω<sub>0</sub> = 1/√(LC)</td></tr>
+        <tr><td class="l">Kökler</td><td class="l">s<sub>1,2</sub> = −α ± √(α² − ω<sub>0</sub>²)</td></tr>
+        <tr><td class="l">Sönümlü frekans</td><td class="l">ω<sub>d</sub> = √(ω<sub>0</sub>² − α²), T<sub>d</sub> = 2π/ω<sub>d</sub></td></tr>
+        <tr><td class="l">Başlangıç türevi</td><td class="l">dv/dt(0<sup>+</sup>) = −(V<sub>0</sub>/R + I<sub>0</sub>)/C</td></tr>
+        <tr><td class="l">Aşırı sönüm</td><td class="l">v = A<sub>1</sub>e<sup>s<sub>1</sub>t</sup> + A<sub>2</sub>e<sup>s<sub>2</sub>t</sup></td></tr>
+        <tr><td class="l">Kritik</td><td class="l">v = (D<sub>1</sub>t + D<sub>2</sub>)e<sup>−αt</sup>, D<sub>2</sub> = V<sub>0</sub>, D<sub>1</sub> = dv/dt(0<sup>+</sup>) + αV<sub>0</sub></td></tr>
+        <tr><td class="l">Az sönüm</td><td class="l">v = e<sup>−αt</sup>(B<sub>1</sub>cos ω<sub>d</sub>t + B<sub>2</sub>sin ω<sub>d</sub>t)</td></tr>
+        <tr><td class="l">Kritik sönüm direnci</td><td class="l">R = ½√(L/C)</td></tr>
+        <tr><td class="l">Logaritmik azalma</td><td class="l">δ = ln(v<sub>k</sub>/v<sub>k+1</sub>) = αT<sub>d</sub></td></tr>
+        <tr><td class="l">Sargı direnci r<sub>L</sub> ile</td><td class="l">α ≈ 1/(2RC) + r<sub>L</sub>/(2L), ω<sub>0</sub>² = (1 + r<sub>L</sub>/R)/(LC)</td></tr>
+      </table>
+      <div class="info">Seri ile karıştırmayın: seride α = R/(2L) ve R büyüdükçe sönüm <b>artar</b>; paralelde R büyüdükçe sönüm <b>azalır</b>.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Bobin akımını kesmek kıvılcım üretir.</b> I<sub>0</sub>'ı kuran devre ayrılırken bobin akımının bir yolu (paralel C ve R) olmalı. Büyük bobinlerde (8 H!) R'yi ∞ yapıp akımı kesmek yüzlerce volt üretir; anahtar ve ölçü aleti zarar görür.</div>
+    <div class="warnbox"><b>Kondansatörü boşaltın.</b> Az sönümlü devrede gerilim, başlangıçta hiç gerilim yokken bile onlarca volta çıkar (Örnek 4.3'te 74 V). Devreye dokunmadan önce kondansatörü bir dirençle boşaltın, DMM ile doğrulayın. Kondansatörün gerilim değeri bu tepeden büyük olmalı.</div>
+    <div class="warnbox"><b>Elektrolitik kondansatör kullanmayın.</b> Salınım gerilimi iki yönde de olduğu için kutuplu kondansatör ters gerilim görür. Film ya da seramik kondansatör seçin; elektrolitiğin kaçak akımı ayrıca bir paralel direnç gibi davranıp sönümü bozar.</div>
+    <div class="warnbox"><b>Osiloskop probu devreyi yükler.</b> 1× prob 1 MΩ ve ~100 pF ekler: R = 100 kΩ'luk bir paralel RLC'de bu %10 ek sönüm, küçük C'lerde frekans kayması demektir. 10× prob kullanın; toprak klipsini devrenin toprağına bağlayın.</div>
+    <div class="warnbox"><b>Bobin ölçümü ve sargı direnci.</b> Sargı direncini DMM'nin Ω kademesinde, devre <u>enerjisizken</u> ölçün. Ω kademesinde gerilimli bir devreye dokunmak ölçü aletini bozar. Bobini çekirdekli seçerseniz L akımla değişebilir (doyum).</div>
+    <div class="warnbox"><b>Direnç güç değeri.</b> Küçük R'li (aşırı sönümlü) devrede başlangıç gücü V<sub>0</sub>²/R'dir; 12 V, 200 Ω için 0,72 W: ¼ W'lık direnç kısa sürede ısınır. Tekrarlı anahtarlamada ortalama gücü hesaplayın.</div>
+    <div class="info"><b>Sık hatalar:</b> paralel devrede α = R/(2L) yazmak (seri formülü); az sönümde sinüste ω<sub>0</sub> kullanmak (doğrusu ω<sub>d</sub>); kritik durumda tek üstel yazmak; ikinci başlangıç koşulunu (dv/dt) kapasitör akımından değil V<sub>0</sub>'dan bulmaya çalışmak; I<sub>0</sub>'ın yönünü (işaretini) karıştırmak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Değerler ders notundaki örneklerden alınmıştır.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<section class="page" id="d1">
+  <h2>Deney 1 · Üç Tepki, Tek Düğme: R ve Kökler</h2>
+  <p class="lead">Örnek 4.3–4.4: L = 8 H, C = 0,125 µF. Yükleyici t &lt; 0'da V<sub>0</sub> ve I<sub>0</sub>'ı kurar, t = 0'da ayrılır. R'yi değiştirin; osiloskop ve s-düzlemi birlikte güncellenir.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">ω<sub>0</sub> = 1/√(LC) R'den bağımsızdır: s-düzleminde kökler önce yarıçapı ω<sub>0</sub> olan <b>daire</b> üzerinde hareket eder (az sönüm), −ω<sub>0</sub>'da birleşir (kritik), sonra gerçek eksende ayrılır (aşırı sönüm).</div>
+        <div class="info">t = 0<sup>+</sup>'da KCL: <span class="eq">dv/dt(0<sup>+</sup>) = −(V<sub>0</sub>/R + I<sub>0</sub>)/C</span> I<sub>0</sub> negatifse gerilim önce yükselir.</div>
+        <div class="warnbox">Aşırı sönümlü durumda R küçüktür: başlangıçta direnç V<sub>0</sub>²/R gücü harcar. Yüksek V<sub>0</sub> ile küçük R seçerken direncin güç değerine bakın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d1scopeHost"></div>
+      </div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><svg id="d1sch" class="schem" viewBox="0 0 420 260"></svg></div>
+        <div class="card"><b>s-düzlemi (kök yeri)</b><svg id="d1splane" class="schem" viewBox="0 0 360 300" style="margin-top:6px"></svg></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>R</th><th>V<sub>0</sub> (V)</th><th>I<sub>0</sub> (mA)</th><th>Tür</th><th>v maks (V)</th><th>v min (V)</th><th>t<sub>A</sub> (imleç)</th><th>v<sub>A</sub> (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d2">
+  <h2>Deney 2 · Az Sönümlü Tepkide ω<sub>d</sub> ve α'nın Ölçülmesi</h2>
+  <p class="lead">Ardışık iki pozitif tepe arasındaki süre T<sub>d</sub>'yi, oranları ise δ = αT<sub>d</sub>'yi verir. Önce bilinen C = 0,125 µF ile yöntemi doğrulayın, sonra bilinmeyen C<sub>x</sub>'i ölçün.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Tepe değerleri zarfa (∝ e<sup>−αt</sup>) çok yakındır ve aralarında tam bir T<sub>d</sub> vardır: <span class="eq">ln(v<sub>A</sub>/v<sub>B</sub>) = α T<sub>d</sub></span> Bilinmeyen genlik oranda sadeleşir.</div>
+        <div class="info">Ölçülen α ve ω<sub>d</sub>'den: <span class="eq">ω<sub>0</sub>² = ω<sub>d</sub>² + α², C = 1/(ω<sub>0</sub>²L)</span> R biliniyorsa C = 1/(2Rα) ile çapraz kontrol yapın.</div>
+        <div class="warnbox">İmleçleri tepelere yerleştirirken zaman bölmesini, iki tepe ekrana sığacak en büyük ölçeğe getirin; ekranın küçük bir kısmını kaplayan bir dalgada okuma hatası büyür. Gerçek osiloskopta 10× prob kullanmayı unutmayın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d2inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d2scopeHost"></div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="row"><b>İmleç ölçümleri</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>C</th><th>R</th><th>t<sub>A</sub></th><th>v<sub>A</sub> (V)</th><th>t<sub>B</sub></th><th>v<sub>B</sub> (V)</th><th>Δt</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d3">
+  <h2>Deney 3 · Kritik Sönüm Tasarımı: Salınımsız En Hızlı Dönüş</h2>
+  <p class="lead">L ve C'yi seçin, R'yi siz tasarlayın. Osiloskop %2 oturma süresini (t<sub>s</sub>) ve sıfır geçişlerini otomatik ölçer. t<sub>s</sub>–R eğrisini kendiniz çıkarın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Kritik sönüm koşulu α = ω<sub>0</sub>: <span class="eq">R<sub>k</sub> = ½ √(L/C)</span> R &gt; R<sub>k</sub> az sönüm (aşım), R &lt; R<sub>k</sub> aşırı sönüm (uzun kuyruk).</div>
+        <div class="info">Aşırı sönümde yavaş kök s<sub>1</sub> = −α + √(α² − ω<sub>0</sub>²) sıfıra yaklaşır: kuyruk uzar. Az sönümde aşım oturmayı geciktirir. Kritik nokta salınımsız en hızlı tepkidir; hafif aşıma izin verilirse biraz az sönümlü tasarım daha da hızlı oturabilir.</div>
+        <div class="warnbox">Kritik sönüm kırılgandır: kondansatörlerin toleransı tipik olarak ±%5–10'dur. Gerçekte R'yi biraz küçük (hafif aşırı sönümlü) seçmek, üretimde aşımı güvenceye alır. Ayrıca R'yi standart E24 serisinden seçmeniz gerekir.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d3inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d3scopeHost"></div>
+      </div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card">
+          <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Kaydet (R)</button>
+            <button class="btn sec small" id="d3del">Son satırı sil</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>L</th><th>C</th><th>R</th><th>t<sub>s</sub> (%2)</th><th>Sıfır geçişi</th><th>v maks</th><th>v min</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>t<sub>s</sub> – R grafiği</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Teorik eğri</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d4">
+  <h2>Deney 4 · Gerçek Bobin: Sargı Direncinin Etkisi</h2>
+  <p class="lead">8 H'lik bobin binlerce sarımdır; telin direnci r<sub>L</sub> bobine seri bir dirençtir ve devreye ek sönüm katar. Önce r<sub>L</sub>'yi ölçün, sonra sönümü ölçüp modelle karşılaştırın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Denklemler: <span class="eq">C dv/dt = −v/R − i<sub>L</sub>, &nbsp;L di<sub>L</sub>/dt = v − r<sub>L</sub>i<sub>L</sub></span> Karakteristik denklem: s² + (1/RC + r<sub>L</sub>/L)s + (1 + r<sub>L</sub>/R)/(LC) = 0.</div>
+        <div class="info">İdeal modelde R = ∞ iken α = 0'dır ve salınım hiç sönmez. Gerçekte <span class="eq">α = r<sub>L</sub>/(2L)</span> kadar sönüm kalır: <b>kalite faktörü</b> Q = ω<sub>0</sub>L/r<sub>L</sub> sonludur.</div>
+        <div class="warnbox">R = ∞ (direnç sökülmüş) iken başlangıç akımını kuran yükleyicinin ayrılması bobin akımını yalnızca C'ye aktarır: gerilim yüzlerce volta çıkabilir. Kondansatörün gerilim değerini ve yalıtımı kontrol edin; ölçümden sonra kondansatörü boşaltın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d4inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d4scopeHost"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 520 240"></svg></div>
+      <div class="card">
+        <div class="row"><b>İmleç ölçümleri</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d4del">Son satırı sil</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>Model</th><th>R</th><th>t<sub>A</sub></th><th>v<sub>A</sub> (V)</th><th>t<sub>B</sub></th><th>v<sub>B</sub> (V)</th><th>Δt</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="R arttıkça kökler s-düzleminde nasıl hareket etti? Kritik sönüm neden kırılgan? Sargı direnci ölçümlerinizi nasıl etkiledi?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin. Zaman, anahtarlama anından (ekranın 1. bölmesi) itibaren okunur.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta12.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd1h12', ders: 'Devre Kuramı I', hafta: 12,
+  doc: [
+    { id: 'DÖÇ1', t: 'Paralel RLC devresinin karakteristik denklemini kurar; α ve ω<sub>0</sub>\'dan tepki türünü ve kökleri belirler.', mc: [1, 2] },
+    { id: 'DÖÇ2', t: 'Az sönümlü tepkide ω<sub>d</sub> ve α\'yı osiloskopla ölçer, ölçümden bilinmeyen eleman değerini çıkarır.', mc: [2, 4, 5] },
+    { id: 'DÖÇ3', t: 'Verilen L ve C için kritik sönüm direncini tasarlar, tolerans ve standart değer kısıtlarını değerlendirir.', mc: [1, 3, 10] },
+    { id: 'DÖÇ4', t: 'Gerçek bobinin sargı direncini ölçer ve modele katarak ideal model ile ölçüm farkını açıklar.', mc: [2, 4, 5] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'R\'yi değiştirerek aşırı, kritik ve az sönümlü doğal tepkileri gözlemek ve köklerin s-düzlemindeki hareketiyle ilişkilendirmek.', doc: ['DÖÇ1'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Başlangıç koşulu yükleyici, 8 H bobin, 0,125 µF kondansatör, direnç kutusu, akım problu iki kanallı osiloskop.',
+      guvenlik: 'Bobin akımına her zaman bir yol bırakın (ters EMK); az sönümde tepe gerilimi onlarca volta çıkar, kondansatörü boşaltın; küçük R\'de direnç güç değerine dikkat.',
+      veri: 'v(t) ve i<sub>L</sub>(t) dalga biçimleri, tepe değerleri, tür sınıflaması, kök konumları.',
+      tartisma: 'R azaldıkça kökler neden önce daire üzerinde, sonra gerçek eksende hareket ediyor?' },
+    d2: { amac: 'Az sönümlü tepkide periyot ve ardışık tepe oranından ω<sub>d</sub> ve α\'yı ölçmek, bilinmeyen kondansatörü belirlemek.', doc: ['DÖÇ2'], mc: [2, 4, 5],
+      gerec: 'Başlangıç koşulu yükleyici, 8 H bobin, bilinen 0,125 µF ve bilinmeyen C<sub>x</sub> kondansatör, direnç kutusu, imleçli osiloskop.',
+      guvenlik: 'Prob yüklemesini azaltmak için 10× prob kullanın; toprak klipsi devre toprağına; ölçüm sonrası kondansatörü boşaltın.',
+      veri: 'İmleç zamanları ve tepe gerilimleri; T<sub>d</sub>, δ, α, ω<sub>0</sub> ve C<sub>x</sub> hesabı.',
+      tartisma: 'Tek bir tepe yerine iki tepenin oranını kullanmak hangi bilinmeyeni ortadan kaldırıyor? Ölçüm belirsizliğiniz ne kadar?' },
+    d3: { amac: 'Verilen L ve C için kritik sönüm direncini tasarlamak ve oturma süresinin R ile değişimini ölçmek.', doc: ['DÖÇ3'], mc: [1, 3, 4, 5, 10],
+      gerec: 'Bobin ve kondansatör seçenekleri, ayarlı direnç kutusu, otomatik oturma süresi ölçen osiloskop.',
+      guvenlik: 'Küçük dirençte V<sub>0</sub>²/R gücüne göre direnç seçin; kondansatör gerilim değerini tepe gerilimine göre seçin.',
+      veri: 'R–t<sub>s</sub> tablosu ve grafiği, sıfır geçişi sayısı, aşım.',
+      tartisma: 'Kondansatör toleransı ±%10 ve R yalnızca E24 serisinden seçilebiliyorsa hangi direnci seçerdiniz? Maliyet ve güvenilirlik açısından gerekçelendirin.' },
+    d4: { amac: 'Bobinin sargı direncini ölçmek ve bu direncin paralel RLC devresindeki sönüme katkısını belirlemek.', doc: ['DÖÇ4'], mc: [2, 4, 5],
+      gerec: 'DMM (Ω kademesi), 8 H gerçek bobin, 0,125 µF kondansatör, direnç kutusu (∞ dahil), osiloskop.',
+      guvenlik: 'Sargı direncini devre enerjisizken ölçün; R = ∞ iken gerilim yükselebilir, kondansatör gerilim değerini kontrol edin.',
+      veri: 'r<sub>L</sub> ölçümü, R = ∞ ve R = 20 kΩ için imleç ölçümleri, ideal/gerçek model karşılaştırması.',
+      tartisma: 'Düşük kayıplı (yüksek Q) bir rezonans devresi için bobin seçerken nelere dikkat edersiniz? Daha kalın tel kullanmanın bedeli nedir?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

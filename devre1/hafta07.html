@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 7 · Seri/Paralel L–C ve Karşılıklı Endüktans — Devre Kuramı I Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>
+  .bar{height:18px;border-radius:4px;background:#0b5cad;transition:width .15s}
+  .bars td{padding:3px 6px;font-size:13px}
+</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı I · Hafta 7 — Seri/Paralel L ve C, Karşılıklı Endüktans</h1>
+    <div class="sub">Eşdeğer eleman · Başlangıç koşulları · Nokta kuralı · M ve k · L = L₁+L₂±2M · Bağlaşmış enerji</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Seri/Paralel L ve C</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Karşılıklı Endüktans</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Nokta Yönünü Bulma</button>
+  <button data-p="d4"><span class="dot"></span>6 · Deney 4: Enerji ve k ≤ 1</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<section class="page" id="giris">
+  <h2>Hafta 7 · Seri/Paralel Bobin ve Kapasitörler, Karşılıklı Endüktans</h2>
+  <p class="lead">Ders notu: <b>Bölüm 2.3 Seri ve paralel bağlantılar</b>, <b>2.4 Karşılıklı endüktans</b>, <b>2.5 Akı bağı, enerji ve uygulamalar</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Seri ve paralel bağlanan kapasitör ve bobinlerin eşdeğerini <b>LCR metreyle ölçüp</b> formülle karşılaştıracak; başlangıç gerilimli seri kapasitörlerde KVL'yi doğrulayacaksınız.</li>
+        <li>İki bobin arasında birincil akımın <b>değişiminin</b> ikincilde gerilim indüklediğini osiloskopta görecek, açık devre ikincil geriliminden <b>M</b> ve <b>k</b>'yı ölçeceksiniz.</li>
+        <li>Seri yardımcı ve zıt bağlantı ölçümlerinden (L = L₁+L₂±2M) M'yi ve <b>bilinmeyen bir bobinin nokta yönünü</b> deneyle bulacaksınız.</li>
+        <li>Bağlaşmış bobinlerdeki enerjiyi inceleyip <b>k ≤ 1</b> sınırının neden zorunlu olduğunu göreceksiniz.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">LCR metre (1 kHz, seri eşdeğer) · Sabit akım kaynağı · Gerilim kontrollü akım kaynağı (V→I, güç yükselteci) · Fonksiyon üreteci · İki kanallı osiloskop (1 MΩ, imleçli) · DMM · Eleman çekmecesi (2–6 µF film kapasitörler, 20–40 mH bobinler) · Ortak gövdeli, aralığı ayarlanabilen iki sargılı bobin düzeneği · Etiketi silinmiş bobin çifti.</p>
+      <div class="info">Nokta kuralı: akım bir sargının <b>noktalı</b> ucundan giriyorsa, öbür sargıdaki karşılıklı gerilimin “+” ucu o sargının <b>noktalı</b> ucundadır. İki akım da noktaya giriyorsa <b>+M</b>, biri girip biri çıkıyorsa <b>−M</b>.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Önce <b>Ön Bilgi</b>'yi okuyun, <b>Ön Hazırlık</b> sorularını çözün. Her deneyde föyü izleyin; adımlar doğru ayarda kendiliğinden işaretlenir. Ölçümleri <kbd>R</kbd> ile kaydedin; soruları kendi ölçümlerinizden yanıtlayın. Sonda raporunuzu yazdırın.</p>
+  </div>
+</section>
+
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Elemanları Birleştirmek ve Akıyı Paylaşmak</h2>
+  <p class="lead">Seri–paralel kuralları dirençtekinin bazen aynısı, bazen tersidir. Karşılıklı endüktansta ise işaret her şeydir.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Seri ve paralel: hangisi ortak?</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Paralel</b> elemanlarda <b>gerilim</b>, <b>seri</b> elemanlarda <b>akım</b> (kapasitörde yük) ortaktır. Bobinler direnç gibi davranır: seride toplanır, paralelde tersleri toplanır. Kapasitörlerde kural <b>terstir</b>: paralelde toplanır (plaka alanı büyür), seride tersleri toplanır (dielektrik kalınlaşır). Seri kapasitörlerde gerilim eşit paylaşılmaz: <b>küçük kapasite büyük gerilim alır</b>.</p>
+      <h3>2 · Karşılıklı endüktans</h3>
+      <p style="font-size:14px;line-height:1.65">Bir sargının akısının bir kısmı öbür sargıdan da geçer. Bu ortak akı <b>değiştiğinde</b> ikinci sargıda gerilim indüklenir: <span class="eq">v<sub>2</sub> = M di<sub>1</sub>/dt &nbsp;(i<sub>2</sub> = 0)</span> Sabit akım hiçbir şey indüklemez: transformatör DC ile çalışmaz. Bağlaşım katsayısı <b>k</b>, akının ne kadarının paylaşıldığını söyler: M = k√(L₁L₂), 0 ≤ k ≤ 1. Transformatör, kablosuz şarj, akım trafosu, izolasyonlu güç kaynakları bu ilkeyle çalışır; istenmeyen bağlaşım ise PCB'lerde <b>karışma</b> (crosstalk) üretir.</p>
+      <svg viewBox="0 0 420 170" class="schem" style="max-width:420px">
+        <rect x="150" y="20" width="120" height="130" rx="10" fill="none" stroke="#999" stroke-width="10"/>
+        <g stroke="#c62828" stroke-width="3" fill="none"><path d="M130,40 q30,-8 30,8 M130,60 q30,-8 30,8 M130,80 q30,-8 30,8 M130,100 q30,-8 30,8 M130,120 q30,-8 30,8"/></g>
+        <g stroke="#1d4ed8" stroke-width="3" fill="none"><path d="M290,40 q-30,-8 -30,8 M290,60 q-30,-8 -30,8 M290,80 q-30,-8 -30,8 M290,100 q-30,-8 -30,8 M290,120 q-30,-8 -30,8"/></g>
+        <circle cx="122" cy="34" r="5" fill="#222"/><circle cx="298" cy="34" r="5" fill="#222"/>
+        <path d="M60,36 H130 M60,128 H130 M290,36 H360 M290,128 H360" class="w"/>
+        <text x="70" y="28" class="lbl">i₁ →</text><text x="40" y="90" class="lbl">L₁</text><text x="370" y="90" class="lbl">L₂</text>
+        <text x="372" y="40" class="lbl">+</text><text x="372" y="134" class="lbl">−</text><text x="388" y="90" class="lbl">v₂</text>
+        <text x="210" y="168" text-anchor="middle" class="lbl" style="font-size:12px">ortak akı (gri çekirdek): M = k√(L₁L₂)</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><th></th><th>Seri</th><th>Paralel</th></tr>
+        <tr><td class="l">Bobin (bağlaşımsız)</td><td class="l">L = L₁ + L₂</td><td class="l">1/L = 1/L₁ + 1/L₂</td></tr>
+        <tr><td class="l">Kapasitör</td><td class="l">1/C = 1/C₁ + 1/C₂</td><td class="l">C = C₁ + C₂</td></tr>
+        <tr><td class="l">Başlangıç koşulu</td><td class="l">C: v(0) = v₁(0)+v₂(0)</td><td class="l">L: i(0) = i₁(0)+i₂(0)</td></tr>
+        <tr><td class="l">Seri C gerilim paylaşımı</td><td class="l" colspan="2">V₁ = Q/C₁, Q = C<sub>eş</sub>V (küçük C → büyük V)</td></tr>
+      </table>
+      <table class="data" style="margin-top:8px">
+        <tr><td class="l">İki sargı (iki akım da noktaya)</td><td class="l">v₁ = L₁ di₁/dt + M di₂/dt<br>v₂ = M di₁/dt + L₂ di₂/dt</td></tr>
+        <tr><td class="l">Açık ikincil</td><td class="l">v₂ = M di₁/dt</td></tr>
+        <tr><td class="l">Akı bağı</td><td class="l">λ = NΦ, v = dλ/dt, λ₁ = L₁i₁ + Mi₂</td></tr>
+        <tr><td class="l">Bağlaşım katsayısı</td><td class="l">k = M/√(L₁L₂), 0 ≤ k ≤ 1</td></tr>
+        <tr><td class="l">Seri yardımcı / zıt</td><td class="l">L₊ = L₁+L₂+2M, &nbsp;L₋ = L₁+L₂−2M</td></tr>
+        <tr><td class="l">M ölçümden</td><td class="l">M = (L₊ − L₋)/4</td></tr>
+        <tr><td class="l">Bağlaşmış enerji</td><td class="l">w = ½L₁i₁² + ½L₂i₂² ± M i₁i₂</td></tr>
+        <tr><td class="l">Enerji ≥ 0 koşulu</td><td class="l">M ≤ √(L₁L₂) ⇔ k ≤ 1</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Bobin akımını aniden kesmeyin.</b> Akım taşıyan bir bobinin devresi açılınca L·di/dt çok büyür: anahtarda kıvılcım (ters EMK) oluşur, yüzlerce volt çıkabilir. Bağlaşmış ikinci sargıda da bu darbe M/L₁ oranında görünür; açık ikincile dokunmayın, gerekirse sargıya serbest geçiş diyodu ya da RC söndürücü koyun.</div>
+    <div class="warnbox"><b>LCR metreye yüklü kapasitör bağlamayın.</b> Ön-şarjlı kapasitör deneyinden sonra kapasitörleri dirençle boşaltıp 0 V olduğunu ölçün; aksi hâlde LCR metrenin giriş katı zarar görür. LCR metre zaten AC sinyalle ölçer; başlangıç gerilimini <b>göremez</b>.</div>
+    <div class="warnbox"><b>Seri kapasitörlerde gerilim değeri.</b> 2 µF/16 V ve 4 µF/16 V seri bağlanıp 30 V uygulanırsa 2 µF'lık 20 V görür ve delinir. Toplam “32 V” değil, her kapasitörün kendi payı kontrol edilmelidir.</div>
+    <div class="warnbox"><b>Gerçek bobinin direnci vardır.</b> LCR metre bobini seri L–R olarak ölçer; sargı direnci (R<sub>s</sub>) ve kalite faktörü Q de okunur. Akım kaynağıyla sürerken bobinin ısınmasına ve tel akım sınırına dikkat edin; sargı ısınınca R artar.</div>
+    <div class="warnbox"><b>Bağlaşım istemeden de olur.</b> Ayrı ayrı ölçeceğiniz iki bobini yan yana koyarsanız aralarında M oluşur ve seri/paralel ölçümünüz yanlış çıkar. “Bağlaşımsız” ölçümde bobinleri birbirinden uzak ve dik eksenli yerleştirin. Bobinin yanındaki demir masa ayağı, tornavida ve mıknatıs da L'yi değiştirir.</div>
+    <div class="warnbox"><b>Osiloskop toprakları ortaktır.</b> Birincil (akım şöntü) ve ikincil sargıyı aynı anda izlerken iki probun toprağı osiloskop içinde birleşir. İkincil sargının bir ucunu devre toprağına bağlamak, sargılar arasındaki yalıtımı ortadan kaldırır; yüksek gerilimli transformatörde bunu asla yapmayın, diferansiyel prob kullanın.</div>
+    <div class="info"><b>Sık hatalar:</b> seri kapasitörleri direnç gibi toplamak (2+6 = 8 µF yerine 1,5 µF); M işaretini türevin işaretiyle karıştırmak (noktalar ±M'yi, türev sayının işaretini belirler); M = (L₊−L₋)/2 yazmak (doğrusu /4); M'yi tek bir bobinle karşılaştırmak (sınır √(L₁L₂)'dir); seri bobinlerde farklı başlangıç akımı kabul etmek; paralel bobinlerin başlangıç akımlarını toplamayı unutmak.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Değerler ders notundaki örneklerden alınmıştır.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · LCR Metre ile Seri/Paralel Eşdeğer</h2>
+  <p class="lead">Çekmeceden elemanları seçin, bağlantı biçimini kurun ve LCR metreyle uçlardan görülen eşdeğeri ölçün. Altta, başlangıç gerilimli iki seri kapasitörü sabit akımla besleyin.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Çekmecedeki elemanlar gerçek: kapasitörler ±%5, bobinler ±%5 toleranslıdır ve bobinlerin sargı direnci vardır. Önce her elemanı <b>tek başına</b> ölçüp gerçek değerini not edin; formülle karşılaştırırken ölçülen değerleri kullanın.</div>
+        <div class="info">Seri kapasitörlerin <b>eşdeğer başlangıç gerilimi</b> KVL'den gelir: <span class="eq">v(0) = v₁(0) + v₂(0)</span> Seri bağlantıda ikisinden aynı akım geçer, her biri kendi C'siyle değişir; toplam ise eşdeğer C<sub>eş</sub> ile: <span class="eq">Δv = (1/C<sub>eş</sub>)·I·Δt</span></div>
+        <div class="warnbox">Ön-şarjlı kapasitörleri LCR metreye bağlamadan önce mutlaka boşaltın. Sanal LCR metre de yüklü kapasitörü ölçmeyi reddedecek.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Tür</th><th>Bağlantı</th><th>A</th><th>B</th><th>C</th><th>LCR okuma</th><th>R<sub>s</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="bench" style="margin-top:12px">
+        <div class="row" style="color:#dfe3ea;font-weight:700;margin-bottom:6px">Başlangıç gerilimli seri kapasitörler (C<sub>1</sub> = 2 µF, C<sub>2</sub> = 6 µF)</div>
+        <div class="bench-row" id="d1pre"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch2" class="schem" viewBox="0 0 760 170"></svg></div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Karşılıklı Endüktans: Nokta Kuralı, M ve k</h2>
+  <p class="lead">Birincil sargı (L₁ = 40 mH) bir V→I akım kaynağıyla sürülür; CH1, 1 Ω şönt üzerinden i₁'i (1 V = 1 A), CH2 açık devre ikincil gerilimini (L₂ = 90 mH, noktalı uç “+”) gösterir. Sargılar arasındaki aralığı değiştirerek bağlaşımı ayarlayın.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">İkincil açıkken (osiloskobun 1 MΩ'u akım çekmez) yalnızca karşılıklı terim kalır: <span class="eq">v₂ = M di₁/dt</span> Üçgen akımda eğim sabit (±2I<sub>pp</sub>f) olduğundan v₂ bir kare dalgadır: <span class="eq">M = V₂,tepe / (2I<sub>pp</sub>f)</span></div>
+        <div class="info">i₁ noktalı uca giriyor ve <b>artıyorsa</b> ikincilin noktalı ucu pozitiftir; <b>azalıyorsa</b> negatiftir. İşareti noktalar ve türev birlikte belirler.</div>
+        <div class="info">Aralık büyüdükçe ortak akı azalır, k ve M küçülür. k'yı doğrudan okuyamazsınız; M'yi ölçüp k = M/√(L₁L₂) ile hesaplayın.</div>
+        <div class="warnbox">Akım kaynağıyla bir bobini sürerken kaynağın çıkışı “açık devre” olursa (kablo çıkarsa) kaynak gerilimi tavana vurur; bağlantıları enerji kesikken değiştirin. Kare akım istemek, kenarlarda çok büyük L·di/dt gerilimi demektir.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d2inst"></div>
+        <div class="bench-row" style="margin-top:12px">
+          <div class="inst dark scopewrap" style="flex:1;min-width:420px">
+            <div class="brand"><span>DSO-2C · Dijital Osiloskop</span><span><span class="led on g"></span> RUN</span></div>
+            <div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+              <canvas id="scope" width="640" height="400" style="width:100%;max-width:640px"></canvas>
+              <div style="min-width:150px">
+                <div class="ctrls" id="scopeKnobs"></div>
+                <div class="row" style="margin:6px 0">
+                  <button class="seg-btn on" id="ch1on">CH1</button>
+                  <button class="seg-btn on" id="ch2on">CH2</button>
+                  <button class="seg-btn" id="curon">İMLEÇ</button>
+                </div>
+                <div class="meas" id="scopeMeas"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 240"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Akım dalgası</th><th>f</th><th>I<sub>pp</sub> (A)</th><th>Aralık (mm)</th><th>CH1 V<sub>pp</sub></th><th>CH2 V<sub>pp</sub></th><th>CH2 maks</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>M – aralık grafiği (sizin hesapladığınız M değerleri)</b><span class="grow"></span></div>
+        <div class="row" style="font-size:13px">Kaydettiğiniz satır no <input type="text" id="d2row" size="3"> için hesapladığınız M: <input type="text" id="d2m" size="7"> mH <button class="btn small" id="d2madd">Grafiğe ekle</button><button class="btn sec small" id="d2mclr">Temizle</button></div>
+        <canvas id="d2plot" width="700" height="260" style="width:100%"></canvas>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Seri Yardımcı/Zıt Bağlantı ve Nokta Yönünü Deneyle Bulma</h2>
+  <p class="lead">Etiketi silinmiş bir bobin çifti: birinci sargının noktası (1 ucu) bilinmekte, ikinci sargınınki bilinmemektedir. Sargıları seri bağlayıp iki farklı biçimde LCR metreyle ölçün.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Seri bağlantıda akım iki sargının da noktalı ucundan giriyorsa akılar toplanır: <span class="eq">L₊ = L₁ + L₂ + 2M</span> Birinde girip ötekinde çıkıyorsa akılar birbirini zayıflatır: <span class="eq">L₋ = L₁ + L₂ − 2M</span> Büyük okunan bağlantı <b>yardımcı</b> bağlantıdır; nokta yeri buradan çıkar.</div>
+        <div class="info">İki ölçümün farkı 4M'dir: <span class="eq">M = (L₊ − L₋)/4</span> Ayrıca L₁ ve L₂ ölçülürse k = M/√(L₁L₂) bulunur.</div>
+        <div class="info">Atölye yöntemi (bilgi için): birincile bir pil ve anahtar, ikincile analog (sıfırı ortada) voltmetre bağlanır. Anahtar kapanırken voltmetre ibresi <b>sağa</b> sapıyorsa, pilin + ucunun bağlı olduğu uç ile voltmetrenin + ucunun bağlı olduğu uç <b>aynı noktalı</b> uçlardır.</div>
+        <div class="warnbox">Pil–anahtar yönteminde anahtarı <b>açarken</b> birincilde büyük ters EMK oluşur ve ibre ters yöne sert vurur; hassas kademedeki ölçü aleti zarar görebilir. Yüksek kademede başlayın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d3del">Son satırı sil</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Bağlantı</th><th>LCR uçları</th><th>L (mH)</th><th>R<sub>s</sub> (Ω)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Deney 4 · Bağlaşmış Bobinlerde Enerji ve k ≤ 1 Sınırı</h2>
+  <p class="lead">L₁ = 40 mH, L₂ = 90 mH. İki sargıya ayarlı DC akımlar verilir (pozitif yön: noktalı uca giriş). Akımlar sıfırdan sırayla kurulurken kaynakların verdiği toplam enerji, enerji ölçerle (∫v·i dt) ölçülür.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Akımları sırayla kurarak: önce i₁ (yalnız ½L₁I₁²), sonra I₁ sabitken i₂ kurulur; bu sırada birincil kaynak karşılıklı gerilime karşı M·I₁·I₂ kadar iş yapar: <span class="eq">w = ½L₁i₁² + ½L₂i₂² + M i₁i₂</span> i₂ noktadan çıkıyorsa (i₂ &lt; 0) karşılıklı terim enerjiyi azaltır.</div>
+        <div class="info">Enerji, i₂/i₁ oranının bir fonksiyonu olarak en küçük değerini <span class="eq">i₂ = −(M/L₂) i₁</span> noktasında alır: <span class="eq">w<sub>min</sub> = ½L₁i₁²(1 − k²)</span> Pasif bir düzenek negatif enerji saklayamaz; bu yüzden k ≤ 1 olmak zorundadır.</div>
+        <div class="warnbox">Gerçekte iki sargıya DC verip birini aniden açmak, depolanan enerjinin kıvılcımla boşalmasına yol açar. Akımları kaynaklardan yavaşça sıfıra indirerek kapatın.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 210"></svg></div>
+      <div class="card">
+        <div class="row"><b>w – i₂ eğrisi (i₁ sabit)</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d4theo"> Eğriyi göster</label></div>
+        <canvas id="d4plot" width="700" height="280" style="width:100%"></canvas>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d4del">Son satırı sil</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>k</th><th>i₁ (A)</th><th>i₂ (A)</th><th>w ölçülen (mJ)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Seri kapasitörler neden en küçükten de küçüktür? Nokta yönünü nasıl buldunuz? k > 1 neden olanaksızdır?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta07.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd1h07', ders: 'Devre Kuramı I', hafta: 7,
+  doc: [
+    { id: 'DÖÇ1', t: 'Seri, paralel ve karma bağlı bobin ve kapasitörlerin eşdeğerini ve başlangıç koşullarını hesaplar, LCR metreyle doğrular.', mc: [1, 2, 4] },
+    { id: 'DÖÇ2', t: 'Karşılıklı endüktansı ve nokta kuralını açıklar; açık devre ikincil geriliminden M ve k\'yı ölçer.', mc: [1, 4, 5] },
+    { id: 'DÖÇ3', t: 'Seri yardımcı/zıt bağlantı ölçümlerini tasarlayıp bilinmeyen bir bobin çiftinin M değerini ve nokta yönünü belirler.', mc: [2, 3, 5] },
+    { id: 'DÖÇ4', t: 'Bağlaşmış bobinlerde depolanan enerjiyi hesaplar ve k ≤ 1 sınırını enerji ilkesiyle gerekçelendirir.', mc: [1, 2] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Seri, paralel ve karma bağlı L ve C elemanlarının eşdeğerini LCR metreyle ölçmek; başlangıç gerilimli seri kapasitörlerde KVL\'yi doğrulamak.', doc: ['DÖÇ1'], mc: [1, 2, 4, 10],
+      gerec: 'LCR metre (1 kHz), film kapasitörler (2–6 µF), bobinler (20–40 mH), sabit akım kaynağı, DMM.',
+      guvenlik: 'Yüklü kapasitörü LCR metreye bağlamayın; seri kapasitörlerde her elemanın gerilim payını kontrol edin.',
+      veri: 'Tek eleman ve eşdeğer LCR okumaları, ön-şarjlı seri kapasitör gerilimleri.',
+      tartisma: 'Belirli bir C değerini eldeki standart değerlerle en az eleman ve en düşük maliyetle nasıl elde edersiniz?' },
+    d2: { amac: 'Birincil akım değişiminin ikincilde gerilim indüklediğini göstermek; M ve k\'yı açık devre ikincil geriliminden ölçmek.', doc: ['DÖÇ2'], mc: [1, 4, 5],
+      gerec: 'İki sargılı ayarlı aralıklı bobin düzeneği, V→I akım kaynağı, fonksiyon üreteci, 1 Ω şönt, osiloskop.',
+      guvenlik: 'Akım kaynağının çıkışını açık bırakmayın; iki probun toprağının ortak olduğunu unutmayın.',
+      veri: 'CH1/CH2 Vpp ve tepe değerleri, aralığa göre M ve k.',
+      tartisma: 'Kablosuz şarjda telefon şarj pedinden uzaklaşınca verim neden düşer?' },
+    d3: { amac: 'Seri yardımcı/zıt bağlantı ölçümleriyle bilinmeyen bobin çiftinin M değerini ve ikinci sargının nokta yönünü bulmak.', doc: ['DÖÇ3'], mc: [2, 3, 4, 5],
+      gerec: 'Etiketsiz bobin çifti, LCR metre, bağlantı kabloları.',
+      guvenlik: 'Pil–anahtar yönteminde anahtar açılırken oluşan ters EMK ölçü aletine zarar verebilir.',
+      veri: 'L₁, L₂, L₊, L₋ okumaları; M, k ve nokta yeri.',
+      tartisma: 'Yalnızca iki ölçüm (L₊ ve L₋) ile k\'yı bulabilir misiniz? Neden?' },
+    d4: { amac: 'Bağlaşmış bobinlerde enerjinin karşılıklı terime bağlılığını incelemek ve k ≤ 1 sınırını göstermek.', doc: ['DÖÇ4'], mc: [1, 2, 5],
+      gerec: 'İki sargılı bobin düzeneği, iki ayarlı DC akım kaynağı, enerji ölçer.',
+      guvenlik: 'Akım taşıyan sargının devresini aniden açmayın; akımları yavaşça sıfıra indirin.',
+      veri: 'Farklı i₁, i₂ ve k için ölçülen enerji; w–i₂ eğrisi.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>

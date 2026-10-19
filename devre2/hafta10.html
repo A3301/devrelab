@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hafta 10 · Güç Hesapları ve Güç Faktörü Düzeltmesi — Devre Kuramı II Sanal Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<style>
+  .vd{width:100%;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:6px}
+  .vd text{font-size:12px;font-family:Segoe UI,Arial}
+  .seg{display:flex;gap:4px;flex-wrap:wrap}
+  .why{background:#fff8e6;border-left:4px solid #e0a100;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.55;border-radius:4px}
+  .solved{background:#f2f8f2;border-left:4px solid #2e8b57;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.6;border-radius:4px}
+  .stage{display:inline-block;width:14px;height:14px;border-radius:50%;background:#333;margin:2px;border:1px solid #000}
+  .stage.on{background:#ffb000;box-shadow:0 0 6px #ffb000}
+</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
+  <div>
+    <h1>Devre Kuramı II · Hafta 10 — Güç Hesapları ve Güç Faktörü Düzeltmesi</h1>
+    <div class="sub">Hat kaybı · Güç dengesi · Kondansatörle kompanzasyon · Aşırı kompanzasyon · Ekonomik boyut</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Ad Soyad">
+  <input id="stNo" placeholder="Öğrenci No" style="width:110px">
+  <div title="İlerleme"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Klavye kısayolları (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Giriş ve Hedefler</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Ön Bilgi ve Uyarılar</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Ön Hazırlık</button>
+  <button data-p="d1"><span class="dot"></span>3 · Deney 1: Motor ve Kondansatör</button>
+  <button data-p="d2"><span class="dot"></span>4 · Deney 2: Hat Kaybı ve Güç Dengesi</button>
+  <button data-p="d3"><span class="dot"></span>5 · Deney 3: Kompanzasyon Ekonomisi</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Sonuç ve Rapor</button>
+  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–6</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Hafta 10 · Güç Hesapları ve Güç Faktörü Düzeltmesi</h2>
+  <p class="lead">Ders notu: <b>Bölüm 2.5 Güç Hesaplamaları</b> (Örnek 2.16 – 2.22).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Bu laboratuvarın sonunda</h3>
+      <ol class="steps">
+        <li>Endüktif bir yükün (motor) güç faktörünü paralel kondansatörle istenen değere (0,95) çıkarmak için Q<sub>C</sub> ve C’yi <b>hesaplayıp</b> uygulayabileceksiniz.</li>
+        <li>Kompanzasyonla hat akımının ve hat kaybının nasıl düştüğünü <b>ölçerek</b> gösterecek, aşırı kompanzasyonun etkisini göreceksiniz.</li>
+        <li>Bir devrede kaynağın verdiği kompleks gücün, hat ve yüklerin çektiği güçlerin toplamına eşit olduğunu (<b>güç dengesi</b>) doğrulayacaksınız.</li>
+        <li>Reaktif enerji cezası, kayıp maliyeti ve kondansatör yatırımını karşılaştırarak <b>ekonomik</b> bir kompanzasyon tasarlayacaksınız.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Tezgâhtaki cihazlar</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Tek fazlı 230/400 V, 50 Hz kaynak (yalıtım trafolu) · Hat empedansı modülü · Asenkron motor yükü (P, cos φ ayarlı) · Kademeli/ayarlı kondansatör bankası (deşarj dirençli) · Tek fazlı güç analizörü ve akım pensi · Bara voltmetresi · Hat kaybı wattmetresi · Ayarlı R–X yük kutusu · Reaktif güç rölesi ve kompanzasyon panosu.</p>
+      <div class="info">Bu haftadaki motor ve yükler, belirtilen gerilimde verilen P ve cos φ değerlerini çeken <b>sabit empedanslar</b> olarak modellenmiştir; gerilim düştükçe güçleri V² ile azalır.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Çalışma sırası</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Ön Bilgi’deki canlı güç üçgenini kurcalayın, Ön Hazırlık sorularını çözün. Deney 1’de kondansatörü önce kâğıt üzerinde boyutlandırıp sonra takın; Deney 2’de üç noktada ölçüp güç dengesini kurun; Deney 3’te bir fabrikanın kompanzasyon panosunu ekonomik açıdan tasarlayın.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Ön Bilgi · Reaktif Gücü Yerinde Üretmek</h2>
+  <p class="lead">Neden bir fabrikanın panosunda kondansatörler vardır? Bu bölüm, cevabı adım adım kurar.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Sorun: düşük güç faktörü</h3>
+      <p style="font-size:14px;line-height:1.65">Asenkron motor mıknatıslanmak için bir <b>reaktif güç</b> (Q &gt; 0) çeker. Bu enerji iş yapmaz, kaynak ile motor arasında her yarım periyotta gidip gelir. Ama hat üzerinden gidip gelirken <b>akım</b> taşır: aynı P için akım <span class="eq">I = P / (V cos θ)</span> olduğundan cos θ = 0,6 iken akım, cos θ = 1’e göre %67 fazladır. Hat kaybı I²R olduğundan kayıp neredeyse <b>2,8 kat</b> artar; trafo ve kablolar boşuna dolar.</p>
+      <h3>2 · Çözüm: kondansatörü yükün yanına koymak</h3>
+      <p style="font-size:14px;line-height:1.65">Kondansatör negatif reaktif güç çeker (yani reaktif güç <b>üretir</b>). Motorun yanına paralel bağlanırsa motorun istediği Q’nun bir kısmını o sağlar; hat yalnız farkı taşır. Motorun kendisi hiçbir şey fark etmez: gerilimi aynıdır, P ve Q’su aynıdır. Değişen yalnız <b>hattan akan</b> akımdır.</p>
+      <div class="eq">Q<sub>C</sub> = P (tan θ<sub>1</sub> − tan θ<sub>2</sub>),&nbsp;&nbsp; C = Q<sub>C</sub> / (ω V<sub>rms</sub>²)</div>
+      <h3>3 · Aşırı kompanzasyon</h3>
+      <p style="font-size:14px;line-height:1.65">Kondansatör gerekenden büyükse toplam Q negatife geçer, pf yeniden düşer (bu kez <b>ileri</b>) ve akım yeniden artar. Hafif yükte bara gerilimi yükselir; dağıtım şirketi kapasitif reaktif enerjiye de ceza keser.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Canlı güç üçgeni</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0 0 6px">Motor: 30 kW, cos θ = 0,6 geri. Kaydırıcıyla kondansatörün sağladığı Q<sub>C</sub>’yi artırın. Mavi: motorun S’si, turuncu: −Q<sub>C</sub>, yeşil: hattın taşıdığı toplam S.</p>
+      <label style="font-size:13px">Q<sub>C</sub> <input type="range" id="obC" min="0" max="60" step="0.5" value="0" style="width:60%"> <span id="obCv"></span></label>
+      <svg id="obTri" class="vd" viewBox="0 0 420 260" style="margin-top:6px"></svg>
+      <canvas id="obBar" width="560" height="120" style="width:100%;margin-top:6px"></canvas>
+      <div id="obTxt" style="font-size:13px"></div>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Formül kartı</h3>
+      <table class="data">
+        <tr><td class="l">Seri devre</td><td class="l">I = V<sub>s</sub>/(Z<sub>hat</sub> + Z<sub>L</sub>),&nbsp; S<sub>L</sub> = |I|² Z<sub>L</sub>,&nbsp; S<sub>hat</sub> = |I|² Z<sub>hat</sub></td></tr>
+        <tr><td class="l">Güç dengesi</td><td class="l">Σ S<sub>verilen</sub> = Σ S<sub>çekilen</sub> (P ve Q ayrı ayrı)</td></tr>
+        <tr><td class="l">Kaynak işareti</td><td class="l">Akım + uçtan çıkıyorsa S<sub>kaynak</sub> = V I* <b>verilen</b> güçtür</td></tr>
+        <tr><td class="l">Gereken kondansatör gücü</td><td class="l">Q<sub>C</sub> = P (tan θ<sub>1</sub> − tan θ<sub>2</sub>)</td></tr>
+        <tr><td class="l">Kondansatör değeri</td><td class="l">C = Q<sub>C</sub>/(ω V<sub>rms</sub>²)</td></tr>
+        <tr><td class="l">Hat akımı</td><td class="l">I = P/(V cos θ)</td></tr>
+        <tr><td class="l">Hat kaybı oranı</td><td class="l">P<sub>k2</sub>/P<sub>k1</sub> = (cos θ<sub>1</sub>/cos θ<sub>2</sub>)²</td></tr>
+        <tr><td class="l">Reaktif oran (ceza sınırı, tipik)</td><td class="l">E<sub>ind</sub>/E<sub>akt</sub> ≤ %20 · E<sub>kap</sub>/E<sub>akt</sub> ≤ %15 ↔ cos θ ≥ 0,98 geri</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Kompanzasyon panosu (tek hat şeması)</h3>
+      <svg class="vd" viewBox="0 0 420 200">
+        <g font-size="12" stroke="#333" stroke-width="2" fill="none">
+          <path d="M20,40 H400"/><path d="M90,40 V150"/><rect x="65" y="150" width="50" height="30" fill="#eef4ff"/>
+          <path d="M240,40 V70 M222,70 H258 M222,80 H258 M240,80 V110"/><path d="M300,40 V70 M282,70 H318 M282,80 H318 M300,80 V110"/><path d="M360,40 V70 M342,70 H378 M342,80 H378 M360,80 V110"/>
+          <circle cx="160" cy="40" r="10"/>
+        </g>
+        <g font-size="12" fill="#223">
+          <text x="20" y="30">Şebeke</text><text x="90" y="170" text-anchor="middle">Motor</text>
+          <text x="160" y="70" text-anchor="middle">AT</text><text x="160" y="85" text-anchor="middle">(ölçü)</text>
+          <text x="300" y="130" text-anchor="middle">Kondansatör kademeleri</text>
+          <text x="300" y="150" text-anchor="middle">(kontaktör + deşarj direnci)</text>
+          <text x="210" y="190" text-anchor="middle" fill="#a33">Reaktif güç rölesi, AT’den ölçtüğü cos θ’ya göre kademeleri devreye alır.</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Gerçek laboratuvarda dikkat edilecekler</h3>
+    <div class="warnbox"><b>Kondansatör bankası enerji kesilince de tehlikelidir.</b> 400 V’ta yüklenmiş yüzlerce µF’lık bir kondansatör ölümcül enerji (½CV² ≈ 50 J ve üstü) saklar. Deşarj dirençleri takılı olmalı; dokunmadan önce en az 1 dk bekleyin ve gerilimi ölçerek doğrulayın.</div>
+    <div class="warnbox"><b>Akım trafosunun sekonderini açmayın.</b> Pano ölçümlerinde kullanılan AT’nin sekonderi yük varken açık kalırsa binlerce voltluk gerilim oluşur, yalıtım delinir. Ölçü aletini sökmeden önce sekonderi kısa devre klemensiyle köprüleyin.</div>
+    <div class="warnbox"><b>Kondansatörü gerilim altındayken anahtarlamak.</b> Devreye alma anında çok büyük bir şarj akımı darbesi oluşur; kontaktör kontakları kaynar. Kompanzasyon için özel kondansatör kontaktörü (ön dirençli) kullanılır ve kademe tekrar devreye alınmadan önce boşalması beklenir.</div>
+    <div class="warnbox"><b>Harmonik ve rezonans.</b> Sürücülü (inverterli) yüklerin bulunduğu tesiste kondansatör, şebeke endüktansıyla bir harmonik frekansında rezonansa girip aşırı ısınabilir veya patlayabilir. Bu durumda <b>harmonik filtreli (detuned) reaktörlü</b> kompanzasyon gerekir.</div>
+    <div class="warnbox"><b>Aşırı kompanzasyon gerilimi yükseltir.</b> Yük azaldığında devrede kalan kondansatörler bara gerilimini yükseltir; hassas cihazlar zarar görebilir. Röleyi doğru hedef cos θ’ya ayarlayın, kademeleri yükle birlikte çıkarın.</div>
+    <div class="warnbox"><b>Şebeke ölçümünde osiloskop.</b> 230/400 V tarafında ölçüm için diferansiyel prob kullanın; toprak klipsini faza bağlamak kısa devre yapar. Motorlu deneylerde dönen parçalara koruyucu kapak takın.</div>
+    <div class="info"><b>Sık hatalar:</b> C hesabında Q<sub>C</sub> yerine P’yi kullanmak (C iki katı çıkar, aşırı kompanzasyon) · görünür güçleri aritmetik toplamak · P = V²/R’yi seri devrede R ile X’in toplam gerilimiyle kullanmak · kaynağın gücünde işareti ihmal etmek · tepe değerli fazörlerde ½ çarpanını unutmak · kompanzasyonla motorun P’sinin azaldığını sanmak.</div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Ön Hazırlık</h2>
+  <p class="lead">Laboratuvara girmeden önce çözün. Değerler rms’tir.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Deney 1 · Motor Yükü ve Paralel Kondansatörle pf Düzeltmesi</h2>
+  <p class="lead">Tek fazlı kaynak, küçük bir hat empedansı (0,05 + j0,15 Ω) üzerinden motor barasını besliyor. Kondansatör bankası motora paralel. Güç analizörü kaynak tarafında, voltmetre ve pf ölçer barada.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Hedef pf’ye göre kondansatör: <span class="eq">Q<sub>C</sub> = P(tan θ<sub>1</sub> − tan θ<sub>2</sub>),&nbsp; C = Q<sub>C</sub>/(ωV²)</span> Burada V, kondansatörün bağlı olduğu <b>bara</b> gerilimidir.</div>
+        <div class="info">Motor sabit empedans olduğu için P ve Q’su bara geriliminin karesiyle değişir; kondansatörün Q<sub>C</sub>’si de öyle. Bu yüzden bara pf’si gerilimden bağımsızdır.</div>
+        <div class="why"><b>Neden akım düşer ama motor gücü değişmez?</b> Motor uçlarındaki gerilim hemen hemen aynı kalır; motor aynı P ve Q’yu çeker. Q’nun büyük kısmını artık kondansatör yerinde üretir; hattın taşıması gereken yalnız P ve küçük bir artık Q’dur. I = |S<sub>hat</sub>|/V küçülür, hat kaybı I² ile düşer.</div>
+        <div class="solved"><b>Çözümlü mini örnek (Örnek 2.19):</b> 250 V, 60 Hz bara; yükler 8 − j6 kVA ve 12 + j16 kVA. Toplam 20 + j10 kVA, pf = 0,894 geri. pf = 1 için Q<sub>C</sub> = 10 kVAR, C = 10 000/(377 × 250²) = 424,4 µF. Q<sub>C</sub> yerine P = 20 kW yazılırsa C = 848,8 µF çıkar: iki kat, ciddi aşırı kompanzasyon.</div>
+        <div class="warnbox">Kondansatör bankasını kademe kademe devreye alın ve her değişiklikten sonra bara gerilimine bakın. Gerçek bankalarda kademe çıkarıldıktan sonra deşarj süresi (tipik 60 s) dolmadan aynı kademe yeniden devreye alınmamalıdır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 230"></svg><div id="d1hint" class="info" style="margin-bottom:0"></div></div>
+      <div class="grid-half">
+        <div class="card"><b>Güç üçgeni (bara)</b><svg id="d1tri" class="vd" viewBox="0 0 420 260"></svg></div>
+        <div class="card">
+          <div class="row"><b>Hat akımı – C</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Kuramsal eğri</label></div>
+          <canvas id="d1plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d1del">Son satırı sil</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>V<sub>s</sub> (V)</th><th>P<sub>M</sub> (kW)</th><th>cos θ<sub>M</sub></th><th>C (µF)</th><th>V<sub>bara</sub> (V)</th><th>I<sub>hat</sub> (A)</th><th>pf<sub>bara</sub></th><th>Q<sub>C</sub> (kVAR)</th><th>P<sub>hat</sub> (W)</th><th>|S<sub>kaynak</sub>| (kVA)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Deney 2 · Hat Kaybı, Gerilim Düşümü ve Güç Dengesi</h2>
+  <p class="lead">Kaynak, Z<sub>hat</sub> = R<sub>h</sub> + jX<sub>h</sub> üzerinden bir yükü besliyor. Yük seri (R + jX) ya da paralel (R ∥ jX) bağlanabilir. Güç analizörünü kaynağa, hatta ya da yüke bağlayıp ölçün.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Seri devrede önce toplam empedans, sonra akım: <span class="eq">I = V<sub>s</sub>/(Z<sub>hat</sub> + Z<sub>L</sub>)</span> Her elemanın gücü <span class="eq">S = |I|² Z</span> ile bulunur; kaynağın verdiği güç <span class="eq">S<sub>s</sub> = V<sub>s</sub> I*</span></div>
+        <div class="info">Güç dengesi P ve Q için <b>ayrı ayrı</b> sağlanır: P<sub>s</sub> = P<sub>hat</sub> + P<sub>L</sub>, Q<sub>s</sub> = Q<sub>hat</sub> + Q<sub>L</sub>. Verim: η = P<sub>L</sub>/P<sub>s</sub>.</div>
+        <div class="why"><b>Neden P = |V<sub>L</sub>|²/R yanlış?</b> Seri yükte |V<sub>L</sub>|, R ile jX’in <b>toplam</b> gerilimidir; yalnız R’nin uçlarındaki gerilim değildir. Örnek 2.18’de bu hata 1408 W verir, doğrusu |I|²R = 975 W’tır.</div>
+        <div class="solved"><b>Çözümlü mini örnek (Örnek 2.22):</b> 100 V, hat 2 + j6 Ω, yük 10 Ω ∥ −j5 Ω. Paralel eşdeğer 2 − j4 Ω; toplam 4 + j2 Ω; I = 20 − j10 A, |I|² = 500. S<sub>hat</sub> = 1000 + j3000, S<sub>yük</sub> = 1000 − j2000, S<sub>s</sub> = V I* = 2000 + j1000 VA. Toplam tutuyor ✓.</div>
+        <div class="warnbox">Hat kaybı ısıdır. Gerçek tesisatta kablo kesiti akıma göre seçilir; aşırı ısınan kablo yalıtımını kaybeder ve yangın riski doğurur. Hat kaybını azaltmanın yolları: kesiti büyütmek, gerilimi yükseltmek ve pf’yi düzeltmek.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="grid-half">
+        <div class="card"><b>Güç vektörleri: S<sub>hat</sub> + S<sub>yük</sub> = S<sub>kaynak</sub></b><svg id="d2vec" class="vd" viewBox="0 0 420 260"></svg></div>
+        <div class="card"><b>Kaydedilen ölçümlerle denge kontrolü</b><div id="d2bal" style="font-size:13.5px;line-height:1.6"></div></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Ölçüm tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d2del">Son satırı sil</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Düzen</th><th>Nokta</th><th>V (V)</th><th>I (A)</th><th>P (W)</th><th>Q (VAR)</th><th>|S| (VA)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Deney 3 · Kompanzasyonun Ekonomisi: Ceza, Kayıp ve Yatırım</h2>
+  <p class="lead">Bir atölyenin (ortalama 120 kW, cos θ = 0,72 geri, ayda 400 saat) panosuna kademeli kondansatör bankası tasarlıyorsunuz. Fiyatlar <b>temsilî</b> değerlerdir; düğmelerden değiştirebilirsiniz.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Bilgi</h3>
+        <div class="info">Aylık enerjiler: <span class="eq">E<sub>akt</sub> = P·t,&nbsp; E<sub>ind</sub> = Q<sub>net</sub>·t (Q<sub>net</sub> &gt; 0),&nbsp; E<sub>kap</sub> = |Q<sub>net</sub>|·t (Q<sub>net</sub> &lt; 0)</span> Bu laboratuvarda kabul edilen sınırlar: E<sub>ind</sub>/E<sub>akt</sub> &gt; %20 ya da E<sub>kap</sub>/E<sub>akt</sub> &gt; %15 ise reaktif enerjinin tamamı birim fiyattan faturalanır (ceza).</div>
+        <div class="info">Tesis içi kayıp (kablo + trafo bakır kaybı) cos θ = 1’de P’nin %2’si kabul edilmiştir ve |S|² ile değişir. Yatırım 60 ayda (5 yıl) amorti edilir.</div>
+        <div class="why"><b>Neden “tam 1” hedeflenmez?</b> Yük gün içinde değişir. pf = 1’e ayarlı bir banka, yük azaldığında hemen kapasitif bölgeye geçer ve bu kez kapasitif ceza doğar. Kademe büyüklüğü sonlu olduğu için de tam 1 tutturulamaz; pratikte hedef 0,95–0,99 geri aralığıdır.</div>
+        <div class="solved"><b>Çözümlü mini örnek:</b> 50 kW, cos θ = 0,8 geri (tan θ = 0,75). Sınır oran 0,20 → Q<sub>net</sub> ≤ 10 kVAR. Q<sub>C</sub> ≥ 37,5 − 10 = 27,5 kVAR → 5 kVAR’lık kademeyle 6 kademe (30 kVAR). Kapasitif sınır: Q<sub>net</sub> ≥ −7,5 kVAR → Q<sub>C</sub> ≤ 45 kVAR (en çok 9 kademe).</div>
+        <div class="warnbox">Kondansatör bankası ömrünü tamamlayınca <b>elektronik atık</b> olarak ayrıştırılmalıdır; eski tip kondansatörlerde zehirli PCB yağı bulunabilir. Tasarımda ömür, harmonik ortamı ve atık maliyeti de dikkate alınır.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px">
+        <div class="row"><b>Aylık maliyet – Q<sub>C</sub></b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Maliyet eğrisini göster</label></div>
+        <canvas id="d3plot" width="760" height="300" style="width:100%"></canvas>
+        <div style="font-size:12px;color:#556">Kırmızı: ceza · Turuncu: kayıp · Mor: yatırımın aylık payı · Yeşil: toplam (bin TL/ay). Noktalar: kaydettiğiniz senaryolar.</div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Senaryo tablosu</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Kaydet (R)</button>
+          <button class="btn sec small" id="d3del">Son satırı sil</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Kademe</th><th>Q<sub>C</sub> (kVAR)</th><th>cos θ</th><th>E<sub>ind</sub>/E<sub>akt</sub></th><th>E<sub>kap</sub>/E<sub>akt</sub></th><th>Ceza (TL/ay)</th><th>Kayıp (TL/ay)</th><th>Yatırım (TL)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Sorular</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Sonuç ve Rapor</h2>
+  <p class="lead">Raporunuz yanıtlarınızdan, ölçüm tablolarınızdan ve grafiklerinizden otomatik oluşur.</p>
+  <div class="card">
+    <div class="row">
+      <label>Grup <input type="text" id="stGroup" size="6"></label>
+      <label>Tarih <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Raporu yazdır / PDF kaydet</button>
+      <button class="btn sec" id="resetBtn">Tüm verileri sıfırla</button>
+    </div>
+    <h3>Yorumunuz (en az 3 cümle)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Kompanzasyon hat akımını ve kaybını ne kadar azalttı? Aşırı kompanzasyonda ne gözlediniz? Önerdiğiniz banka büyüklüğü ve geri ödeme süresi nedir?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>6</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=1"></script>
+<script src="hafta10.js?v=1"></script>
+<script>
+window.CIKTI = { key: 'd2h10', ders: 'Devre Kuramı II', hafta: 10,
+  doc: [
+    { id: 'DÖÇ1', t: 'Seri ve paralel AC devrelerde eleman, hat ve kaynak güçlerini hesaplar; güç dengesini doğrular.', mc: [1, 2, 5] },
+    { id: 'DÖÇ2', t: 'Endüktif bir yükün güç faktörünü düzeltmek için paralel kondansatörü boyutlandırır ve etkisini ölçer.', mc: [1, 3, 4, 5] },
+    { id: 'DÖÇ3', t: 'Düşük güç faktörü ve aşırı kompanzasyonun hat kaybı, gerilim ve enerji verimliliği üzerindeki etkisini yorumlar.', mc: [2, 6] },
+    { id: 'DÖÇ4', t: 'Reaktif enerji cezası, kayıp maliyeti ve yatırımı karşılaştırarak ekonomik bir kompanzasyon çözümü önerir.', mc: [3, 10] },
+    { id: 'DÖÇ5', t: 'Bulgularını teknik bir raporla yazılı olarak sunar.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'Bir motor yükünün güç faktörünü paralel kondansatörle 0,95’e çıkarmak; hat akımı ve kaybındaki düşüşü ve aşırı kompanzasyonun etkisini ölçmek.', doc: ['DÖÇ2', 'DÖÇ3'], mc: [1, 3, 4, 5, 6],
+      gerec: 'Tek fazlı 230/400 V kaynak, hat empedansı modülü (0,05 + j0,15 Ω), motor yükü, ayarlı kondansatör bankası, güç analizörü, bara voltmetresi.',
+      guvenlik: 'Kondansatörleri deşarj etmeden dokunmayın; kademeyi deşarj süresi dolmadan yeniden devreye almayın; akım trafosu sekonderini açmayın; dönen motor parçalarından uzak durun.',
+      veri: 'C’ye karşı hat akımı, bara pf’si, Q<sub>C</sub>, hat kaybı tablosu; I<sub>hat</sub>–C grafiği.',
+      tartisma: 'Bir sanayi bölgesindeki tüm işletmeler pf’yi 0,6’dan 0,95’e çıkarsa iletim ve dağıtım şebekesindeki kayıplar ve karbon salımı nasıl etkilenir?' },
+    d2: { amac: 'Seri ve paralel yüklü bir hat devresinde kaynak, hat ve yük güçlerini ölçerek kompleks güç dengesini doğrulamak; hat kaybı ve verimi incelemek.', doc: ['DÖÇ1', 'DÖÇ3'], mc: [1, 2, 5, 6],
+      gerec: 'Ayarlı AC kaynak, ayarlı hat empedansı (R<sub>h</sub>, X<sub>h</sub>), seri/paralel R–X yük kutusu, güç analizörü.',
+      guvenlik: 'Kaynağı sıfırdan başlatın; hat direnci ısınabilir, dokunmayın; bağlantıyı enerjisizken değiştirin.',
+      veri: 'Kaynak, hat ve yük noktalarında V, I, P, Q, |S|; denge kontrolü ve verim.' },
+    d3: { amac: 'Bir atölye için reaktif enerji cezası, kayıp maliyeti ve kondansatör yatırımını karşılaştırarak ekonomik kademe sayısını ve geri ödeme süresini belirlemek.', doc: ['DÖÇ4'], mc: [3, 6, 10],
+      gerec: 'Kompanzasyon panosu modeli: reaktif güç rölesi, kademe kontaktörleri, fiyat parametreleri.',
+      guvenlik: 'Pano bakımında enerjiyi kesip kondansatörlerin boşaldığını ölçerek doğrulayın; ömrü dolan kondansatörleri e-atık olarak bertaraf edin.',
+      veri: 'Senaryo tablosu (kademe, cos θ, reaktif oranlar, ceza, kayıp, yatırım); maliyet–Q<sub>C</sub> grafiği.',
+      tartisma: 'Daha büyük bir banka her zaman daha iyi midir? Yük profili değişken bir tesiste otomatik rölenin ekonomik ve teknik yararını tartışın.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../pwa-bridge.js"></script></body>
+</html>
