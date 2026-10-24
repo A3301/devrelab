@@ -226,7 +226,7 @@
   })();
 
   steps('d1', [
-    { t: 'Üreteci <b>üçgen, 1 kHz, 2 Vpp</b> yapın. (Değer yazmak için düğmeye çift tıklayın.)', test: () => D1.wave === 'tri' && near(D1.kf.value, 1000, 30) && near(D1.ka.value, 2, 0.06) },
+    { t: 'Üreteci <b>üçgen, 1 kHz, 2 Vpp</b> yapın. (Değer yazmak için düğmeye dokunun.)', test: () => D1.wave === 'tri' && near(D1.kf.value, 1000, 30) && near(D1.ka.value, 2, 0.06) },
     { t: 'Kapasitör kutusunu <b>1 µF</b>, şöntü <b>10 Ω</b> yapın. CH2\'de kare dalga görünene kadar CH2 V/d\'yi küçültün (≤ 20 mV/d).', test: () => S.steps.d1_0 && D1.kc.value === 1e-6 && D1.ks.value === 10 && D1.k2.value <= 0.02 },
     { t: '<b>İMLEÇ</b>\'leri açın, CH1\'in bir rampası üzerinde Δt ve ΔV okuyup eğimi bulun; CH2 tepe değerinden akımı hesaplayın. Bir ölçüm kaydedin.', test: () => D1.scope.cur.on && S.d1rows.some((r) => r.C === 1e-6 && r.w === 'üçgen') },
     { t: 'Aynı kapasitörle dalga biçimini önce <b>sinüs</b> sonra <b>kare</b> yapıp akımın biçimine bakın.', test: () => S.d1seen.sin && S.d1seen.sq },

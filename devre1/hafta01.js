@@ -138,7 +138,7 @@
       sch.t(svg, 186, y + 50, 'V', '', 'start').setAttribute('style', 'fill:#5fbf73;font-size:13px');
       disp[k + 'I'] = sch.t(svg, 275, y + 50, '0,0 mA', '', 'end'); disp[k + 'I'].setAttribute('style', 'fill:#ffb04a;font:700 15px Consolas,monospace');
     });
-    const fo = E('foreignObject', { x: 30, y: 262, width: 110, height: 105 }, svg);
+    const fo = E('foreignObject', { x: 22, y: 258, width: 126, height: 124 }, svg);
     const kdiv = document.createElement('div'); fo.appendChild(kdiv); kdiv.style.color = '#dfe3ea';
     const knob = new Lab.Knob(kdiv, { label: 'GERİLİM', min: 0, max: 20, step: 0.1, value: S.d1V ?? 5, dark: true, size: 62, fmt: (v) => '±' + num(v, 1) + ' V', onChange: (v) => { S.d1V = v; save(); evalPower(); } });
     const fo2 = E('foreignObject', { x: 150, y: 270, width: 145, height: 90 }, svg);
@@ -187,7 +187,7 @@
       const r = E('rect', { x: x - 7, y, width: 14, height: 16, fill: 'transparent', style: 'cursor:pointer' }, svg);
       sch.t(svg, x, s === 'T' ? 190 : 278, p, '', 'middle').setAttribute('style', 'fill:#555;font-size:9px;font-weight:700;pointer-events:none');
       r.addEventListener('mouseenter', () => pinHover(+p));
-      r.addEventListener('click', () => pinClick(+p));
+      r.addEventListener('click', () => { pinHover(+p); pinClick(+p); }); // dokunmatik ekranda fareyle üzerine gelme yok
     }
     const wireG = E('g', {}, svg);
     const tmp = E('path', { stroke: '#888', 'stroke-width': 4, fill: 'none', 'stroke-dasharray': '6 5', 'pointer-events': 'none' }, svg);
@@ -218,7 +218,8 @@
 
     // --- kablolar
     const pt = (e) => { const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); };
-    const nearest = (p) => { let b = null, bd = 1e9; for (const t of terms) { const d = Math.hypot(t.x - p.x, t.y - p.y); if (d < (t.jack ? 18 : 9) && d < bd) { b = t; bd = d; } } return b; };
+    const touch = window.matchMedia && matchMedia('(pointer:coarse)').matches; // parmakla delik bulmak için daha geniş yakalama
+    const nearest = (p) => { let b = null, bd = 1e9; for (const t of terms) { const d = Math.hypot(t.x - p.x, t.y - p.y); if (d < (t.jack ? 18 : touch ? 12 : 9) && d < bd) { b = t; bd = d; } } return b; };
     const used = (id) => T[id].occ || wires.some((w) => w.a === id || w.b === id);
     const curve = (a, b) => { const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2 - Math.min(60, Math.hypot(a.x - b.x, a.y - b.y) * 0.25); return `M${a.x},${a.y} Q${mx},${my} ${b.x},${b.y}`; };
     function drawWires() {
@@ -235,7 +236,7 @@
     let drag = null;
     svg.addEventListener('pointerdown', (e) => {
       const t = nearest(pt(e)); if (!t) return;
-      if (!t.jack && used(t.id)) { Lab.toast('Bu delik dolu: her deliğe tek kablo takılır.'); return; }
+      if (!t.jack && used(t.id)) { Lab.toast(t.occ ? 'Bu delikte entegre bacağı var. Kabloyu <b>aynı sütundaki boş deliklerden</b> birine takın (sütundaki 5 delik birbirine bağlıdır).' : 'Bu delik dolu: her deliğe tek kablo takılır.'); return; }
       drag = t; svg.setPointerCapture(e.pointerId); e.preventDefault();
     });
     svg.addEventListener('pointermove', (e) => {
@@ -314,7 +315,7 @@
   })();
 
   steps('d1', [
-    { t: 'Fareyi entegrenin bacaklarının üzerine getirip en az 4 bacağın görevini okuyun. Çentik solda: 1. bacak sol alttadır, numaralar saat yönünün tersine artar.', test: () => S.d1hov.length >= 4 },
+    { t: 'Fareyi entegrenin bacaklarının üzerine getirip (dokunmatik ekranda bacağa dokunup) en az 4 bacağın görevini okuyun. Çentik solda: 1. bacak sol alttadır, numaralar saat yönünün tersine artar.', test: () => S.d1hov.length >= 4 },
     { t: 'Çıkış <b>kapalıyken</b> kaynağın gerilim düğmesini <b>±15,0 V</b>\'a ayarlayın.', test: () => near(D1.knob.value, 15, 0.05) },
     { t: '<b>+V</b> klemensini 7 numaralı bacağa bağlayın (doğrudan ya da kırmızı ray üzerinden).', test: () => D1.st().p7ok },
     { t: '<b>−V</b> klemensini 4 numaralı bacağa bağlayın.', test: () => D1.st().p4ok },
@@ -508,7 +509,7 @@
   })();
 
   steps('d3', [
-    { t: 'Üreteci <b>sinüs, 1 kHz, 0,6 mVpp</b> (0,3 mV tepe) yapın, V<sub>ref</sub> = 0 V. (Genlik düğmesine çift tıklayıp 0,0006 yazabilirsiniz.)', test: () => D3.wave === 'sin' && near(D3.ka.value, 6e-4, 6e-5) && near(D3.kf.value, 1000, 100) && Math.abs(D3.kr.value) < 0.005 },
+    { t: 'Üreteci <b>sinüs, 1 kHz, 0,6 mVpp</b> (0,3 mV tepe) yapın, V<sub>ref</sub> = 0 V. (Genlik düğmesine dokunup 0,6m yazabilirsiniz.)', test: () => D3.wave === 'sin' && near(D3.ka.value, 6e-4, 6e-5) && near(D3.kf.value, 1000, 100) && Math.abs(D3.kr.value) < 0.005 },
     { t: 'CH1\'i <b>0,1 mV/d</b>, CH2\'yi <b>5 V/d</b> yapın. 0,3 mV\'luk giriş ±15 V\'luk bir kare dalgaya dönüştü mü? (Ders notu Şekil: “Geri besleme olmazsa”)', test: () => S.steps.d3_0 && D3.k1.value <= 1e-4 && D3.k2.value === 5 },
     { t: 'Genliği <b>2 Vpp</b>, V<sub>ref</sub>\'i <b>+0,50 V</b> yapın. Görev oranını ölçün ve formülle karşılaştırın.', test: () => D3.wave === 'sin' && near(D3.ka.value, 2, 0.1) && near(D3.kr.value, 0.5, 0.005) },
     { t: 'Frekansı <b>≥ 20 kHz</b> yapıp İMLEÇ\'leri açın. Çıkışın eğik kenarı üzerine iki imleci koyup ΔV/Δt\'den SR\'yi ölçün.', test: () => D3.kf.value >= 2e4 && D3.scope.cur.on },

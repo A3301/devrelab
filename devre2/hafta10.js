@@ -244,7 +244,7 @@
       if (c.Sb[1] < -0.005 * Cx.abs(c.Sb)) h = '<b>Aşırı kompanzasyon:</b> toplam Q negatif, pf ileri. Hat akımı yeniden artıyor. C’yi azaltın.';
       else if (c.pfb >= 0.945 && c.pfb <= 0.96) h = 'Bara pf’si 0,95 civarında. Akım ve kaybı C = 0 satırıyla karşılaştırın.';
       else if (c.C > 0 && c.pfb < 0.945) h = 'pf henüz hedefin altında: Q<sub>C</sub>’yi P(tan θ<sub>1</sub> − tan θ<sub>2</sub>) ile hesaplayıp C = Q<sub>C</sub>/(ωV<sup>2</sup>) bulun.';
-      else h = 'Kondansatörü önce kâğıt üzerinde boyutlandırın, sonra C düğmesine çift tıklayıp değeri yazın.';
+      else h = 'Kondansatörü önce kâğıt üzerinde boyutlandırın, sonra C düğmesine dokunup değeri yazın.';
       $('#d1hint').innerHTML = h;
     }
     const tbody = $('#d1tab tbody');

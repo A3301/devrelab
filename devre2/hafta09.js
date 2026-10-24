@@ -385,7 +385,7 @@
         else if (Math.abs(c.pf - 0.8) <= 0.01 && !rel(c.P, 8000, 0.02)) h = 'pf doğru ama P değil: R ve X’i <b>aynı oranda</b> büyütüp küçültün (|Z| = V²/|S|).';
         else if (rel(c.P, 8000, 0.02) && Math.abs(c.pf - 0.8) <= 0.01 && c.Q < 0) h = 'pf 0,8 ama <b>ileri</b>: “geri” endüktif demektir, C yerine L kullanın.';
       }
-      $('#d2hint').innerHTML = h || 'İpucu: önce kâğıt üzerinde Z’yi hesaplayın, sonra R, L, C düğmelerini ayarlayın. Çift tıklayıp değer yazabilirsiniz.';
+      $('#d2hint').innerHTML = h || 'İpucu: önce kâğıt üzerinde Z’yi hesaplayın, sonra R, L, C düğmelerini ayarlayın. Dokunup değer yazabilirsiniz.';
     }
     const tbody = $('#d2tab tbody');
     function table() {

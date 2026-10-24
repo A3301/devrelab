@@ -398,7 +398,7 @@
   XP.d2 = D2;
   const goodXY = (r) => { if (!r.xy) return false; const s = r.src === 'gen' ? Math.abs(Math.sin(40 * D2R)) : Math.abs(Math.sin(D2.boxPh(r.f) * D2R)); return near(Math.abs(r.yc) / r.y2m, s, 0.03); };
   steps('d2', [
-    { t: 'Örnek 1.4’ü kurun: f = <b>50 Hz</b>; çıkış A = <b>10 sin(ωt + 30°)</b>, çıkış B = <b>4 cos(ωt − 20°)</b>. (V<sub>m</sub> ve φ düğmelerine çift tıklayıp değer yazabilirsiniz.)', test: () => D2.isEx(D2.P()) },
+    { t: 'Örnek 1.4’ü kurun: f = <b>50 Hz</b>; çıkış A = <b>10 sin(ωt + 30°)</b>, çıkış B = <b>4 cos(ωt − 20°)</b>. (V<sub>m</sub> ve φ düğmelerine dokunup değer yazabilirsiniz.)', test: () => D2.isEx(D2.P()) },
     { t: 'İMLEÇ A’yı CH1’in, B’yi CH2’nin en yakın aynı yöndeki tepesine koyup <b>kaydedin</b> (Δt).', test: () => S.d2rows.some((r) => r.src === 'gen' && D2.isEx(r) && r.dt != null && near(Math.abs(r.dt), D2.exDt, 0.05 * D2.exDt)) },
     { t: '<b>X-Y</b> modunu açın; Y imlecini elipsin düşey eksenle (x = 0) kesiştiği noktaya getirip kaydedin.', test: () => S.d2rows.some((r) => r.src === 'gen' && D2.isEx(r) && goodXY(r)) },
     { t: '<b>Kara kutu X</b>’e geçin, f = <b>1 kHz</b> (±5 Hz) için Δt’yi ölçüp kaydedin.', test: () => S.d2rows.some((r) => r.src === 'box' && near(r.f, 1000, 5) && r.dt != null && near(Math.abs(r.dt) * 360 * r.f, Math.abs(D2.boxPh(r.f)), 2.5)) },

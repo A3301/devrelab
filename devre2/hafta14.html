@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Hafta 14 · Güç Ölçme ve Dönem Tekrarı — Devre Kuramı II Sanal Lab</title>
-<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="stylesheet" href="../ortak/lab.css?v=13">
 <style>.why{background:#eef8ef;border-left:4px solid var(--ok);padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}.ex{background:#f7f4ff;border-left:4px solid #6a4fc9;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}</style>
 <link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
-<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.3 · Tüm hakları saklıdır.</div>
 <header class="topbar no-print">
   <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
   <div>
@@ -31,7 +31,7 @@
   <button data-p="d3"><span class="dot"></span>5 · Deney 3: Dengesiz Yük</button>
   <button data-p="d4"><span class="dot"></span>6 · Deney 4: Kara Kutu + Tekrar</button>
   <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
-  <div class="hint">Düğmeler: sürükleyin, tekerleği kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd>. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+  <div class="hint">Düğmeler: sürükleyin ya da <b>− / +</b> basın. Tam değer için düğmeye <b>dokunun</b>. <kbd>Shift</kbd> ince ayar.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
 </nav>
 
 <main>
@@ -152,7 +152,7 @@
         <h3 style="margin-top:0">Bilgi</h3>
         <div class="info">Dengeli abc yükte: <span class="eq">W₁ = V<sub>L</sub>I<sub>L</sub>cos(θ + 30°), W₂ = V<sub>L</sub>I<sub>L</sub>cos(θ − 30°)</span> θ, faz empedansının açısıdır (Y’de de Δ’da da).</div>
         <div class="why"><b>Neden ±30°?</b> W₁ hat gerilimi V<sub>ab</sub>’yi görür; o da V<sub>an</sub>’dan 30° ileridedir. I<sub>a</sub> ise V<sub>an</sub>’dan θ geride: aradaki açı θ + 30°. W₂ için V<sub>cb</sub>, V<sub>cn</sub>’dan 30° geride: açı θ − 30°.</div>
-        <div class="ex"><b>Örnek 3.27 tablosu (hesaplayıp karşılaştırın):</b> (a) 8 + j6 · (b) 8 − j6 · (c) 5 + j5√3 = 5 + j8,66 · (d) 10∠−75° = 2,59 − j9,66 Ω. X düğmesine çift tıklayıp değeri yazabilirsiniz.</div>
+        <div class="ex"><b>Örnek 3.27 tablosu (hesaplayıp karşılaştırın):</b> (a) 8 + j6 · (b) 8 − j6 · (c) 5 + j5√3 = 5 + j8,66 · (d) 10∠−75° = 2,59 − j9,66 Ω. X düğmesine dokunup değeri yazabilirsiniz.</div>
         <div class="warnbox">pf &lt; 0,5 olan hafif yüklü motorlarda bir wattmetre <b>her zaman</b> ters sapar; bu bir arıza değildir. Okumayı eksi işaretle toplamayı unutursanız güç birkaç kat büyük çıkar.</div>
       </div>
     </div>
@@ -246,15 +246,16 @@
 <div class="modal" id="helpModal"><div class="box">
   <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
   <p style="font-size:14px;line-height:1.7">
-    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd>. <kbd>Shift</kbd> ile ince ayar; çift tıklayıp değer yazabilirsiniz (ör. X = 8,66).<br>
+    <b>Düğmeler:</b> yukarı/aşağı (ya da sağa/sola) sürükleyin veya altındaki <b>−</b> / <b>+</b> düğmelerine basın (basılı tutarsanız hızlanır). <b>Tam değer</b> yazmak ya da listeden seçmek için düğmeye veya altındaki değere <b>dokunun</b> (4,7k · 600µ · 2m gibi önekler kabul edilir). Klavye: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, <kbd>Shift</kbd> ile ince ayar.<br>
+    <b>Ne yapacağım?</b> Ekranın altındaki <b>Sıradaki adım</b> çubuğu föydeki bir sonraki işi gösterir; adım doğru yapılınca kendiliğinden işaretlenir.<br>
     <b>Analog wattmetre:</b> ibrenin altındaki değer ayna skaladan okunan değerdir; ibre ölçek dışındaysa okunamaz.<br>
     <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
   </p>
   <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
 </div></div>
 
-<script src="../ortak/lab-core.js?v=1"></script>
-<script src="hafta14.js?v=1"></script>
+<script src="../ortak/lab-core.js?v=13"></script>
+<script src="hafta14.js?v=13"></script>
 <script>
 window.CIKTI = { key: 'd2h14', ders: 'Devre Kuramı II', hafta: 14,
   doc: [
@@ -284,6 +285,6 @@ window.CIKTI = { key: 'd2h14', ders: 'Devre Kuramı II', hafta: 14,
       tartisma: 'Kompanzasyonun işletmeye ekonomik getirisi (reaktif enerji bedeli, kayıp azalması) ile banka maliyetini karşılaştırın. Ölçümünüzün belirsizliği tasarımı nasıl etkiler?' },
   } };
 </script>
-<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../ortak/ciktilar.js?v=13"></script>
 <script src="../pwa-bridge.js"></script></body>
 </html>

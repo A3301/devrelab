@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Hafta 5 · AC Düğüm ve Çevre Yöntemleri — Devre Kuramı II Sanal Lab</title>
-<link rel="stylesheet" href="../ortak/lab.css?v=1">
+<link rel="stylesheet" href="../ortak/lab.css?v=13">
 <link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
-<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.3 · Tüm hakları saklıdır.</div>
 <header class="topbar no-print">
   <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
   <div>
@@ -30,7 +30,7 @@
   <button data-p="d3"><span class="dot"></span>5 · Deney 3: Farklı Frekanslı Kaynaklar</button>
   <button data-p="d4"><span class="dot"></span>6 · Deney 4: Bağımlı Kaynak</button>
   <button data-p="rapor"><span class="dot"></span>7 · Sonuç ve Rapor</button>
-  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+  <div class="hint">Düğmeler: sürükleyin ya da <b>− / +</b> basın. Tam değer için düğmeye <b>dokunun</b>. <kbd>Shift</kbd> ince ayar.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
 </nav>
 
 <main>
@@ -288,7 +288,8 @@
 <div class="modal" id="helpModal"><div class="box">
   <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
   <p style="font-size:14px;line-height:1.7">
-    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Düğmeler:</b> yukarı/aşağı (ya da sağa/sola) sürükleyin veya altındaki <b>−</b> / <b>+</b> düğmelerine basın (basılı tutarsanız hızlanır). <b>Tam değer</b> yazmak ya da listeden seçmek için düğmeye veya altındaki değere <b>dokunun</b> (4,7k · 600µ · 2m gibi önekler kabul edilir). Klavye: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, <kbd>Shift</kbd> ile ince ayar.<br>
+    <b>Ne yapacağım?</b> Ekranın altındaki <b>Sıradaki adım</b> çubuğu föydeki bir sonraki işi gösterir; adım doğru yapılınca kendiliğinden işaretlenir.<br>
     <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin. Ekranın sol kenarı t = 0’dır (tetik: v<sub>s</sub>’nin tepesi).<br>
     <b>Denklem kurucu:</b> kompleks sayıyı gerçel ve sanal kısım kutularına ayrı yazın (ör. 1,2 ve −0,5). Ondalık için virgül kullanabilirsiniz.<br>
     <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
@@ -296,8 +297,8 @@
   <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
 </div></div>
 
-<script src="../ortak/lab-core.js?v=1"></script>
-<script src="hafta05.js?v=1"></script>
+<script src="../ortak/lab-core.js?v=13"></script>
+<script src="hafta05.js?v=13"></script>
 <script>
 window.CIKTI = { key: 'd2h5', ders: 'Devre Kuramı II', hafta: 5,
   doc: [
@@ -327,6 +328,6 @@ window.CIKTI = { key: 'd2h5', ders: 'Devre Kuramı II', hafta: 5,
       veri: 'g’ye göre V<sub>1</sub>, V<sub>2</sub> genlik ve açıları, |V<sub>2</sub>|–g grafiği, öğrencinin kurduğu bağımlı kaynaklı [Y].' },
   } };
 </script>
-<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../ortak/ciktilar.js?v=13"></script>
 <script src="../pwa-bridge.js"></script></body>
 </html>

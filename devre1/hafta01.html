@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Hafta 1 · Op-Amp ile Tanışma — Devre Kuramı I Sanal Lab</title>
-<link rel="stylesheet" href="../ortak/lab.css?v=7">
+<link rel="stylesheet" href="../ortak/lab.css?v=13">
 <link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
-<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.3 · Tüm hakları saklıdır.</div>
 <header class="topbar no-print">
   <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Laboratuvar ana sayfası">⌂</a>
   <div>
@@ -30,7 +30,7 @@
   <button data-p="d3"><span class="dot"></span>4 · Deney 3: Karşılaştırıcı</button>
   <button data-p="d4"><span class="dot"></span>5 · Deney 4: Geri Besleme</button>
   <button data-p="rapor"><span class="dot"></span>6 · Sonuç ve Rapor</button>
-  <div class="hint">Düğmeler: sürükleyin, fare tekerleğini kullanın ya da tıklayıp <kbd>↑</kbd><kbd>↓</kbd> basın. <kbd>Shift</kbd> ince ayar, çift tık değer yazma.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
+  <div class="hint">Düğmeler: sürükleyin ya da <b>− / +</b> basın. Tam değer için düğmeye <b>dokunun</b>. <kbd>Shift</kbd> ince ayar.<br><br><kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0–7</kbd> bölümler · <kbd>?</kbd> yardım<br><br>Verileriniz bu bilgisayarda otomatik saklanır.</div>
 </nav>
 
 <main>
@@ -122,7 +122,7 @@
 <!-- ================= DENEY 1 ================= -->
 <section class="page" id="d1">
   <h2>Deney 1 · µA741'in Uçları ve Simetrik Besleme</h2>
-  <p class="lead">Kabloları fareyle bir delikten/klemensten diğerine sürükleyerek bağlayın. Kabloya tıklarsanız sökülür.</p>
+  <p class="lead">Kabloları bir delikten/klemensten diğerine <b>sürükleyerek</b> bağlayın (fareyle ya da parmakla). Kabloya tıklarsanız/dokunursanız sökülür. Telefonda ekranı <b>yatay</b> çevirmeniz önerilir; tezgâh sağa kaydırılabilir.</p>
   <div class="grid2">
     <div>
       <div class="card"><h3 style="margin-top:0">Föy</h3><ol class="steps" id="d1steps"></ol></div>
@@ -134,8 +134,8 @@
       </div>
     </div>
     <div>
-      <div class="bench">
-        <svg id="bb" viewBox="0 0 980 480" style="width:100%;display:block;user-select:none;touch-action:none"></svg>
+      <div class="bench" style="overflow-x:auto">
+        <svg id="bb" viewBox="0 0 980 480" style="width:100%;min-width:640px;display:block;user-select:none;touch-action:none"></svg>
       </div>
       <div class="card" style="margin-top:12px">
         <div class="row">
@@ -294,7 +294,8 @@
 <div class="modal" id="helpModal"><div class="box">
   <h3 style="margin-top:0">Kısayollar ve kullanım</h3>
   <p style="font-size:14px;line-height:1.7">
-    <b>Düğmeler:</b> yukarı/aşağı sürükleyin, fare tekerleği, ya da tıklayıp <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>. <kbd>Shift</kbd> ile ince ayar. Çift tıklayıp değer yazabilirsiniz.<br>
+    <b>Düğmeler:</b> yukarı/aşağı (ya da sağa/sola) sürükleyin veya altındaki <b>−</b> / <b>+</b> düğmelerine basın (basılı tutarsanız hızlanır). <b>Tam değer</b> yazmak ya da listeden seçmek için düğmeye veya altındaki değere <b>dokunun</b> (4,7k · 600µ · 2m gibi önekler kabul edilir). Klavye: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, <kbd>Shift</kbd> ile ince ayar.<br>
+    <b>Ne yapacağım?</b> Ekranın altındaki <b>Sıradaki adım</b> çubuğu föydeki bir sonraki işi gösterir; adım doğru yapılınca kendiliğinden işaretlenir.<br>
     <b>Kablolar (Deney 1):</b> bir delikten/klemensten diğerine sürükleyin; kabloya tıklayınca sökülür.<br>
     <b>Osiloskop imleçleri:</b> İMLEÇ düğmesine basın, ekranda sürükleyin.<br>
     <kbd>R</kbd> ölçümü kaydet · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> bölüm değiştir · <kbd>?</kbd> bu pencere · <kbd>Esc</kbd> kapat
@@ -302,8 +303,8 @@
   <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">Tamam</button>
 </div></div>
 
-<script src="../ortak/lab-core.js?v=6"></script>
-<script src="hafta01.js?v=6"></script>
+<script src="../ortak/lab-core.js?v=13"></script>
+<script src="hafta01.js?v=13"></script>
 <script>
 window.CIKTI = { key: 'd1h1', ders: 'Devre Kuramı I', hafta: 1,
   doc: [
@@ -332,6 +333,6 @@ window.CIKTI = { key: 'd1h1', ders: 'Devre Kuramı I', hafta: 1,
       veri: 'v<sub>g</sub>–v<sub>o</sub> aktarım eğrisi, uç akımları tablosu, sonlu kazanç karşılaştırması.' },
   } };
 </script>
-<script src="../ortak/ciktilar.js?v=1"></script>
+<script src="../ortak/ciktilar.js?v=13"></script>
 <script src="../pwa-bridge.js"></script></body>
 </html>

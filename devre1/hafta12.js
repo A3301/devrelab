@@ -385,7 +385,7 @@
   const isA = (r) => r.L === 0.05 && r.C === 2e-7;
   steps('d3', [
     { t: '<b>L = 50 mH, C = 0,2 µF</b> seçin (Örnek 4.1). Yükleyici V<sub>0</sub> = 12 V, I<sub>0</sub> = 30 mA.', test: () => isA(D3.P()) },
-    { t: 'Hesapladığınız kritik direnci ayarlayın (çift tıklayıp yazabilirsiniz): salınım yok (en fazla bir sıfır geçişi), en hızlı dönüş.', test: () => { const p = D3.P(); return isA(p) && near(p.R, 250, 3.75); } },
+    { t: 'Hesapladığınız kritik direnci ayarlayın (dokunup yazabilirsiniz): salınım yok (en fazla bir sıfır geçişi), en hızlı dönüş.', test: () => { const p = D3.P(); return isA(p) && near(p.R, 250, 3.75); } },
     { t: 'R<sub>k</sub>\'nın iki yanından (küçük ve büyük) toplam <b>en az 6</b> ölçüm kaydedin.', test: () => { const L = S.d3rows.filter(isA); return L.length >= 6 && L.some((r) => r.R < 240) && L.some((r) => r.R > 260); } },
     { t: '<b>Teorik eğriyi</b> açın: en kısa t<sub>s</sub> tam R<sub>k</sub>\'da mı, biraz yukarısında mı?', test: () => !!S.fl.d3theo },
     { t: 'Örnek 4.4 için tasarlayın: <b>L = 8 H, C = 0,125 µF</b>; kritik R\'yi bulup kaydedin.', test: () => S.d3rows.some((r) => r.L === 8 && r.C === 1.25e-7 && near(r.R, 4000, 60)) },

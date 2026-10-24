@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Devre Kuramı Sanal Laboratuvarı</title>
-<link rel="stylesheet" href="ortak/lab.css">
+<link rel="stylesheet" href="ortak/lab.css?v=13">
 <style>
   .weeks{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
   .wk{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;position:relative;text-decoration:none;color:inherit;display:block}
@@ -15,12 +15,25 @@
   .wk.on:hover{transform:translateY(-2px)}
   .wk.off{opacity:.55}
   .wk .st{position:absolute;top:10px;right:10px}
+  .howto ol{margin:6px 0 8px;padding-left:22px;font-size:14px;line-height:1.7}
+  .howto code{background:#eef1f5;border-radius:4px;padding:0 4px}
+  .howto .sub2{font-size:13px;color:var(--muted);margin:0;line-height:1.6}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="icons/icon-180.png"></head>
-<body><section style="margin:12px;padding:14px;background:#edf7f4;border:1px solid #abcfc3;border-radius:10px;font-family:Arial;line-height:1.5"><b>iPhone / iPad kurulumu</b><p>Safari’de Paylaş → Ana Ekrana Ekle → Ekle. Ardından ana ekrandaki Devre Lab simgesinden açın. İlk açılışta internet açık olsun; aşağıdaki hazırlık durumunu bekleyin. Geniş devreler için telefonu yatay çevirin.</p><p id="offline-status" role="status">Çevrimdışı kullanım hazırlanıyor…</p><p><small>Önemli ölçümlerinizi CSV veya rapor olarak ayrıca kaydedin. iPhone’un site verilerini temizlemek yerel kayıtları silebilir.</small></p></section><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.0 · Tüm hakları saklıdır.</div>
+<body><section style="margin:12px;padding:14px;background:#edf7f4;border:1px solid #abcfc3;border-radius:10px;font-family:Arial;line-height:1.5"><b>Telefona uygulama olarak kurun (bir kez)</b><p><b>iPhone / iPad:</b> Safari’de Paylaş → Ana Ekrana Ekle → Ekle. <b>Android:</b> Chrome’da ⋮ menüsü → Ana ekrana ekle / Uygulamayı yükle. Sonra ana ekrandaki <b>Devre Lab</b> simgesinden açın. İlk açılışta internet açık olsun ve aşağıdaki hazırlık mesajını bekleyin. Geniş devreler için telefonu yatay çevirin.</p><p id="offline-status" role="status">Çevrimdışı kullanım hazırlanıyor…</p><p><small>Önemli ölçümlerinizi CSV veya rapor olarak ayrıca kaydedin. Tarayıcının site verilerini temizlemek yerel kayıtları silebilir.</small></p></section><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Sürüm 1.3 · Tüm hakları saklıdır.</div>
 <header class="topbar"><div><h1>Devre Kuramı Sanal Laboratuvarı</h1><div class="sub">Prof. Dr. Ali AKDAĞLI · Devre Kuramı I ve II · 2 × 14 hafta · çevrimdışı çalışır</div></div></header>
 <main style="margin:0 auto">
-  <div class="card" style="margin-top:6px"><p style="margin:0;font-size:14px;line-height:1.6">Her hafta: ön hazırlık soruları, gerçekçi tezgâh cihazlarıyla (güç kaynağı, multimetre, fonksiyon üreteci, osiloskop) 3–4 deney, otomatik işaretlenen föy adımları, ölçüm tabloları, grafikler ve yazdırılabilir rapor. İnternet gerekmez; klasörü USB'ye kopyalayıp <b>index.html</b>'i açmanız yeterli.</p></div>
+  <div class="card" style="margin-top:6px"><p style="margin:0;font-size:14px;line-height:1.6">Her hafta: ön hazırlık soruları, gerçekçi tezgâh cihazlarıyla (güç kaynağı, multimetre, fonksiyon üreteci, osiloskop) 3–5 deney, otomatik işaretlenen föy adımları, ölçüm tabloları, grafikler ve yazdırılabilir rapor. İnternet gerekmez; klasörü USB'ye kopyalayıp <b>index.html</b>'i açmanız yeterli.</p></div>
+  <div class="card howto">
+    <h3 style="margin-top:0">İlk kez mi kullanıyorsunuz? 4 adımda laboratuvar</h3>
+    <ol>
+      <li><b>Haftayı seçin</b> ve sol/üst menüden sırayla ilerleyin: Ön Bilgi → Ön Hazırlık → Deneyler → Rapor.</li>
+      <li><b>Cihaz düğmeleri:</b> düğmeyi yukarı/aşağı <b>sürükleyin</b> ya da altındaki <b>−</b> / <b>+</b> ile ayarlayın. <b>Tam değer</b> gerekiyorsa düğmeye <b>dokunun</b>, değeri yazın (ör. <code>4,7k</code>, <code>600µ</code>) ya da listeden seçin.</li>
+      <li><b>Ne yapacağınızı</b> ekranın altındaki <b>Sıradaki adım</b> çubuğu söyler. Adımı doğru yaptığınızda kendiliğinden ✓ işaretlenir.</li>
+      <li>Ölçümleri <b>Kaydet (R)</b> ile tabloya alın, soruları yanıtlayın; son bölümde raporu <b>yazdırın / PDF kaydedin</b>.</li>
+    </ol>
+    <p class="sub2">Cihaz bir şey göstermiyorsa: çıkışı açık mı (<b>ÇIKIŞ AÇIK</b>), doğru bağlantı/mod seçili mi, osiloskopta <b>AUTO</b> ya da <b>SINGLE</b> gerekiyor mu kontrol edin. Her sayfada <b>?</b> düğmesi yardım penceresini açar.</p>
+  </div>
   <h2>Devre Kuramı I</h2><div class="weeks" id="w1"></div>
   <h2 style="margin-top:22px">Devre Kuramı II</h2><div class="weeks" id="w2"></div>
 </main>
