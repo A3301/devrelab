@@ -205,10 +205,12 @@
     const it = probe.map((v) => ({ v, s: splitFmt(o.fmt(v)) })).filter((x) => x.s && isFinite(x.s.n) && x.s.n !== 0);
     if (!it.length) return null;
     const ref = it.reduce((a, b) => (Math.abs(b.s.n) * 10 ** b.s.dec > Math.abs(a.s.n) * 10 ** a.s.dec ? b : a));
-    const f = (ref.s.n * ref.s.mult) / ref.v;
+    const f0 = (ref.s.n * ref.s.mult) / ref.v;
     // gösterimin yuvarlama payı içinde tutarlı mı?
-    for (const { v, s } of it) if (Math.abs(s.n * s.mult - f * v) > 0.5 * 10 ** -s.dec * s.mult * 1.05 + 1e-15) return null;
-    return f;
+    const fits = (f) => it.every(({ v, s }) => Math.abs(s.n * s.mult - f * v) <= 0.5 * 10 ** -s.dec * s.mult * 1.05 + 1e-15);
+    // oran pratikte hep 10'un kuvvetidir (1, 1e-3, 1e3); yuvarlanmış gösterimden gelen küçük sapmayı at
+    const f10 = 10 ** Math.round(Math.log10(Math.abs(f0))) * Math.sign(f0);
+    return fits(f10) ? f10 : fits(f0) ? f0 : null;
   }
   // düğmenin aralığında görülen birimler (ör. µVpp, mVpp, Vpp)
   function unitList(k) {
@@ -279,11 +281,13 @@
           msg.innerHTML = `Aralık dışında: en az ${o.fmt(o.min)}, en çok ${o.fmt(o.max)}.`;
           // başka bir birimle yazılmış olabilir mi? (ör. kHz yerine Hz)
           if (t.pre == null && sel) {
-            const alt = units.map((u, i) => ({ u, i, v: fin(toRaw(t, u.mult)) })).find((a) => inRange(a.v));
-            if (alt) {
-              msg.innerHTML += ` <button type="button" class="btn small sec kp-alt">${String(t.v).replace('.', ',')} ${alt.u.unit} mı?</button>`;
-              msg.querySelector('.kp-alt').onclick = () => { sel.value = alt.i; if (apply()) P.close(); };
-            }
+            const alts = units.map((u, i) => ({ u, i, v: fin(toRaw(t, u.mult)) })).filter((a) => inRange(a.v));
+            alts.forEach((alt) => {
+              const b = document.createElement('button'); b.type = 'button'; b.className = 'btn small sec kp-alt';
+              b.textContent = `${String(t.v).replace('.', ',')} ${alt.u.unit} mı?`;
+              b.onclick = () => { sel.value = alt.i; if (apply()) P.close(); };
+              msg.append(' ', b);
+            });
           }
           // işaret unutulmuş olabilir (ör. kapasitif reaktans negatiftir)
           if (!msg.querySelector('.kp-alt') && t.v > 0 && inRange(fin(toRaw({ v: -t.v, pre: t.pre }, selMult())))) {
