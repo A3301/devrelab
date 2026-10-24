@@ -185,3 +185,5 @@ ol.steps li.hl{background:#fff4c2;transition:background .3s}
 @media (max-width:700px){.bench{padding:8px}.bench-row{gap:8px}.inst{min-width:0;flex:1 1 140px}.scopewrap{flex-basis:100%!important}.topbar input{width:46%}}
 .kpop .kp-us{font:600 15px Consolas,monospace;padding:6px 4px;border:1px solid #b9c2cf;border-radius:8px;background:#f6f8fb;max-width:96px}
 .kpop .kp-msg .btn{margin-left:4px}
+/* dar ekranda cihaz göstergeleri taşmasın */
+@media (max-width:700px){.lcd{min-width:0!important;max-width:100%;overflow:hidden}.lcd .big{font-size:clamp(15px,5vw,26px)}}
