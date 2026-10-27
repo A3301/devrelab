@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 11 · Maximum Power Transfer — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<style>
+  .vd{width:100%;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:6px}
+  .vd text{font-size:12px;font-family:Segoe UI,Arial}
+  .seg{display:flex;gap:4px;flex-wrap:wrap}
+  .why{background:#fff8e6;border-left:4px solid #e0a100;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.55;border-radius:4px}
+  .solved{background:#f2f8f2;border-left:4px solid #2e8b57;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.6;border-radius:4px}
+</style>
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 11 — Maximum Power Transfer</h1>
+    <div class="sub">Z<sub>L</sub> = Z<sub>Th</sub>* · P<sub>L</sub> surface · Constrained loads · Transformer matching · Efficiency</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">0%</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: P<sub>L</sub> Surface</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Constrained Loads</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Transformer and Efficiency</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjust.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–6</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 11 · Maximum Average Power Transfer</h2>
+  <p class="lead">Lecture notes: <b>Section 2.6 Maximum Power Transfer</b> (Examples 10.8 – 10.11, 2.23 – 2.27).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li>Sweep the load resistance and reactance with two knobs, find the peak of the P<sub>L</sub>(R<sub>L</sub>, X<sub>L</sub>) surface <b>by measurement</b>, and verify the condition Z<sub>L</sub> = Z<sub>Th</sub>*.</li>
+        <li><b>Extract</b> the Thevenin impedance of an unknown source from its maximum power point.</li>
+        <li>Find the best load when only R can be adjusted, when R and X are limited, and when the load angle is fixed.</li>
+        <li><b>Match</b> a loudspeaker to an amplifier by choosing the turns ratio of an ideal transformer.</li>
+        <li>Explain why the efficiency is 50% at the maximum power point and why power systems are not operated there.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Thevenin equivalent source module (known and “hidden” sources) · Decade resistor box · Adjustable reactance box (inductor/capacitor, ± jX) · Wattmeter, AC voltmeter and ammeter (rms) · Audio amplifier (40 V, 800 Ω output) · Adjustable-ratio matching transformer · 4/8/16 Ω loudspeaker load.</p>
+      <div class="info">This week all voltages are <b>rms</b> unless stated otherwise: P<sub>max</sub> = |V<sub>Th</sub>|²/(4R<sub>Th</sub>). If a peak value is given, use the factor 1/8.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Watch the power and efficiency curves with the R<sub>L</sub> slider in the Background section, then solve the Pre-lab. In Experiment 1 search for the peak of the surface, in Experiment 2 find the best load under constraints, and in Experiment 3 design the transformer ratio.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · How Do We Draw the Most Power from a Source?</h2>
+  <p class="lead">Seen from the load, every linear source is just a V<sub>Th</sub> and a Z<sub>Th</sub>. The question: how should we choose the load so that the average power is maximum?</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Two competing demands</h3>
+      <p style="font-size:14px;line-height:1.65">If the load resistance is very small, the current is large but the load voltage is small; if it is very large, the voltage is large but the current is small. The power is zero at both extremes, with a peak in between. Reactance only reduces the current: the best choice is to <b>cancel</b> the source reactance.</p>
+      <div class="eq">P<sub>L</sub> = |V<sub>Th</sub>|² R<sub>L</sub> / [ (R<sub>Th</sub>+R<sub>L</sub>)² + (X<sub>Th</sub>+X<sub>L</sub>)² ]</div>
+      <p style="font-size:14px;line-height:1.65">∂P/∂X<sub>L</sub> = 0 → X<sub>L</sub> = −X<sub>Th</sub>; ∂P/∂R<sub>L</sub> = 0 → R<sub>L</sub> = R<sub>Th</sub>. Together:</p>
+      <div class="eq">Z<sub>L</sub> = Z<sub>Th</sub>*,&nbsp;&nbsp; P<sub>max</sub> = |V<sub>Th</sub>|²/(4R<sub>Th</sub>)</div>
+      <h3>2 · The price: efficiency</h3>
+      <p style="font-size:14px;line-height:1.65">At matching, the same current also flows through R<sub>Th</sub> and dissipates as much power as the load: η = R<sub>L</sub>/(R<sub>Th</sub>+R<sub>L</sub>) = <b>50%</b>. This is acceptable in communication and audio circuits (weak signals); never in power systems: a power plant burning half of what it generates inside itself is unacceptable. There R<sub>L</sub> ≫ R<sub>Th</sub> is chosen.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Live: power and efficiency vs R<sub>L</sub></h3>
+      <p style="font-size:14px;line-height:1.6;margin:0 0 6px">Source: 10 V, R<sub>Th</sub> = 50 Ω (no reactance). Change R<sub>L</sub> with the slider.</p>
+      <label style="font-size:13px">R<sub>L</sub> <input type="range" id="obR" min="0" max="1" step="0.001" value="0.3" style="width:65%"> <span id="obRv"></span></label>
+      <canvas id="obPlot" width="620" height="280" style="width:100%;margin-top:6px"></canvas>
+      <div id="obTxt" style="font-size:13px"></div>
+      <svg class="vd" viewBox="0 0 420 130" style="margin-top:8px">
+        <g stroke="#333" stroke-width="2" fill="none">
+          <circle cx="50" cy="70" r="20"/><path d="M40,70 q5,-12 10,0 t10,0"/>
+          <path d="M50,50 V25 H100"/><rect x="100" y="15" width="70" height="20" fill="#eef4ff"/><path d="M170,25 H260"/>
+          <path d="M50,90 V115 H260"/><rect x="250" y="40" width="20" height="60" fill="#fff4e0"/><path d="M260,25 V40 M260,100 V115"/>
+        </g>
+        <g font-size="12" fill="#223"><text x="135" y="52" text-anchor="middle">Z<tspan font-size="9" dy="3">Th</tspan></text><text x="16" y="74">V<tspan font-size="9" dy="3">Th</tspan></text><text x="278" y="74">Z<tspan font-size="9" dy="3">L</tspan> = R<tspan font-size="9" dy="3">L</tspan> + jX<tspan font-size="9" dy="3">L</tspan></text>
+          <text x="300" y="30">a</text><text x="300" y="118">b</text></g>
+      </svg>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Unconstrained load</td><td class="l">Z<sub>L</sub> = Z<sub>Th</sub>*,&nbsp; P = |V<sub>Th</sub>|²/(4R<sub>Th</sub>) (rms)</td></tr>
+        <tr><td class="l">With peak value</td><td class="l">P = V<sub>m</sub>²/(8R<sub>Th</sub>)</td></tr>
+        <tr><td class="l">Only R<sub>L</sub> adjustable (X<sub>L</sub> = 0)</td><td class="l">R<sub>L</sub> = |Z<sub>Th</sub>|</td></tr>
+        <tr><td class="l">R<sub>L</sub>, X<sub>L</sub> limited</td><td class="l">First set X<sub>L</sub> to the allowed value closest to −X<sub>Th</sub>, then R<sub>L</sub> = √(R<sub>Th</sub>² + (X<sub>Th</sub>+X<sub>L</sub>)²)</td></tr>
+        <tr><td class="l">Fixed angle, |Z<sub>L</sub>| adjustable</td><td class="l">|Z<sub>L</sub>| = |Z<sub>Th</sub>|</td></tr>
+        <tr><td class="l">Ideal transformer (n:1)</td><td class="l">Z<sub>L</sub>’ = n² Z<sub>L</sub>;&nbsp; matching: n = √(R<sub>Th</sub>/R<sub>L</sub>)</td></tr>
+        <tr><td class="l">Efficiency</td><td class="l">η = R<sub>L</sub>/(R<sub>Th</sub> + R<sub>L</sub>);&nbsp; 50% at matching</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Common mistakes</h3>
+      <div class="info"><b>Writing Z<sub>L</sub> = Z<sub>Th</sub>:</b> without the conjugate the reactances add (j4 + j4 = j8) and the current drops. Correctly, with Z<sub>L</sub> = 3 − j4 the total is 6 Ω, purely resistive.</div>
+      <div class="info"><b>Mixing peak and rms:</b> with V<sub>m</sub> = 19.2 V peak and R<sub>Th</sub> = 5.76 Ω, P = V<sub>m</sub>²/(4R<sub>Th</sub>) = 16 W is wrong; V<sub>m</sub>²/(8R<sub>Th</sub>) = 8 W is correct.</div>
+      <div class="info"><b>Applying the conjugate to a constrained load:</b> with the angle fixed at −36.87°, 3000 − j4000 (angle −53.13°) cannot be chosen. The correct approach is to match only the magnitude: 4000 − j3000 Ω.</div>
+      <div class="info"><b>Thinking “maximum power = 100% efficiency”:</b> at matching the power is shared half and half, η = 50%.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Things to watch in a real lab</h3>
+    <div class="warnbox"><b>Do not leave the amplifier output unloaded or short-circuited.</b> Shorting the output of an audio amplifier burns the output transistors; in tube (valve) amplifiers, leaving the load open creates overvoltage in the output transformer.</div>
+    <div class="warnbox"><b>Power rating of the resistor box.</b> At the matching point the load draws the largest power the source can deliver. Each step of a decade resistor box is typically rated 0.5–1 W; before the experiment, calculate P<sub>max</sub> and check that the box can carry it.</div>
+    <div class="warnbox"><b>Transformer secondary.</b> Shorting the secondary of a matching transformer draws a very large current from the primary; in current transformers the secondary must never be left open. Switch off the source when changing the transformer ratio.</div>
+    <div class="warnbox"><b>RF mismatch can burn the transmitter.</b> If an antenna’s impedance does not match the transmitter, power is reflected back (high SWR) and heats the output stage. In RF measurements the load and cables must be matched to 50 Ω.</div>
+    <div class="warnbox"><b>Do not attempt “maximum power” on the mains side.</b> The Thevenin impedance of the grid is in the milliohm range; a matched load is a short circuit and draws tens of kA. In power systems the load impedance is kept much larger than the source impedance.</div>
+    <div class="warnbox"><b>Instrument loading.</b> If the source impedance is in the kΩ range, the voltmeter input resistance (10 MΩ) and the ammeter internal resistance affect the results; with a high-impedance source, choose the wattmeter current circuit carefully.</div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before entering the lab. Values are rms.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Peak Hunting on the P<sub>L</sub>(R<sub>L</sub>, X<sub>L</sub>) Surface</h2>
+  <p class="lead">A resistor box and a reactance box are connected in series with the Thevenin source module. Turn the two knobs to make the power shown by the wattmeter as large as possible. Each of your measurements appears as a point on the map.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">For fixed R<sub>L</sub>, P is maximum when X<sub>L</sub> = −X<sub>Th</sub> (the second term of the denominator is zero). Therefore, about the line X<sub>L</sub> = −X<sub>Th</sub>, the contour lines are <b>symmetric</b>.</div>
+        <div class="info">Sweep strategy: first sweep X<sub>L</sub> to find where the power is maximum, fix it and sweep R<sub>L</sub>, then go back to X<sub>L</sub> (coordinate descent). Two rounds are usually enough.</div>
+        <div class="why"><b>Why reactance first?</b> As long as X<sub>Th</sub> + X<sub>L</sub> ≠ 0, there is a “brake” in the loop that consumes no power but limits the current. The conjugate reactance cancels it by resonance; what remains is only the sharing between R<sub>Th</sub> and R<sub>L</sub>.</div>
+        <div class="solved"><b>Solved mini example (Example 10.9a):</b> 10 V, Z<sub>Th</sub> = 3000 + j4000 Ω. Z<sub>L</sub> = 3000 − j4000 Ω; the loop is a pure 6000 Ω resistance; I = 10/6000 = 1.667 mA; P = I²·3000 = 8.33 mW = 10²/(4·3000) ✓.</div>
+        <div class="warnbox">When working with the hidden source, do not reduce the load resistance to zero during the sweep: in a real source this is a short circuit and may exceed the source’s current limit. Always leave a small series protection resistance in the resistor box.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 210"></svg></div>
+      <div class="card">
+        <div class="row"><b>P<sub>L</sub> map (horizontal R<sub>L</sub>, vertical X<sub>L</sub>)</b><span class="grow"></span>
+          <button class="btn small" id="d1scan">Automatic grid scan</button>
+          <label style="font-size:13px"><input type="checkbox" id="d1theo"> Theoretical contours</label></div>
+        <canvas id="d1map" width="760" height="420" style="width:100%"></canvas>
+        <div style="font-size:12px;color:#556">Colour: power measured in the grid scan (dark = large). Blue dots: your recorded measurements. Plus sign: present load. Click on the map to move the load to that point.</div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Source</th><th>R<sub>L</sub> (Ω)</th><th>X<sub>L</sub> (Ω)</th><th>|V<sub>L</sub>| (V)</th><th>I (mA)</th><th>P<sub>L</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Constrained Loads: What If the Conjugate Is Not Possible?</h2>
+  <p class="lead">Not every parameter of a real load can be adjusted. Try three cases: only resistance adjustable, limited R and X, and a load with fixed angle.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info"><b>Only R<sub>L</sub>:</b> with X<sub>L</sub> = 0, dP/dR<sub>L</sub> = 0 → <span class="eq">R<sub>L</sub> = √(R<sub>Th</sub>² + X<sub>Th</sub>²) = |Z<sub>Th</sub>|</span></div>
+        <div class="info"><b>Limited R and X:</b> first set X<sub>L</sub> as close to −X<sub>Th</sub> as allowed (the <b>nearest</b> permitted value); then R<sub>L</sub> = √(R<sub>Th</sub>² + (X<sub>Th</sub>+X<sub>L</sub>)²) (clipped to the allowed range).</div>
+        <div class="info"><b>Fixed angle:</b> Z<sub>L</sub> = |Z<sub>L</sub>|∠θ<sub>L</sub>, only the magnitude adjustable → <span class="eq">|Z<sub>L</sub>| = |Z<sub>Th</sub>|</span></div>
+        <div class="why"><b>Why are the magnitudes equated when the angle is fixed?</b> Differentiating P with respect to |Z<sub>L</sub>| gives a generalised form of the rule R<sub>L</sub> = |Z<sub>Th</sub>|: when only one degree of freedom remains, the load matches the <b>magnitude</b> of the source impedance. A purely resistive load (θ<sub>L</sub> = 0) is a special case of this.</div>
+        <div class="solved"><b>Solved mini example (Example 2.23):</b> 100 V, Z<sub>Th</sub> = 3 + j4 Ω, only R<sub>L</sub>. R<sub>L</sub> = 5 Ω; I = 100/|8 + j4| = 11.18 A; P = 11.18² × 5 = 625 W. With conjugate matching it would be 833 W.</div>
+        <div class="warnbox">The internal resistance of the inductor in the reactance box (a few Ω in practice) adds to the real part of the load; the measured best R<sub>L</sub> may come out smaller than theory by that amount. Measure the inductor with an LCR meter before the measurement.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 200"></svg></div>
+      <div class="card">
+        <div class="row"><b>P<sub>L</sub> vs adjustable quantity</b><span class="grow"></span>
+          <button class="btn small" id="d2sweep">Sweep</button>
+          <label style="font-size:13px"><input type="checkbox" id="d2theo"> Unconstrained P<sub>max</sub> line</label></div>
+        <canvas id="d2plot" width="760" height="300" style="width:100%"></canvas>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Source</th><th>Constraint</th><th>R<sub>L</sub> (Ω)</th><th>X<sub>L</sub> (Ω)</th><th>|Z<sub>L</sub>| (Ω)</th><th>θ<sub>L</sub> (°)</th><th>P<sub>L</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Impedance Matching with a Transformer and Efficiency</h2>
+  <p class="lead">Example 2.25: The Thevenin equivalent of an audio amplifier is 40 V (rms), 800 Ω. The loudspeaker is 8 Ω. We insert a matching transformer (n:1) with adjustable ratio between them.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">In an ideal transformer V<sub>1</sub> = nV<sub>2</sub>, I<sub>1</sub> = I<sub>2</sub>/n; the impedance seen from the primary is <span class="eq">Z’ = V<sub>1</sub>/I<sub>1</sub> = n² Z<sub>L</sub></span> For matching, n²R<sub>L</sub> = R<sub>Th</sub>.</div>
+        <div class="info">Efficiency (ideal transformer): <span class="eq">η = n²R<sub>L</sub>/(R<sub>Th</sub> + n²R<sub>L</sub>)</span> As n increases η increases, but the power in the load decreases.</div>
+        <div class="why"><b>Why a transformer?</b> Connecting the loudspeaker directly means nearly short-circuiting the 800 Ω source with 8 Ω: most of the current turns into heat in the source’s internal resistance. The transformer makes the loudspeaker “look like” 800 Ω to the source; power is reflected, impedance is transformed. A lossless transformer consumes no power itself.</div>
+        <div class="solved"><b>Solved mini example:</b> R<sub>Th</sub> = 600 Ω source, 16 Ω loudspeaker: n = √(600/16) = 6.12. With real transformers the nearest standard ratio is chosen; for n = 6, Z’ = 576 Ω and the power loss is as small as 0.04%. The flatness of the peak allows the match to be approximate.</div>
+        <div class="warnbox">A real transformer has winding resistances (copper loss) and magnetising current; the efficiency is not 100%. Turn on the “Real transformer” option and see how the winding losses change the best n and the power. At audio frequencies, do not overdrive at low frequency so that the transformer core does not saturate.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 210"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>P<sub>L</sub> vs n</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Theoretical curves</label></div>
+          <canvas id="d3plotP" width="560" height="300" style="width:100%"></canvas>
+        </div>
+        <div class="card">
+          <b>Efficiency η vs n</b>
+          <canvas id="d3plotE" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Record (R)</button>
+          <button class="btn sec small" id="d3del">Delete last row</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Connection</th><th>n</th><th>R<sub>L</sub> (Ω)</th><th>I<sub>1</sub> (mA)</th><th>P<sub>L</sub> (W)</th><th>P<sub>int</sub> (W)</th><th>P<sub>xfmr</sub> (W)</th><th>η (%)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and graphs.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="How did you find Z_Th of the hidden source? How much power was lost with constrained loads? Discuss the trade-off between maximum power and efficiency."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). To type an <b>exact value</b> or pick from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjust with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task in the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Map (Experiment 1):</b> clicking moves the load to that point.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>6</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta11.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h11', ders: 'Circuit Theory II', hafta: 11,
+  doc: [
+    { id: 'CLO1', t: 'Derives the maximum average power condition (Z<sub>L</sub> = Z<sub>Th</sub>*) in sinusoidal steady state and verifies it by measurement.', mc: [1, 2, 5] },
+    { id: 'CLO2', t: 'Determines the Thevenin impedance of an unknown source from measurements.', mc: [2, 4, 5] },
+    { id: 'CLO3', t: 'Designs the best load in constrained-load and transformer impedance-matching problems.', mc: [1, 3] },
+    { id: 'CLO4', t: 'Interprets the trade-off between maximum power and efficiency; distinguishes power systems from signal circuits.', mc: [2, 6] },
+    { id: 'CLO5', t: 'Presents the findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To find the peak of the P<sub>L</sub> surface by sweeping the load resistance and reactance, verify the condition Z<sub>L</sub> = Z<sub>Th</sub>*, and determine Z<sub>Th</sub> of a hidden source.', doc: ['CLO1', 'CLO2'], mc: [1, 2, 4, 5],
+      gerec: 'Thevenin source module (known and hidden), decade resistor box, ± jX reactance box, wattmeter, AC voltmeter and ammeter.',
+      guvenlik: 'Do not reduce the load to zero resistance; compare the power rating of the resistor box with P<sub>max</sub>; change connections only when de-energised.',
+      veri: 'Table of R<sub>L</sub>, X<sub>L</sub>, |V<sub>L</sub>|, I, P<sub>L</sub>; measured power map and comparison with contours.',
+      tartisma: 'What are the consequences of an antenna not being matched to the transmitter (reflected power) in terms of energy waste and equipment safety?' },
+    d2: { amac: 'To find the load that maximises the transferred power for loads with only resistance adjustable, with limited R and X, and with fixed angle, and to compare with the unconstrained maximum.', doc: ['CLO3'], mc: [1, 2, 3, 5],
+      gerec: 'Thevenin source module, resistor box, limited reactance box, fixed-angle load model, wattmeter.',
+      guvenlik: 'Do not exceed the current/voltage limits of the inductors and capacitors in the reactance box; take the inductor internal resistance into account.',
+      veri: 'For each constraint, the P<sub>L</sub> vs adjustable quantity curve, the best point and its ratio to the unconstrained P<sub>max</sub>.' },
+    d3: { amac: 'To match an audio amplifier to a loudspeaker with an ideal and a real transformer, and to measure how the turns ratio affects power and efficiency.', doc: ['CLO3', 'CLO4'], mc: [1, 3, 5, 6],
+      gerec: 'Audio amplifier (40 V, 800 Ω), adjustable-ratio matching transformer, 4/8/16 Ω loudspeaker, wattmeters.',
+      guvenlik: 'Do not short-circuit or leave the amplifier output unloaded; change the transformer ratio only when de-energised; use ear protection at high sound levels.',
+      veri: 'P<sub>L</sub>, internal loss, transformer loss and efficiency versus n; the best n.',
+      tartisma: 'Why is a power plant not “matched” to its load? Discuss the choice between maximum power and maximum efficiency from the viewpoint of energy sustainability.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

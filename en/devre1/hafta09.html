@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 9 · Natural Response of RL and RC — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 9 — Natural Response of RL and RC Circuits</h1>
+    <div class="sub">Continuity · Time constant τ · 36.8% and tangent · 5τ rule · τ from R<sub>Th</sub></div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">0%</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: RC Discharge</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: RL Natural Response</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: τ Design and ln Plot</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: τ from R<sub>Th</sub></button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> for fine adjustment.<br><br><kbd>S</kbd> toggle switch · <kbd>A</kbd> arm oscilloscope (SINGLE) · <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data are saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 9 · Natural Response of First-Order Circuits</h2>
+  <p class="lead">Lecture notes: <b>Section 3.1 Natural Response of an RL Circuit</b> and <b>3.2 Natural Response of an RC Circuit</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li>Capture a transient by toggling the switch <b>yourself</b> and triggering the oscilloscope in <b>single-shot (SINGLE)</b> mode.</li>
+        <li>Measure the time constant in two ways: the <b>36.8% point</b> and the <b>initial tangent</b>.</li>
+        <li>See the <b>continuity</b> of inductor current and the <b>jump</b> in voltage in an RL circuit; experiment with the overvoltage when the switch opens and the remedies against it (snubber resistor, freewheeling diode).</li>
+        <li><b>Choose</b> R and C for a target τ, linearize your measurement with an ln plot and find τ from the slope.</li>
+        <li>Verify by measurement that the resistance setting τ in a multi-resistor circuit is the <b>Thevenin resistance</b> seen from the element’s terminals.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Adjustable DC power supply (0–30 V, current limited) · Resistor boxes · Capacitor box (film and electrolytic) · Inductor set (with winding resistance) · Two-position (A/B) and single-position switch · Digital multimeter (10 MΩ input) · Two-channel digital oscilloscope (×10 probe = 10 MΩ, current probe, SINGLE trigger, cursors) · Freewheeling diode (1N4007).</p>
+      <div class="info">The key point this week is <b>timing</b>: a transient happens once and is over. You first <b>arm (ARM)</b> the oscilloscope, then toggle the switch; the screen freezes the event.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Workflow</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First read the <b>Background</b> and solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left; steps are ticked automatically when you make the correct setting. You can toggle the switch with <kbd>S</kbd> and arm the oscilloscope with <kbd>A</kbd>. Place the cursors and record the measurement into the table with <kbd>R</kbd>. Print your report in the last section.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · What Happens After the Switch?</h2>
+  <p class="lead">When the source is removed, an inductor or capacitor does not “empty” instantly: while the stored energy is turned into heat in a resistor, the current or voltage decays exponentially. The speed of this decay is set by a single number, the <b>time constant τ</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Why a “natural” response?</h3>
+      <p style="font-size:14px;line-height:1.65">After the switch opens there is <b>no source</b> in the circuit; the response is set by the circuit’s own elements. The energy is stored as ½LI<sub>0</sub><sup>2</sup> in the inductor or ½CV<sub>0</sub><sup>2</sup> in the capacitor and is turned into heat in the resistor. Since there is no second storage element to return the energy, the response <b>does not oscillate</b>; it falls monotonically to zero.</p>
+      <h3>2 · Continuity: know what cannot jump</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Inductor current</b> and <b>capacitor voltage</b> cannot change instantaneously, because that would require infinite voltage (v = L di/dt) or infinite current (i = C dv/dt). By contrast, inductor <b>voltage</b> and capacitor <b>current</b> can jump. In Experiment 2 the inductor voltage jumps from 0 to −20 V, while in Experiment 1 the capacitor current rises at once from 0 to its maximum.</p>
+      <h3>3 · Where in real life?</h3>
+      <p style="font-size:14px;line-height:1.65">Relay release time, photo flash, a power-supply output capacitor that “still shocks after switch-off”, memory backup capacitors, contact arcing and freewheeling diodes, button debounce filters… All the same equation: <span class="eq" style="display:inline">x(t) = X<sub>0</sub> e<sup>−t/τ</sup></span></p>
+      <svg viewBox="0 0 420 190" style="width:100%;max-width:440px;display:block;margin:6px auto 0" aria-label="Exponential decay, 36.8% point and tangent">
+        <line x1="40" y1="160" x2="410" y2="160" stroke="#555"/><line x1="40" y1="15" x2="40" y2="160" stroke="#555"/>
+        <path d="M40,25 C90,80 140,115 200,135 S330,157 405,159" fill="none" stroke="#0b5cad" stroke-width="2.5"/>
+        <line x1="40" y1="25" x2="120" y2="160" stroke="#e07a10" stroke-width="2" stroke-dasharray="6 4"/>
+        <line x1="120" y1="160" x2="120" y2="110" stroke="#888" stroke-dasharray="3 3"/><line x1="40" y1="110" x2="120" y2="110" stroke="#888" stroke-dasharray="3 3"/>
+        <circle cx="120" cy="110" r="4" fill="#c62828"/>
+        <text x="30" y="29" font-size="12" text-anchor="end">X₀</text><text x="30" y="114" font-size="11" text-anchor="end">0.368X₀</text>
+        <text x="120" y="176" font-size="12" text-anchor="middle">τ</text><text x="200" y="176" font-size="12" text-anchor="middle">2τ</text><text x="360" y="176" font-size="12" text-anchor="middle">5τ</text>
+        <text x="138" y="62" font-size="12" fill="#e07a10">initial tangent crosses zero at τ</text>
+        <text x="250" y="128" font-size="12" fill="#0b5cad">X₀e^(−t/τ)</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><th></th><th>RL circuit</th><th>RC circuit</th></tr>
+        <tr><td class="l">Continuous quantity</td><td class="l">i<sub>L</sub>(0<sup>−</sup>) = i<sub>L</sub>(0<sup>+</sup>)</td><td class="l">v<sub>C</sub>(0<sup>−</sup>) = v<sub>C</sub>(0<sup>+</sup>)</td></tr>
+        <tr><td class="l">Equation</td><td class="l">L di/dt + Ri = 0</td><td class="l">C dv/dt + v/R = 0</td></tr>
+        <tr><td class="l">Natural response</td><td class="l">i = I<sub>0</sub>e<sup>−t/τ</sup></td><td class="l">v = V<sub>0</sub>e<sup>−t/τ</sup></td></tr>
+        <tr><td class="l">Time constant</td><td class="l">τ = L/R</td><td class="l">τ = RC</td></tr>
+        <tr><td class="l">Jumping quantity</td><td class="l">v<sub>L</sub>(0<sup>+</sup>) = −I<sub>0</sub>R</td><td class="l">i(0<sup>+</sup>) = V<sub>0</sub>/R</td></tr>
+        <tr><td class="l">Energy</td><td class="l">w = ½LI<sub>0</sub><sup>2</sup>e<sup>−2t/τ</sup></td><td class="l">w = ½CV<sub>0</sub><sup>2</sup>e<sup>−2t/τ</sup></td></tr>
+      </table>
+      <table class="data" style="margin-top:10px">
+        <tr><th>t</th><td>τ</td><td>2τ</td><td>3τ</td><td>5τ</td><td>τ ln2</td></tr>
+        <tr><th>remaining</th><td>36.8%</td><td>13.5%</td><td>5.0%</td><td>0.7%</td><td>50%</td></tr>
+      </table>
+      <div class="info" style="margin-top:10px"><b>Rule for finding τ:</b> I<sub>0</sub> (or V<sub>0</sub>) is taken from the <b>old</b> circuit, τ from the <b>new</b> circuit. The R in τ is the resistance seen <u>after</u> switching from the element’s terminals: the <b>Thevenin resistance</b> (sources deactivated).</div>
+      <div class="info"><b>Finding a time:</b> v = V<sub>0</sub>e<sup>−t/τ</sup> ⇒ <span class="eq" style="display:inline">t = τ ln(V<sub>0</sub>/v)</span>. <b>Linearization:</b> ln(v/V<sub>0</sub>) = −t/τ, so the ln plot is a straight line with slope −1/τ.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Precautions in a real laboratory</h3>
+    <div class="warnbox"><b>A charged capacitor shocks even when the circuit is off.</b> A large capacitor (especially electrolytic, ≥ 100 µF) holds its charge for a long time after the source is switched off. Before touching, <b>discharge</b> it through a 1–10 kΩ resistor of adequate power rating and confirm with a multimeter that the voltage is zero. Shorting the leads with a screwdriver causes sparks and damages the capacitor.</div>
+    <div class="warnbox"><b>Polarity of an electrolytic capacitor.</b> The long lead / unmarked side is (+), the stripe on the body is (−). An electrolytic connected in reverse or above its voltage rating heats up, bulges and may explode. Its voltage rating should be at least 1.5 times the supply voltage.</div>
+    <div class="warnbox"><b>Interrupting inductor current is dangerous.</b> If you suddenly open the path of an inductor carrying current, v = L di/dt rises to hundreds or even thousands of volts: <b>arcing</b> at the switch contacts, breakdown of semiconductors, an electric shock in your hand. Always leave the inductor a <b>discharge path</b> (a resistor or an anti-parallel freewheeling diode).</div>
+    <div class="warnbox"><b>Oscilloscope ground clip to circuit ground.</b> The oscilloscope ground is connected to mains earth. If you attach the clip to another node of the circuit you short that node to ground. To measure the voltage between two nodes, use two channels and take the difference (CH1 − CH2) or use an isolated differential probe.</div>
+    <div class="warnbox"><b>Instruments load the circuit.</b> A ×10 probe has 10 MΩ and the multimeter 10 MΩ input resistance. These are in <b>parallel</b> with the discharge resistor: with R = 1 MΩ each shortens τ by 9%, both together by 17%. With a ×1 probe (1 MΩ) the error is much larger.</div>
+    <div class="warnbox"><b>Resistor power rating and current limit.</b> In Example 3.1 the 10 Ω resistor initially dissipates 2 A × 20 V = 40 W (briefly). A ¼ W bench resistor cannot handle this; use a power resistor as the snubber resistor. Set the supply current limit slightly above the circuit’s expected current.</div>
+    <div class="warnbox"><b>Multimeter current range and fuse.</b> When measuring current the probe is in the “A/mA” socket and the multimeter is connected in <b>series</b>. Trying to measure voltage in this position blows the fuse. Measure transient currents not with a multimeter but on the oscilloscope with a current probe or a small shunt resistor.</div>
+    <div class="info"><b>Common mistakes:</b> using the resistance of the circuit <u>before</u> switching in τ (τ = L/R<sub>1</sub>); writing τ = C/R for RC (a unit check catches this at once); taking parallel resistors as series or vice versa; reading the 63.2% point instead of 36.8%; reading the initial value not from the quantity “after 0” but from the jumping one; thinking inductor voltage is also continuous; computing remaining energy with e<sup>−1</sup> (correct is e<sup>−2</sup>).</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before coming to the lab. The questions are based on Examples 3.1, 3.2 and 3.3 in the lecture notes.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · RC Discharge: You Toggle the Switch, the Oscilloscope Captures</h2>
+  <p class="lead">In position A the capacitor charges from the source V<sub>g</sub> through R<sub>1</sub>. The moment you switch to position B (t = 0) the source is disconnected and the capacitor discharges through R only (lecture notes Example 3.2).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info"><b>Single-shot capture:</b> the SINGLE button <b>arms</b> the oscilloscope (yellow ARMED). It triggers when the switch is toggled (green TRIG'D); the first division of the screen shows what happened before the trigger (pre-trigger). After that you can change TIME/div and V/div to inspect the record closely.</div>
+        <div class="info"><b>36.8% method:</b> put cursor A at t = 0 and cursor B at the point where v<sub>B</sub>/v<sub>A</sub> = 0.368: Δt = τ. <b>Tangent method:</b> the TANGENT button extends the slope at t = 0; the moment it crosses the zero line is τ.</div>
+        <div class="info">CH2 is a <b>current probe</b> (1 V/mA): it shows the current through R. Note that at t = 0 the current jumps while the voltage does not.</div>
+        <div class="warnbox">If you toggle the switch before charging is complete (≈5R<sub>1</sub>C), V<sub>0</sub> will be less than the source voltage. This is not an error, it is still an exponential discharge; but read V<sub>0</sub> from the screen, not from the source.</div>
+        <div class="warnbox">The C value on the box is <b>nominal</b>; film capacitors have ±5% and electrolytics ±20% tolerance. It is realistic for your measured τ to differ from the calculated one by a few percent.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" style="margin-top:12px" id="d1scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Event</th><th>R</th><th>C (nom.)</th><th>V<sub>0</sub> (V)</th><th>t<sub>A</sub> (ms)</th><th>t<sub>B</sub> (ms)</th><th>Δt (ms)</th><th>v<sub>B</sub>/v<sub>A</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · RL Natural Response: Inductor Current Continues, Voltage Jumps</h2>
+  <p class="lead">With the switch closed for a long time, the inductor is a short circuit and carries all the current. At t = 0 the switch opens; the inductor current continues only through R (lecture notes Example 3.1). CH1 shows the node voltage (voltage of R and of the inductor branch), CH2 the inductor current.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">At the moment the switch opens i<sub>L</sub>(0<sup>+</sup>) = I<sub>0</sub>, and this current flows through R in the <b>reverse direction</b>: the node voltage jumps from +0 V to <b>−I<sub>0</sub>R</b>. As R increases τ = L/R decreases (faster decay) but the voltage jump grows.</div>
+        <div class="info">A real inductor’s winding wire has resistance (r<sub>L</sub>). Since it is in <b>series</b> with R in the decay loop, τ = L/(R + r<sub>L</sub>). Untick the “Real inductor” box to compare with an ideal inductor.</div>
+        <div class="info"><b>Freewheeling diode:</b> connected anti-parallel to the inductor; normally reverse-biased, it conducts when the switch opens and clamps the inductor voltage at ≈ −0.7 V. Because the voltage stays small, the decay <b>slows down</b>: the relay release time gets longer.</div>
+        <div class="warnbox">If you set R to “open” and also remove the diode, the inductor current has no path. In reality a <b>kilovolt arc</b> forms at the switch contacts. You can safely try it here; on a real bench <u>never</u>.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div><div class="bench-row" style="margin-top:12px" id="d2scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>L</th><th>R</th><th>Diode</th><th>I<sub>0</sub> (A)</th><th>v<sub>node</sub>(0<sup>+</sup>) (V)</th><th>t<sub>A</sub> (ms)</th><th>t<sub>B</sub> (ms)</th><th>i<sub>B</sub>/i<sub>A</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · τ Design, the 5τ Rule and Measuring τ with an ln Plot</h2>
+  <p class="lead">Choose R and C to achieve the given target time constant, capture the discharge and record many points on the curve. The ln(v/V<sub>0</sub>) – t plot will become a straight line; you will compute τ from its slope.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><div class="info" id="d3target" style="font-size:15px"></div><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">Measuring τ from a single point is sensitive to noise and cursor position. <b>Fitting a line</b> to many points (least squares) averages out the error. Since ln(v/V<sub>0</sub>) = −t/τ, the slope is m = −1/τ.</div>
+        <div class="info"><b>5τ rule:</b> after 5τ, 0.7% of the initial value remains; in engineering the response is considered “finished”. Choose the record window (10 × TIME/div) to be at least 5τ.</div>
+        <div class="warnbox">Points in the tail of the curve (v &lt; 3% V<sub>0</sub>) amplify noise on the ln plot: ln inflates the relative error of small numbers. Prefer points between 0 and 3τ for the line fit; choose a suitable V/div when measuring.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" style="margin-top:12px" id="d3scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Point table</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Record (R)</button>
+            <button class="btn sec small" id="d3del">Delete last row</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>t (ms)</th><th>v (V)</th><th>v/V<sub>0</sub></th><th>ln(v/V<sub>0</sub>)</th></tr></thead><tbody></tbody></table></div>
+          <div style="font-size:12px;color:#556;margin-top:4px">Record takes the time of cursor B and the CH1 value; V<sub>0</sub> is the initial value of the captured record.</div>
+        </div>
+        <div class="card">
+          <div class="row"><b>ln(v/V<sub>0</sub>) – t plot</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Nominal RC line</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+          <div id="d3fit" style="font-size:13px;margin-top:4px"></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · τ = L/R<sub>Th</sub> in a Multi-Resistor Circuit</h2>
+  <p class="lead">Lecture notes Example 3.7: 24 V source, 4 Ω series, 12 Ω parallel, 6 Ω and 180 mH in the inductor branch. The switch opens at t = 0. Which resistance is in τ? First “look” from the inductor terminals with the ohmmeter, then measure.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info"><b>How to find R<sub>Th</sub>?</b> 1) Remove the inductor, leaving two terminals. 2) Deactivate the sources (voltage source → short circuit). 3) Find the resistance seen from the terminals. Here, since the source is <b>disconnected</b> together with the switch, the 4 Ω is not in the t &gt; 0 circuit.</div>
+        <div class="info">For t &lt; 0 the inductor is a short circuit: I<sub>0</sub> comes from a current divider. For t &gt; 0, 6 Ω and 12 Ω are in <b>series</b>. “I<sub>0</sub> from the old circuit, τ from the new circuit.”</div>
+        <div class="warnbox">Do not connect an ohmmeter to an <b>energized</b> circuit: the ohmmeter injects its own small current, an external voltage corrupts the measurement and stresses the meter. First disconnect the source, discharge the capacitors and wait for the inductor current to decay.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div><div class="bench-row" style="margin-top:12px" id="d4scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record (R)</button>
+          <button class="btn sec small" id="d4del">Delete last row</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>R<sub>a</sub></th><th>R<sub>b</sub></th><th>R<sub>c</sub></th><th>L</th><th>I<sub>0</sub> (A)</th><th>t<sub>A</sub> (ms)</th><th>t<sub>B</sub> (ms)</th><th>i<sub>B</sub>/i<sub>A</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Did the 36.8% and tangent methods give the same τ? Why does your measured τ differ from the nominal value? Why is interrupting inductor current dangerous? Write your observations."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). To type an <b>exact value</b> or choose from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task in the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Capturing a transient:</b> arm the oscilloscope with <b>SINGLE</b> (<kbd>A</kbd>), then toggle the switch (<kbd>S</kbd>).<br>
+    <b>Cursors:</b> press the CURSOR button and drag on the screen. t<sub>A</sub>, t<sub>B</sub> and the ratios are shown alongside.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta09.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h09', ders: 'Circuit Theory I', hafta: 9,
+  doc: [
+    { id: 'CLO1', t: 'Finds the initial value in RL and RC circuits using continuity and writes the natural response in the form x(t) = X<sub>0</sub>e<sup>−t/τ</sup>.', mc: [1, 2] },
+    { id: 'CLO2', t: 'Measures the time constant from a single-shot oscilloscope record by the 36.8% and tangent methods; interprets instrument loading and tolerance.', mc: [4, 5] },
+    { id: 'CLO3', t: 'Explains the overvoltage hazard when inductor current is interrupted; selects safe switching measures with a snubber resistor and a freewheeling diode.', mc: [1, 3, 6] },
+    { id: 'CLO4', t: 'Selects components for a target τ, linearizes the data with an ln plot and finds τ from the slope; verifies the relation τ = L/R<sub>Th</sub> in a multi-resistor circuit.', mc: [2, 3, 5, 10] },
+    { id: 'CLO5', t: 'Presents the findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To capture in a single shot the discharge of a charged capacitor through R, timing the switch yourself, and to measure τ = RC by the 36.8% and tangent methods.', doc: ['CLO1', 'CLO2'], mc: [1, 4, 5],
+      gerec: 'DC power supply (0–30 V), resistor and capacitor boxes, A/B switch, DMM (10 MΩ), two-channel oscilloscope (×10 probe, current probe).',
+      guvenlik: 'Discharge a charged capacitor through a resistor before touching; mind the polarity and voltage rating of electrolytics; connect the oscilloscope ground only to circuit ground.',
+      veri: 'Captured discharge curve, table of t<sub>A</sub>, t<sub>B</sub>, v<sub>B</sub>/v<sub>A</sub> from the cursors; comparison of nominal and measured τ.',
+      tartisma: 'Why does your measured τ differ from the nominal RC? Estimate the share of probe and DMM loading and of capacitor tolerance.' },
+    d2: { amac: 'To study the continuity of inductor current in an RL circuit, the voltage jump when the switch opens, and the effect of the discharge path (R, diode) on τ and on the overvoltage.', doc: ['CLO1', 'CLO3'], mc: [1, 4, 5, 6],
+      gerec: 'DC power supply (current limited), power resistors, inductor set (with winding resistance), switch, 1N4007 diode, oscilloscope and current probe.',
+      guvenlik: 'Never fully open the path of an inductor carrying current (arc, kilovolt voltage); check the power rating of the snubber resistor; set the supply current limit.',
+      veri: 'Records of i<sub>L</sub>(t) and the node voltage; table of I<sub>0</sub>, v(0<sup>+</sup>) and τ for different R and diode cases.',
+      tartisma: 'How would you resolve the trade-off between fast release and low contact voltage in a relay coil?' },
+    d3: { amac: 'To design R and C achieving a given target time constant; to linearize the measured points with an ln plot and find τ from the slope.', doc: ['CLO2', 'CLO4'], mc: [2, 3, 4, 5, 10],
+      gerec: 'E12 resistor box, film/electrolytic capacitor set, DC supply, oscilloscope.',
+      guvenlik: 'Discharge large electrolytics after use; do not reverse-bias them.',
+      veri: 'Selected R, C; (t, v) point table, ln(v/V<sub>0</sub>)–t plot, slope and R².',
+      tartisma: 'What are the pros and cons, in terms of measurement error, size and cost, of obtaining the same τ with large R–small C or small R–large C?' },
+    d4: { amac: 'To verify with an ohmmeter and oscilloscope that the resistance setting τ in a multi-resistor RL circuit is the Thevenin resistance seen from the inductor terminals in the circuit after switching.', doc: ['CLO1', 'CLO4'], mc: [1, 2, 4, 5],
+      gerec: 'DC supply, R<sub>a</sub>, R<sub>b</sub>, R<sub>c</sub> power resistors, 180 mH inductor, switch, ohmmeter, oscilloscope.',
+      guvenlik: 'Do not connect the ohmmeter to an energized circuit; disconnect the source before measuring and wait for the inductor current to decay.',
+      veri: 'R<sub>Th</sub> by ohmmeter; table of I<sub>0</sub> and τ for different R<sub>a</sub>, R<sub>b</sub> values.',
+      tartisma: 'Which resistors affected only the initial condition, and which affected τ? Explain why using the circuit.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

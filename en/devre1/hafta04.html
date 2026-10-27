@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 4 · Real Op-Amp Limitations — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 4 — Real Op-Amp Limitations</h1>
+    <div class="sub">Finite gain · Gain–bandwidth product · Slew rate · Offset and bias current</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Finite Gain</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Gain–Bandwidth</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Slew Rate</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Offset and I<sub>B</sub></button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data are saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 4 · Where Does the Ideal Model End?</h2>
+  <p class="lead">Lecture notes: <b>Section 1.6 Real Op-Amp Limitations</b> (Examples 1.8, 1.9, 1.10 and 1.21).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab</h3>
+      <ol class="steps">
+        <li>You will <b>measure</b> the error that the finite open-loop gain A causes in the closed-loop gain and see that the error is proportional to (1+R<sub>f</sub>/R<sub>s</sub>)/A.</li>
+        <li>You will plot the Bode magnitude curve with a frequency sweep, verify that <b>gain × bandwidth = GBW</b> is constant, and widen the bandwidth with a two-stage design (Example 1.10).</li>
+        <li>You will see on the oscilloscope how the slew rate (SR) turns a sine into a <b>triangle</b>, and measure the full-power bandwidth.</li>
+        <li>You will determine whether the bandwidth of a given circuit is limited by <b>GBW or SR</b>.</li>
+        <li>You will measure the DC shift at the output caused by the offset voltage and bias current, and reduce it with a <b>compensation resistor</b> R<sub>p</sub> = R<sub>s</sub>‖R<sub>f</sub>.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Dual DC power supply (±15 V) · Adjustable DC supply · Two digital multimeters (4½ digit, input resistance 10 MΩ) · Function generator (sine, 50 Ω output) · Dual-channel AC millivoltmeter / phase meter · Distortion (THD) analyser · Two-channel oscilloscope (with cursors) · Decade resistor boxes · µA741.</p>
+      <h3>Op-amp model (all experiments)</h3>
+      <div class="info">µA741: A<sub>0</sub> = 10<sup>5</sup>, single-pole frequency response <span class="eq">A(f) = A<sub>0</sub> / (1 + j f/f<sub>b</sub>),&nbsp; f<sub>b</sub> = 10 Hz,&nbsp; GBW = A<sub>0</sub>f<sub>b</sub> = 1 MHz</span> SR = 0.5 V/µs, with a ±15 V supply the output saturates at ±14 V, V<sub>os</sub> = 1–5 mV, I<sub>B</sub> ≈ 80 nA.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Workflow</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First read the <b>Background</b> page and solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left step by step; steps are ticked automatically when your setting is correct. Record measurements into the table with <kbd>R</kbd>, compare them with the theoretical curve on the plot, and answer the questions. In the last section print your report or save it as PDF.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · The Gap Between the Ideal and the Real Op-Amp</h2>
+  <p class="lead">“It is not the deviation itself but its effect on the circuit that decides.” This week we measure four deviations one by one and weigh their effects.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Why does it matter?</h3>
+      <p style="font-size:14px;line-height:1.65">So far we have assumed A = ∞, R<sub>i</sub> = ∞, R<sub>o</sub> = 0 for the op-amp. This assumption works to one part in a thousand at DC and low frequency. But if the treble is cut in an <b>audio amplifier</b>, if a <b>sensor amplifier</b> shows 50 mV at its output with nothing at its input, or if an <b>oscillator’s</b> sine turns into a triangle, the cause is the real limitations we measure this week.</p>
+      <h3>2 · Four limitations, four different symptoms</h3>
+      <p style="font-size:14px;line-height:1.65">
+      <b>Finite A:</b> the gain comes out slightly low; the error is about (1+R<sub>f</sub>/R<sub>s</sub>)/A. The larger the gain you ask for, the larger the error — A is a shared budget.<br>
+      <b>GBW:</b> A falls with frequency. In closed loop, gain × f<sub>3dB</sub> is constant; every factor of gain costs the same factor of bandwidth. It is a <i>small-signal</i> limit, independent of amplitude.<br>
+      <b>SR:</b> the output can change at most at 0.5 V/µs. The steepest point of a sine is its zero crossing (slope ωV<sub>m</sub>). It is a <i>large-signal</i> limit: as the amplitude grows, the limiting frequency falls and the sine becomes a triangle.<br>
+      <b>V<sub>os</sub>, I<sub>B</sub>:</b> these are DC errors. The waveform is not distorted; the zero point shifts.</p>
+      <svg viewBox="0 0 420 190" style="width:100%;max-width:420px;display:block;margin:auto" aria-label="Sketch of a Bode magnitude curve">
+        <line x1="40" y1="160" x2="410" y2="160" stroke="#555"/><line x1="40" y1="10" x2="40" y2="160" stroke="#555"/>
+        <path d="M40,22 L70,22 Q80,22 90,30 L360,160" stroke="#888" stroke-dasharray="5 4" fill="none" stroke-width="2"/>
+        <path d="M40,70 L190,70 Q215,70 230,84 L290,135" stroke="#0b5cad" fill="none" stroke-width="2.5"/>
+        <path d="M40,110 L270,110 Q290,110 305,122 L335,148" stroke="#1a8a4a" fill="none" stroke-width="2.5"/>
+        <circle cx="222" cy="79" r="4" fill="#c62828"/><circle cx="296" cy="117" r="4" fill="#c62828"/>
+        <text x="95" y="20" font-size="11" fill="#666">open-loop A(f)</text>
+        <text x="60" y="64" font-size="11" fill="#0b5cad">gain 100</text><text x="60" y="104" font-size="11" fill="#1a8a4a">gain 10</text>
+        <text x="228" y="74" font-size="10" fill="#c62828">10 kHz</text><text x="302" y="112" font-size="10" fill="#c62828">100 kHz</text>
+        <text x="225" y="182" font-size="11" fill="#333" text-anchor="middle">log f →  (−20 dB/decade slope)</text>
+        <text x="14" y="90" font-size="11" fill="#333" transform="rotate(-90 14 90)">dB</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Inverting, finite A</td><td class="l">v<sub>o</sub>/v<sub>g</sub> = (−R<sub>f</sub>/R<sub>s</sub>) / (1 + (1+R<sub>f</sub>/R<sub>s</sub>)/A)</td></tr>
+        <tr><td class="l">Relative error</td><td class="l">ε ≈ (1+R<sub>f</sub>/R<sub>s</sub>)/A</td></tr>
+        <tr><td class="l">Single-pole op-amp</td><td class="l">A(f) = A<sub>0</sub>/(1 + jf/f<sub>b</sub>), GBW = A<sub>0</sub>f<sub>b</sub></td></tr>
+        <tr><td class="l">Gain–bandwidth</td><td class="l">gain × f<sub>3dB</sub> = GBW (non-inverting: gain = 1+R<sub>f</sub>/R<sub>s</sub>)</td></tr>
+        <tr><td class="l">Slew rate</td><td class="l">SR = |dv<sub>o</sub>/dt|<sub>max</sub></td></tr>
+        <tr><td class="l">Full-power bandwidth</td><td class="l">f<sub>SR</sub> = SR / (2πV<sub>m</sub>)</td></tr>
+        <tr><td class="l">Highest usable f</td><td class="l">min(GBW/gain, SR/(2πV<sub>m</sub>))</td></tr>
+        <tr><td class="l">Offset shift</td><td class="l">Δv<sub>o</sub> = (1+R<sub>f</sub>/R<sub>s</sub>)V<sub>os</sub></td></tr>
+        <tr><td class="l">Bias-current shift</td><td class="l">Δv<sub>o</sub> ≈ I<sub>B</sub>R<sub>f</sub> (when R<sub>p</sub> = 0)</td></tr>
+        <tr><td class="l">Compensation resistor</td><td class="l">R<sub>p</sub> = R<sub>s</sub>‖R<sub>f</sub> → remaining Δv<sub>o</sub> ≈ I<sub>os</sub>R<sub>f</sub></td></tr>
+        <tr><td class="l">Decibel</td><td class="l">dB = 20 log<sub>10</sub>(V<sub>o</sub>/V<sub>i</sub>); −3 dB ⇔ ×0.707</td></tr>
+      </table>
+      <h3>Predict first</h3>
+      <div class="info">Is it possible to get a gain of 1000 and a bandwidth of 100 kHz with a single op-amp with GBW = 1 MHz and SR = 0.5 V/µs? What if the supply is increased? What if R<sub>f</sub> is made larger? You will find the answer yourself in Experiment 2.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Points to watch in a real lab</h3>
+    <div class="warnbox"><b>Wire first, then power up; keep the current limit low.</b> Set the current limit of the dual supply to 50–100 mA. Switch the supply off while changing the circuit. Never exceed ±18 V; swapping pins 7 ↔ 4 destroys the IC within seconds.</div>
+    <div class="warnbox"><b>Oscilloscope ground clips to a single point.</b> The probe ground clips and the function generator ground connect to the common ground of the circuit. Attaching a clip to any other node shorts that node to ground through mains earth.</div>
+    <div class="warnbox"><b>Probe ×10 setting and compensation.</b> When measuring above 100 kHz, a ×1 probe loads the circuit with its own capacitance (≈100 pF) and you measure a false bandwidth limit. Use ×10 and compensate the probe with the calibration square wave.</div>
+    <div class="warnbox"><b>The multimeter AC function has limited bandwidth.</b> Cheap DMMs read AC correctly only between 50 Hz and 1 kHz. For a frequency sweep use an AC millivoltmeter or an oscilloscope, not a DMM; otherwise you will mistake the instrument’s bandwidth for the op-amp’s.</div>
+    <div class="warnbox"><b>Choose the input amplitude according to the gain.</b> With a gain of 100, a 1 Vpp input drives the output into saturation; do not mistake saturation for a bandwidth or slew-rate limit. Keep the output at a few Vpp during a frequency sweep.</div>
+    <div class="warnbox"><b>Decoupling and short wires.</b> Put a 100 nF ceramic capacitor to ground at each supply pin, and place the feedback resistor close to the IC. Long wires cause oscillation at high frequency and wrong Bode measurements.</div>
+    <div class="warnbox"><b>Avoid large resistors.</b> A 1 MΩ R<sub>f</sub> with an 80 nA bias current produces an 80 mV error; breadboard surface leakage and moisture from your hands also form parallel paths in the MΩ range. Stay within 1–100 kΩ if possible.</div>
+    <div class="info"><b>Common mistakes:</b> blaming every distortion on a single limit (f<sub>max</sub> = GBW/A is not always right; SR depends on amplitude) · confusing slew-rate distortion with saturation (if the output does not reach ±V<sub>CC</sub>, it is not saturation) · looking for the −3 dB point at half the peak value (the correct value is 70.7%) · assuming that the total bandwidth of a two-stage design equals the bandwidth of each stage · forgetting to multiply the offset shift by the gain.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before coming to the lab. µA741: A = 10<sup>5</sup>, GBW = 1 MHz, SR = 0.5 V/µs.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · The Error Caused by Finite Open-Loop Gain</h2>
+  <p class="lead">Inverting amplifier. With the selector on the op-amp board you can vary A between 10 and 10<sup>6</sup> (in reality, different op-amp types or a weak transistor stage).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">When A is finite the virtual short is not exact: <span class="eq">v<sub>n</sub> = −v<sub>o</sub>/A</span> Taking this into account in KCL at the inverting node, the gain is: <span class="eq">v<sub>o</sub>/v<sub>g</sub> = (−R<sub>f</sub>/R<sub>s</sub>) / (1 + (1+R<sub>f</sub>/R<sub>s</sub>)/A)</span></div>
+        <div class="info">Relative error ε = |G<sub>ideal</sub> − G<sub>measured</sub>| / |G<sub>ideal</sub>|. If the error is much smaller than the 1% tolerance of the resistors, the ideal model is sufficient (Example 1.8).</div>
+        <div class="warnbox">The tolerance of real resistors also changes the gain you measure. When you tick the “1% tolerance” box it becomes harder to separate which part of the error comes from A and which from the resistors: measuring the resistors with an ohmmeter first is a good lab habit.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 280"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d1rec">Record (R)</button>
+            <button class="btn sec small" id="d1del">Delete last row</button>
+            <button class="btn sec small" id="d1csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>A</th><th>R<sub>s</sub></th><th>R<sub>f</sub></th><th>v<sub>g</sub> (V)</th><th>v<sub>n</sub></th><th>v<sub>o</sub> (V)</th><th>v<sub>o</sub>/v<sub>g</sub></th><th>Error (%)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>Error – log<sub>10</sub>A plot</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Theoretical curve</label></div>
+          <canvas id="d1plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12px;color:#556">The error is the percentage deviation of the measured gain from the ideal −R<sub>f</sub>/R<sub>s</sub> (logarithmic axis: log<sub>10</sub> error %).</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Frequency Response and Gain–Bandwidth Product</h2>
+  <p class="lead">Non-inverting amplifier (R<sub>s</sub> = 1 kΩ, R<sub>f</sub> selectable); a second identical stage can be cascaded if desired. Vary the function generator frequency and measure the input and output amplitudes with the AC millivoltmeter.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">DC gain of the non-inverting amplifier <span class="eq">G = 1 + R<sub>f</sub>/R<sub>s</sub></span> With a single-pole op-amp the closed-loop response is also single-pole: <span class="eq">H(f) ≈ G / (1 + j f/f<sub>3dB</sub>),&nbsp; f<sub>3dB</sub> = GBW/G</span></div>
+        <div class="info">−3 dB point: the frequency at which the output amplitude falls to 0.707 (1/√2) of its low-frequency value. At this point the phase shift is −45°.</div>
+        <div class="info">With two identical stages in cascade the gains <b>multiply</b>, but the −3 dB roll-offs of the stages add up: the overall −3 dB point is √(√2 − 1) ≈ 0.64 times the bandwidth of a single stage.</div>
+        <div class="warnbox">Keep the output amplitude at a few Vpp during the sweep. If the output is large, the <b>slew rate</b> takes over at high frequency and the curve you measure shows SR, not GBW. If the “SR” light on the millivoltmeter comes on, reduce the amplitude.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Bode magnitude curve</b><span class="grow"></span>
+          <button class="btn small" id="d2sweep">Auto sweep</button>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2clr">Clear</button>
+          <label style="font-size:13px"><input type="checkbox" id="d2theo"> Theoretical curve</label></div>
+        <canvas id="d2plot" width="900" height="340" style="width:100%"></canvas>
+        <div id="d2leg" style="font-size:12px"></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span><button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Configuration</th><th>f (Hz)</th><th>V<sub>i</sub> (mVpp)</th><th>V<sub>o</sub> (Vpp)</th><th>V<sub>o</sub>/V<sub>i</sub></th><th>dB</th><th>Phase (°)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Slew Rate and Full-Power Bandwidth</h2>
+  <p class="lead">Non-inverting amplifier, large-amplitude sine. CH1 shows the input, CH2 the output. The distortion analyser measures the harmonic distortion (THD) at the output.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">The slope of a sine is largest at its zero crossing: <span class="eq">v<sub>o</sub> = V<sub>m</sub> sin ωt ⇒ |dv<sub>o</sub>/dt|<sub>max</sub> = 2πfV<sub>m</sub></span> Condition for undistorted operation <span class="eq">2πfV<sub>m</sub> ≤ SR ⇒ f ≤ SR/(2πV<sub>m</sub>)</span></div>
+        <div class="info"><b>SR limit:</b> the waveform is distorted (triangle/trapezoid), THD rises quickly, and the limit depends on amplitude.<br><b>GBW limit:</b> the wave stays sinusoidal, only the amplitude falls and the phase lags; the limit is independent of amplitude.</div>
+        <div class="warnbox">Do not confuse slew-rate distortion with saturation: in saturation the peaks are clipped <b>flat</b> and stop at ±14 V; with SR distortion the peaks are pointed and the output never reaches the supply.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d3inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d3scopeBox"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 220"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Record (R)</button>
+          <button class="btn sec small" id="d3del">Delete last row</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Gain</th><th>V<sub>i</sub> (Vpp)</th><th>f (kHz)</th><th>V<sub>o</sub> (Vpp)</th><th>V<sub>o</sub>/V<sub>i</sub></th><th>THD (%)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Offset Voltage, Bias Current and Compensation Resistor</h2>
+  <p class="lead">The input of the inverting amplifier is grounded (v<sub>g</sub> = 0). With an ideal op-amp the output would be 0 V. Measure the DC shift at the output with the DMM; R<sub>p</sub> is the compensation resistor in series with the non-inverting input.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">The offset voltage is like a small battery in series with the input; it is amplified by the non-inverting gain: <span class="eq">Δv<sub>o</sub> = (1 + R<sub>f</sub>/R<sub>s</sub>) V<sub>os</sub></span></div>
+        <div class="info">The bias current I<sub>B−</sub> of the inverting input flows through R<sub>f</sub>: <span class="eq">Δv<sub>o</sub> ≈ I<sub>B</sub> R<sub>f</sub></span> If R<sub>p</sub> = R<sub>s</sub>‖R<sub>f</sub> is placed at the non-inverting input, both inputs see equal resistance and the remaining error comes only from the difference of the two currents (I<sub>os</sub>).</div>
+        <div class="info"><b>Measurement method:</b> measure V<sub>os</sub> with small resistors (the I<sub>B</sub> effect is negligible) and the total shift with large resistors; find I<sub>B</sub> from the difference.</div>
+        <div class="warnbox">The DMM’s 10 MΩ input resistance and breadboard leakage are comparable to MΩ resistors. In measurements with large resistors keep the probes still and do not touch the circuit with your hands.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 280"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record (R)</button>
+          <button class="btn sec small" id="d4del">Delete last row</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>R<sub>s</sub></th><th>R<sub>f</sub></th><th>R<sub>p</sub></th><th>Trim</th><th>v<sub>g</sub> (mV)</th><th>v<sub>o</sub> (mV)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Which limitation dominates under which condition? Explain the gain–bandwidth trade-off and the distinction between SR and GBW using your own measurements."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). <b>Tap</b> the knob or the value below it to type an <b>exact value</b> or pick from a list (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, <kbd>Shift</kbd> for fine adjustment.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope cursors:</b> press CURSOR and drag on the screen. The measurement box gives ΔV/Δt for CH2.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta04.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h04', ders: 'Circuit Theory I', hafta: 4,
+  doc: [
+    { id: 'CLO1', t: 'Calculates the error that finite open-loop gain causes in the closed-loop gain and verifies it by measurement.', mc: [1, 2, 5] },
+    { id: 'CLO2', t: 'Measures the Bode magnitude curve with a frequency sweep; designs single/multi-stage amplifiers using the gain–bandwidth product.', mc: [1, 3, 4, 5] },
+    { id: 'CLO3', t: 'Measures slew rate and full-power bandwidth; determines whether the GBW or the SR limit dominates in an application.', mc: [1, 2, 4, 5] },
+    { id: 'CLO4', t: 'Measures the DC effect of offset voltage and bias current, reduces it with a compensation resistor and offset trimming; justifies the choice of a suitable op-amp/component.', mc: [1, 3, 5, 10] },
+    { id: 'CLO5', t: 'Presents the findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To show, by varying A in an inverting amplifier, that the gain error is proportional to (1+R<sub>f</sub>/R<sub>s</sub>)/A (Example 1.8).', doc: ['CLO1'], mc: [1, 2, 5],
+      gerec: 'DC supply, decade resistor boxes, op-amp board with A selector, two DMMs (4½ digit).',
+      guvenlik: 'At high gain even a small v<sub>g</sub> saturates the output; supply ±15 V from a current-limited source and change connections only with the power off.',
+      veri: 'Table of A, R<sub>s</sub>, R<sub>f</sub>, v<sub>n</sub>, v<sub>o</sub>; log error–log A plot and theoretical curve.',
+      tartisma: 'Under which condition is the ideal op-amp model sufficient? How would you separate the error due to resistor tolerance from the error due to A?' },
+    d2: { amac: 'To measure the frequency response of the non-inverting amplifier, verify that gain × bandwidth = GBW is constant, and design for the 60 kHz / gain 100 requirement with two stages (Example 1.10).', doc: ['CLO2'], mc: [1, 3, 4, 5, 10],
+      gerec: 'Function generator (50 Ω), two non-inverting stages, AC millivoltmeter / phase meter, resistor boxes.',
+      guvenlik: 'At high frequency use a ×10 probe and short wires; choose an input amplitude that does not saturate the output; do not forget the decoupling capacitors.',
+      veri: 'Table of f, V<sub>i</sub>, V<sub>o</sub>, dB and phase; Bode magnitude curves for different gains and the two-stage design.',
+      tartisma: 'One op-amp with a higher GBW, or two cheap op-amps? Compare in terms of cost, power consumption and bandwidth.' },
+    d3: { amac: 'To observe slew-rate distortion on a large-amplitude sine, measure the SR, and distinguish the full-power bandwidth from the GBW limit (Examples 1.9, 1.21).', doc: ['CLO3'], mc: [1, 2, 4, 5],
+      gerec: 'Function generator, non-inverting amplifier, two-channel oscilloscope with cursors, distortion (THD) analyser.',
+      guvenlik: 'Oscilloscope ground clip to circuit ground only; at large output amplitude do not reduce the load resistance below 2 kΩ.',
+      veri: 'Frequency–V<sub>o</sub>–THD table, oscilloscope screenshot, SR measurement with cursors.',
+      tartisma: 'How would you determine the required GBW and SR when choosing an op-amp for an audio amplifier?' },
+    d4: { amac: 'To measure the DC output shift caused by offset voltage and bias current, separate V<sub>os</sub> and I<sub>B</sub>, and correct it with R<sub>p</sub> = R<sub>s</sub>‖R<sub>f</sub> and an offset trimpot.', doc: ['CLO4'], mc: [1, 3, 5, 10],
+      gerec: 'DC supply, resistor boxes (R<sub>s</sub>, R<sub>f</sub>, R<sub>p</sub>), 10 kΩ offset trimpot, DMM (10 MΩ).',
+      guvenlik: 'With MΩ resistors leakage currents corrupt the measurement; do not touch the circuit and take readings only when stable.',
+      veri: 'Table of R<sub>s</sub>, R<sub>f</sub>, R<sub>p</sub>, trim and v<sub>o</sub>; calculation of V<sub>os</sub> and I<sub>B</sub>.',
+      tartisma: 'For a precision sensor amplifier: a (more expensive) op-amp with low V<sub>os</sub>/I<sub>B</sub>, or a trimpot and compensation resistor? Justify your answer.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

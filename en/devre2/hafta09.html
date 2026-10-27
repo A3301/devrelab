@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 9 · RMS Value and Complex Power — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<style>
+  .vd{width:100%;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:6px}
+  .vd text{font-size:12px;font-family:Segoe UI,Arial}
+  .seg{display:flex;gap:4px;flex-wrap:wrap}
+  .why{background:#fff8e6;border-left:4px solid #e0a100;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.55;border-radius:4px}
+  .solved{background:#f2f8f2;border-left:4px solid #2e8b57;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.6;border-radius:4px}
+</style>
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 9 — RMS Value and Complex Power</h1>
+    <div class="sub">Effective value · True rms measurement · S = P + jQ · Power triangle · Power analyser</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Waveform and rms</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Complex Power</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Parallel Loads</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–6</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 9 · RMS Value and Complex Power</h2>
+  <p class="lead">Lecture notes: <b>Section 2.3 RMS Value and Power Calculations</b> and <b>2.4 Complex Power</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will be able to</h3>
+      <ol class="steps">
+        <li>Measure the <b>rms value</b> of sine, square, triangle and rectified waves and compare it with the definition (√ mean v²).</li>
+        <li>Explain the difference between a <b>true rms</b> and an <b>average-responding</b> multimeter using the form factor and crest factor.</li>
+        <li>Measure P, Q, |S| and the power factor of a load with a <b>power analyser</b> and draw the power triangle.</li>
+        <li><b>Design</b> and build the load impedance that gives a required P and power factor.</li>
+        <li>Show by measurement that for parallel loads P and Q add separately, while the |S| values do not.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Function generator (sine/square/triangle/half- and full-wave rectified, DC offset) · True rms (TRMS) multimeter · Average-responding (cheap) multimeter · Two-channel oscilloscope (MATH channel) · Load resistor and wattmeter · Adjustable AC source with isolation transformer (variac, 50 Hz) · Adjustable R–L–C load box · Single-phase power analyser (V, I, P, Q, S, pf).</p>
+      <div class="info">Turkish mains: 230 V (rms), 50 Hz, peak value ≈ 325 V. The “230 V” on a rating label is an <b>rms</b> value.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First play with the two live figures in the <b>Background</b> section, then solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left step by step; steps are ticked automatically when you make the correct setting. Record measurements in the table with <kbd>R</kbd> and answer the questions. In the last section print your report or save it as PDF.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · From Heating Equivalent to Power Triangle</h2>
+  <p class="lead">Spend 15 minutes before starting the experiments: two live figures, a formula card and the pitfalls of a real lab.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Why the “effective” (rms) value?</h3>
+      <p style="font-size:14px;line-height:1.65">How do we compare an AC source whose voltage changes every instant with DC? The idea is simple: the DC voltage that produces <b>the same average heat in the same resistor</b> is the effective value of the AC. Since heat is proportional to v²/R, we first <b>square</b>, then <b>average</b> over a period, then take the <b>square root</b>: Root–Mean–Square.</p>
+      <div class="eq">V<sub>rms</sub> = √( (1/T) ∫ v² dt ),&nbsp;&nbsp; for a sine V<sub>rms</sub> = V<sub>m</sub>/√2 ≈ 0.707 V<sub>m</sub></div>
+      <p style="font-size:14px;line-height:1.65">In the figure below the blue curve is v(t) and the orange curve is v²(t). The dashed line is the <b>mean</b> of v², and the green line is its square root, V<sub>rms</sub>. The moving cursor accumulates the mean step by step. Change the waveform and see where the green line sits relative to the peak.</p>
+      <div class="row seg" id="obWave"></div>
+      <canvas id="obRms" width="620" height="260" style="width:100%;border:1px solid var(--line);border-radius:6px;margin-top:6px"></canvas>
+      <div id="obRmsTxt" style="font-size:13px;margin-top:4px"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">2 · Complex power and the power triangle</h3>
+      <p style="font-size:14px;line-height:1.65">In an inductive or capacitive load there is an angle θ = θ<sub>v</sub> − θ<sub>i</sub> between current and voltage. The instantaneous power p(t) is a wave with mean <b>P</b> that oscillates at 2ω. Part of the oscillating component is energy going back and forth between source and load: its amplitude is the <b>reactive power Q</b>. We combine both into one complex number:</p>
+      <div class="eq">S = P + jQ = V<sub>rms</sub> I<sub>rms</sub>* = |S|∠θ,&nbsp;&nbsp; pf = cos θ = P/|S|</div>
+      <p style="font-size:14px;line-height:1.65">Change P and Q with the sliders; the legs of the triangle are P (horizontal, doing work) and Q (vertical, going back and forth), and the hypotenuse is |S|. If Q &gt; 0 the current lags (<b>lagging</b> pf, inductive); if Q &lt; 0 it leads (<b>leading</b> pf, capacitive).</p>
+      <div class="row" style="font-size:13px">
+        <label>P <input type="range" id="obP" min="0" max="10" step="0.1" value="8"></label>
+        <label>Q <input type="range" id="obQ" min="-10" max="10" step="0.1" value="6"></label>
+      </div>
+      <svg id="obTri" class="vd" viewBox="0 0 420 230"></svg>
+      <div id="obTriTxt" style="font-size:13px;margin-top:4px"></div>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">rms value (definition)</td><td class="l">V<sub>rms</sub> = √(mean v²)</td></tr>
+        <tr><td class="l">Sine / Square / Triangle</td><td class="l">V<sub>m</sub>/√2 · V<sub>m</sub> · V<sub>m</sub>/√3</td></tr>
+        <tr><td class="l">Half- / full-wave rectified</td><td class="l">V<sub>m</sub>/2 · V<sub>m</sub>/√2</td></tr>
+        <tr><td class="l">DC + AC component</td><td class="l">V<sub>rms</sub> = √(V<sub>DC</sub>² + V<sub>ac,rms</sub>²)</td></tr>
+        <tr><td class="l">Form factor / Crest factor</td><td class="l">FF = V<sub>rms</sub>/V<sub>avg</sub> (sine 1.111) · CF = V<sub>m</sub>/V<sub>rms</sub> (sine 1.414)</td></tr>
+        <tr><td class="l">Average power in a resistor</td><td class="l">P = V<sub>rms</sub>²/R = I<sub>rms</sub>² R = V<sub>m</sub>²/(2R)</td></tr>
+        <tr><td class="l">Average and reactive power</td><td class="l">P = V<sub>rms</sub>I<sub>rms</sub> cos θ,&nbsp; Q = V<sub>rms</sub>I<sub>rms</sub> sin θ</td></tr>
+        <tr><td class="l">Complex power (rms phasor)</td><td class="l">S = V I* = I<sub>rms</sub>² Z = V<sub>rms</sub>²/Z*</td></tr>
+        <tr><td class="l">Complex power (peak phasor)</td><td class="l">S = ½ V I*</td></tr>
+        <tr><td class="l">Units</td><td class="l">P: W · Q: VAR · |S|: VA</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Why does an average-responding meter go wrong?</h3>
+      <p style="font-size:14px;line-height:1.65">Cheap multimeters do not really compute rms: they rectify the signal, take its <b>average</b>, then multiply by the form factor valid for a sine, <b>π/(2√2) ≈ 1.111</b>. This is correct for a sine but wrong for other waveforms. For a square wave the average and rms are equal (FF = 1), but the meter still multiplies by 1.111, so it reads <b>11% high</b>. For a triangle FF = 1.155, so it reads <b>3.8% low</b>.</p>
+      <svg class="vd" viewBox="0 0 420 150">
+        <g font-size="12">
+          <rect x="10" y="50" width="80" height="40" fill="#eef4ff" stroke="#335"/><text x="50" y="74" text-anchor="middle">Rectifier |v|</text>
+          <rect x="120" y="50" width="80" height="40" fill="#eef4ff" stroke="#335"/><text x="160" y="74" text-anchor="middle">Average (RC)</text>
+          <rect x="230" y="50" width="80" height="40" fill="#fff4e0" stroke="#a60"/><text x="270" y="74" text-anchor="middle">× 1.111</text>
+          <rect x="340" y="50" width="70" height="40" fill="#e9f7ee" stroke="#285"/><text x="375" y="74" text-anchor="middle">Display</text>
+          <path d="M90,70 H120 M200,70 H230 M310,70 H340" stroke="#333" stroke-width="2"/>
+          <text x="210" y="125" text-anchor="middle" fill="#a33">“Calibrated” for sine waves only.</text>
+          <text x="210" y="30" text-anchor="middle" fill="#335">True rms meter: v² → mean → √ (correct for every waveform)</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Things to watch in a real lab</h3>
+    <div class="warnbox"><b>Mains voltage kills.</b> The peak value of 230 V is 325 V. In mains-connected experiments use only insulated (CAT II/III rated) probes and shrouded banana leads; never change connections while energised, work with one hand, and do not wear rings or watches.</div>
+    <div class="warnbox"><b>Isolation transformer and variac.</b> Always run load experiments behind the isolation transformer and start with the variac at zero. A variac alone does not provide isolation: one output terminal may be connected directly to the mains phase.</div>
+    <div class="warnbox"><b>The oscilloscope ground clip must not touch the mains.</b> The scope’s ground clip is tied to the building’s protective earth. If it is attached to a point on the mains side, a phase–earth short circuit results: the probe burns, the fuse blows, and the arc can injure you. Use a <b>differential probe</b> for mains measurements.</div>
+    <div class="warnbox"><b>Measure current in series or with a clamp.</b> Connecting the leads across a voltage while the multimeter is on a current range blows the meter’s fuse (or the meter itself). For currents above 10 A use a <b>current clamp</b> or a current transformer; never leave the secondary of a current transformer open while it carries load current.</div>
+    <div class="warnbox"><b>Know your meter’s limits.</b> TRMS meters have a crest factor limit (typically CF ≤ 3) and a bandwidth (typically 1–100 kHz). With narrow pulses or at high frequency, even a true rms meter makes errors.</div>
+    <div class="warnbox"><b>Power rating of the load resistor.</b> Applying 10 V rms to 100 Ω gives 1 W: a ¼ W resistor will burn. If you compute with the peak value you get the power wrong by a factor of 2; choose resistors using the <b>rms</b> value.</div>
+    <div class="warnbox"><b>Discharge capacitive loads.</b> Large capacitors in the AC load box (hundreds of µF) can stay charged at peak voltage (≈325 V) after power is removed. Discharge them through a discharge resistor before touching.</div>
+    <div class="info"><b>Common mistakes:</b> writing P = V<sub>m</sub>²/R with the peak value (2 times too high) · thinking “the average of a sine is zero, so its rms is zero too” · writing S = V I and forgetting the conjugate (the sign of Q comes out reversed) · thinking “lagging pf” is capacitive (lagging = current lags = inductive, Q &gt; 0) · adding the |S| values of two loads directly · writing S = V I* with peak phasors and forgetting the ½.</div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before coming to the lab. Unless stated otherwise, values are rms.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Waveform, rms Value and Two Multimeters</h2>
+  <p class="lead">A function generator drives a load resistor. Two multimeters measure the same voltage: one is true rms (TRMS), the other is average-responding. On the oscilloscope CH1 = v(t), CH2 = MATH channel p(t) = v²/R.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">The definition is the same for every waveform: <span class="eq">V<sub>rms</sub> = √( (1/T)∫v² dt )</span> Only the result changes: a square wave is at ±V<sub>m</sub> at every instant, so V<sub>rms</sub> = V<sub>m</sub>; a triangle spends most of its time away from the peak, so V<sub>m</sub>/√3.</div>
+        <div class="info">On a TRMS meter, <b>AC</b> coupling removes the DC component (capacitor coupling); <b>AC+DC</b> gives the total rms: <span class="eq">V<sub>rms</sub> = √(V<sub>DC</sub>² + V<sub>ac,rms</sub>²)</span></div>
+        <div class="why"><b>Why is that?</b> Heating power depends on the mean of v², not on the mean of |v|. An average-responding meter measures the mean of |v| and multiplies by 1.111 assuming a sine; if the wave is not a sine, this factor is wrong. The meter does not “lie”; it makes a wrong assumption.</div>
+        <div class="solved"><b>Worked mini example (Example 2.11):</b> i(t) = 4cos(ωt+30°) A flows through R = 25 Ω. I<sub>rms</sub> = 4/√2 = 2.828 A; P = I<sub>rms</sub>²R = 8 × 25 = 200 W; equivalent DC voltage = I<sub>rms</sub>R = 70.71 V. The phase angle (30°) does not affect the power in the resistor.</div>
+        <div class="warnbox">The function generator has a 50 Ω internal resistance. If you choose a very small load resistor (e.g. 10 Ω) the generator output collapses and the voltage on the load differs from the setting on the display. Always measure <b>across the load</b>.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+        <div class="bench-row" style="margin-top:12px">
+          <div class="inst dark scopewrap" style="flex:1;min-width:420px">
+            <div class="brand"><span>DSO-2C · Digital Oscilloscope</span><span><span class="led on g"></span> RUN</span></div>
+            <div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+              <canvas id="d1scope" width="640" height="360" style="width:100%;max-width:640px"></canvas>
+              <div style="min-width:150px">
+                <div class="ctrls" id="d1scopeKnobs"></div>
+                <div class="meas" id="d1scopeMeas"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 210"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d1rec">Record (R)</button>
+            <button class="btn sec small" id="d1del">Delete last row</button>
+            <button class="btn sec small" id="d1csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Wave</th><th>V<sub>m</sub> (V)</th><th>V<sub>DC</sub> (V)</th><th>f (Hz)</th><th>TRMS (V)</th><th>Coupling</th><th>Avg-resp. (V)</th><th>P<sub>R</sub> (W)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>Reading / V<sub>m</sub></b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Theoretical V<sub>rms</sub>/V<sub>m</sub></label></div>
+          <canvas id="d1plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12px;color:#556">Horizontal axis: 1 sine · 2 square · 3 triangle · 4 half-wave · 5 full-wave. Blue: TRMS, orange: average-responding (only rows with V<sub>DC</sub> = 0).</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Complex Power, Power Triangle and Load Design</h2>
+  <p class="lead">A variac with an isolation transformer supplies a series R–L–C load box. The power analyser sits between source and load and shows V, I, P, Q, |S| and pf.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Series load: <span class="eq">Z = R + j(ωL − 1/(ωC)),&nbsp; S = V<sub>rms</sub>²/Z* = I<sub>rms</sub>² Z</span> The sign of Q is the sign of the imaginary part of Z: if the inductive part dominates, Q &gt; 0.</div>
+        <div class="info">Instantaneous power (voltage as reference, θ<sub>v</sub> = 0): <span class="eq">p(t) = P + P cos 2ωt + Q sin 2ωt</span> (The form p = P + P cos 2ωt − Q sin 2ωt in the lecture notes holds when time zero is taken at the current peak; the two expressions differ only by a shift of the time axis.) Its mean is P; Q is the amplitude of the energy going back and forth between source and load. When p(t) goes negative in the plot, the load is giving energy <b>back</b> to the source.</div>
+        <div class="why"><b>Why S = V I*?</b> If V = |V|∠θ<sub>v</sub> and I = |I|∠θ<sub>i</sub>, then V I* = |V||I|∠(θ<sub>v</sub>−θ<sub>i</sub>). The conjugate turns the angle into a <b>difference</b>, so the real part is P = |V||I|cos θ and the imaginary part is Q = |V||I|sin θ. If you forget the conjugate, the angle becomes θ<sub>v</sub>+θ<sub>i</sub>, which is meaningless.</div>
+        <div class="solved"><b>Worked mini example (Example 2.12):</b> 240 V, P = 8 kW, pf = 0.8 lagging. |S| = 8/0.8 = 10 kVA, Q = +√(10²−8²) = +6 kVAR → S = 8 + j6 kVA. Impedance: Z = V²/S* = 240²/(8000 − j6000) = 5.76∠36.87° Ω. Find the real and imaginary parts and L yourself, and build it.</div>
+        <div class="warnbox">In this experiment the current can reach 40 A. In reality, for currents at this level the cable cross-section (≥ 6 mm²), terminal tightness and the power analyser’s current input or clamp must be chosen appropriately. A loose terminal heats up and can start a fire.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 220"></svg><div id="d2hint" class="info" style="margin-bottom:0"></div></div>
+      <div class="grid-half">
+        <div class="card"><b>Phasor diagram</b> <span style="font-size:12px;color:#556">(V reference, I scaled)</span><svg id="d2fz" class="vd" viewBox="0 0 420 260"></svg></div>
+        <div class="card"><b>Power triangle</b><svg id="d2tri" class="vd" viewBox="0 0 420 260"></svg></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Instantaneous power p(t) (kW) — two periods</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d2vi" checked> v and i (unscaled)</label></div>
+        <canvas id="d2pt" width="760" height="260" style="width:100%"></canvas>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>V (V)</th><th>R (Ω)</th><th>L (mH)</th><th>C (µF)</th><th>I (A)</th><th>P (W)</th><th>Q (VAR)</th><th>|S| (VA)</th><th>pf</th><th>Type</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Parallel Loads: How Do Powers Add?</h2>
+  <p class="lead">Two loads are connected to a 240 V bus through switches K1 and K2. You can place the power analyser’s current clamp on the source line, on Load 1 or on Load 2.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Complex power is conserved (Tellegen): <span class="eq">S<sub>T</sub> = S<sub>1</sub> + S<sub>2</sub> → P<sub>T</sub> = P<sub>1</sub>+P<sub>2</sub>, Q<sub>T</sub> = Q<sub>1</sub>+Q<sub>2</sub></span> But in general <span class="eq">|S<sub>T</sub>| ≤ |S<sub>1</sub>| + |S<sub>2</sub>|</span></div>
+        <div class="info">Each load is modelled as a fixed impedance derived from the given P and pf at 240 V. If you change the bus voltage, the powers change with V².</div>
+        <div class="why"><b>Why does |S| not add?</b> S is a vector. The Q of an inductive load (+) and the Q of a capacitive load (−) cancel each other; the total triangle gets “flatter”. The arithmetic sum of apparent powers is correct only if both loads have the same pf.</div>
+        <div class="solved"><b>Worked mini example:</b> Load A: 6 kW, pf 0.6 lagging → |S| = 10 kVA, Q = +8 kVAR. Load B: 6 kW, pf 1 → Q = 0. Total: 12 + j8 kVA, |S<sub>T</sub>| = 14.42 kVA (not 16); pf<sub>T</sub> = 12/14.42 = 0.832 lagging.</div>
+        <div class="warnbox">When attaching the current clamp make sure its jaws are <b>fully closed</b> and that only one conductor (phase or neutral) passes through it. If you clamp phase and neutral together, the currents cancel and the clamp reads zero.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 240"></svg></div>
+      <div class="grid-half">
+        <div class="card"><b>Power vectors (head to tail)</b><svg id="d3tri" class="vd" viewBox="0 0 420 260"></svg></div>
+        <div class="card"><b>Current phasors</b> <span style="font-size:12px;color:#556">(V reference)</span><svg id="d3fz" class="vd" viewBox="0 0 420 260"></svg></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Record (R)</button>
+          <button class="btn sec small" id="d3del">Delete last row</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Clamp</th><th>K1</th><th>K2</th><th>V (V)</th><th>I (A)</th><th>P (kW)</th><th>Q (kVAR)</th><th>|S| (kVA)</th><th>pf</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="For which waveform was the average-responding meter wrong, by how much, and why? Why did |S| not add for the parallel loads? Write your observations."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (hold to speed up). <b>Tap</b> the knob or the value below it to type an <b>exact value</b> or pick from a list (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>6</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta09.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h09', ders: 'Circuit Theory II', hafta: 9,
+  doc: [
+    { id: 'CLO1', t: 'Computes the rms value of a periodic signal from the definition and verifies it by measurement for different waveforms.', mc: [1, 2, 5] },
+    { id: 'CLO2', t: 'Knows the operating principle and limits of true rms and average-responding meters, and chooses the appropriate meter.', mc: [4, 5] },
+    { id: 'CLO3', t: 'Measures the complex power and power triangle of a load; designs a load impedance for a required P and pf.', mc: [1, 2, 3, 4] },
+    { id: 'CLO4', t: 'Applies power conservation to parallel loads; observes safety precautions in mains experiments.', mc: [2, 5, 6] },
+    { id: 'CLO5', t: 'Presents the findings in writing in a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To measure the rms value of sine, square, triangle and rectified waves; to explain the difference between true rms and average-responding meters using the form factor.', doc: ['CLO1', 'CLO2'], mc: [1, 4, 5],
+      gerec: 'Function generator (50 Ω internal resistance), load resistor, TRMS multimeter, average-responding multimeter, two-channel oscilloscope with MATH channel.',
+      guvenlik: 'Choose the power rating of the load resistor using the rms value; do not short-circuit the generator; connect the oscilloscope ground to the circuit ground.',
+      veri: 'For each waveform: V<sub>m</sub>, V<sub>DC</sub>, f, the readings of both meters, load power; plot of reading/V<sub>m</sub>.',
+      tartisma: 'What consequences can measuring harmonic-rich (square-wave-like) currents in an electrical installation with an average-responding clamp have?' },
+    d2: { amac: 'To measure P, Q, |S| and pf of a series R–L–C load with a power analyser, draw the power triangle and design the load that gives a specified P and pf.', doc: ['CLO3'], mc: [1, 2, 3, 4, 6],
+      gerec: 'Variac with isolation transformer (0–250 V, 50 Hz), adjustable R–L–C load box, single-phase power analyser, current clamp.',
+      guvenlik: 'Start the variac from zero; at high current mind the cable cross-section and terminal tightness; discharge capacitors; do not connect the oscilloscope ground to the mains.',
+      veri: 'Table of V, I, P, Q, |S|, pf; phasor diagram, power triangle and p(t) curve.',
+      tartisma: 'If pf drops for the same P, how do the source current and cable heating change? What does this mean for energy efficiency?' },
+    d3: { amac: 'To show by measurement that, for two loads in parallel, complex power is conserved, P and Q add separately, and the |S| values do not add.', doc: ['CLO4'], mc: [1, 2, 5],
+      gerec: '240 V AC bus, K1/K2 switches, two adjustable loads (P, pf, lagging/leading), power analyser with current clamp.',
+      guvenlik: 'Attaching and removing the clamp while energised is safe, but only one conductor must be inside the jaws; switch under load quickly and decisively.',
+      veri: 'P, Q, |S|, pf and I measurements at the Source, Load 1 and Load 2 points; power vector diagram.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

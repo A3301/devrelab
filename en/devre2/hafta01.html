@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 1 · Sinusoidal Sources and Phasors — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<style>
+  .phx{display:block;width:100%;max-width:440px;margin:0 auto;background:#0e1726;border-radius:8px}
+  .xyc{width:100%;max-width:400px;background:#06140c;border-radius:6px;display:block}
+  .mini td,.mini th{font-size:13px}
+  .solved{background:#f3fbf5;border-left:4px solid var(--ok);padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}
+  .why{background:#f6f2fd;border-left:4px solid #6a4bc4;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}
+  .rng{display:flex;align-items:center;gap:8px;font-size:13px;margin:4px 0}
+  .rng input[type=range]{flex:1}
+</style>
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 1 — Sinusoidal Sources and the Phasor Concept</h1>
+    <div class="sub">Amplitude · Frequency · Phase · rms · Phase difference · Rotating phasor · Transient and steady state</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">0%</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Sine and rms</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Phase Difference</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Phasor Addition</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Transient and Steady State</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag them or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> for fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 1 · Sinusoidal Sources, Sinusoidal Response and the Phasor Concept</h2>
+  <p class="lead">Lecture notes: <b>Section 1.1 The Sinusoidal Source</b>, <b>1.2 The Sinusoidal Response</b> and <b>1.3 The Phasor Concept</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li>Describe a sinusoid by its <b>amplitude, frequency and phase</b>, measure T, V<sub>m</sub>, V<sub>pp</sub> on the oscilloscope, and distinguish the rms value from the peak value.</li>
+        <li>Measure the <b>phase difference</b> between two sinusoids both from the time shift (Δt) and from the <b>Lissajous</b> (X-Y) figure.</li>
+        <li>See that the projection of a rotating phasor on the real axis is <b>v(t)</b>, <b>add two sinusoids using phasors</b> and verify the result with the oscilloscope.</li>
+        <li>Measure how, after the switch closes in an RL circuit, the <b>transient component</b> decays with τ = L/R and gives way to the <b>sinusoidal steady state</b>.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Two-channel function generator (sine/triangle/square, 50 Ω output, adjustable phase between channels) · Two-channel digital oscilloscope (with cursors and X-Y mode) · True-rms AC voltmeter · Low-cost average-responding multimeter (calibrated for sine) · Phase-shifter “black box” · AC power supply with isolation transformer · Resistor box, inductors, current probe.</p>
+      <div class="info">Cosine reference: all calculations this week use the form <b>v = V<sub>m</sub> cos(ωt + φ)</b>. If you select “sin” on the generator, it produces sin(ωt + φ) = cos(ωt + φ − 90°).</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First play with the rotating phasor animation in the <b>Background</b> section, then solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left step by step; steps are ticked automatically when you make the correct setting. Record measurements to the table with <kbd>R</kbd> and answer the questions. In the last section print your report or save it as PDF.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · From Sinusoid to Phasor</h2>
+  <p class="lead">Why always sinusoids? Because the mains, generators and the steady state of every linear circuit are sinusoidal; the derivative, integral and sum of a sinusoid are again sinusoids of the same frequency.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Three parameters</h3>
+      <div class="eq">v(t) = V<sub>m</sub> cos(ωt + φ),&nbsp; ω = 2πf = 2π/T</div>
+      <p style="font-size:14px;line-height:1.65"><b>V<sub>m</sub></b> is the peak value (the curve swings between −V<sub>m</sub> and +V<sub>m</sub>), <b>ω</b> is the angle swept per second (rad/s), and <b>φ</b> is the position at t = 0. If φ &gt; 0, the peak comes <b>before</b> t = 0: the curve <b>leads</b>. Leading does not mean being larger; only the timing of the peaks matters.</p>
+      <h3>2 · Why rms?</h3>
+      <p style="font-size:14px;line-height:1.65">The average of a sinusoid is zero, yet it heats a resistor. Heat is proportional to the average of v²; since the average of v² is V<sub>m</sub>²/2, the DC voltage giving the same heat is <b>V<sub>rms</sub> = V<sub>m</sub>/√2</b>. The “230 V” at the wall socket is rms: its peak value is 325 V. Insulation is chosen by the peak value, heating by the rms value.</p>
+      <h3>3 · Rotating phasor: the “hidden” circle of a sinusoid</h3>
+      <p style="font-size:14px;line-height:1.65">Euler: e<sup>jθ</sup> = cos θ + j sin θ. Hence <span class="eq">v = Re{V<sub>m</sub>e<sup>jφ</sup> · e<sup>jωt</sup>}</span> The number V<sub>m</sub>e<sup>jφ</sup> = <b>V<sub>m</sub>∠φ</b> is the <b>phasor</b>: it carries amplitude and phase, not frequency. e<sup>jωt</sup> rotates it counterclockwise at speed ω; the <b>projection of its tip on the real axis</b> is v(t). Watch this in the animation on the right.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Rotating phasor ↔ time curve</h3>
+      <canvas id="phAnim" class="phx" width="440" height="470"></canvas>
+      <div class="rng">V<sub>m</sub><input type="range" id="phA" min="0.2" max="1" step="0.05" value="0.9"><span id="phAv"></span></div>
+      <div class="rng">φ<input type="range" id="phP" min="-180" max="180" step="5" value="30"><span id="phPv"></span></div>
+      <div class="rng"><label><input type="checkbox" id="phB"> Second phasor (0.6∠<span id="phBv">−60°</span>) and sum</label><input type="range" id="phBP" min="-180" max="180" step="5" value="-60"></div>
+      <div class="row"><button class="btn small" id="phRun">Pause</button><span style="font-size:13px;color:var(--muted)">Time flows downward; the horizontal axis is the real axis. Yellow: v<sub>1</sub>, blue: v<sub>2</sub>, white: sum.</span></div>
+      <div class="why"><b>What should you see?</b> When the phasor reaches the real axis (ωt = −φ) the projection is largest: v peaks. One revolution is one period. Since both phasors rotate at the same speed, the angle between them <b>never changes</b>: their sum is also a single phasor rotating at the same speed. This is the essence of why phasor addition works.</div>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Angular frequency</td><td class="l">ω = 2πf = 2π/T; 50 Hz ⇒ ω = 314.16 rad/s, T = 20 ms</td></tr>
+        <tr><td class="l">Degrees ↔ radians</td><td class="l">φ<sub>rad</sub> = φ<sub>deg</sub>·π/180 (ωt in radians, φ in degrees: do not add them directly!)</td></tr>
+        <tr><td class="l">sin → cos</td><td class="l">sin(ωt+φ) = cos(ωt+φ−90°); −cos x = cos(x±180°)</td></tr>
+        <tr><td class="l">rms</td><td class="l">sine V<sub>m</sub>/√2 ≈ 0.707V<sub>m</sub>; triangle V<sub>p</sub>/√3; square V<sub>p</sub></td></tr>
+        <tr><td class="l">Phase difference ↔ time</td><td class="l">Δφ = 360°·Δt/T</td></tr>
+        <tr><td class="l">Lissajous (ellipse)</td><td class="l">|sin Δφ| = Y<sub>0</sub>/Y<sub>m</sub> (Y<sub>0</sub>: intercept at x = 0)</td></tr>
+        <tr><td class="l">Phasor</td><td class="l">V<sub>m</sub>cos(ωt+φ) ↔ V<sub>m</sub>∠φ; d/dt ↔ jω</td></tr>
+        <tr><td class="l">RL sinusoidal response</td><td class="l">i = −I<sub>m</sub>cos(φ−θ)e<sup>−t/τ</sup> + I<sub>m</sub>cos(ωt+φ−θ)</td></tr>
+        <tr><td class="l"></td><td class="l">I<sub>m</sub> = V<sub>m</sub>/√(R²+ω²L²), tan θ = ωL/R, τ = L/R</td></tr>
+      </table>
+      <h3>Worked mini example (Example 1.8)</h3>
+      <div class="solved">y = 20cos(ωt − 30°) + 40cos(ωt + 60°) = ?<br>
+      1) Phasors: 20∠−30° = 17.32 − j10; 40∠60° = 20 + j34.64.<br>
+      2) Add (in rectangular form!): 37.32 + j24.64.<br>
+      3) Convert to polar: √(37.32² + 24.64²) = 44.72; tan<sup>−1</sup>(24.64/37.32) = 33.43°.<br>
+      4) y = <b>44.72 cos(ωt + 33.43°)</b>. The amplitude is not 60, because the two waves do not peak at the same time.</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">⚠ Things to watch in a real lab</h3>
+      <div class="warnbox"><b>Do not measure the mains directly with an oscilloscope.</b> The ground clip of the oscilloscope probe is connected to the protective earth of the mains. Attaching the clip to the line or neutral conductor creates a <b>short circuit</b>: the probe, the oscilloscope and you can be harmed. Mains measurements are made only with a <b>differential probe</b> or behind an <b>isolation transformer</b>. “Floating” the oscilloscope’s ground pin (unearthed plug) is strictly forbidden.</div>
+      <div class="warnbox"><b>230 V rms = 325 V peak.</b> Insulation, probe and capacitor voltage ratings are chosen by the peak value. Use a 10:1 probe and check the probe’s maximum voltage rating (CAT class).</div>
+      <div class="warnbox"><b>Both ground clips to the same point.</b> In a two-channel oscilloscope the grounds of the two probes are connected internally. Attaching the CH1 and CH2 ground clips to different nodes of the circuit shorts the element between them; in phase-difference measurements both signals must be taken <b>with respect to a common ground</b>.</div>
+      <div class="warnbox"><b>A multimeter does not measure rms for every waveform.</b> Low-cost meters measure the average value and multiply by 1.11 assuming a sine. They read incorrectly on triangle or square waves; use meters marked “True RMS”. The bandwidth of an AC voltmeter is also limited (most are accurate up to about 1 kHz).</div>
+      <div class="warnbox"><b>Back EMF when switching an inductor.</b> Opening the circuit of a current-carrying inductor produces a very high voltage L·di/dt; sparks appear at the switch contacts. In Experiment 4, turn off the source before opening the circuit or provide a freewheeling path (resistor/diode).</div>
+      <div class="warnbox"><b>The internal resistance of the function generator is 50 Ω.</b> With a low-impedance load the output voltage is smaller than the displayed value; always verify the measured amplitude on the oscilloscope. Do not short the output.</div>
+      <div class="info"><b>Common mistakes:</b> taking 230 V as the peak and writing P = 230²/R · adding φ in degrees while ωt is in radians (not cos(1 + 30) but cos(57.3° + 30°)) · writing a phasor without converting sin to cos (10 sin(ωt+30°) ↔ 10∠−60°) · adding the amplitudes of two sinusoids directly · treating the inductor as a short circuit in steady state and getting I = V<sub>m</sub>/R · confusing ω and f (the 2π factor).</div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve these before coming to the lab. The questions use the same numbers as the examples in the lecture notes.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Parameters of a Sinusoid and the rms Value</h2>
+  <p class="lead">Connect the function generator to CH1 of the oscilloscope and, at the same time, to a true-rms voltmeter and a low-cost (average-responding) multimeter.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">On the oscilloscope the <b>period</b> is the time between two consecutive peaks (or two zero crossings in the same direction): f = 1/T, ω = 2πf. Put cursor A on one peak and B on the next; Δt = T.</div>
+        <div class="info"><b>V<sub>pp</sub> = 2V<sub>m</sub></b> (a sinusoid is symmetric). The oscilloscope shows peak values, the voltmeter shows rms. Example 1.3: 34 V<sub>pp</sub> on screen ⇒ V<sub>m</sub> = 17 V ⇒ V<sub>rms</sub> = 12.02 V.</div>
+        <div class="why"><b>Why 1/√3 for a triangle?</b> For a sine, v² has the cos² form whose average is V<sub>m</sub>²/2; for a triangle it consists of t² parabolas whose average is V<sub>p</sub>²/3 (Example 1.1). A square wave is always at ±V<sub>p</sub>, so rms = V<sub>p</sub>.</div>
+        <div class="warnbox">The reading of a low-cost multimeter is correct only for a sine. When reporting AC measurements in a lab report, state whether the meter is “True RMS” and give its frequency range.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" style="margin-top:12px" id="d1scopeHost"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 170"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Wave</th><th>Set f</th><th>V<sub>pp</sub> (V)</th><th>Cursor Δt</th><th>True-rms (V)</th><th>Low-cost DMM (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Phase Difference Between Two Sinusoids: Δt and Lissajous</h2>
+  <p class="lead">The two outputs of the generator (or the input/output of the black box) are connected to CH1 and CH2. You will measure the phase difference in two ways.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info"><b>Time method:</b> Measure Δt between same-direction zero crossings (or peaks) of the two curves: <span class="eq">Δφ = 360° · Δt / T</span> If the peak of CH2 comes <b>after</b> that of CH1, CH2 lags (Δφ negative).</div>
+        <div class="info"><b>Lissajous method:</b> In X-Y mode the horizontal axis is CH1 and the vertical axis is CH2. Two sinusoids of the same frequency trace an <b>ellipse</b>. If the vertical intercept of the ellipse at x = 0 is Y<sub>0</sub> and its largest vertical extent is Y<sub>m</sub>, then <span class="eq">|sin Δφ| = Y<sub>0</sub>/Y<sub>m</sub></span> Δφ = 0 gives a straight line (/), 90° a circle or an axis-aligned ellipse, 180° a reversed line (\).</div>
+        <div class="why"><b>Why sin?</b> x = A cos ωt, y = B cos(ωt + Δφ). When x = 0, ωt = 90° and y = B cos(90° + Δφ) = −B sin Δφ. So the intercept is B|sin Δφ|. Lissajous does not tell the sign: whether it leads or lags is found from the direction of rotation of the ellipse or from the Δt method.</div>
+        <div class="warnbox">In X-Y mode, if the V/div settings of the two channels differ, the ellipse looks skewed, but the ratio Y<sub>0</sub>/Y<sub>m</sub> does not change since it is read only from the vertical channel. Select the same AC/DC coupling for both channels; a DC offset shifts the ellipse.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div><div class="bench-row" style="margin-top:12px" id="d2scopeHost"></div></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>X-Y (Lissajous) display</b><span class="grow"></span><span style="font-size:12px;color:var(--muted)">X: CH1, Y: CH2</span></div>
+          <canvas id="d2xy" class="xyc" width="400" height="320"></canvas>
+          <div class="rng">Y cursor<input type="range" id="d2ycur" min="-4" max="4" step="0.02" value="1"><span id="d2ycurv" style="min-width:80px"></span></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d2rec">Record (R)</button>
+            <button class="btn sec small" id="d2del">Delete</button>
+            <button class="btn sec small" id="d2csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Source</th><th>f</th><th>Δt</th><th>Y cursor</th><th>CH2 max</th></tr></thead><tbody></tbody></table></div>
+          <div style="font-size:12px;color:var(--muted)">Record: the cursor Δt (YT mode) is written together with the Y cursor and the CH2 peak value (X-Y mode).</div>
+        </div>
+      </div>
+      <div class="card"><svg id="d2sch" class="schem" viewBox="0 0 760 200"></svg></div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Adding Sinusoids with Phasors</h2>
+  <p class="lead">Two sinusoidal sources are connected in series; the total voltage across them is v = v<sub>1</sub> + v<sub>2</sub>. CH1 shows the reference cos ωt (the generator’s SYNC output), CH2 shows the signal you select.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">The sum of two sinusoids of the same frequency is again a sinusoid of that frequency. Its amplitude and phase are found by adding the <b>phasors like vectors</b>: <span class="eq">V = V<sub>1</sub> + V<sub>2</sub> = (a<sub>1</sub>+a<sub>2</sub>) + j(b<sub>1</sub>+b<sub>2</sub>)</span></div>
+        <div class="info">To measure the phase of the sum on the oscilloscope, measure the shift of the CH2 peak relative to the CH1 (cos ωt, phase 0) peak: φ = −360°·Δt/T (φ is negative if the CH2 peak comes later).</div>
+        <div class="why"><b>Why don’t the amplitudes add?</b> 2 + 4 = 6 only if the two waves peak at the same time (same phase). If they are 90° apart the sum is √(2²+4²) = 4.47; if 180°, |4 − 2| = 2. The parallelogram in the phasor diagram shows this geometrically.</div>
+        <div class="warnbox">In practice, to connect two generators in series, the output of at least one must be <b>isolated</b> (floating) from ground; otherwise the ground of the second generator shorts the output of the first. With single-chassis two-channel generators, the addition is done with the oscilloscope’s MATH (CH1+CH2) function.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" style="margin-top:12px" id="d3scopeHost"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 190"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Phasor diagram (live)</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3rot"> Rotate (e<sup>jωt</sup>)</label></div>
+          <svg id="d3ph" class="schem" viewBox="0 0 360 320" style="background:#fff"></svg>
+        </div>
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Record (R)</button>
+            <button class="btn sec small" id="d3del">Delete</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>V<sub>1</sub></th><th>V<sub>2</sub></th><th>CH2</th><th>CH2 max (V)</th><th>Δt</th><th>T</th></tr></thead><tbody></tbody></table></div>
+          <div class="row" style="margin-top:6px"><label style="font-size:13px"><input type="checkbox" id="d3theo"> Show the calculated sum on the diagram</label></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Transient and Sinusoidal Steady State in an RL Circuit</h2>
+  <p class="lead">At t = 0 the switch closes and v<sub>s</sub> = V<sub>m</sub>cos(ωt + φ) is applied to the series RL circuit. The oscilloscope is in single-shot (SINGLE) mode, with the trigger locked to the switch closing instant; CH2 is a current probe (1 V/A).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Complete response = decaying <b>transient</b> + persistent <b>steady state</b>: <span class="eq">i = K e<sup>−t/τ</sup> + I<sub>m</sub> cos(ωt + φ − θ)</span> K = i(0) − I<sub>m</sub>cos(φ − θ). Since the inductor current cannot jump, i(0) = 0.</div>
+        <div class="info"><b>5τ rule:</b> after 5τ the transient component falls to 0.7% of its initial value. Only R and L enter τ; the source’s ω does not: the decay is a property of the circuit itself.</div>
+        <div class="why"><b>Why is there no transient at some angles?</b> If the steady-state curve already passes through zero at t = 0 (φ − θ = ±90°), the condition i(0) = 0 is satisfied by itself and K = 0. The largest transient occurs when φ = θ or θ + 180°: this is why the “inrush current” of transformers and motors depends on the switching instant.</div>
+        <div class="warnbox">In a real circuit do not open the switch while the inductor carries current: L di/dt produces sparks and overvoltage. At the end of the experiment turn off the source first. You are working with 100 V peak: do not touch the circuit while it is energized, and attach the current probe while it is de-energized.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div><div class="bench-row" style="margin-top:12px" id="d4scopeHost"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 220"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Components</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d4theo"> Show the transient and steady-state curves</label></div>
+          <canvas id="d4plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d4rec">Record (R)</button>
+            <button class="btn sec small" id="d4del">Delete</button>
+            <button class="btn sec small" id="d4csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>V<sub>m</sub></th><th>f</th><th>φ</th><th>R</th><th>L</th><th>t<sub>A</sub></th><th>i<sub>A</sub> (A)</th><th>i max (A)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and graphs.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Did the results agree when you measured the phase difference with two methods? Why is the phasor sum smaller than the sum of the amplitudes? Under what condition did the transient component disappear?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding them speeds up). To type an <b>exact value</b> or choose from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task in the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope cursors:</b> press the CURSOR button and drag on the screen. In Experiment 2 the X-Y button enables the Lissajous display.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta01.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h01', ders: 'Circuit Theory II', hafta: 1,
+  doc: [
+    { id: 'CLO1', t: 'Describes a sinusoidal signal by its amplitude, frequency, phase and rms value; measures these quantities with an oscilloscope and AC meters.', mc: [1, 4, 5] },
+    { id: 'CLO2', t: 'Measures the phase difference between two sinusoids with the time-shift and Lissajous methods and compares the results.', mc: [1, 4, 5] },
+    { id: 'CLO3', t: 'Converts sinusoids to phasors, computes the phasor sum and verifies it experimentally.', mc: [1, 2, 5] },
+    { id: 'CLO4', t: 'Distinguishes the transient and steady-state components of the sinusoidal response of an RL circuit and analyzes the effect of the switching angle.', mc: [1, 2, 3, 5, 6] },
+    { id: 'CLO5', t: 'Presents the findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To measure the period, peak and rms values of sine, triangle and square waves; to compare true-rms and average-responding meters.', doc: ['CLO1'], mc: [1, 4, 5],
+      gerec: 'Function generator (50 Ω), two-channel oscilloscope, true-rms AC voltmeter, average-responding multimeter.',
+      guvenlik: 'Connect the oscilloscope ground clip only to the generator ground; do not short the generator output. Mains voltage is not measured in this experiment.',
+      veri: 'V<sub>pp</sub>, cursor Δt, readings of the two voltmeters; rms/peak ratios for each waveform.',
+      tartisma: 'How large was the error of the low-cost multimeter for each waveform? What is the reason?' },
+    d2: { amac: 'To measure the phase difference between two sinusoids of the same frequency with the time shift and the Lissajous ellipse; to determine the phase shift of an unknown circuit.', doc: ['CLO2'], mc: [1, 4, 5],
+      gerec: 'Two-channel function generator, phase-shifter black box, two-channel oscilloscope with X-Y mode.',
+      guvenlik: 'The ground clips of both probes must be connected to the same point; connecting them to different nodes shorts a circuit element.',
+      veri: 'Δt and T measurements, Lissajous intercept values, phase differences calculated with the two methods.',
+      tartisma: 'Which method is more sensitive for small phase differences, and which near 90°? Why?' },
+    d3: { amac: 'To calculate the sum of two sinusoids by phasor addition and verify it with the oscilloscope.', doc: ['CLO3'], mc: [1, 2, 5],
+      gerec: 'Two sinusoidal sources with floating outputs, oscilloscope (SYNC reference, MATH), live phasor diagram.',
+      guvenlik: 'Do not connect two generators with a common ground in series; use a floating output or the MATH function.',
+      veri: 'Peak value of the sum signal and its time shift relative to the reference; comparison with the calculated phasor.' },
+    d4: { amac: 'To measure the transient component and the sinusoidal steady state that arise when the switch closes in a series RL circuit; to study the dependence of the transient on the switching angle.', doc: ['CLO4'], mc: [1, 2, 3, 5, 6],
+      gerec: 'AC power supply with isolation transformer (0–100 V peak, phase-angle switching), resistor box, 30–300 mH inductors, current probe, single-shot oscilloscope.',
+      guvenlik: 'Opening the circuit of a current-carrying inductor produces sparks and overvoltage; turn off the source first. The mains side is not measured with an oscilloscope without an isolation transformer. Inrush current can blow fuses: the switching instant matters for energy efficiency and equipment life.',
+      veri: 'i(t) values read with the cursors, the maximum current, the transient amplitude for different φ.',
+      tartisma: 'How does this experiment explain why a fuse may blow at the moment a large transformer is connected to the mains?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

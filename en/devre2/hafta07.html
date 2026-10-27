@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 7 · Instantaneous, Average and Reactive Power — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<style>
+  .why{background:#f3f0fb;border-left:4px solid #7a4cc2;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}
+  .solved{background:#f2faf4;border-left:4px solid #1a8a4a;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}
+  .demo-ctl{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:14px;margin:6px 0}
+  .demo-ctl input[type=range]{width:220px}
+  .chk{font-size:12px;color:#dfe3ea;display:block;margin-top:4px}
+  .chk.l{color:#223}
+  .mist li{margin:5px 0;font-size:14px;line-height:1.5}
+</style>
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 7 — Instantaneous, Average and Reactive Power</h1>
+    <div class="sub">p(t) = v·i · MATH channel · Power in R, L, C loads · P and Q · Wattmeter and V·I</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>1b · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>2 · Experiment 1: p(t) in a Resistor</button>
+  <button data-p="d2"><span class="dot"></span>3 · Experiment 2: p(t) in L and C</button>
+  <button data-p="d3"><span class="dot"></span>4 · Experiment 3: Reading P and Q</button>
+  <button data-p="d4"><span class="dot"></span>5 · Experiment 4: Wattmeter and V·I</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag, or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> for fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 7 · Power in Sinusoidal Steady State: p(t), P and Q</h2>
+  <p class="lead">Lecture notes: <b>Section 2.1 Instantaneous Power</b> and <b>2.2 Average and Reactive Power</b> (Circuit Theory II, Prof. Dr. Ali AKDAĞLI).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li>Multiply v and i with the oscilloscope’s <b>MATH</b> channel to see the instantaneous power <b>p(t) = v·i</b>, and measure that its frequency is <b>2ω</b>.</li>
+        <li>See that p(t) in a resistor is never negative, that its <b>average is zero in an inductor and a capacitor</b>, and that energy flows back and forth.</li>
+        <li>Read <b>P</b> and <b>Q</b> from the peak and trough values of p(t), and find θ<sub>v</sub> − θ<sub>i</sub> from the time shift between v and i.</li>
+        <li>Show by measurement why the P read by a real <b>wattmeter</b> differs from the voltmeter × ammeter product V·I.</li>
+        <li>Practise connecting the current and voltage coils of a wattmeter correctly, and experience the fuse limit and the effect of a compensation capacitor.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">AC power amplifier (0–100 V rms, 10 Hz–5 kHz, voltage regulated, 10 A current protection) · Load box (500 W power resistor, air-core inductor, film capacitor) · True-rms voltmeter and ammeter · Current probe (1 V/A) · Four-channel oscilloscope (CH1, CH2 and <b>MATH = CH1 × CH2</b>, with cursors) · Isolation transformer + variac (0–250 V, 50 Hz) · Electrodynamic wattmeter · Socket strip with 16 A fuse.</p>
+      <div class="info">The oscilloscope’s MATH channel multiplies CH1 (V) by CH2 (current probe, 1 V/A → A); it reads in <b>watts</b> on screen. The <b>MEAN</b> value in the measurement panel is the average over the full periods on screen (“Cycle Mean” on oscilloscopes).</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First play with the interactive p(t) demo on the <b>Background</b> page and solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left step by step; steps are ticked automatically when you make the right setting. Record measurements with <kbd>R</kbd> and <b>calculate P, Q and the power factor yourself</b>; the questions ask for quantities that are not shown directly on screen. In the last section, print your report.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Where Does the Power Go?</h2>
+  <p class="lead">In Chapter 1 we used phasors to answer “how much voltage, how much current?”. Now the question changes: <b>how much energy, and how fast,</b> does the circuit use? Heating, light, work on a motor shaft and the electricity bill are all answers to this question.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Instantaneous power: an energy flow that changes every instant</h3>
+      <p style="font-size:14px;line-height:1.65">In DC, p = vi is constant. In sinusoidal steady state v and i change every instant, and so does their product. With the <b>passive sign convention</b> (current enters the + terminal), p &gt; 0 means the element is <b>absorbing</b> energy at that instant, and p &lt; 0 means it is <b>returning</b> energy to the source. If current leaves the + terminal, write p = −vi.</p>
+      <div class="eq">v = V<sub>m</sub> cos(ωt + θ<sub>v</sub>),&nbsp; i = I<sub>m</sub> cos(ωt + θ<sub>i</sub>)</div>
+      <p style="font-size:14px;line-height:1.65">Shifting the time origin to the current peak (the choice made in the lecture slides) and applying the cos α cos β identity gives:</p>
+      <div class="eq">p = P + P cos 2ωt − Q sin 2ωt</div>
+      <div class="eq">P = ½ V<sub>m</sub>I<sub>m</sub> cos(θ<sub>v</sub> − θ<sub>i</sub>),&nbsp; Q = ½ V<sub>m</sub>I<sub>m</sub> sin(θ<sub>v</sub> − θ<sub>i</sub>)</div>
+      <p style="font-size:14px;line-height:1.65"><b>Three lessons:</b> (1) p(t) oscillates at <b>twice the frequency</b> of v and i. (2) Its average is P alone: the term with Q averages to zero. (3) The amplitude of the oscillation is √(P² + Q²) = ½V<sub>m</sub>I<sub>m</sub>; that is, p<sub>max</sub> = P + ½V<sub>m</sub>I<sub>m</sub>, p<sub>min</sub> = P − ½V<sub>m</sub>I<sub>m</sub>.</p>
+      <h3>2 · Intuition: carrying water in buckets</h3>
+      <p style="font-size:14px;line-height:1.65">Imagine the source carrying water (energy) to a load bucket by bucket. The <b>resistor</b> drinks every bucket: the energy turns into heat and does not come back (p ≥ 0). The <b>inductor and capacitor</b> take the bucket and pour it back a quarter period later: what they take and give is equal, so the average is zero. A real load does both: part is drunk (<b>P</b>, watts) and part goes back and forth (<b>Q</b>, VAR). The energy that goes back and forth does not turn into heat, but it <b>still loads the cable</b>: it means a larger current for the same P.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Interactive demo · Change θ<sub>v</sub> − θ<sub>i</sub></h3>
+      <div class="demo-ctl">
+        <label>θ<sub>v</sub> − θ<sub>i</sub> = <b id="obThV">60°</b> <input type="range" id="obTheta" min="-90" max="90" step="1" value="60"></label>
+        <label><input type="checkbox" id="obParts"> Components</label>
+      </div>
+      <svg id="obDemo" viewBox="0 0 520 300" style="width:100%;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:8px"></svg>
+      <div id="obTxt" style="font-size:13px;margin-top:6px;line-height:1.5"></div>
+      <h3>Power triangle</h3>
+      <svg id="obTri" viewBox="0 0 520 170" style="width:100%;display:block"></svg>
+      <div class="info">V<sub>m</sub> = 40 V and I<sub>m</sub> = 5 A are held fixed (values of Example 2.1). At θ = 60° (time origin at the current peak) p(t) = 50 + 50 cos 2ωt − 86.6 sin 2ωt W; the oscillation amplitude is √(50² + 86.6²) = 100 W and the average is 50 W. With the phases of Example 2.1 (θ<sub>v</sub> + θ<sub>i</sub> = 0) the same p(t) is written as 50 + 100 cos 2ωt W.</div>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Instantaneous power (passive convention)</td><td class="l">p = vi (W); with active convention p = −vi</td></tr>
+        <tr><td class="l">Decomposition of p(t)</td><td class="l">p = P + P cos2ωt − Q sin2ωt</td></tr>
+        <tr><td class="l">Average (active) power</td><td class="l">P = ½V<sub>m</sub>I<sub>m</sub> cos(θ<sub>v</sub>−θ<sub>i</sub>) = V<sub>rms</sub>I<sub>rms</sub> cos θ</td></tr>
+        <tr><td class="l">Reactive power</td><td class="l">Q = ½V<sub>m</sub>I<sub>m</sub> sin(θ<sub>v</sub>−θ<sub>i</sub>) (VAR)</td></tr>
+        <tr><td class="l">p<sub>max</sub>, p<sub>min</sub></td><td class="l">P ± ½V<sub>m</sub>I<sub>m</sub> → P = (p<sub>max</sub>+p<sub>min</sub>)/2, ½V<sub>m</sub>I<sub>m</sub> = (p<sub>max</sub>−p<sub>min</sub>)/2</td></tr>
+        <tr><td class="l">|Q| from p(t)</td><td class="l">|Q| = √((½V<sub>m</sub>I<sub>m</sub>)² − P²); sign from L/C</td></tr>
+        <tr><td class="l">Power factor</td><td class="l">pf = cos(θ<sub>v</sub>−θ<sub>i</sub>) = P / (V<sub>rms</sub>I<sub>rms</sub>); lagging: Q &gt; 0, leading: Q &lt; 0</td></tr>
+        <tr><td class="l">R / L / C</td><td class="l">θ = 0° / +90° / −90° → Q = 0 / +½V<sub>m</sub>I<sub>m</sub> / −½V<sub>m</sub>I<sub>m</sub></td></tr>
+        <tr><td class="l">Series RL load</td><td class="l">P = ½I<sub>m</sub>²R, Q = ½I<sub>m</sub>²X<sub>L</sub></td></tr>
+        <tr><td class="l">Time shift → angle</td><td class="l">θ = 360° · Δt · f (θ &gt; 0 if v peaks before i)</td></tr>
+        <tr><td class="l">Energy</td><td class="l">E = P·t (kWh); fuse limit P<sub>limit</sub> = V·I<sub>fuse</sub></td></tr>
+      </table>
+      <div class="solved"><b>Solved mini example (Example 2.2):</b> v = 100 cos(ωt + 15°) V, i = 4 sin(ωt − 15°) A. <br>① Convert sine to cosine: i = 4 cos(ωt − 105°). ② θ<sub>v</sub> − θ<sub>i</sub> = 15° − (−105°) = 120°. ③ P = ½·100·4·cos120° = −100 W → the box <b>delivers</b> 100 W. ④ Q = 200·sin120° = +173.2 VAR → the box <b>absorbs</b> reactive power. Had you taken −15° without converting the sine, you would get the wrong sign for P (a common mistake).</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">⚠ Points to watch in a real lab</h3>
+      <div class="warnbox"><b>Do not connect an oscilloscope directly to the mains.</b> The oscilloscope probe ground is tied to protective earth; on 230 V mains, clipping the ground lead to any point other than earth means a short circuit and an arc. For mains measurements use an <b>isolation transformer</b> and a <b>differential probe</b>.</div>
+      <div class="warnbox"><b>Watch the ground clip if you measure current with a shunt.</b> The ground clips of CH1 and CH2 must go to the same node; a second ground clip on the other end of the shunt shorts the load. That is why this experiment uses an isolated <b>current probe</b>.</div>
+      <div class="warnbox"><b>Wattmeter: current coil in SERIES, voltage coil in PARALLEL.</b> The current coil has a very small resistance; connected in parallel with the socket it short-circuits the source. Wire it with the power off and choose the current range according to the load current.</div>
+      <div class="warnbox"><b>Resistor power rating.</b> Applying 10 V rms to a 10 Ω resistor means 10 W. A ½ W carbon resistor burns out within seconds. The load resistor heats up; wait before touching it after the experiment.</div>
+      <div class="warnbox"><b>Discharge the capacitor; do not interrupt inductor current suddenly.</b> After switching the amplifier off, the peak voltage may remain on the capacitor: discharge it through a resistor. Breaking inductor current suddenly with a switch produces a spark through L di/dt; reduce the amplitude to zero first.</div>
+      <div class="warnbox"><b>Capacitor AC voltage rating.</b> A polarized electrolytic capacitor is <b>not used</b> with AC loads: it heats up in the reverse half-cycle and may explode. For AC choose a non-polarized film capacitor; the peak voltage (√2·V<sub>rms</sub>) must stay below the rated value.</div>
+      <div class="warnbox"><b>Never bypass the fuse.</b> A 230 V, 16 A fuse allows about 3.7 kW. Plugging several heaters into the same socket blows the fuse; replacing the fuse with a larger one puts the cable at risk of fire.</div>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Common mistakes</h3>
+      <ol class="mist">
+        <li><b>Taking the phase of a sine expression without converting it:</b> for i = 4 sin(ωt − 15°), θ<sub>i</sub> = −105°, not −15°.</li>
+        <li><b>Using the power factor without its sign:</b> cos θ = cos(−θ); without the word lagging/leading the sign of Q is lost.</li>
+        <li><b>Thinking Q is a “loss”:</b> Q does not turn into heat; the energy goes back and forth between the field and the source. Only P turns into heat.</li>
+        <li><b>Writing P = V<sub>m</sub>I<sub>m</sub>:</b> with peak values P = ½V<sub>m</sub>I<sub>m</sub>cos θ; with rms values P = V<sub>rms</sub>I<sub>rms</sub>cos θ.</li>
+        <li><b>Thinking p(t) has frequency f:</b> instantaneous power oscillates at 2f.</li>
+        <li><b>Thinking voltmeter × ammeter = watts:</b> V·I is apparent power (VA); it equals watts only when pf = 1.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Why does it matter? Real life</h3>
+      <p style="font-size:14px;line-height:1.65">The <b>electricity meter</b> multiplies P by time and accumulates kWh; the number on the bill is the integral of P. <b>Motors and transformers</b> are inductive because of their windings: they draw Q &gt; 0. Industrial plants supply this Q locally with <b>capacitor banks</b>; in Turkey a <b>reactive energy charge</b> is applied to customers who exceed a given reactive/active ratio. The wattage on a home appliance label is its average power; the fuse, however, looks at the current.</p>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before coming to the lab. Passive sign convention; cosine reference. Angles in degrees.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Instantaneous Power and Average Value in a Resistive Load</h2>
+  <p class="lead">The AC power amplifier feeds the load box. CH1 shows the load voltage, CH2 the load current via the current probe, and MATH their product p(t).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">In a resistor v and i are in phase (θ = 0): <span class="eq">p = V<sub>m</sub>I<sub>m</sub> cos²ωt = P(1 + cos 2ωt)</span> p(t) oscillates between 0 and 2P and is never negative.</div>
+        <div class="why"><b>Why?</b> v and i always have the same sign: when v &lt; 0, i is also &lt; 0, so the product is still positive. The resistor <b>consumes</b> energy at every instant; it cannot give it back because it has no mechanism to turn heat into electricity.</div>
+        <div class="solved"><b>Mini example (Example 1.3):</b> R = 100 Ω heater on 220 V rms, 50 Hz mains: V<sub>m</sub> = 311.1 V, P = 220²/100 = 484 W, p<sub>max</sub> = 968 W, p(t) oscillates at 100 Hz.</div>
+        <div class="warnbox">The load resistor is a 500 W power resistor. If P = V²/R exceeds this rating the resistor overheats: you will get a warning in the experiment too. Applying 30 V to a 1 Ω resistor means 900 W! The 300 W of Example 2.3 applied to an ordinary 1/4 W resistor would burn it instantly.</div>
+      </div>
+    </div>
+    <div id="d1bench"></div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Instantaneous Power in an Inductor and a Capacitor: Zero Average</h2>
+  <p class="lead">Same bench; the load box holds a pure inductor or a pure capacitor. The “Real inductor” option adds the winding resistance (r).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Inductor: θ = +90° → <span class="eq">p = −Q sin 2ωt,&nbsp; Q = +½V<sub>m</sub>I<sub>m</sub></span> Capacitor: θ = −90° → same form, <b>Q &lt; 0</b>. In both, P = 0.</div>
+        <div class="why"><b>Why?</b> While the current grows, the inductor stores ½Li² of energy in its magnetic field (p &gt; 0); while the current falls, it returns the same energy (p &lt; 0). The capacitor plays the same game with its electric field (½Cv²) and with <b>opposite timing</b>: when the inductor takes, the capacitor gives. This is the secret of compensation.</div>
+        <div class="solved"><b>Mini example (Example 2.4):</b> L = 50 mH, i = 4 cos 200t A. v = L di/dt = 40 cos(200t + 90°) V, p = −80 sin 400t W, P = 0, Q = 80 VAR. The energy entering the inductor in one positive lobe is ∫80 sin 400t dt = 0.4 J.</div>
+        <div class="warnbox">Do not switch the amplifier off suddenly or disconnect the inductor while current flows: the back EMF causes a spark. Discharge the capacitor before removing and touching it.</div>
+      </div>
+    </div>
+    <div id="d2bench"></div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · General Load: Reading P and Q from p(t) and from the Phase Shift</h2>
+  <p class="lead">Series RL, RC and RLC loads. Find P and Q from the average and oscillation amplitude of p(t), find θ<sub>v</sub> − θ<sub>i</sub> from the Δt measured with the cursors, and compare the two methods.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Recipe for reading from the screen: <span class="eq">P = (p<sub>max</sub> + p<sub>min</sub>)/2</span> <span class="eq">½V<sub>m</sub>I<sub>m</sub> = (p<sub>max</sub> − p<sub>min</sub>)/2</span> <span class="eq">|Q| = √((½V<sub>m</sub>I<sub>m</sub>)² − P²)</span> Sign of Q: + if the current lags (inductive), − if it leads (capacitive).</div>
+        <div class="info">Cursor method: Δt from the peak of v to the peak of i; <span class="eq">θ = 360° · Δt · f</span> If i peaks after v, the current lags (θ &gt; 0).</div>
+        <div class="why"><b>Why two methods?</b> The first relies only on a power measurement, the second only on a time measurement. Their agreement is an experimental verification of the formula (P = ½V<sub>m</sub>I<sub>m</sub>cos θ); a disagreement reveals your measurement error.</div>
+        <div class="solved"><b>Mini example (Example 2.3):</b> v = 100 cos 1000t V, R = 6 Ω, L = 8 mH. X<sub>L</sub> = 8 Ω, Z = 10∠53.13° Ω, I = 10∠−53.13° A. P = 500·cos53.13° = 300 W, Q = 500·sin53.13° = 400 VAR, pf = 0.6 lagging. Check: ½I<sub>m</sub>²R = 300 W ✓.</div>
+        <div class="warnbox">In a series RLC, as you approach resonance the current grows and the inductor and capacitor voltages can be <b>much larger</b> than the source (by a factor Q). Do not exceed the capacitor’s voltage rating; mind the amplifier’s 10 A protection.</div>
+      </div>
+    </div>
+    <div id="d3bench"></div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Wattmeter Reading versus the V·I Product</h2>
+  <p class="lead">50 Hz mains voltage reaches a socket strip through a variac + isolation transformer. The wattmeter, voltmeter and ammeter are read at the same time; plug home appliances in and out.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">In an electrodynamic wattmeter the moving coil is fed by the voltage and the fixed coil by the current; the inertia of the pointer shows the <b>average</b> of the product: <span class="eq">W = (1/T)∫ v i dt = P</span> The voltmeter and ammeter read rms: <span class="eq">V·I = S (VA),&nbsp; pf = P / (V·I)</span></div>
+        <div class="why"><b>Why is P ≠ V·I?</b> V·I assumes that the current is in phase with the voltage. In a motor, part of the current goes back and forth only to build the magnetic field: it heats the cable and stresses the fuse, but contributes nothing to the average power.</div>
+        <div class="solved"><b>Mini example (Example 2.8):</b> 230 V, 16 A fuse → P<sub>limit</sub> = 3680 W. Kettle 2000 W + toaster 1146 W + hair dryer 600 W = 3746 W → I = 16.29 A &gt; 16 A: the fuse blows. Removing any one of them is enough.</div>
+        <div class="warnbox">This experiment uses 230 V: change connections <b>only with the power off</b>, use insulated (safety-type) banana leads, and work with one hand. A residual current device (30 mA) must be in the circuit.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 270"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record (R)</button>
+          <button class="btn sec small" id="d4del">Delete last row</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th class="l">Connected loads</th><th>V (V)</th><th>I (A)</th><th>P<sub>W</sub> (W)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and oscilloscope screens.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Why is the average of p(t) equal to P alone? Where did the small P you measured in the inductor come from? For which load did you find the largest difference between the wattmeter and V·I?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (hold to speed up). To type an <b>exact value</b> or choose from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, with <kbd>Shift</kbd> for fine adjustment.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope:</b> MATH = CH1 × CH2 (W). The MEAN line is the full-period average of MATH. With CURSOR, drag two vertical lines on the screen to measure Δt.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta07.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h07', ders: 'Circuit Theory II', hafta: 7,
+  doc: [
+    { id: 'CLO1', t: 'Writes instantaneous power in sinusoidal steady state as p = vi; measures p(t) with the oscilloscope MATH channel and verifies its 2ω frequency.', mc: [1, 4, 5] },
+    { id: 'CLO2', t: 'Explains the shape of p(t) in R, L and C loads; distinguishes cases where energy is consumed from cases where it flows back and forth.', mc: [1, 2, 5] },
+    { id: 'CLO3', t: 'Calculates average and reactive power from the components of p(t) and from the v–i phase difference, and compares the two methods.', mc: [1, 2, 4, 5] },
+    { id: 'CLO4', t: 'Connects a wattmeter correctly; finds the power factor from the difference between P and V·I, and evaluates the fuse limit and compensation.', mc: [1, 4, 5, 6, 10] },
+    { id: 'CLO5', t: 'Presents the findings in writing in a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To observe the v, i and p(t) = v·i waveforms in a resistive load; to verify that p(t) is never negative, that its frequency is 2f, and that its average is V<sub>rms</sub>I<sub>rms</sub>.', doc: ['CLO1', 'CLO2'], mc: [1, 4, 5],
+      gerec: 'AC power amplifier, 500 W power resistor box, current probe (1 V/A), oscilloscope with MATH channel, rms voltmeter/ammeter.',
+      guvenlik: 'Do not exceed the resistor power rating (500 W); do not touch the hot resistor. Oscilloscope grounds on the same node.',
+      veri: 'V<sub>rms</sub>, I<sub>rms</sub>, p<sub>max</sub>, p<sub>min</sub>, average of p; frequency comparison.',
+      tartisma: 'Why did the average power in the resistor not change when you changed the frequency? Would it change for a load with an inductor?' },
+    d2: { amac: 'To show that the average of p(t) is zero in a pure inductor and capacitor, that energy flows back and forth between the field and the source, and the sign of Q.', doc: ['CLO2'], mc: [1, 2, 4, 5],
+      gerec: 'AC power amplifier, air-core inductor (winding resistance r), non-polarized film capacitor, current probe, oscilloscope.',
+      guvenlik: 'Do not interrupt inductor current suddenly (back EMF); discharge the capacitor before removing it; do not use polarized electrolytics with AC.',
+      veri: 'V<sub>m</sub>, I<sub>m</sub>, p<sub>max</sub>, p<sub>min</sub>, average for L and C; small P in the real inductor.',
+      tartisma: 'Where does the small average power you measured in the real inductor go? How would you calculate r from it?' },
+    d3: { amac: 'To find and compare P and Q in series RL, RC and RLC loads from the peak/trough values of p(t) and from the phase difference measured with cursors; to design the Q = 0 condition at resonance.', doc: ['CLO3'], mc: [1, 2, 3, 4, 5],
+      gerec: 'AC power amplifier, load box (R, L, C), current probe, oscilloscope with cursors.',
+      guvenlik: 'At resonance the element voltages may exceed the source: check the capacitor voltage rating; do not push the 10 A protection.',
+      veri: 'For each load p<sub>max</sub>, p<sub>min</sub>, average, Δt; calculation table for P, Q, pf.',
+      tartisma: 'If the θ found by the power method and by the time method differ, which measurement is more reliable, and why?' },
+    d4: { amac: 'To measure the power factor by comparing the wattmeter reading with the V·I product; to show the fuse limit and the effect of a compensation capacitor on the current.', doc: ['CLO4'], mc: [1, 4, 5, 6, 10],
+      gerec: 'Isolation transformer + variac (0–250 V), electrodynamic wattmeter (5 A / 20 A), rms voltmeter and ammeter, socket strip with 16 A fuse, home appliances, 10 µF compensation capacitor.',
+      guvenlik: '230 V: make connections with the power off, safety-type leads, residual current device. Current coil in series, voltage coil in parallel. Never bypass the fuse. Reducing reactive current lowers cable losses and energy waste.',
+      veri: 'V, I, P<sub>W</sub> for the load combinations; calculated S, pf and Q.',
+      tartisma: 'When the capacitor was connected, why did the wattmeter not change while the ammeter reading dropped? What is the effect on the operating bill and on the cable cross-section?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

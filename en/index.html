@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Circuit Theory Virtual Laboratory</title>
+<link rel="stylesheet" href="ortak/lab.css?v=16">
+<style>
+  .weeks{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+  .wk{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;position:relative;text-decoration:none;color:inherit;display:block}
+  .wk b{display:block;font-size:12px;color:var(--accent);letter-spacing:.05em}
+  .wk span{font-size:14px;line-height:1.4;display:block;margin-top:4px}
+  .wk small{color:var(--muted);font-size:12px}
+  .wk.on{border-color:var(--accent);box-shadow:0 4px 14px rgba(11,92,173,.18)}
+  .wk.on:hover{transform:translateY(-2px)}
+  .wk.off{opacity:.55}
+  .wk .st{position:absolute;top:10px;right:10px}
+  .howto ol{margin:6px 0 8px;padding-left:22px;font-size:14px;line-height:1.7}
+  .howto code{background:#eef1f5;border-radius:4px;padding:0 4px}
+  .howto .sub2{font-size:13px;color:var(--muted);margin:0;line-height:1.6}
+</style>
+<link rel="manifest" href="../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../icons/icon-180.png"></head>
+<body><section style="margin:12px;padding:14px;background:#edf7f4;border:1px solid #abcfc3;border-radius:10px;font-family:Arial;line-height:1.5"><b>Install it on your phone as an app (once)</b><p><b>iPhone / iPad:</b> in Safari tap Share → Add to Home Screen → Add. <b>Android:</b> in Chrome tap ⋮ → Add to Home screen / Install app. Then open it from the <b>Devre Lab</b> icon on your home screen. Keep the internet on for the first start and wait for the status message below. Turn the phone sideways for wide circuits.</p><p id="offline-status" role="status">Preparing offline use…</p><p><small>Also keep important measurements as CSV or a report. Clearing the browser’s site data can delete the saved records.</small></p></section><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar"><div><h1>Circuit Theory Virtual Laboratory</h1><div class="sub">Prof. Dr. Ali AKDAĞLI · Circuit Theory I and II · 2 × 14 weeks · works offline</div></div><span class="langpick"><a href="../index.html" title="Türkçe">TR</a><a class="on" href="index.html" title="English">EN</a></span></header>
+<main style="margin:0 auto">
+  <div class="card" style="margin-top:6px"><p style="margin:0;font-size:14px;line-height:1.6">Every week: pre-lab questions, 3–5 experiments with realistic bench instruments (power supply, multimeter, function generator, oscilloscope), automatically ticked lab-sheet steps, measurement tables, graphs and a printable report. No internet needed; just copy the folder to a USB stick and open <b>index.html</b>.</p></div>
+  <div class="card howto">
+    <h3 style="margin-top:0">First time here? The lab in 4 steps</h3>
+    <ol>
+      <li><b>Choose a week</b> and work through the menu in order: Background → Pre-lab → Experiments → Report.</li>
+      <li><b>Instrument knobs:</b> <b>drag</b> a knob up/down or use the <b>−</b> / <b>+</b> buttons below it. For an <b>exact value</b>, <b>tap</b> the knob and type the value (e.g. <code>4.7k</code>, <code>600µ</code>) or pick it from the list.</li>
+      <li>The <b>Next step</b> bar at the bottom of the screen tells you <b>what to do</b>. A step is ticked ✓ automatically when you do it correctly.</li>
+      <li>Add measurements to the table with <b>Record (R)</b>, answer the questions, and in the last section <b>print / save the report as PDF</b>.</li>
+    </ol>
+    <p class="sub2">If an instrument shows nothing: is its output on (<b>OUTPUT ON</b>), is the right connection/mode selected, does the oscilloscope need <b>AUTO</b> or <b>SINGLE</b>? The <b>?</b> button on every page opens the help window.</p>
+  </div>
+  <h2>Circuit Theory I</h2><div class="weeks" id="w1"></div>
+  <h2 style="margin-top:22px">Circuit Theory II</h2><div class="weeks" id="w2"></div>
+</main>
+<script>
+const D1 = [
+ ['Meet the op-amp: terminals, open loop, saturation, virtual short','1.1–1.2','devre1/hafta01.html','d1h1'],
+ ['Inverting and non-inverting amplifiers, voltage follower','1.3–1.4','devre1/hafta02.html','d1h02'],
+ ['Summing and difference amplifiers, common-mode rejection','1.5','devre1/hafta03.html','d1h03'],
+ ['The real op-amp: finite A, SR, GBW, offset','1.6','devre1/hafta04.html','d1h04'],
+ ['The inductor: v = L di/dt, energy','2.1','devre1/hafta05.html','d1h05'],
+ ['The capacitor: i = C dv/dt, energy','2.2','devre1/hafta06.html','d1h06'],
+ ['Series–parallel L and C, mutual inductance','2.3–2.5','devre1/hafta07.html','d1h07'],
+ ['Midterm week: combined practice','Ch. 1–2','devre1/hafta08.html','d1h08'],
+ ['Natural response of RL and RC circuits','3.1–3.2','devre1/hafta09.html','d1h09'],
+ ['Step response and the general solution method','3.3–3.4','devre1/hafta10.html','d1h10'],
+ ['Sequential switching, unbounded response, the integrating amplifier','3.5–3.7','devre1/hafta11.html','d1h11'],
+ ['Parallel RLC natural response: over-, under- and critically damped','4.1–4.4','devre1/hafta12.html','d1h12'],
+ ['Parallel RLC step response','4.5','devre1/hafta13.html','d1h13'],
+ ['Series RLC circuits and term review','4.6','devre1/hafta14.html','d1h14'],
+];
+const D2 = [
+ ['Sinusoidal sources and the phasor concept','1.1–1.3','devre2/hafta01.html','d2h01'],
+ ['R, L, C and impedance','1.4','devre2/hafta02.html','d2h02'],
+ ['Series, parallel, Δ–Y transformation','1.5','devre2/hafta03.html','d2h03'],
+ ['Thévenin–Norton equivalents (AC)','1.6','devre2/hafta04.html','d2h04'],
+ ['Node-voltage and mesh-current methods (AC)','1.7','devre2/hafta05.html','d2h5'],
+ ['Transformers and phasor diagrams','1.8–1.10','devre2/hafta06.html','d2h6'],
+ ['Instantaneous, average and reactive power','2.1–2.2','devre2/hafta07.html','d2h07'],
+ ['Midterm week: combined practice','Ch. 1–2','devre2/hafta08.html','d2h08'],
+ ['RMS value and complex power','2.3–2.4','devre2/hafta09.html','d2h09'],
+ ['Power factor correction, power balance','2.5','devre2/hafta10.html','d2h10'],
+ ['Maximum power transfer','2.6','devre2/hafta11.html','d2h11'],
+ ['Three-phase sources, Y–Y connection','3.1–3.3','devre2/hafta12.html','d2h12'],
+ ['Y–Δ connection and three-phase power','3.4–3.5','devre2/hafta13.html','d2h13'],
+ ['The wattmeter and the two-wattmeter method','3.6','devre2/hafta14.html','d2h14'],
+];
+function render(id, list, course){
+  document.getElementById(id).innerHTML = list.map((w,i)=>{
+    let st = '';
+    if (w[3]) { try { const s = JSON.parse(localStorage.getItem('devrelab-en:'+w[3])||'{}'); const n = Object.keys(s.steps||{}).length; if (n) st = `<span class="badge ok st">${n} ${n === 1 ? 'step' : 'steps'}</span>`; } catch(e){} }
+    const inner = `<b>WEEK ${i+1}</b><span>${w[0]}</span><small>${course} · Section ${w[1]}</small>${w[2] ? st || '<span class="badge st">Ready</span>' : '<span class="badge st">Coming soon</span>'}`;
+    return w[2] ? `<a class="wk on" href="${w[2]}">${inner}</a>` : `<div class="wk off">${inner}</div>`;
+  }).join('');
+}
+render('w1', D1, 'Circuit I'); render('w2', D2, 'Circuit II');
+</script>
+<script src="../pwa-bridge.js"></script><script src="../pwa.js"></script></body>
+</html>

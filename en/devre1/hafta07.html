@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 7 · Series/Parallel L–C and Mutual Inductance — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<style>
+  .bar{height:18px;border-radius:4px;background:#0b5cad;transition:width .15s}
+  .bars td{padding:3px 6px;font-size:13px}
+</style>
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 7 — Series/Parallel L and C, Mutual Inductance</h1>
+    <div class="sub">Equivalent element · Initial conditions · Dot convention · M and k · L = L₁+L₂±2M · Coupled energy</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">0%</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Series/Parallel L and C</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Mutual Inductance</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Finding the Dot Polarity</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Energy and k ≤ 1</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> for fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<section class="page" id="giris">
+  <h2>Week 7 · Series/Parallel Inductors and Capacitors, Mutual Inductance</h2>
+  <p class="lead">Lecture notes: <b>Section 2.3 Series and parallel connections</b>, <b>2.4 Mutual inductance</b>, <b>2.5 Flux linkage, energy and applications</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li><b>Measure with an LCR meter</b> the equivalent of capacitors and inductors connected in series and in parallel and compare it with the formula; verify KVL for series capacitors with initial voltages.</li>
+        <li>See on the oscilloscope that a <b>change</b> in the primary current induces a voltage in the secondary, and measure <b>M</b> and <b>k</b> from the open-circuit secondary voltage.</li>
+        <li>Find M from series-aiding and series-opposing measurements (L = L₁+L₂±2M) and determine experimentally <b>the dot polarity of an unknown coil</b>.</li>
+        <li>Study the energy in coupled inductors and see why the <b>k ≤ 1</b> limit is mandatory.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">LCR meter (1 kHz, series equivalent) · Constant current source · Voltage-controlled current source (V→I, power amplifier) · Function generator · Two-channel oscilloscope (1 MΩ, with cursors) · DMM · Component drawer (2–6 µF film capacitors, 20–40 mH inductors) · Two-winding coil assembly on a common former with adjustable spacing · Coil pair with erased labels.</p>
+      <div class="info">Dot convention: if current enters the <b>dotted</b> terminal of one winding, the “+” terminal of the mutual voltage in the other winding is at that winding’s <b>dotted</b> terminal. If both currents enter the dots, the term is <b>+M</b>; if one enters and the other leaves, it is <b>−M</b>.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Work order</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First read the <b>Background</b>, then solve the <b>Pre-lab</b> questions. Follow the lab sheet in each experiment; steps are checked off automatically when the setting is correct. Record measurements with <kbd>R</kbd>; answer the questions from your own measurements. At the end, print your report.</p>
+  </div>
+</section>
+
+<section class="page" id="onbilgi">
+  <h2>Background · Combining Elements and Sharing Flux</h2>
+  <p class="lead">The series–parallel rules are sometimes the same as for resistors and sometimes the opposite. In mutual inductance, the sign is everything.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Series and parallel: what is shared?</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Parallel</b> elements share the <b>voltage</b>; <b>series</b> elements share the <b>current</b> (for capacitors, the charge). Inductors behave like resistors: they add in series, and their reciprocals add in parallel. For capacitors the rule is <b>reversed</b>: they add in parallel (plate area grows), and their reciprocals add in series (the dielectric gets thicker). In series capacitors the voltage is not shared equally: <b>the smaller capacitance takes the larger voltage</b>.</p>
+      <h3>2 · Mutual inductance</h3>
+      <p style="font-size:14px;line-height:1.65">Part of the flux of one winding also passes through the other winding. When this shared flux <b>changes</b>, a voltage is induced in the second winding: <span class="eq">v<sub>2</sub> = M di<sub>1</sub>/dt &nbsp;(i<sub>2</sub> = 0)</span> A constant current induces nothing: a transformer does not work on DC. The coupling coefficient <b>k</b> tells how much of the flux is shared: M = k√(L₁L₂), 0 ≤ k ≤ 1. Transformers, wireless charging, current transformers and isolated power supplies work on this principle; unwanted coupling, on the other hand, produces <b>crosstalk</b> on PCBs.</p>
+      <svg viewBox="0 0 420 170" class="schem" style="max-width:420px">
+        <rect x="150" y="20" width="120" height="130" rx="10" fill="none" stroke="#999" stroke-width="10"/>
+        <g stroke="#c62828" stroke-width="3" fill="none"><path d="M130,40 q30,-8 30,8 M130,60 q30,-8 30,8 M130,80 q30,-8 30,8 M130,100 q30,-8 30,8 M130,120 q30,-8 30,8"/></g>
+        <g stroke="#1d4ed8" stroke-width="3" fill="none"><path d="M290,40 q-30,-8 -30,8 M290,60 q-30,-8 -30,8 M290,80 q-30,-8 -30,8 M290,100 q-30,-8 -30,8 M290,120 q-30,-8 -30,8"/></g>
+        <circle cx="122" cy="34" r="5" fill="#222"/><circle cx="298" cy="34" r="5" fill="#222"/>
+        <path d="M60,36 H130 M60,128 H130 M290,36 H360 M290,128 H360" class="w"/>
+        <text x="70" y="28" class="lbl">i₁ →</text><text x="40" y="90" class="lbl">L₁</text><text x="370" y="90" class="lbl">L₂</text>
+        <text x="372" y="40" class="lbl">+</text><text x="372" y="134" class="lbl">−</text><text x="388" y="90" class="lbl">v₂</text>
+        <text x="210" y="168" text-anchor="middle" class="lbl" style="font-size:12px">shared flux (grey core): M = k√(L₁L₂)</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><th></th><th>Series</th><th>Parallel</th></tr>
+        <tr><td class="l">Inductor (uncoupled)</td><td class="l">L = L₁ + L₂</td><td class="l">1/L = 1/L₁ + 1/L₂</td></tr>
+        <tr><td class="l">Capacitor</td><td class="l">1/C = 1/C₁ + 1/C₂</td><td class="l">C = C₁ + C₂</td></tr>
+        <tr><td class="l">Initial condition</td><td class="l">C: v(0) = v₁(0)+v₂(0)</td><td class="l">L: i(0) = i₁(0)+i₂(0)</td></tr>
+        <tr><td class="l">Series C voltage division</td><td class="l" colspan="2">V₁ = Q/C₁, Q = C<sub>eq</sub>V (small C → large V)</td></tr>
+      </table>
+      <table class="data" style="margin-top:8px">
+        <tr><td class="l">Two windings (both currents into the dots)</td><td class="l">v₁ = L₁ di₁/dt + M di₂/dt<br>v₂ = M di₁/dt + L₂ di₂/dt</td></tr>
+        <tr><td class="l">Open secondary</td><td class="l">v₂ = M di₁/dt</td></tr>
+        <tr><td class="l">Flux linkage</td><td class="l">λ = NΦ, v = dλ/dt, λ₁ = L₁i₁ + Mi₂</td></tr>
+        <tr><td class="l">Coupling coefficient</td><td class="l">k = M/√(L₁L₂), 0 ≤ k ≤ 1</td></tr>
+        <tr><td class="l">Series aiding / opposing</td><td class="l">L₊ = L₁+L₂+2M, &nbsp;L₋ = L₁+L₂−2M</td></tr>
+        <tr><td class="l">M from measurement</td><td class="l">M = (L₊ − L₋)/4</td></tr>
+        <tr><td class="l">Coupled energy</td><td class="l">w = ½L₁i₁² + ½L₂i₂² ± M i₁i₂</td></tr>
+        <tr><td class="l">Condition for energy ≥ 0</td><td class="l">M ≤ √(L₁L₂) ⇔ k ≤ 1</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Points to watch in a real laboratory</h3>
+    <div class="warnbox"><b>Do not interrupt an inductor current suddenly.</b> When the circuit of a current-carrying inductor is opened, L·di/dt becomes very large: a spark (back EMF) appears at the switch and hundreds of volts may occur. This pulse also appears in the coupled second winding in the ratio M/L₁; do not touch the open secondary, and if necessary place a freewheeling diode or an RC snubber across the winding.</div>
+    <div class="warnbox"><b>Do not connect a charged capacitor to the LCR meter.</b> After the pre-charged capacitor experiment, discharge the capacitors through a resistor and measure that they are at 0 V; otherwise the input stage of the LCR meter will be damaged. The LCR meter measures with an AC signal anyway; it <b>cannot see</b> the initial voltage.</div>
+    <div class="warnbox"><b>Voltage rating of series capacitors.</b> If 2 µF/16 V and 4 µF/16 V are connected in series and 30 V is applied, the 2 µF one sees 20 V and breaks down. Do not check the total “32 V”; check each capacitor’s own share.</div>
+    <div class="warnbox"><b>A real inductor has resistance.</b> The LCR meter measures the inductor as a series L–R; the winding resistance (R<sub>s</sub>) and the quality factor Q are also read. When driving with a current source, watch for inductor heating and the wire current limit; R increases as the winding heats up.</div>
+    <div class="warnbox"><b>Coupling also happens unintentionally.</b> If you place two inductors that you will measure separately next to each other, an M appears between them and your series/parallel measurement comes out wrong. For an “uncoupled” measurement, place the inductors far apart with perpendicular axes. An iron table leg, a screwdriver or a magnet next to the inductor also changes L.</div>
+    <div class="warnbox"><b>Oscilloscope grounds are common.</b> When monitoring the primary (current shunt) and the secondary winding at the same time, the grounds of the two probes are joined inside the oscilloscope. Connecting one end of the secondary winding to circuit ground removes the insulation between the windings; never do this on a high-voltage transformer, use a differential probe.</div>
+    <div class="info"><b>Common mistakes:</b> adding series capacitors like resistors (8 µF instead of 1.5 µF for 2+6); confusing the sign of M with the sign of the derivative (the dots determine ±M, the derivative determines the sign of the number); writing M = (L₊−L₋)/2 (the correct one is /4); comparing M with a single inductor (the limit is √(L₁L₂)); assuming different initial currents in series inductors; forgetting to add the initial currents of parallel inductors.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve these before coming to the lab. The values are taken from the examples in the lecture notes.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Series/Parallel Equivalent with an LCR Meter</h2>
+  <p class="lead">Select components from the drawer, set up the connection type and measure the equivalent seen from the terminals with the LCR meter. Below, feed two series capacitors with initial voltages from a constant current source.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">The components in the drawer are real: capacitors have ±5% and inductors ±5% tolerance, and the inductors have winding resistance. First measure each component <b>on its own</b> and note its actual value; use the measured values when comparing with the formula.</div>
+        <div class="info">The <b>equivalent initial voltage</b> of series capacitors comes from KVL: <span class="eq">v(0) = v₁(0) + v₂(0)</span> In a series connection the same current flows through both, each changes according to its own C; the total changes with the equivalent C<sub>eq</sub>: <span class="eq">Δv = (1/C<sub>eq</sub>)·I·Δt</span></div>
+        <div class="warnbox">Always discharge pre-charged capacitors before connecting them to the LCR meter. The virtual LCR meter will also refuse to measure a charged capacitor.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Type</th><th>Connection</th><th>A</th><th>B</th><th>C</th><th>LCR reading</th><th>R<sub>s</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="bench" style="margin-top:12px">
+        <div class="row" style="color:#dfe3ea;font-weight:700;margin-bottom:6px">Series capacitors with initial voltages (C<sub>1</sub> = 2 µF, C<sub>2</sub> = 6 µF)</div>
+        <div class="bench-row" id="d1pre"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch2" class="schem" viewBox="0 0 760 170"></svg></div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Mutual Inductance: Dot Convention, M and k</h2>
+  <p class="lead">The primary winding (L₁ = 40 mH) is driven by a V→I current source; CH1 shows i₁ across a 1 Ω shunt (1 V = 1 A), CH2 shows the open-circuit secondary voltage (L₂ = 90 mH, dotted terminal “+”). Adjust the coupling by changing the spacing between the windings.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">With the secondary open (the oscilloscope’s 1 MΩ draws no current) only the mutual term remains: <span class="eq">v₂ = M di₁/dt</span> With a triangular current the slope is constant (±2I<sub>pp</sub>f), so v₂ is a square wave: <span class="eq">M = V₂,peak / (2I<sub>pp</sub>f)</span></div>
+        <div class="info">If i₁ enters the dotted terminal and is <b>increasing</b>, the dotted terminal of the secondary is positive; if it is <b>decreasing</b>, it is negative. The dots and the derivative together determine the sign.</div>
+        <div class="info">As the spacing increases the shared flux decreases, and k and M become smaller. You cannot read k directly; measure M and calculate k = M/√(L₁L₂).</div>
+        <div class="warnbox">When driving an inductor with a current source, if the source output becomes “open circuit” (a lead comes off) the source voltage hits its ceiling; change connections with the power off. Asking for a square current means very large L·di/dt voltages at the edges.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d2inst"></div>
+        <div class="bench-row" style="margin-top:12px">
+          <div class="inst dark scopewrap" style="flex:1;min-width:420px">
+            <div class="brand"><span>DSO-2C · Digital Oscilloscope</span><span><span class="led on g"></span> RUN</span></div>
+            <div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+              <canvas id="scope" width="640" height="400" style="width:100%;max-width:640px"></canvas>
+              <div style="min-width:150px">
+                <div class="ctrls" id="scopeKnobs"></div>
+                <div class="row" style="margin:6px 0">
+                  <button class="seg-btn on" id="ch1on">CH1</button>
+                  <button class="seg-btn on" id="ch2on">CH2</button>
+                  <button class="seg-btn" id="curon">CURSOR</button>
+                </div>
+                <div class="meas" id="scopeMeas"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 240"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Current waveform</th><th>f</th><th>I<sub>pp</sub> (A)</th><th>Spacing (mm)</th><th>CH1 V<sub>pp</sub></th><th>CH2 V<sub>pp</sub></th><th>CH2 max</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>M – spacing plot (the M values you calculated)</b><span class="grow"></span></div>
+        <div class="row" style="font-size:13px">M you calculated for recorded row no. <input type="text" id="d2row" size="3">: <input type="text" id="d2m" size="7"> mH <button class="btn small" id="d2madd">Add to plot</button><button class="btn sec small" id="d2mclr">Clear</button></div>
+        <canvas id="d2plot" width="700" height="260" style="width:100%"></canvas>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Series Aiding/Opposing Connection and Finding the Dot Polarity Experimentally</h2>
+  <p class="lead">A coil pair with erased labels: the dot of the first winding (terminal 1) is known, that of the second winding is not. Connect the windings in series and measure them with the LCR meter in two different ways.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">In a series connection, if the current enters the dotted terminal of both windings, the fluxes add: <span class="eq">L₊ = L₁ + L₂ + 2M</span> If it enters one and leaves the other, the fluxes weaken each other: <span class="eq">L₋ = L₁ + L₂ − 2M</span> The connection with the larger reading is the <b>aiding</b> connection; the dot position follows from this.</div>
+        <div class="info">The difference of the two measurements is 4M: <span class="eq">M = (L₊ − L₋)/4</span> If L₁ and L₂ are also measured, k = M/√(L₁L₂) is found.</div>
+        <div class="info">Workshop method (for information): a battery and a switch are connected to the primary, an analog (centre-zero) voltmeter to the secondary. If the voltmeter needle deflects to the <b>right</b> when the switch closes, the terminal connected to the battery’s + and the terminal connected to the voltmeter’s + are <b>like-dotted</b> terminals.</div>
+        <div class="warnbox">In the battery–switch method, a large back EMF appears in the primary when the switch is <b>opened</b> and the needle kicks hard in the opposite direction; a meter on a sensitive range may be damaged. Start on a high range.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Record (R)</button>
+          <button class="btn sec small" id="d3del">Delete last row</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Connection</th><th>LCR terminals</th><th>L (mH)</th><th>R<sub>s</sub> (Ω)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Energy in Coupled Inductors and the k ≤ 1 Limit</h2>
+  <p class="lead">L₁ = 40 mH, L₂ = 90 mH. Adjustable DC currents are applied to the two windings (positive direction: into the dotted terminal). While the currents are built up from zero one after the other, the total energy delivered by the sources is measured with an energy meter (∫v·i dt).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Building the currents one after the other: first i₁ (only ½L₁I₁²), then i₂ is built up while I₁ is constant; meanwhile the primary source does work M·I₁·I₂ against the mutual voltage: <span class="eq">w = ½L₁i₁² + ½L₂i₂² + M i₁i₂</span> If i₂ leaves the dot (i₂ &lt; 0) the mutual term reduces the energy.</div>
+        <div class="info">As a function of the ratio i₂/i₁, the energy takes its minimum value at <span class="eq">i₂ = −(M/L₂) i₁</span>: <span class="eq">w<sub>min</sub> = ½L₁i₁²(1 − k²)</span> A passive network cannot store negative energy; therefore k ≤ 1 is mandatory.</div>
+        <div class="warnbox">In reality, applying DC to two windings and suddenly opening one causes the stored energy to discharge in a spark. Switch off by slowly reducing the currents to zero at the sources.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 210"></svg></div>
+      <div class="card">
+        <div class="row"><b>w – i₂ curve (i₁ constant)</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d4theo"> Show curve</label></div>
+        <canvas id="d4plot" width="700" height="280" style="width:100%"></canvas>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record (R)</button>
+          <button class="btn sec small" id="d4del">Delete last row</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>k</th><th>i₁ (A)</th><th>i₂ (A)</th><th>w measured (mJ)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Why is a series capacitor combination smaller than even the smallest capacitor? How did you find the dot polarity? Why is k > 1 impossible?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). <b>Tap</b> the knob or the value below it to type an <b>exact value</b> or pick from a list (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is checked off automatically when done correctly.<br>
+    <b>Oscilloscope cursors:</b> press the CURSOR button and drag on the screen.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta07.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h07', ders: 'Circuit Theory I', hafta: 7,
+  doc: [
+    { id: 'CLO1', t: 'Calculates the equivalent and the initial conditions of inductors and capacitors in series, parallel and mixed connections, and verifies them with an LCR meter.', mc: [1, 2, 4] },
+    { id: 'CLO2', t: 'Explains mutual inductance and the dot convention; measures M and k from the open-circuit secondary voltage.', mc: [1, 4, 5] },
+    { id: 'CLO3', t: 'Designs series-aiding/opposing measurements and determines the M value and dot polarity of an unknown coil pair.', mc: [2, 3, 5] },
+    { id: 'CLO4', t: 'Calculates the energy stored in coupled inductors and justifies the k ≤ 1 limit with the energy principle.', mc: [1, 2] },
+    { id: 'CLO5', t: 'Presents the findings in writing in a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To measure the equivalent of L and C elements in series, parallel and mixed connections with an LCR meter; to verify KVL for series capacitors with initial voltages.', doc: ['CLO1'], mc: [1, 2, 4, 10],
+      gerec: 'LCR meter (1 kHz), film capacitors (2–6 µF), inductors (20–40 mH), constant current source, DMM.',
+      guvenlik: 'Do not connect a charged capacitor to the LCR meter; check the voltage share of each element in series capacitors.',
+      veri: 'Single-element and equivalent LCR readings, pre-charged series capacitor voltages.',
+      tartisma: 'How would you obtain a given C value from available standard values with the fewest components and the lowest cost?' },
+    d2: { amac: 'To show that a change in the primary current induces a voltage in the secondary; to measure M and k from the open-circuit secondary voltage.', doc: ['CLO2'], mc: [1, 4, 5],
+      gerec: 'Two-winding coil assembly with adjustable spacing, V→I current source, function generator, 1 Ω shunt, oscilloscope.',
+      guvenlik: 'Do not leave the current source output open; remember that the grounds of the two probes are common.',
+      veri: 'CH1/CH2 Vpp and peak values, M and k versus spacing.',
+      tartisma: 'In wireless charging, why does the efficiency drop when the phone moves away from the charging pad?' },
+    d3: { amac: 'To find the M value of an unknown coil pair and the dot polarity of the second winding using series-aiding/opposing measurements.', doc: ['CLO3'], mc: [2, 3, 4, 5],
+      gerec: 'Unlabelled coil pair, LCR meter, connecting leads.',
+      guvenlik: 'In the battery–switch method, the back EMF produced when the switch opens may damage the meter.',
+      veri: 'L₁, L₂, L₊, L₋ readings; M, k and dot position.',
+      tartisma: 'Can you find k with only two measurements (L₊ and L₋)? Why?' },
+    d4: { amac: 'To study the dependence of the energy in coupled inductors on the mutual term and to demonstrate the k ≤ 1 limit.', doc: ['CLO4'], mc: [1, 2, 5],
+      gerec: 'Two-winding coil assembly, two adjustable DC current sources, energy meter.',
+      guvenlik: 'Do not suddenly open the circuit of a current-carrying winding; reduce the currents slowly to zero.',
+      veri: 'Measured energy for different i₁, i₂ and k; w–i₂ curve.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

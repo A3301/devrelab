@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 8 · Midterm Week — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<style>
+  .tp{cursor:pointer}
+  .tp circle{fill:#fff;stroke:#c62828;stroke-width:2.5}
+  .tp.red circle{fill:#c62828}
+  .tp.blk circle{fill:#222;stroke:#222}
+  .tp text{font-size:11px;font-weight:700;fill:#c62828}
+  .rsel{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:14px}
+  .timer{font:700 28px Consolas,monospace;color:#0b5cad}
+  .timer.low{color:#c62828}
+  .exq{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:6px 0;background:#fbfcfe;font-size:14px;line-height:1.5}
+  .exq.ok{border-color:#1a8a4a;background:#effaf2}
+  .exq.bad{border-color:#c62828;background:#fdf0f0}
+  .mist li{margin:5px 0;font-size:14px;line-height:1.5}
+  .why{background:#f3f0fb;border-left:4px solid #7a4cc2;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}
+  .solved{background:#f2faf4;border-left:4px solid #1a8a4a;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}
+</style>
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 8 — Midterm Week: Practical Exam</h1>
+    <div class="sub">AC troubleshooting · Phase-angle design · Waveform / phasor recognition · Timed practice exam (Chapters 1–2)</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Exam Preparation Summary</button>
+  <button data-p="onhaz"><span class="dot"></span>1b · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>2 · Task 1: Find the AC Fault</button>
+  <button data-p="d2"><span class="dot"></span>3 · Task 2: Phase-Angle Design</button>
+  <button data-p="d3"><span class="dot"></span>4 · Task 3: Waveform / Phasor Recognition</button>
+  <button data-p="d4"><span class="dot"></span>5 · Task 4: Practice Exam</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag, or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> for fine adjustment.<br><br><kbd>R</kbd> record measurement/design · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 8 · Midterm Week — Practical Exam</h2>
+  <p class="lead">Scope: <b>Chapter 1</b> (sinusoidal source and rms, sinusoidal response, phasors, impedance, series/parallel/Δ–Y, Thevenin–Norton, node/mesh, transformer, ideal transformer, phasor diagrams) and <b>Chapter 2</b> (instantaneous, average, reactive power, power with rms, complex power, power factor correction, maximum power transfer).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this week you will</h3>
+      <ol class="steps">
+        <li>Find an open connection, a short circuit or a wrongly fitted component on a faulty series RLC board <b>by measuring with an rms voltmeter and ammeter</b>.</li>
+        <li>Design a series element (C or L) that brings the current in a given inductive load to the required <b>phase angle</b>, together with its <b>voltage/current rating</b> and cost.</li>
+        <li>Extract the <b>type, the angle θ<sub>v</sub> − θ<sub>i</sub> and the average power</b> of a load from an oscilloscope screen or a phasor diagram.</li>
+        <li>Measure your speed and accuracy in a <b>20-question, 40-minute</b> practice exam generated with random numbers.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Function generator (50 Ω internal resistance, 10 Hz–20 kHz) · True-rms digital multimeter (AC V, 10 MΩ) · AC ammeter · Power amplifier (Task 2) · Two-channel oscilloscope and current probe · Phasor diagram panel · E12-series capacitor and inductor boxes.</p>
+      <div class="info">Scenarios are generated <b>randomly</b> each time: memorising does not help, you need to measure and think. Unless stated otherwise, angles are in degrees and voltages and currents are rms; the cosine reference and passive sign convention apply.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First read the <b>Exam Preparation Summary</b> and solve the <b>Pre-lab</b> questions. Tasks 1–3 are each a practical exam station: lab-sheet steps are ticked as you do the right thing. Leave Task 4 for last; once the timer starts, try to solve without looking at the formula card. Your report includes the results of all tasks.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Exam Preparation Summary · Chapters 1 and 2 on One Page</h2>
+  <p class="lead">Final review before the midterm: the main idea of both chapters, the rotating-phasor intuition, all formulas on one card and the 10 most common mistakes.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · The essence of Chapter 1: jω instead of the derivative</h3>
+      <p style="font-size:14px;line-height:1.65">In a linear circuit all responses to a sinusoidal source have <b>the same frequency</b>; only amplitude and phase change. So we can think of every sinusoid as the shadow of a rotating arrow (phasor): <b>V = V<sub>m</sub>∠θ</b>. Differentiation becomes multiplication by jω; the differential equation reduces to algebra. R, L, C each become an <b>impedance</b> (R, jωL, −j/ωC), and every tool we know from DC (series/parallel, voltage divider, Thevenin, node/mesh) works just the same, but <b>with complex numbers</b>.</p>
+      <h3>Rotating phasor ↔ sinusoid</h3>
+      <svg id="obPh" viewBox="0 0 520 200" style="width:100%;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:8px"></svg>
+      <p style="font-size:13px;line-height:1.5;margin:6px 0">The arrow rotates at speed ω; its horizontal projection (Re) is v(t). The blue arrow is the current: lagging by θ (inductive load). Because both arrows rotate at the same speed, the angle between them <b>never changes</b>: a phasor diagram is a photograph of this frozen instant.</p>
+      <h3>2 · The essence of Chapter 2: P does work, Q goes back and forth</h3>
+      <p style="font-size:14px;line-height:1.65">p(t) = P + P cos2ωt − Q sin2ωt. Its average <b>P</b> (W) turns into heat/work in the load; <b>Q</b> (VAR) goes back and forth between the field and the source. Everything is collected in one complex number: <b>S = V<sub>rms</sub>I<sub>rms</sub>* = P + jQ</b>, |S| is the apparent power (VA), pf = P/|S|. A capacitor next to a motor supplies its Q (pf correction); for the load to draw maximum power, <b>Z<sub>L</sub> = Z<sub>Th</sub>*</b>.</p>
+      <h3>3 · AC troubleshooting recipe</h3>
+      <svg viewBox="0 0 520 120" style="width:100%;max-width:520px;display:block" aria-label="AC troubleshooting flow">
+        <g font-family="Segoe UI,Arial" font-size="12" text-anchor="middle">
+          <rect x="4" y="30" width="110" height="56" rx="8" fill="#eaf2fc" stroke="#0b5cad"/><text x="59" y="54">1 · Source</text><text x="59" y="72">Are V and I present?</text>
+          <rect x="140" y="30" width="110" height="56" rx="8" fill="#eaf2fc" stroke="#0b5cad"/><text x="195" y="54">2 · If I = 0</text><text x="195" y="72">which element has full V?</text>
+          <rect x="276" y="30" width="110" height="56" rx="8" fill="#eaf2fc" stroke="#0b5cad"/><text x="331" y="54">3 · Element V ≈ 0</text><text x="331" y="72">short circuit?</text>
+          <rect x="412" y="30" width="104" height="56" rx="8" fill="#fff4e2" stroke="#e07a10"/><text x="464" y="54">4 · Value</text><text x="464" y="72">does |Z| = V/I match?</text>
+          <path d="M114,58 h22 m-6,-5 l6,5 l-6,5 M250,58 h22 m-6,-5 l6,5 l-6,5 M386,58 h22 m-6,-5 l6,5 l-6,5" stroke="#333" fill="none" stroke-width="1.5"/>
+          <text x="260" y="112" fill="#555">The arithmetic sum of element voltages may exceed the source: KVL holds for phasors!</text>
+        </g>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card (Chapters 1 + 2)</h3>
+      <table class="data">
+        <tr><th colspan="2">Sinusoid, rms, phasor</th></tr>
+        <tr><td class="l">Sinusoid</td><td class="l">v = V<sub>m</sub>cos(ωt + φ), ω = 2πf, T = 1/f</td></tr>
+        <tr><td class="l">rms</td><td class="l">V<sub>rms</sub> = V<sub>m</sub>/√2 (sine); triangle: I<sub>p</sub>/√3; V<sub>pp</sub> = 2V<sub>m</sub></td></tr>
+        <tr><td class="l">sin → cos</td><td class="l">sin x = cos(x − 90°)</td></tr>
+        <tr><td class="l">Time shift</td><td class="l">Δt = (Δφ/360°)·T</td></tr>
+        <tr><td class="l">Phasor</td><td class="l">V<sub>m</sub>cos(ωt+φ) ↔ V<sub>m</sub>∠φ; d/dt ↔ jω</td></tr>
+        <tr><td class="l">RL response</td><td class="l">i = −I<sub>m</sub>cos(φ−θ)e<sup>−t/τ</sup> + I<sub>m</sub>cos(ωt+φ−θ), τ = L/R</td></tr>
+        <tr><th colspan="2">Impedance and circuit solution</th></tr>
+        <tr><td class="l">R, L, C</td><td class="l">Z<sub>R</sub> = R, Z<sub>L</sub> = jωL, Z<sub>C</sub> = −j/(ωC); Y = 1/Z = G + jB</td></tr>
+        <tr><td class="l">Series / parallel</td><td class="l">Z<sub>s</sub> = ΣZ<sub>k</sub>; Y<sub>p</sub> = ΣY<sub>k</sub></td></tr>
+        <tr><td class="l">Dividers</td><td class="l">V<sub>k</sub> = V·Z<sub>k</sub>/ΣZ; I<sub>1</sub> = I·Z<sub>2</sub>/(Z<sub>1</sub>+Z<sub>2</sub>)</td></tr>
+        <tr><td class="l">Δ → Y</td><td class="l">Z<sub>1</sub> = Z<sub>b</sub>Z<sub>c</sub>/(Z<sub>a</sub>+Z<sub>b</sub>+Z<sub>c</sub>)</td></tr>
+        <tr><td class="l">Resonance (series)</td><td class="l">ω<sub>0</sub> = 1/√(LC), Q = ω<sub>0</sub>L/R, V<sub>L</sub> = V<sub>C</sub> = Q·V</td></tr>
+        <tr><td class="l">Thevenin</td><td class="l">V<sub>Th</sub> = V<sub>open</sub>, Z<sub>Th</sub> = V<sub>Th</sub>/I<sub>short</sub>; source transformation I = V/Z</td></tr>
+        <tr><td class="l">Ideal transformer</td><td class="l">V<sub>1</sub>/N<sub>1</sub> = V<sub>2</sub>/N<sub>2</sub>, N<sub>1</sub>I<sub>1</sub> = N<sub>2</sub>I<sub>2</sub>, Z<sub>in</sub> = (N<sub>1</sub>/N<sub>2</sub>)²Z<sub>L</sub></td></tr>
+        <tr><td class="l">Linear transformer</td><td class="l">Z<sub>r</sub> = ω²M²/Z<sub>22</sub> = (ωM/|Z<sub>22</sub>|)²Z<sub>22</sub>*, M = k√(L<sub>1</sub>L<sub>2</sub>)</td></tr>
+        <tr><th colspan="2">Power</th></tr>
+        <tr><td class="l">P, Q</td><td class="l">P = ½V<sub>m</sub>I<sub>m</sub>cos(θ<sub>v</sub>−θ<sub>i</sub>) = V<sub>rms</sub>I<sub>rms</sub>cos θ; Q = … sin θ</td></tr>
+        <tr><td class="l">Complex power</td><td class="l">S = V<sub>rms</sub>I<sub>rms</sub>* = P + jQ = I<sub>rms</sub>²Z = V<sub>rms</sub>²/Z*</td></tr>
+        <tr><td class="l">pf correction</td><td class="l">Q<sub>C</sub> = P(tanθ<sub>1</sub> − tanθ<sub>2</sub>), C = Q<sub>C</sub>/(ωV<sub>rms</sub>²)</td></tr>
+        <tr><td class="l">Max. power</td><td class="l">Z<sub>L</sub> = Z<sub>Th</sub>* → P<sub>max</sub> = |V<sub>Th,rms</sub>|²/(4R<sub>Th</sub>)</td></tr>
+        <tr><td class="l">Energy, fuse</td><td class="l">E = P·t (kWh); I = ΣP/V (resistive)</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">The 10 most common mistakes</h3>
+      <ol class="mist">
+        <li>Taking the phase <b>without converting sine to cosine</b> (sin(ωt − 15°) → −105°).</li>
+        <li><b>Adding magnitudes:</b> |V<sub>R</sub>| + |V<sub>C</sub>| ≠ |V|; phasors add <b>as vectors</b>.</li>
+        <li><b>Mixing degrees and radians:</b> 1000πt is in radians, the phase angle in degrees; check your calculator mode.</li>
+        <li>Forgetting the <b>minus sign of capacitor impedance</b>: Z<sub>C</sub> = −j/(ωC).</li>
+        <li><b>Mixing f and ω:</b> X<sub>L</sub> = 2πfL; if “ω = 1000” then f = 159.15 Hz.</li>
+        <li><b>Mixing peak and rms:</b> P = ½V<sub>m</sub>I<sub>m</sub>cos θ but P = V<sub>rms</sub>I<sub>rms</sub>cos θ; do not use the ½ factor twice.</li>
+        <li>Using the <b>power factor without its sign</b>: “lagging” is inductive (Q &gt; 0), “leading” is capacitive (Q &lt; 0).</li>
+        <li>Writing <b>S = VI</b>: the correct form is S = V·I* (conjugate of the current); otherwise the sign of Q comes out reversed.</li>
+        <li>Taking <b>Z<sub>L</sub> = Z<sub>Th</sub> for maximum power</b>: the correct condition is the conjugate, Z<sub>Th</sub>*.</li>
+        <li>Using the <b>transformer ratio upside down</b>: the reflected impedance is (N<sub>1</sub>/N<sub>2</sub>)²Z<sub>L</sub>, and the current ratio is the inverse of the voltage ratio.</li>
+      </ol>
+      <div class="solved"><b>Solved mini example (Examples 1.16 + 2.3 together):</b> v<sub>s</sub> = 50 cos1000t V, R = 30 Ω, L = 60 mH, C = 50 µF in series. Z = 30 + j(60 − 20) = 50∠53.13° Ω → I = 1∠−53.13° A. P = ½·50·1·cos53.13° = 15 W = ½I<sub>m</sub>²R ✓; Q = 20 VAR; V<sub>L</sub> = 60 V &gt; source 50 V (normal for phasors!).</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">⚠ Points to watch in a real lab</h3>
+      <div class="warnbox"><b>When troubleshooting, measure the source first.</b> The function generator has a 50 Ω internal resistance: with a load connected, the terminal voltage is lower than the set value. Measure first at the generator terminals, then across each element; compare the V/I ratios with the current shown by the ammeter.</div>
+      <div class="warnbox"><b>Multimeter AC range and frequency.</b> Cheap multimeters read rms correctly only at 50–400 Hz; at kHz they read low. With square/triangle waves, a meter that is not “true rms” gives a wrong reading.</div>
+      <div class="warnbox"><b>Never measure resistance/capacitance in a live circuit.</b> The ohm and capacitance ranges apply their own signal; in an energised circuit they read wrong and stress the meter. To measure a component value, switch the power off and disconnect one of its leads (LCR meter).</div>
+      <div class="warnbox"><b>At resonance the element voltage exceeds the source.</b> In a series RLC, V<sub>C</sub> = Q·V is possible: seeing 100 V on the capacitor with a 10 V source is possible. Choose the capacitor voltage rating accordingly.</div>
+      <div class="warnbox"><b>Oscilloscope ground.</b> The ground clips of both probes must go to the same node. For mains-related measurements use an isolation transformer and a differential probe; clipping the probe ground to the line conductor creates a short circuit and an arc.</div>
+      <div class="warnbox"><b>Never leave a current transformer secondary open; never short a voltage transformer secondary.</b> If the secondary of a current transformer is opened, a very high voltage appears. Shorting the secondary of a voltage transformer burns the winding.</div>
+      <div class="warnbox"><b>Charged capacitor and inductor current.</b> After switching off, discharge the capacitor through a resistor; do not interrupt inductor current suddenly with a switch (L di/dt spark).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before starting the tasks. Cosine reference, passive sign convention; unless stated otherwise, amplitudes are peak values.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= GÖREV 1 ================= -->
+<section class="page" id="d1">
+  <h2>Task 1 · Find the Fault: Series RLC Board</h2>
+  <p class="lead">The board <b>should be</b> as in the schematic: R = 220 Ω, L = 22 mH (winding resistance 8 Ω), C = 1 µF; generator 5 V rms, internal resistance 50 Ω. Each new board may have a random fault (or no fault at all). Place the red and black leads on the test points (TP), measure, and choose your diagnosis.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">On a healthy board at 1 kHz: <span class="eq">Z = 278 − j20.9 Ω (including generator)</span> I ≈ 18 mA, V<sub>R</sub> ≈ 3.9 V, V<sub>L</sub> ≈ 2.5 V, V<sub>C</sub> ≈ 2.9 V. The sum of the element voltages (≈ 9.3 V) is larger than the source: normal for phasors.</div>
+        <div class="why"><b>Why do we measure like this?</b> In a series circuit the current is the same everywhere. If the current is zero, something is <b>open</b>, and the full source voltage appears across that opening. If an element has zero voltage but current flows, that element is <b>shorted</b>. If current flows but the voltages are out of proportion, a <b>value is wrong</b>: calculate |Z<sub>k</sub>| = V<sub>k</sub>/I and compare with the expected value.</div>
+        <div class="info">Changing the frequency separates L from C: as f increases, X<sub>L</sub> grows and X<sub>C</sub> shrinks. How does the voltage of the suspect element change with f?</div>
+        <div class="warnbox">On a real board a punctured (shorted) capacitor may heat up; set faulty components aside as <b>e-waste</b>, do not throw them in the bin. Switch the power off while looking for a solder bridge.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 300"></svg></div>
+      <div class="card">
+        <div class="row"><b>Diagnosis</b> <span class="badge" id="d1card">Board #1</span><span class="grow"></span><span id="d1score" class="badge"></span></div>
+        <div class="row" style="margin-top:8px">
+          <select id="d1diag" style="min-width:320px"></select>
+          <button class="btn" id="d1go">Diagnose</button>
+          <button class="btn sec" id="d1next">New board</button>
+        </div>
+        <div id="d1fb" class="info" style="min-height:40px">Measure first: at least three different pairs of points.</div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Board</th><th>f (Hz)</th><th>Red → Black</th><th>V (V rms)</th><th>I (mA rms)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GÖREV 2 ================= -->
+<section class="page" id="d2">
+  <h2>Task 2 · Design: Setting the Phase Angle with a Series Element</h2>
+  <p class="lead">A power amplifier feeds an inductive load (R<sub>y</sub> + L<sub>y</sub>, e.g. a model of a relay/solenoid coil) at 1 kHz. Add a series <b>capacitor or inductor</b> to the load so that the current reaches the <b>target phase angle</b> relative to the voltage. Also choose the element’s voltage/current rating.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Target: <span class="eq">θ = θ<sub>v</sub> − θ<sub>i</sub> = arctan((X<sub>y</sub> + X<sub>s</sub>)/R<sub>y</sub>)</span> Required series reactance <span class="eq">X<sub>s</sub> = R<sub>y</sub> tan θ<sub>target</sub> − X<sub>y</sub></span> If X<sub>s</sub> &lt; 0, a capacitor (C = 1/(ω|X<sub>s</sub>|)); if X<sub>s</sub> &gt; 0, an inductor (L = X<sub>s</sub>/ω).</div>
+        <div class="info">E12 values come in coarse steps; you may combine two elements: capacitors in <b>parallel</b> (C<sub>1</sub> + C<sub>2</sub>), inductors in <b>series</b> (L<sub>1</sub> + L<sub>2</sub>). Acceptance: |θ − θ<sub>target</sub>| ≤ 3°.</div>
+        <div class="info">Rating choice: the capacitor’s <b>peak voltage</b> √2·V<sub>C</sub> must not exceed its rated voltage; the inductor’s rms current must not exceed its rated current. A higher rating than needed is expensive: choose the <b>cheapest sufficient</b> rating.</div>
+        <div class="why"><b>Why does it matter?</b> The same idea underlies power factor correction, resonant circuits and phase shifters. A series capacitor “cancels” inductive reactance; but as you approach resonance the current and element voltage grow.</div>
+        <div class="warnbox">The voltage on a series capacitor may be larger than the source voltage. A capacitor with a wrong (too low) voltage rating will be punctured; polarized electrolytics are not used with AC.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 220"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <b>Design</b>
+          <div class="rsel" style="margin-top:8px">
+            <label for="d2type">Element type</label><span><select id="d2type"><option value="C">Capacitor (two in parallel)</option><option value="L">Inductor (two in series)</option></select></span>
+            <label for="d2v1">Element 1</label><span><select id="d2v1"></select></span>
+            <label for="d2v2">Element 2</label><span><select id="d2v2"></select></span>
+            <label for="d2rat">Rating (label)</label><span><select id="d2rat"></select></span>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn" id="d2eval">Measure and evaluate (R)</button>
+            <button class="btn sec small" id="d2new">New scenario</button>
+          </div>
+          <div id="d2verdict" class="info" style="min-height:60px">Choose the element and evaluate.</div>
+        </div>
+        <div class="card">
+          <div class="row"><b>Phasor diagram panel</b></div>
+          <svg id="d2ph" viewBox="0 0 360 300" style="width:100%;display:block"></svg>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Evaluated designs</b><span class="grow"></span><button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Scenario</th><th>Element</th><th>Rating</th><th>θ measured</th><th>I (mA)</th><th>V<sub>s</sub> (V)</th><th>Cost</th><th>Result</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GÖREV 3 ================= -->
+<section class="page" id="d3">
+  <h2>Task 3 · Identifying a Load from an Oscilloscope Screen or a Phasor Diagram</h2>
+  <p class="lead">There is a load in the black box. The screen shows either an oscilloscope display (CH1 v, CH2 i, current probe 1 V/A) or a scaled phasor diagram. Find the load type, the angle θ<sub>v</sub> − θ<sub>i</sub> and the average power.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">On the oscilloscope: which one peaks first? If <b>v peaks first</b>, the current lags → inductive (θ &gt; 0). Angle: <span class="eq">θ = 360° · Δt / T</span> Power: <span class="eq">P = ½V<sub>m</sub>I<sub>m</sub> cos θ</span></div>
+        <div class="info">On a phasor diagram angles are measured from the horizontal axis, counter-clockwise positive: <span class="eq">θ = ∠V − ∠I</span> Lengths in the diagram are <b>peak values</b>.</div>
+        <div class="why"><b>Why identification?</b> In the field you often cannot see inside the load; you only see v and i at its terminals. The phase relation tells you the character of the load, the amplitude ratio gives |Z|, and together they give P and Q.</div>
+        <div class="warnbox">In a real measurement, if you take CH2 across a shunt, clip the ground lead to the ground side of the shunt; fit the current probe with its arrow in the direction of the current, otherwise i appears inverted by 180°.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row">
+          <div class="inst dark scopewrap" style="flex:1;min-width:420px" id="d3scopeBox">
+            <div class="brand"><span>DSO-2C · Digital Oscilloscope</span><span id="d3hdr"></span></div>
+            <div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+              <canvas id="scope" width="640" height="400" style="width:100%;max-width:640px"></canvas>
+              <div style="min-width:150px">
+                <div class="ctrls" id="scopeKnobs"></div>
+                <div class="row" style="margin:6px 0"><button class="seg-btn" id="curon">CURSOR</button></div>
+                <div class="meas" id="scopeMeas"></div>
+              </div>
+            </div>
+          </div>
+          <div class="inst" style="flex:1;min-width:360px;display:none" id="d3phBox">
+            <div class="brand"><span>PHASOR DIAGRAM PANEL</span><span id="d3hdr2"></span></div>
+            <svg id="d3ph" viewBox="0 0 420 340" style="width:100%;display:block;background:#fff;border-radius:6px"></svg>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="row"><b>Your answer</b> <span class="badge" id="d3no">Screen #1</span><span class="grow"></span><span class="badge" id="d3score"></span></div>
+        <div class="rsel" style="margin-top:8px">
+          <label for="d3type">Load type</label><span><select id="d3type"><option value="">— choose —</option><option value="R">Pure resistor</option><option value="L">Pure inductor</option><option value="C">Pure capacitor</option><option value="RL">Inductive load (R + L)</option><option value="RC">Capacitive load (R + C)</option></select></span>
+          <label for="d3th">θ<sub>v</sub> − θ<sub>i</sub></label><span><input type="text" id="d3th" size="8"> degrees</span>
+          <label for="d3P">P</label><span><input type="text" id="d3P" size="8"> W</span>
+        </div>
+        <div class="row" style="margin-top:8px"><button class="btn" id="d3go">Answer</button><button class="btn sec" id="d3next">New screen</button>
+          <label style="font-size:13px"><select id="d3mode"><option value="mix">Mixed</option><option value="scope">Oscilloscope only</option><option value="ph">Phasor only</option></select></label></div>
+        <div id="d3fb" class="info" style="min-height:40px">Examine the screen, measure, answer.</div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GÖREV 4 ================= -->
+<section class="page" id="d4">
+  <h2>Task 4 · Timed Practice Exam (20 questions)</h2>
+  <p class="lead">The numbers are regenerated for each attempt. Time limit 40 minutes; when time runs out the exam is graded automatically. Use a decimal point (a comma also works). Each question is worth 5 points; an answer within ±2% counts as correct. Angles in degrees.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Exam</h3>
+        <div class="timer" id="exTimer">40:00</div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="exStart">Start new exam</button>
+          <button class="btn warn" id="exFinish">Finish and grade</button>
+        </div>
+        <div id="exInfo" class="info">The timer starts when you begin. Time keeps running even if you leave the page.</div>
+        <div class="warnbox">Work as in an exam: calculator allowed (in degree mode!), no formula card. The unit is stated in the question; enter the result in that unit.</div>
+        <h3>Attempt history</h3>
+        <table class="data" id="exHist"><thead><tr><th>#</th><th>Date</th><th>Score</th><th>Time</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div>
+      <div class="card" id="exBox"><p class="lead" style="margin:0">No exam has been started yet.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your diagnoses, designs, identification answers and exam results.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Which measurement gave the most information while troubleshooting? Why did you need to combine two elements in the design? In which topic did you make the most mistakes in the exam?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (hold to speed up). To type an <b>exact value</b> or choose from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, with <kbd>Shift</kbd> for fine adjustment.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Task 1:</b> clicking a TP circle on the schematic places the red lead there, <kbd>Shift</kbd>+click places the black lead (or use the drop-down lists).<br>
+    <b>Oscilloscope cursors:</b> press the CURSOR button and drag on the screen; Δt and the cursor values of both channels are shown.<br>
+    <kbd>R</kbd> record measurement/design · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta08.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h08', ders: 'Circuit Theory II', hafta: 8,
+  doc: [
+    { id: 'CLO1', t: 'Systematically finds and justifies open-connection, short-circuit and wrong-component faults in an AC circuit by measuring rms voltage and current.', mc: [1, 2, 4, 5] },
+    { id: 'CLO2', t: 'Designs a series reactive element for a target phase angle in a given load using standard (E12) values, together with its voltage/current rating and cost.', mc: [1, 3, 6, 10] },
+    { id: 'CLO3', t: 'Determines the load type, phase angle and average power from oscilloscope waveforms and phasor diagrams.', mc: [1, 2, 4] },
+    { id: 'CLO4', t: 'Correctly solves Chapter 1–2 problems (phasors, impedance, transformers, power) under time constraints.', mc: [1, 2, 11] },
+    { id: 'CLO5', t: 'Presents the findings in writing in a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To diagnose the fault (open element, shorted capacitor, wrong value) on randomly faulty series RLC boards by measuring with an rms voltmeter and ammeter.', doc: ['CLO1'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Function generator (50 Ω), true-rms DMM (10 MΩ), AC ammeter, series RLC board (220 Ω, 22 mH / 8 Ω, 1 µF).',
+      guvenlik: 'Do not measure ohms/capacitance in a live circuit; a punctured capacitor may heat up. Set faulty components aside as e-waste.',
+      veri: 'Table of test-point voltages and current, diagnosis per board and accuracy rate.',
+      tartisma: 'Which single measurement eliminated the most fault classes? Which fault did changing the frequency help you distinguish?' },
+    d2: { amac: 'To bring the current to a target phase angle by adding a series capacitor or inductor to an inductive load; to design with E12 values while considering the element’s voltage/current rating and cost.', doc: ['CLO2'], mc: [1, 3, 4, 6, 10],
+      gerec: 'Power amplifier (1 kHz), inductive load model, E12 capacitor and inductor boxes, rms meters, phasor panel.',
+      guvenlik: 'In a design close to resonance the element voltage exceeds the source: choose the capacitor voltage rating from the peak value; do not use polarized electrolytics with AC. An oversized element increases cost and waste.',
+      veri: 'Design table (element, rating, θ, I, element voltage, cost, result) and phasor diagram.',
+      tartisma: 'Why could the target angle not be reached with a single E12 element? What is the cost/performance trade-off of using an adjustable (trimmer) element instead of two elements?' },
+    d3: { amac: 'To determine the load type, the angle θ<sub>v</sub> − θ<sub>i</sub> and the average power from oscilloscope waveforms and phasor diagrams.', doc: ['CLO3'], mc: [1, 2, 4],
+      gerec: 'Two-channel oscilloscope with cursors, current probe (1 V/A), phasor diagram panel.',
+      guvenlik: 'Probe grounds on the same node; mind the direction of the current probe.',
+      veri: 'Answer per screen (type, θ, P) and accuracy.',
+      tartisma: 'What was the largest source of error in measuring the angle on the oscilloscope? How does using zero crossings instead of cursors affect accuracy?' },
+    d4: { amac: 'To measure preparation for Chapters 1–2 with a timed 20-question practice exam generated with random numbers.', doc: ['CLO4'], mc: [1, 2, 11],
+      gerec: 'Calculator, timer.',
+      guvenlik: '—',
+      veri: 'Practice exam scores and times.',
+      tartisma: 'In which topics were your mistakes concentrated; what study plan will you follow until the exam?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

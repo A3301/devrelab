@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 12 · Three-Phase Sources and the Y–Y Connection — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<style>.why{background:#eef8ef;border-left:4px solid var(--ok);padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}.ex{background:#f7f4ff;border-left:4px solid #6a4fc9;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}</style>
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 12 — Three-Phase Sources and the Y–Y Connection</h1>
+    <div class="sub">Phase sequence · Phase/line voltage (√3, 30°) · Neutral current · Broken neutral · Single-phase equivalent</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">0%</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Phase Sequence</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Phase and Line Voltage</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Balanced Y–Y</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Broken Neutral</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjust.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 12 · Three-Phase Sources and the Y–Y Connection</h2>
+  <p class="lead">Lecture notes: <b>Chapter 3 · Parts 1–2</b> — 3.1 Balanced three-phase voltages, 3.2 Three-phase sources, 3.3 The Y–Y connected circuit.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li>See the three phase voltages on the oscilloscope, measure the 120° between them <b>from the time difference</b>, and determine the phase sequence (abc / acb) with the oscilloscope and with a <b>capacitor–lamp indicator</b>.</li>
+        <li>Measure phase and line voltages to verify the relation <b>V<sub>L</sub> = √3 V<sub>φ</sub></b> and the sign of the 30° phase shift.</li>
+        <li>See that in a balanced Y–Y circuit the <b>neutral current is zero</b> and opening the neutral changes nothing.</li>
+        <li>Compare the line current and voltages calculated with the <b>single-phase equivalent circuit</b> against measurement (Example 3.11).</li>
+        <li>Measure how a <b>broken neutral</b> shifts the star point under an unbalanced load, and the resulting overvoltage hazard (Example 3.9).</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Adjustable three-phase AC source with isolation transformer (0–230 V/phase, 50/60 Hz) · Unlabelled second source (“Source X”) · Four-channel oscilloscope and <b>differential probes</b> · True-rms digital multimeter · Clamp ammeters · Phase-sequence indicator (capacitor + two lamps) · Adjustable R–X load box, three separate resistive loads, neutral switch.</p>
+      <div class="info">Calculations use rms values: the peak value of a V<sub>φ</sub> = 230 V phase is √2·230 = 325 V. The oscilloscope shows the peak, the multimeter shows rms.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First watch the rotating phasor animation in the <b>Background</b> section and solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left: when you make the correct setting the step is ticked automatically. Record measurements with <kbd>R</kbd>; answer the questions from your own measurements. Print your report in the last section.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Why Three Phases, and How Do They Work?</h2>
+  <p class="lead">Set aside 15 minutes: rotating phasors, the two connection types, the formula card and the hazards waiting for you on the mains.</p>
+  <div class="card">
+    <h3 style="margin-top:0">1 · Rotating phasors and three sine waves</h3>
+    <div class="row" style="margin-bottom:6px"><button class="btn small" id="obPlay">❚❚ Pause</button><button class="btn sec small" id="obSeq">Sequence: abc</button><label style="font-size:13px"><input type="checkbox" id="obSum"> Show instantaneous sum</label></div>
+    <canvas id="obAnim" width="900" height="260" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px"></canvas>
+    <p style="font-size:14px;line-height:1.65">The three windings are placed <b>120°</b> apart on the generator shaft. As the magnet rotates, a sine wave of the same amplitude is induced in each winding, but each peaks 120° (T/3 = 6.67 ms at 50 Hz) after the previous one. In the animation each phasor rotates at constant speed; the wave is the horizontal (Re) projection of the phasor. In the <b>abc</b> sequence the peaks come in the order a → b → c; if you swap two cables it becomes <b>acb</b> and a three-phase motor <b>runs in reverse</b>.</p>
+    <div class="why"><b>Why is that?</b> The sum of three equal phasors 120° apart is zero: v<sub>a</sub> + v<sub>b</sub> + v<sub>c</sub> = 0 at every instant. This is why no current flows in the neutral conductor under a balanced load, and why the same power can be carried with less copper than single-phase (Example 3.1). Tick “Show instantaneous sum” and check.</div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">2 · Phase voltage, line voltage</h3>
+      <svg viewBox="0 0 340 250" style="width:100%;max-width:380px" class="schem">
+        <line x1="20" y1="125" x2="320" y2="125" stroke="#ccc"/><line x1="140" y1="10" x2="140" y2="240" stroke="#ccc"/>
+        <line x1="140" y1="125" x2="240" y2="125" stroke="#e0a800" stroke-width="3"/><text x="244" y="130" class="lbl" style="fill:#e0a800">V<tspan font-size="10">an</tspan></text>
+        <line x1="140" y1="125" x2="90" y2="212" stroke="#1597c9" stroke-width="3"/><text x="70" y="230" class="lbl" style="fill:#1597c9">V<tspan font-size="10">bn</tspan></text>
+        <line x1="140" y1="125" x2="90" y2="38" stroke="#d6336c" stroke-width="3"/><text x="70" y="32" class="lbl" style="fill:#d6336c">V<tspan font-size="10">cn</tspan></text>
+        <line x1="90" y1="212" x2="240" y2="125" stroke="#e07a10" stroke-width="2.5" stroke-dasharray="6 4"/>
+        <text x="185" y="190" class="lbl" style="fill:#e07a10">V<tspan font-size="10">ab</tspan> = V<tspan font-size="10">an</tspan> − V<tspan font-size="10">bn</tspan></text>
+        <path d="M180,125 A40,40 0 0 0 175,105" fill="none" stroke="#e07a10"/><text x="185" y="112" class="lbl" style="fill:#e07a10;font-size:11px">30°</text>
+      </svg>
+      <p style="font-size:14px;line-height:1.65"><b>Phase voltage</b> is between a phase terminal and neutral (V<sub>an</sub>). <b>Line voltage</b> is between two phase terminals (V<sub>ab</sub>). The difference of two phasors of the same amplitude but 120° apart is √3 times larger and leads by 30° in abc. Warning: subtracting amplitudes (230 − 230 = 0) is wrong; the <b>phasors</b> are subtracted.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Balanced source (abc)</td><td class="l">V<sub>an</sub> = V<sub>φ</sub>∠0°, V<sub>bn</sub> = V<sub>φ</sub>∠−120°, V<sub>cn</sub> = V<sub>φ</sub>∠+120°</td></tr>
+        <tr><td class="l">acb (negative sequence)</td><td class="l">V<sub>bn</sub> = V<sub>φ</sub>∠+120°, V<sub>cn</sub> = V<sub>φ</sub>∠−120°</td></tr>
+        <tr><td class="l">Line voltage in Y</td><td class="l">V<sub>ab</sub> = √3 V<sub>an</sub>∠+30° (abc), ∠−30° (acb)</td></tr>
+        <tr><td class="l">Current in Y</td><td class="l">I<sub>L</sub> = I<sub>φ</sub></td></tr>
+        <tr><td class="l">Phase difference ↔ time</td><td class="l">θ = 360°·Δt·f (50 Hz: 1 ms = 18°)</td></tr>
+        <tr><td class="l">Synchronous speed</td><td class="l">n = 120 f / p (rpm)</td></tr>
+        <tr><td class="l">Neutral shift (general)</td><td class="l">V<sub>N</sub> = Σ(V<sub>i</sub>/Z<sub>i</sub>) / (Σ1/Z<sub>i</sub> + 1/Z<sub>0</sub>)</td></tr>
+        <tr><td class="l">Balanced Y–Y</td><td class="l">V<sub>N</sub> = 0, I<sub>0</sub> = 0 ⇒ single-phase equivalent: I<sub>aA</sub> = V<sub>a′n</sub>/(Z<sub>g</sub>+Z<sub>ℓ</sub>+Z<sub>L</sub>)</td></tr>
+      </table>
+      <div class="ex"><b>Solved mini example (Example 3.12):</b> 400 V line, abc, line 0.5 + j1 Ω, load 7.5 + j5 Ω. ① V<sub>φ</sub> = 400/√3 = 230.9 V. ② Z<sub>total</sub> = 8 + j6 = 10∠36.87° Ω. ③ I<sub>aA</sub> = 230.9/10 = 23.09∠−36.87° A; I<sub>bB</sub> and I<sub>cC</sub> have the same amplitude, shifted by −120° and +120°. ④ Load phase voltage |V<sub>AN</sub>| = 23.09·|7.5+j5| = 208.2 V; a 9.9% drop on the line.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Things to watch in a real lab</h3>
+    <div class="warnbox"><b>400 V kills.</b> Phase-to-phase is 400 V and phase-to-neutral 230 V; the peak reaches 565 V. Always build the circuit de-energised, apply lockout–tagout, work with one hand, and use insulated (CAT III) probes and leads. The bench must have a residual-current device (30 mA).</div>
+    <div class="warnbox"><b>The oscilloscope ground clip is never connected to the mains.</b> The ground lead of an ordinary probe is tied to protective earth; clipping it to a phase terminal means a direct short circuit and an explosion. For phase–neutral and phase–phase measurements use a <b>differential probe</b> or an isolation transformer. Never defeat the oscilloscope’s earthing pin.</div>
+    <div class="warnbox"><b>The neutral must never break.</b> If the neutral breaks under an unbalanced load, the star point shifts; appliances on the lightly loaded phase can burn out at voltages above 300 V (Experiment 4). The neutral is not fused or switched on its own; its connections must be tight and its cross-section sufficient.</div>
+    <div class="warnbox"><b>Do not run a motor without checking the phase sequence.</b> A pump, fan or lift running in reverse causes damage. Before connecting, verify abc with a phase-sequence indicator; swapping two phases reverses the sequence.</div>
+    <div class="warnbox"><b>Instrument category and range.</b> Use the multimeter on the V~ range with the correct sockets; measuring voltage with a probe in the current socket blows the fuse or the meter. A clamp ammeter must enclose one conductor alone; enclosing two conductors together makes the currents cancel.</div>
+    <div class="warnbox"><b>The lamps in a phase-sequence indicator</b> see up to 1.5 times V<sub>φ</sub> because the star point shifts. Therefore either two lamps in series or a 400 V-rated indicator is used; the capacitor must be rated at least 400 V AC and discharged when finished.</div>
+    <div class="info"><b>Common mistakes:</b> writing +120° for phase b in abc (correct: −120°) · taking the 400 V on the label as the phase voltage (forgetting √3) · finding the line voltage zero by subtracting amplitudes · using +30° in acb · assuming the load voltage equals the source voltage (forgetting the line drop) · solving only phase a for an unbalanced load and shifting b, c by ±120°.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before entering the lab. The numbers are taken from the examples in the lecture slides.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Viewing Three Phases on the Oscilloscope and Phase Sequence</h2>
+  <p class="lead">The three phase–neutral voltages on the same screen via differential probes. Source A is labelled (abc); the sequence of Source X is unknown.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">The oscilloscope triggers on the <b>rising zero crossing</b> of CH1 (T▼ mark on screen). The CURSOR button opens two vertical cursors; Δt = t<sub>B</sub> − t<sub>A</sub> is read directly. Phase difference: <span class="eq">θ = 360°·Δt / T</span></div>
+        <div class="info"><b>Phase-sequence indicator:</b> a capacitor is connected to phase a and a lamp to each of phases b and c; all three join at a common floating star point. Because the load is unbalanced the star point shifts and the two lamps glow with different brightness. Which one is bright <b>depends on the sequence</b>.</div>
+        <div class="why"><b>Why is that?</b> The capacitor current leads its voltage by 90°; the star point is therefore pushed away from the phase “following” phase a. When the sequence changes, the following phase changes too and the bright lamp swaps places.</div>
+        <div class="warnbox">On a real bench, do not clip the ground lead of an ordinary oscilloscope probe <b>even to neutral</b>: there may be a few volts and leakage current between neutral and protective earth. Do not forget to set the differential probe ratio (e.g. 1:100) on the oscilloscope.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" id="d1scope" style="margin-top:12px"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 300"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button><button class="btn sec small" id="d1del">Delete last row</button><button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Source</th><th>b↔c</th><th>V<sub>φ</sub> (V)</th><th>f (Hz)</th><th>Δt (ms)</th><th>v<sub>a</sub>(A) (V)</th><th>v<sub>b</sub>(B) (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Phase and Line Voltage: √3 and 30°</h2>
+  <p class="lead">Connect the two multimeter leads and the two oscilloscope channels between any terminals you like. The phasor panel draws the difference phasor (orange) measured by the DMM.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">The line voltage is the <b>difference</b> of two phase voltages: <span class="eq">V<sub>ab</sub> = V<sub>an</sub> − V<sub>bn</sub> = √3 V<sub>an</sub>∠±30°</span> The plus sign is for abc, minus for acb.</div>
+        <div class="why"><b>Why √3?</b> If the angle between two equal phasors is 120°, the length of their difference is 2·V<sub>φ</sub>·sin60° = √3·V<sub>φ</sub>. On the phasor panel, see that the orange arrow joins the tips of a–n and b–n.</div>
+        <div class="ex"><b>Mini example:</b> at 50 Hz, 30° = T/12 = 1.667 ms. In abc the peak of v<sub>ab</sub> comes, relative to the peak of v<sub>an</sub>, 1.667 ms <b>earlier</b> (leading).</div>
+        <div class="warnbox">When connecting the DMM between phases, make sure it is rated <b>750 V AC</b> and CAT III. Connect the probes to COM first, then to the red terminal; reverse the order when disconnecting.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div><div class="bench-row" id="d2scope" style="margin-top:12px"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><b>Phasor panel</b><svg id="d2ph" class="schem" viewBox="0 0 320 320"></svg></div>
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d2rec">Record (R)</button><button class="btn sec small" id="d2del">Delete</button><button class="btn sec small" id="d2csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Sequence</th><th>V<sub>φ</sub></th><th>DMM leads</th><th>V (V)</th><th>CH1/CH2</th><th>Δt (ms)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Balanced Y–Y Circuit, Neutral Current and Single-Phase Equivalent</h2>
+  <p class="lead">Generator internal impedance, line impedance and a Y load. The lab counterpart of Example 3.11 (Nilsson Example 11.1).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info"><b>Single-phase equivalent circuit:</b> in a balanced Y–Y the neutrals are at the same potential, so we may imagine a lossless wire between them. Phase a is solved on its own: <span class="eq">I<sub>aA</sub> = V<sub>a′n</sub> / (Z<sub>g</sub> + Z<sub>ℓ</sub> + Z<sub>L</sub>)</span> Phases b and c have the same amplitude, shifted by −120° and +120°.</div>
+        <div class="why"><b>Why is the neutral current zero?</b> I<sub>0</sub> = I<sub>aA</sub> + I<sub>bB</sub> + I<sub>cC</sub>; the sum of three phasors of equal amplitude 120° apart is zero. Imagine the dashed current arrows on the phasor panel placed tip to tail: they form a closed triangle.</div>
+        <div class="ex"><b>Solution path (Example 3.11):</b> ① Add the series impedances: (0.2+0.8+39) + j(0.5+1.5+28). ② Convert to polar. ③ Divide 120∠0° V by it. ④ V<sub>AN</sub> = Z<sub>L</sub>·I<sub>aA</sub>, V<sub>AB</sub> = √3 V<sub>AN</sub>∠30°. Compare the results with measurement.</div>
+        <div class="warnbox">Close the clamp ammeter around <b>one</b> conductor only. When measuring the neutral current, enclose the neutral conductor separately. With current-transformer measurement, <b>never leave the secondary open</b>: a high voltage develops.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" id="d3scope" style="margin-top:12px"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 700 270"></svg></div>
+      <div class="grid-half">
+        <div class="card"><b>Phasor panel</b> <span style="font-size:12px;color:var(--muted)">(solid: load phase voltages, dashed: line currents — separate scale)</span><svg id="d3ph" class="schem" viewBox="0 0 320 320"></svg></div>
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Record (R)</button><button class="btn sec small" id="d3del">Delete</button><button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>E<sub>φ</sub></th><th>Z<sub>L</sub> (Ω)</th><th>Series</th><th>Neutral</th><th>I<sub>aA</sub></th><th>I<sub>bB</sub></th><th>I<sub>cC</sub></th><th>I<sub>0</sub></th><th>V points</th><th>V (V)</th><th>Δt (ms)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Unbalanced Load and the Broken-Neutral Hazard</h2>
+  <p class="lead">Three separate resistive (lamp) loads. Open the neutral switch to simulate a broken neutral in a household installation. The brightness of the lamps shows the voltage across them.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">With the neutral broken (Z<sub>0</sub> → ∞) the load star point N′ shifts away from the source neutral: <span class="eq">V<sub>N′n</sub> = (V<sub>a</sub>/Z<sub>A</sub> + V<sub>b</sub>/Z<sub>B</sub> + V<sub>c</sub>/Z<sub>C</sub>) / (1/Z<sub>A</sub> + 1/Z<sub>B</sub> + 1/Z<sub>C</sub>)</span> The load phase voltages are now measured with respect to N′: V<sub>AN′</sub> = V<sub>a</sub> − V<sub>N′n</sub>.</div>
+        <div class="why"><b>Why does the lightly loaded phase see an overvoltage?</b> N′ is pulled towards the voltage of the phase with the smallest impedance (the most heavily loaded one). That phase’s voltage drops, and the voltages of the other two phases rise. Watch the red N′ point on the phasor panel.</div>
+        <div class="ex"><b>Solution (Example 3.9):</b> Y<sub>A</sub> = Y<sub>B</sub> = 0.05 S, Y<sub>C</sub> = 0.1 S. Numerator = 120(0.05 + 0.05∠−120° + 0.1∠120°) = 6∠120°; denominator 0.2 ⇒ V<sub>N</sub> = 30∠120° V.</div>
+        <div class="warnbox">In a real installation a broken neutral causes appliances such as refrigerators and televisions to burn out, and fires. Neutral connections must be tightened periodically, and the neutral cross-section must not be chosen smaller than the phase cross-section. Perform this experiment only with a low-voltage training set.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 640 280"></svg></div>
+      <div class="grid-half">
+        <div class="card"><b>Phasor panel</b> <span style="font-size:12px;color:var(--muted)">(grey: source, coloured: from N′ to load terminals)</span><svg id="d4ph" class="schem" viewBox="0 0 320 320"></svg></div>
+        <div class="card">
+          <div class="row"><b>Phase voltages vs R<sub>A</sub></b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d4theo"> Theoretical curve</label></div>
+          <canvas id="d4plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record (R)</button><button class="btn sec small" id="d4del">Delete last row</button><button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>V<sub>φ</sub></th><th>R<sub>A</sub></th><th>R<sub>B</sub></th><th>R<sub>C</sub></th><th>Neutral</th><th>V<sub>AN′</sub></th><th>V<sub>BN′</sub></th><th>V<sub>CN′</sub></th><th>V<sub>N′n</sub></th><th>I<sub>0</sub> (A)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and graphs.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Which two methods did you use to determine the phase sequence? What was the role of the neutral under balanced and unbalanced loads? Discuss the consequences of a broken neutral using your own measurements."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). To type an <b>exact value</b> or pick from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjust with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task in the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope cursors:</b> press the CURSOR button and drag on the screen. Δt = t<sub>B</sub> − t<sub>A</sub>.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta12.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h12', ders: 'Circuit Theory II', hafta: 12,
+  doc: [
+    { id: 'CLO1', t: 'Expresses balanced three-phase voltages in the phasor and time domains; determines the phase sequence by measurement.', mc: [1, 4, 5] },
+    { id: 'CLO2', t: 'Verifies by measurement the √3 and ±30° relation between phase and line voltages in the Y connection.', mc: [1, 2, 5] },
+    { id: 'CLO3', t: 'Solves a balanced Y–Y circuit with the single-phase equivalent circuit and compares the results with measurement.', mc: [1, 2, 4] },
+    { id: 'CLO4', t: 'Analyses the function of the neutral under an unbalanced load and the safety consequences of a broken neutral.', mc: [2, 5, 6] },
+    { id: 'CLO5', t: 'Presents the findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To observe the three phase voltages on the oscilloscope, measure the 120° phase difference from the time difference, and determine and correct the phase sequence of an unknown source.', doc: ['CLO1'], mc: [1, 4, 5, 6],
+      gerec: 'Adjustable three-phase source with isolation transformer, unlabelled source, four-channel oscilloscope, differential probes, capacitor–lamp phase-sequence indicator.',
+      guvenlik: 'The oscilloscope ground clip is not connected to the mains; a differential probe is used. The indicator lamps see 1.5V<sub>φ</sub>. Cable changes are made de-energised.',
+      veri: 'Δt values measured with the cursors, brightness of the indicator lamps, phase sequence of the sources.',
+      tartisma: 'What happens to a lift or pump motor connected with the wrong phase sequence? Which method would you prefer in the field, and why?' },
+    d2: { amac: 'To verify, by measuring phase and line voltages, the relation V<sub>L</sub> = √3V<sub>φ</sub> and the dependence of the sign of the 30° phase shift on the phase sequence.', doc: ['CLO2'], mc: [1, 2, 4, 5],
+      gerec: 'Three-phase source, true-rms multimeter (CAT III, 750 V AC), two-channel oscilloscope, differential probes.',
+      guvenlik: 'The 400 V phase-to-phase voltage is lethal; test leads must be insulated and measurements made with one hand.',
+      veri: 'V<sub>an</sub>, V<sub>ab</sub>, V<sub>bc</sub>, V<sub>ca</sub> readings; v<sub>an</sub>–v<sub>ab</sub> time difference for abc and acb.' },
+    d3: { amac: 'To show that the neutral current is zero in a balanced Y–Y circuit; to verify the single-phase equivalent solution with the line current, load and generator voltages.', doc: ['CLO3'], mc: [1, 2, 4, 5],
+      gerec: 'Generator model (Z<sub>g</sub> = 0.2 + j0.5 Ω), line impedance (0.8 + j1.5 Ω), R–X load box, clamp ammeters, voltmeter, oscilloscope.',
+      guvenlik: 'The clamp ammeter is closed around a single conductor; a current-transformer secondary is never left open.',
+      veri: 'Four current readings (neutral connected/open), V<sub>AN</sub>, V<sub>AB</sub>, V<sub>an</sub>; e<sub>a</sub>–i<sub>aA</sub> time difference.' },
+    d4: { amac: 'To measure that the neutral carries current under an unbalanced Y load, that the star point shifts when the neutral breaks, and that over/undervoltages appear on the phases.', doc: ['CLO4'], mc: [2, 4, 5, 6],
+      gerec: 'Three-phase source, three adjustable resistive (lamp) loads, neutral switch, four voltmeters, four clamp ammeters.',
+      guvenlik: 'In a real installation a broken neutral burns appliances and creates a fire risk; the experiment is done on a low-voltage training set.',
+      veri: 'Phase voltages, V<sub>N′n</sub> and I<sub>0</sub> with the neutral connected/broken; graph of phase voltage versus R<sub>A</sub>.',
+      tartisma: 'When the neutral breaks in an apartment building, whose appliances are at risk? What precautions should be taken in the installation design?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

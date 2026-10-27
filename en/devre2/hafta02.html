@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 2 · R, L, C and Impedance — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<style>
+  .phx{display:block;width:100%;background:#0e1726;border-radius:8px}
+  .solved{background:#f3fbf5;border-left:4px solid var(--ok);padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}
+  .why{background:#f6f2fd;border-left:4px solid #6a4bc4;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}
+  .rng{display:flex;align-items:center;gap:8px;font-size:13px;margin:4px 0}
+  .rng input[type=range]{flex:1}
+</style>
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 2 — R, L, C and Impedance</h1>
+    <div class="sub">V–I phase relation · Reactance and frequency · Impedance/admittance · Complex plane · Real components (ESR)</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: V–I Phase Relation</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Frequency Sweep</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Impedance Plane</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Unknown Element and ESR</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag them or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> for fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 2 · Passive Elements and Impedance</h2>
+  <p class="lead">Lecture notes: <b>Section 1.4 R, L, C and Impedance</b> (complex numbers and phasors from 1.3).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li>Measure the <b>phase relation</b> between voltage and current in a resistor, an inductor and a capacitor with the oscilloscope (ELI the ICE man).</li>
+        <li>Show with a frequency sweep how <b>|Z|</b> and <b>θ</b> vary with frequency, and verify X<sub>L</sub> ∝ f and |X<sub>C</sub>| ∝ 1/f from the data.</li>
+        <li>Measure the <b>impedance and admittance</b> of series- and parallel-connected elements and mark them on the complex plane.</li>
+        <li>Find the <b>type and value</b> of a hidden element by measurement alone, and measure the <b>ESR</b> of a real capacitor.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Function generator (50 Ω) · AC power amplifier (low output impedance) · Two-channel oscilloscope and differential probe · 10 Ω current-sense (shunt) resistor · True-rms AC voltmeter and ammeter · Phase meter (θ<sub>v</sub> − θ<sub>i</sub>) · Resistor/inductor/capacitor boxes · Black boxes X and Y.</p>
+      <div class="info">All phasors use <b>peak values</b> and a cosine reference. The AC voltmeter and ammeter read <b>rms</b>: |Z| = V<sub>rms</sub>/I<sub>rms</sub> = V<sub>m</sub>/I<sub>m</sub> (the ratio is the same), but use peak values when writing phasors.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First watch the phasors of the three elements in the animation in the <b>Background</b> section and see how the Z point moves on the complex plane with frequency. Solve the <b>Pre-lab</b> questions. In the experiments, lab-sheet steps are ticked automatically at the correct setting; record measurements with <kbd>R</kbd>. In the last section print your report.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Every Element Is a Complex Number</h2>
+  <p class="lead">In the phasor domain, differentiation is multiplication by jω. This single rule gathers the behavior of the three elements into one Ohm’s law: <b>V = Z I</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Three elements, three phases</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Resistor:</b> v = Ri ⇒ <b>V = R I</b>. Voltage and current are in phase.<br>
+      <b>Inductor:</b> v = L di/dt ⇒ <b>V = jωL I</b>. Since j = 1∠90°, the voltage <b>leads the current by 90°</b>. The inductor opposes changes in current: the voltage is largest before the current peaks (while the current changes fastest).<br>
+      <b>Capacitor:</b> i = C dv/dt ⇒ <b>I = jωC V</b>, <b>V = I/(jωC) = −j I/(ωC)</b>. The current <b>leads the voltage by 90°</b>.</p>
+      <div class="eq">Z<sub>R</sub> = R,&nbsp; Z<sub>L</sub> = jωL,&nbsp; Z<sub>C</sub> = 1/(jωC) = −j/(ωC)</div>
+      <p style="font-size:14px;line-height:1.65"><b>Mnemonic “ELI the ICE man”:</b> E-L-I: in an inductor (L) the voltage (E) comes before the current (I); I-C-E: in a capacitor (C) the current (I) comes before the voltage (E).</p>
+      <h3>2 · Variation with frequency</h3>
+      <p style="font-size:14px;line-height:1.65">X<sub>L</sub> = ωL is <b>directly</b> proportional to frequency, |X<sub>C</sub>| = 1/(ωC) <b>inversely</b> proportional. At DC (ω = 0) the inductor is a short circuit and the capacitor an open circuit; at very high frequency the reverse. Audio filters, power factor correction and radio tuning rely on this difference.</p>
+      <h3>3 · Impedance and admittance</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Z = R + jX</b> (resistance + reactance), <b>Y = 1/Z = G + jB</b> (conductance + susceptance). Impedances add in series, admittances add in parallel. X &gt; 0 is inductive, X &lt; 0 capacitive. Note: G = 1/R holds only for a pure resistance; in general G = R/(R² + X²).</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">V and I phasors ↔ time curves</h3>
+      <div class="row" id="obSel"></div>
+      <canvas id="obAnim" class="phx" width="640" height="260"></canvas>
+      <div class="row"><button class="btn small" id="obRun">Pause</button><span style="font-size:13px;color:var(--muted)">Yellow: voltage v, blue: current i. The phasors rotate together; the angle between them is characteristic of the element.</span></div>
+      <h3>Z on the complex plane (versus ω)</h3>
+      <svg id="obZ" class="schem" viewBox="0 0 640 300" style="background:#fff"></svg>
+      <div class="rng">ω<input type="range" id="obW" min="1.5" max="4.5" step="0.01" value="3"><span id="obWv" style="min-width:110px"></span></div>
+      <div class="why"><b>What should you see?</b> The R point stays fixed on the real axis regardless of ω. Z<sub>L</sub> moves <b>up</b> the imaginary axis (away from the origin as ω increases), Z<sub>C</sub> moves <b>down</b> (toward the origin as ω increases). The Z of a series RL climbs up a vertical line starting at R.</div>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Resistor</td><td class="l">Z<sub>R</sub> = R, θ = 0°</td></tr>
+        <tr><td class="l">Inductor</td><td class="l">Z<sub>L</sub> = jωL = ωL∠90°, X<sub>L</sub> = ωL</td></tr>
+        <tr><td class="l">Capacitor</td><td class="l">Z<sub>C</sub> = −j/(ωC) = (1/ωC)∠−90°, X<sub>C</sub> = −1/(ωC)</td></tr>
+        <tr><td class="l">Series / parallel</td><td class="l">Z<sub>eq</sub> = ΣZ<sub>k</sub>; Y<sub>eq</sub> = ΣY<sub>k</sub></td></tr>
+        <tr><td class="l">Z from measurement</td><td class="l">|Z| = V<sub>rms</sub>/I<sub>rms</sub>, θ = θ<sub>v</sub> − θ<sub>i</sub>, Z = |Z|cos θ + j|Z|sin θ</td></tr>
+        <tr><td class="l">Real inductor</td><td class="l">Z = r<sub>L</sub> + jωL, Q = ωL/r<sub>L</sub></td></tr>
+        <tr><td class="l">Real capacitor</td><td class="l">Z = ESR − j/(ωC), D = tan δ = ωC·ESR</td></tr>
+        <tr><td class="l">|Z<sub>L</sub>| = |Z<sub>C</sub>|</td><td class="l">ω = 1/√(LC)</td></tr>
+      </table>
+      <h3>Worked mini example (Example 1.16)</h3>
+      <div class="solved">v<sub>s</sub> = 50cos1000t V, series R = 30 Ω, L = 60 mH, C = 50 µF.<br>
+      1) Z<sub>L</sub> = j1000·0.06 = j60 Ω; Z<sub>C</sub> = −j/(1000·50·10<sup>−6</sup>) = −j20 Ω.<br>
+      2) Z = 30 + j60 − j20 = 30 + j40 = 50∠53.13° Ω (inductive).<br>
+      3) I = 50∠0°/50∠53.13° = 1∠−53.13° A ⇒ i = cos(1000t − 53.13°) A.<br>
+      4) V<sub>R</sub> = 30∠−53.13°, V<sub>L</sub> = 60∠36.87°, V<sub>C</sub> = 20∠−143.13°; their sum is 50∠0° (KVL ✓). Note: |V<sub>L</sub>| = 60 V is larger than the source!</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">⚠ Things to watch in a real lab</h3>
+      <div class="warnbox"><b>Do not apply AC to a polarized electrolytic capacitor.</b> During the reverse half-cycle the oxide layer breaks down, the capacitor heats up, swells and may explode. In AC experiments use film/ceramic or <b>non-polarized (bipolar)</b> capacitors; make sure the voltage rating is larger than the <b>peak</b> value.</div>
+      <div class="warnbox"><b>Oscilloscope ground and element voltage.</b> In a series circuit, if you attach the ground clip of a single-ended probe to one end of a middle element to measure its voltage, you short the rest of the circuit. Either use a <b>differential probe</b> or measure with two channels and take the difference with the oscilloscope’s MATH (CH1 − CH2) function.</div>
+      <div class="warnbox"><b>Current measurement:</b> Current is measured as the voltage across a small shunt resistor (i = v<sub>shunt</sub>/R<sub>shunt</sub>). Place the shunt on the grounded side so that it coincides with the oscilloscope ground. Never connect a multimeter <b>in parallel</b> while it is on a current range; its fuse blows or the meter is damaged.</div>
+      <div class="warnbox"><b>Unexpectedly high voltage at resonance.</b> In a series LC circuit near resonance, the inductor and capacitor voltages can be much larger than the source voltage; they can exceed it even off resonance (60 V &gt; 50 V in Example 1.16). Choose component voltage ratings generously for this reason.</div>
+      <div class="warnbox"><b>Discharge charged capacitors.</b> After dismantling the circuit, do not handle large capacitors before discharging them through a resistor (e.g. 1 kΩ, 5 W); discharging with a shorting wire causes sparks and contact damage.</div>
+      <div class="warnbox"><b>Do not open an inductor circuit while current flows.</b> Suddenly interrupted current produces a high voltage L di/dt. Turn off the source first. In iron-core inductors a large current saturates the core and the value of L drops.</div>
+      <div class="info"><b>Common mistakes:</b> Taking capacitor reactance as positive (X<sub>C</sub> = −1/ωC) · forgetting the j in jωL (the inductor then looks like a resistor) · writing 230 V rms as the phasor amplitude (peak is 325.3 V) · using f instead of ω (X<sub>L</sub> = 2πfL) · adding impedances of parallel elements directly · applying G = 1/R to a series RL · reading the phase difference backwards (θ<sub>v</sub> − θ<sub>i</sub>, not the reverse).</div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve these before coming to the lab. The numbers are taken from the examples in the lecture notes.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Voltage–Current Phase Relation in R, L and C</h2>
+  <p class="lead">Generator (50 Ω) → element → 10 Ω shunt → ground. CH1 shows the element voltage via a differential probe, CH2 shows the shunt voltage (i·10 Ω).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Phase difference θ = θ<sub>v</sub> − θ<sub>i</sub> = 360°·Δt/T. Δt is the time from the CH1 (voltage) peak to the CH2 (current) peak: if the CH2 peak comes <b>later</b>, the current lags and θ &gt; 0 (inductive).</div>
+        <div class="info">|Z| = V<sub>m</sub>/I<sub>m</sub>; I<sub>m</sub> = (CH2 peak)/10 Ω. Since the shunt is a pure resistance, it is in phase with the current; it does not disturb the phase measurement.</div>
+        <div class="why"><b>Why does the voltage lead in an inductor?</b> v = L di/dt: the voltage is proportional to the <b>slope</b> of the current. When the current crosses zero its slope is largest, so the voltage peaks; the current reaches its peak a quarter period later. In a capacitor the roles swap: i = C dv/dt, the current follows the slope of the voltage and leads.</div>
+        <div class="warnbox">Because of the winding resistance (r<sub>L</sub>) of a real inductor, the measured angle comes out slightly less than 90°. Select “Real” in the model selection to see the difference; state in the report which model you used.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" style="margin-top:12px" id="d1scopeHost"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 210"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Element</th><th>Model</th><th>f</th><th>CH1 peak (V)</th><th>CH2 peak (V)</th><th>Δt = t<sub>i</sub> − t<sub>v</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Frequency Sweep: |Z| and θ</h2>
+  <p class="lead">The element is connected to the AC power amplifier; the true-rms voltmeter is across the element, the ammeter is in series, and the phase meter reads θ<sub>v</sub> − θ<sub>i</sub>.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Both axes of the graph are <b>logarithmic</b>: x = log<sub>10</sub>f, y = log<sub>10</sub>|Z|. On this scale X<sub>L</sub> = 2πfL is a line of slope <b>+1</b> and |X<sub>C</sub>| = 1/(2πfC) a line of slope <b>−1</b>; a resistor is a horizontal line.</div>
+        <div class="info">To find L: L = |Z|/(2πf). For C: C = 1/(2πf|Z|). Average over several points.</div>
+        <div class="why"><b>Why log–log?</b> When we sweep the frequency from 20 Hz to 100 kHz, |Z| varies over five decades. On a linear axis small values stick to zero; on a logarithmic axis each decade has the same length and power laws become straight lines.</div>
+        <div class="warnbox">The ammeter also has a frequency range, and with low-impedance elements (a capacitor at high f, an inductor at low f) the current grows. Keep the voltage low so as not to exceed the amplifier’s current limit and the element’s power rating.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>log|Z| – log f</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d2theo"> Theoretical curves</label></div>
+          <canvas id="d2plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+        <div class="card">
+          <div class="row"><b>θ – log f</b></div>
+          <canvas id="d2plotph" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Element</th><th>f (Hz)</th><th>V<sub>rms</sub> (V)</th><th>I<sub>rms</sub></th><th>θ (°)</th><th>|Z| = V/I (Ω)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Impedance, Admittance and the Complex Plane</h2>
+  <p class="lead">Build a series or parallel circuit; calculate Z from the measured V, I and θ and mark it on the complex plane.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Complex impedance from measurement: <span class="eq">Z = (V<sub>rms</sub>/I<sub>rms</sub>)∠θ = R + jX</span> Admittance: <span class="eq">Y = 1/Z = G + jB</span> |Y| = 1/|Z|, angle −θ.</div>
+        <div class="info">Example 1.17: R = 50 Ω ∥ C = 10 µF, ω = 2000 rad/s. Y = 1/50 + j2000·10<sup>−5</sup> = 0.02 + j0.02 S ⇒ Z = 1/Y = 25 − j25 Ω.</div>
+        <div class="why"><b>Why admittance in parallel?</b> In parallel branches the voltage is common and the currents add: I = Y<sub>1</sub>V + Y<sub>2</sub>V = (Y<sub>1</sub> + Y<sub>2</sub>)V. In series the current is common and the voltages add, so the impedances add.</div>
+        <div class="warnbox">In a series RLC near ω = 1/√(LC) the current becomes very large, and the L and C voltages can exceed the source voltage many times over. Keep the source voltage low and check the voltage/current ratings of the elements.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 200"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Complex plane (measured points)</b><span class="grow"></span></div>
+          <div class="row" id="d3view"></div>
+          <svg id="d3cp" class="schem" viewBox="0 0 400 360" style="background:#fff"></svg>
+          <label style="font-size:13px"><input type="checkbox" id="d3theo"> Draw the theoretical locus (ω sweep)</label>
+        </div>
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Record (R)</button>
+            <button class="btn sec small" id="d3del">Delete</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Circuit</th><th>ω</th><th>V<sub>rms</sub></th><th>I<sub>rms</sub></th><th>θ (°)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Unknown Element and Real Capacitor (ESR)</h2>
+  <p class="lead">Black box X contains a single element (R, L or C). Black box Y is a non-polarized (bipolar) capacitor; you will measure its equivalent series resistance (ESR).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info"><b>Identifying the type:</b> if θ ≈ 0° and |Z| is independent of frequency, it is a resistor; if θ ≈ +90° and |Z| increases with f, an inductor; if θ ≈ −90° and |Z| decreases with f, a capacitor. Measuring at a single frequency is not enough; compare at <b>two frequencies</b>.</div>
+        <div class="info"><b>Real capacitor model:</b> Z = ESR − j/(ωC). ESR = Re{Z} = |Z| cos θ. At low frequency the reactance dominates (θ ≈ −90°); at high frequency 1/(ωC) becomes small and the ESR comes to the fore, so θ moves toward zero.</div>
+        <div class="why"><b>Why does ESR matter?</b> In switch-mode power supplies, high-frequency ripple current flows through the capacitor; the dissipated power is I<sub>rms</sub>²·ESR. In aging electrolytics the ESR increases, the capacitor heats up and fails: this is the cause of a significant share of devices that end up as electronic waste.</div>
+        <div class="warnbox">Do not apply high voltage to an unknown element; start with a low amplitude. If the box turns out to be a capacitor and it is polarized, applying AC is dangerous: in this experiment the boxes are non-polarized, but in practice check the label.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 170"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record (R)</button>
+          <button class="btn sec small" id="d4del">Delete last row</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>Box</th><th>f (Hz)</th><th>V<sub>rms</sub> (V)</th><th>I<sub>rms</sub></th><th>θ (°)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Box Y: θ – log f</b></div>
+        <canvas id="d4plot" width="560" height="280" style="width:100%"></canvas>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and graphs.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="In which element does the voltage lead, and in which does it lag? With which measurements did you identify the unknown element? Why does ESR become decisive at high frequency?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding them speeds up). To type an <b>exact value</b> or choose from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task in the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope cursors:</b> press the CURSOR button and drag on the screen.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta02.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h02', ders: 'Circuit Theory II', hafta: 2,
+  doc: [
+    { id: 'CLO1', t: 'Explains the voltage–current phase relation in R, L and C elements with phasors and measures it with an oscilloscope.', mc: [1, 4, 5] },
+    { id: 'CLO2', t: 'Measures the variation of reactance with frequency; determines element values from |Z| and θ data.', mc: [1, 2, 4, 5] },
+    { id: 'CLO3', t: 'Calculates the impedance and admittance of series and parallel circuits and interprets them on the complex plane.', mc: [1, 2, 5] },
+    { id: 'CLO4', t: 'Finds the type and value of an unknown element by planning measurements; evaluates the losses of real components (ESR, winding resistance).', mc: [2, 3, 5, 6] },
+    { id: 'CLO5', t: 'Presents the findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To measure the phase difference between voltage and current in a resistor, an inductor and a capacitor with an oscilloscope and to find |Z|.', doc: ['CLO1'], mc: [1, 4, 5],
+      gerec: 'Function generator (50 Ω), 100 Ω resistor, 10 mH inductor, 1 µF film capacitor, 10 Ω shunt, differential probe, two-channel oscilloscope.',
+      guvenlik: 'In a series circuit the ground clip is not attached to measure a middle element with a single-ended probe; a differential probe or MATH is used. AC is not applied to a polarized electrolytic capacitor.',
+      veri: 'CH1/CH2 peak values and cursor Δt for each element; calculated θ and |Z|.',
+      tartisma: 'Why is the angle measured on a real inductor less than 90°? At which frequency is the difference more pronounced?' },
+    d2: { amac: 'To measure the impedance magnitude and angle of R, L and C over a wide frequency range and verify X<sub>L</sub> ∝ f and |X<sub>C</sub>| ∝ 1/f.', doc: ['CLO2'], mc: [1, 2, 4, 5],
+      gerec: 'AC power amplifier, true-rms voltmeter and ammeter, phase meter, R/L/C boxes.',
+      guvenlik: 'The current grows at low impedance; do not exceed the amplifier’s current limit or the element power ratings.',
+      veri: 'Table of f, V<sub>rms</sub>, I<sub>rms</sub>, θ; log–log |Z| and θ graphs; L and C values.' },
+    d3: { amac: 'To calculate the impedance and admittance of series and parallel circuits from measurements and show them on the complex plane.', doc: ['CLO3'], mc: [1, 2, 3, 5],
+      gerec: 'AC power amplifier (adjustable ω), resistor/inductor/capacitor boxes, V/A meter, phase meter.',
+      guvenlik: 'In a series RLC near ω ≈ 1/√(LC) the element voltages can exceed the source voltage; work with a low source voltage.',
+      veri: 'V, I, θ measurements; calculated Z = R + jX and Y = G + jB; points on the complex plane.' },
+    d4: { amac: 'To find the type and value of the element in the black box by measurement; to determine the ESR and capacitance of a real capacitor.', doc: ['CLO4'], mc: [2, 3, 5, 6],
+      gerec: 'AC power amplifier, V/A meter, phase meter, black box X (single element), black box Y (non-polarized capacitor).',
+      guvenlik: 'Apply a low voltage to an unknown element first. Do not apply AC to a polarized capacitor. Capacitors with high ESR heat up; replacing aged capacitors extends device life and reduces electronic waste.',
+      veri: 'Multi-frequency V, I, θ measurements for boxes X and Y; θ–f graph; ESR and C calculation.',
+      tartisma: 'Could you have determined the type of the element with certainty from a measurement at a single frequency? Why?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

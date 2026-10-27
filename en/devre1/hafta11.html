@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 11 · Sequential Switching, Unbounded Response, Integrating Amplifier — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 11 — Sequential Switching, Unbounded Response, Integrating Amplifier</h1>
+    <div class="sub">Shifting the time origin · Negative R<sub>Th</sub> · Saturation · Triangle wave from a square wave</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Sequential Switching</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Unbounded Response</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Integrating Amplifier</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Space</kbd> pause/resume in Experiment 1 · <kbd>Alt</kbd>+<kbd>0–6</kbd> sections · <kbd>?</kbd> help<br><br>Your data are saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 11 · Sequential Switching, Unbounded Response and the Integrating Amplifier</h2>
+  <p class="lead">Lecture notes: <b>Section 3.5 Sequential Switching</b>, <b>3.6 Unbounded Response</b> and <b>3.7 The Integrating Amplifier</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li>find the τ of each interval in a two-switch <b>RL</b> circuit, link the intervals through <b>continuity</b>, and see by measurement why the exponential in the second interval must be written with <b>(t − t<sub>1</sub>)</b>.</li>
+        <li>capture on the oscilloscope the exponential that grows with a <b>negative R<sub>Th</sub></b> in an RC circuit with a dependent source, and see that the response is in practice limited by <b>saturation</b>.</li>
+        <li>find the stable / marginal / unstable transition yourself by changing the gain of the dependent source.</li>
+        <li>obtain a <b>triangle wave</b> from a square wave with an op-amp integrator, measure the time to saturation, and set the initial voltage with a <b>reset switch</b>.</li>
+        <li>see how the offset voltage makes the integrator <b>drift</b> and how a parallel feedback resistor stops it.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Adjustable DC power supply · Symmetric ±V<sub>CC</sub> supply · Two digital multimeters · Two-channel digital oscilloscope (cursors, single shot and RUN/STOP) · Function generator (square/sine/DC, with offset) · Programmable switch timer (two relays) · Data logger · Component boxes (R, L, C) · µA741.</p>
+      <h3>Numerical assumptions</h3>
+      <div class="info">Switches are assumed ideal (zero resistance, zero transition time). In op-amp circuits saturation is taken as ±V<sub>CC</sub> (course assumption). The real 741 offset is applied only in Experiment 3, when the checkbox is ticked.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First read the <b>Background</b> section and solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left step by step; steps are ticked automatically when you make the correct setting. Record measurements in the table with <kbd>R</kbd> and answer the questions from your own measurements. In the last section print your report or save it as PDF.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · When One Switch Is Not Enough, When a Source Pumps Energy, When a Capacitor Enters the Feedback Path</h2>
+  <p class="lead">Three topics merge into one idea: <b>x(t) = x(∞) + [x(t<sub>0</sub><sup>+</sup>) − x(∞)] e<sup>−(t−t<sub>0</sub>)/τ</sup></b>. This week we will see t<sub>0</sub> shift, τ become negative, and τ replaced by an integration scale.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Sequential switching: resetting the clock</h3>
+      <p style="font-size:14px;line-height:1.65">In real circuits a switch changes position not once but many times: a relay coil is first disconnected from the source, then a snubber resistor is switched in; a flash capacitor first discharges through one resistor, then through two. Each switching instant starts <b>a new circuit</b> and hence <b>a new τ</b>. The bridge between intervals is <b>continuity</b>: i<sub>L</sub> and v<sub>C</sub> do not jump; the final value of the first interval is the initial condition of the second. Because the clock restarts at t<sub>1</sub>, the exponential in the second interval is written with <b>(t − t<sub>1</sub>)</b>.</p>
+      <svg viewBox="0 0 420 170" style="width:100%;max-width:440px;display:block;margin:auto">
+        <line x1="40" y1="140" x2="410" y2="140" stroke="#99a"/><line x1="40" y1="10" x2="40" y2="140" stroke="#99a"/>
+        <path d="M40,30 H90 C120,95 150,115 180,121" stroke="#0b5cad" stroke-width="2.5" fill="none"/>
+        <path d="M180,121 C230,134 300,139 405,140" stroke="#e07a10" stroke-width="2.5" fill="none"/>
+        <line x1="90" y1="20" x2="90" y2="140" stroke="#888" stroke-dasharray="4 3"/><line x1="180" y1="20" x2="180" y2="140" stroke="#888" stroke-dasharray="4 3"/>
+        <text x="90" y="157" font-size="12" text-anchor="middle">t = 0 (S1 opens)</text><text x="185" y="157" font-size="12" text-anchor="middle">t₁ (S2 closes)</text>
+        <text x="120" y="60" font-size="12" fill="#0b5cad">τ₁ = L/R₂</text><text x="240" y="118" font-size="12" fill="#e07a10">τ₂ = L/(R₂∥R₃)</text>
+        <text x="46" y="24" font-size="12">i<tspan font-size="9" dy="3">L</tspan></text>
+        <circle cx="180" cy="121" r="4" fill="#c62828"/><text x="188" y="108" font-size="11" fill="#c62828">no jump, slope breaks</text>
+      </svg>
+      <h3>2 · Unbounded response: negative resistance</h3>
+      <p style="font-size:14px;line-height:1.65">In a passive circuit R<sub>Th</sub> &gt; 0: energy turns into heat and the response dies out. A dependent source, however, can <b>pump energy</b> into the circuit. Seen from the terminals, it looks like a negative resistance that <i>pushes</i> current back in the same direction as the voltage; τ = R<sub>Th</sub>C &lt; 0 and the exponential <b>grows</b>. Mathematically it goes to infinity; the real circuit hits the amplifier’s supply (saturation) or a component breaks down. Used in a controlled way, the same mechanism is the operating principle of <b>oscillators</b>.</p>
+      <h3>3 · The integrating amplifier</h3>
+      <p style="font-size:14px;line-height:1.65">If we replace R<sub>f</sub> in an inverting amplifier with a capacitor, the virtual-ground current i<sub>s</sub> = v<sub>g</sub>/R<sub>s</sub> charges the capacitor; the output <b>accumulates the area</b> of the input. Ramp generators in ADCs, PWM circuits, charge-sensing detector amplifiers and analog computers rely on this circuit. Its weakness: it integrates <b>DC as well</b>. Even a few millivolts of op-amp offset drives the output into saturation over time; this is why a large resistor (R<sub>p</sub>) is placed in parallel with the capacitor and the initial voltage is cleared with a <b>reset switch</b>.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">General solution (shifted)</td><td class="l">x(t) = x(∞) + [x(t<sub>0</sub><sup>+</sup>) − x(∞)] e<sup>−(t−t<sub>0</sub>)/τ</sup></td></tr>
+        <tr><td class="l">Continuity</td><td class="l">i<sub>L</sub>(t<sub>1</sub><sup>+</sup>) = i<sub>L</sub>(t<sub>1</sub><sup>−</sup>), v<sub>C</sub>(t<sub>1</sub><sup>+</sup>) = v<sub>C</sub>(t<sub>1</sub><sup>−</sup>)</td></tr>
+        <tr><td class="l">τ of each interval</td><td class="l">τ<sub>k</sub> = L/R<sub>eq,k</sub> or R<sub>eq,k</sub>C (circuit in that interval)</td></tr>
+        <tr><td class="l">RC with dependent source</td><td class="l">C dv/dt = (g − 1/R) v ⇒ R<sub>Th</sub> = 1/(1/R − g)</td></tr>
+        <tr><td class="l">Unbounded response</td><td class="l">τ &lt; 0 ⇒ v(t) = V<sub>0</sub> e<sup>+t/|τ|</sup></td></tr>
+        <tr><td class="l">Time to a target value</td><td class="l">t = |τ| ln(v<sub>target</sub>/V<sub>0</sub>)</td></tr>
+        <tr><td class="l">Integrating amplifier</td><td class="l">v<sub>o</sub>(t) = −(1/R<sub>s</sub>C<sub>f</sub>)∫<sub>0</sub><sup>t</sup> v<sub>g</sub> dτ + v<sub>o</sub>(0)</td></tr>
+        <tr><td class="l">Slope for constant input</td><td class="l">dv<sub>o</sub>/dt = −v<sub>g</sub>/(R<sub>s</sub>C<sub>f</sub>)</td></tr>
+        <tr><td class="l">Time to saturation</td><td class="l">t<sub>sat</sub> = (V<sub>CC</sub> ± v<sub>o</sub>(0))·R<sub>s</sub>C<sub>f</sub>/|v<sub>g</sub>|</td></tr>
+        <tr><td class="l">DC gain with R<sub>p</sub></td><td class="l">−R<sub>p</sub>/R<sub>s</sub> (offset error V<sub>os</sub>(1 + R<sub>p</sub>/R<sub>s</sub>))</td></tr>
+      </table>
+      <h3>Integrator and timing</h3>
+      <svg viewBox="0 0 420 150" style="width:100%;max-width:440px;display:block;margin:auto">
+        <text x="5" y="40" font-size="12">v<tspan font-size="9" dy="3">g</tspan></text>
+        <path d="M30,45 H40 V25 H110 V65 H180 V25 H250 V65 H320 V25 H390" stroke="#b8960a" stroke-width="2" fill="none"/>
+        <line x1="30" y1="45" x2="400" y2="45" stroke="#ccc"/>
+        <text x="5" y="110" font-size="12">v<tspan font-size="9" dy="3">o</tspan></text>
+        <path d="M40,100 L110,130 L180,100 L250,130 L320,100 L390,130" stroke="#1592b8" stroke-width="2" fill="none"/>
+        <line x1="30" y1="100" x2="400" y2="100" stroke="#ccc"/>
+        <text x="200" y="146" font-size="11" text-anchor="middle">with positive input the output ramps down (inverting structure)</text>
+      </svg>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Points to watch in a real lab</h3>
+    <div class="warnbox"><b>Interrupting inductor current produces sparks.</b> v = L di/dt: if you open the switch without leaving a path for the current, the inductor voltage shoots up to hundreds of volts (240 V in a 12 V circuit in Example 3.11). Do not open a switch without a snubber resistor or freewheeling diode across the inductor; this is how relay contacts and transistors get damaged.</div>
+    <div class="warnbox"><b>A charged capacitor stores its energy.</b> A capacitor can remain charged even after the supply is disconnected. Before touching the circuit, discharge it through a suitably rated resistor (e.g. 1 kΩ / 5 W) and verify 0 V with a multimeter. Discharging with a short circuit welds the contacts.</div>
+    <div class="warnbox"><b>Polarity of electrolytic capacitors.</b> In the integrator the output swings in both directions, so for C<sub>f</sub> use a <u>non-polarized</u> (film/ceramic) capacitor. An electrolytic capacitor under reverse voltage heats up, swells and may explode.</div>
+    <div class="warnbox"><b>Supply unstable circuits with current limiting.</b> A circuit with negative resistance (unbounded response) runs to the highest voltage the supply allows. Keep the supply’s current limit low and choose component voltage ratings (such as “50 V” on a capacitor) above the supply.</div>
+    <div class="warnbox"><b>Oscilloscope ground clip.</b> The ground clips of both probes must be connected to the <u>same</u> ground point of the circuit. If you attach a ground clip to the op-amp’s virtual ground (inverting input), the feedback is disrupted and the output saturates.</div>
+    <div class="warnbox"><b>Multimeter current range and fuse.</b> When measuring inductor current, connect the DMM in series and start on the 10 A range. Touching the leads across a voltage source while on a current range blows the fuse. When finished, move the probe back to the V/Ω input.</div>
+    <div class="warnbox"><b>Resistor power rating.</b> In Example 3.8, 2.5 A dissipates 12.5 W in the 2 Ω resistor at the first instant. A ¼ W resistor cannot be used; compute with P = I²R and choose a power resistor with at least a twofold margin.</div>
+    <div class="info"><b>Common mistakes:</b> not writing the exponential with (t − t<sub>1</sub>) instead of t in the second interval; taking τ in the second interval from the old circuit; assuming a calculation error when a negative R<sub>Th</sub> appears; forgetting the minus sign in the integrator; taking R<sub>s</sub>C<sub>f</sub> for a time constant (it is only a scale factor); using the integrator formula for long times without checking saturation.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before coming to the lab. The values are taken from the examples in the lecture notes.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Two-Switch RL Circuit: Sequential Switching</h2>
+  <p class="lead">Circuit of Example 3.8. S1 opens at t<sub>a</sub> and disconnects the source; S2 closes at t<sub>b</sub> and switches R<sub>3</sub> in. You program the timer; the data logger plots i<sub>L</sub>(t).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">t &lt; t<sub>a</sub>: the inductor is a short circuit and also shorts R<sub>2</sub>: <span class="eq">I<sub>0</sub> = V<sub>s</sub>/R<sub>s</sub></span></div>
+        <div class="info">t<sub>a</sub> ≤ t ≤ t<sub>b</sub>: the inductor sees only R<sub>2</sub>: <span class="eq">i = I<sub>0</sub> e<sup>−(t−t<sub>a</sub>)/τ<sub>1</sub></sup>, τ<sub>1</sub> = L/R<sub>2</sub></span></div>
+        <div class="info">t ≥ t<sub>b</sub>: R<sub>2</sub> ∥ R<sub>3</sub>: <span class="eq">i = i(t<sub>b</sub>) e<sup>−(t−t<sub>b</sub>)/τ<sub>2</sub></sup></span> Check: setting t = t<sub>b</sub> must give the initial value.</div>
+        <div class="warnbox">On a real bench, at the instant S1 opens the inductor current continues through R<sub>2</sub>; if R<sub>2</sub> is missing or open, the inductor voltage theoretically goes to infinity and an arc forms across the contacts of S1. Choose R<sub>2</sub> for a peak power of 2.5 A × 2 Ω ⇒ 12.5 W.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 270"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Data logger · i<sub>L</sub>(t)</b><span class="grow"></span>
+            <label style="font-size:13px"><input type="checkbox" id="d1theo"> Theoretical (piecewise)</label>
+            <label style="font-size:13px"><input type="checkbox" id="d1wrong"> Unshifted (wrong) expression</label></div>
+          <canvas id="d1plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d1rec">Record (R)</button>
+            <button class="btn sec small" id="d1del">Delete last row</button>
+            <button class="btn sec small" id="d1csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>L (H)</th><th>R<sub>2</sub></th><th>R<sub>3</sub></th><th>t<sub>a</sub> (s)</th><th>t<sub>b</sub> (s)</th><th>t (s)</th><th>i<sub>L</sub> (A)</th><th>v<sub>L</sub> (V)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · RC Circuit with a Dependent Source: Unbounded Response</h2>
+  <p class="lead">Example 3.9. The capacitor is precharged to V<sub>0</sub>; at t = 0, R and the voltage-controlled current source (g·v) are connected. The oscilloscope captures v<sub>C</sub>(t) in single-shot mode.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">KCL at the top node: <span class="eq">C dv/dt = g v − v/R = (g − 1/R) v</span> Resistance seen from the terminals <span class="eq">R<sub>Th</sub> = 1/(1/R − g)</span> If g &gt; 1/R, R<sub>Th</sub> is negative.</div>
+        <div class="info">When τ = R<sub>Th</sub>C &lt; 0, the voltage multiplies by e ≈ 2.72 every |τ|. The ratio of two cursor points cancels the initial value: <span class="eq">|τ| = Δt / ln(v<sub>B</sub>/v<sub>A</sub>)</span></div>
+        <div class="info">In practice the dependent source is an amplifier (e.g. an op-amp-based voltage-controlled current source). Its output cannot exceed the <b>compliance voltage</b> (±V<sub>sat</sub>) allowed by its supply: the response gets stuck there.</div>
+        <div class="warnbox">The capacitor’s voltage rating must exceed ±V<sub>sat</sub>. In a circuit running to 120 V, a 63 V capacitor breaks down. When the experiment is finished, remember to discharge the capacitor through a resistor.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d2inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d2scopeHost"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Cursor measurements</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>C</th><th>R</th><th>g (mA/V)</th><th>V<sub>0</sub> (V)</th><th>t<sub>A</sub></th><th>v<sub>A</sub> (V)</th><th>t<sub>B</sub></th><th>v<sub>B</sub> (V)</th><th>Δt</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Op-Amp Integrating Amplifier</h2>
+  <p class="lead">Example 3.10. The function generator applies v<sub>g</sub> through R<sub>s</sub> to the virtual ground; C<sub>f</sub> is in the feedback path. The reset switch S<sub>R</sub> sets the capacitor to the initial condition v<sub>o</sub>(0). CH1: v<sub>g</sub>, CH2: v<sub>o</sub>.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">Virtual ground: all of the current i<sub>s</sub> = v<sub>g</sub>/R<sub>s</sub> flows through C<sub>f</sub>: <span class="eq">dv<sub>o</sub>/dt = −v<sub>g</sub>/(R<sub>s</sub>C<sub>f</sub>)</span> With a square input the output is a <b>triangle</b> wave made of linear ramps; its peaks are the instants at which the input changes sign.</div>
+        <div class="info">The offset voltage V<sub>os</sub> acts like a small DC source at the input; the integrator integrates it as well: <span class="eq">dv<sub>o</sub>/dt = V<sub>os</sub>/(R<sub>s</sub>C<sub>f</sub>)</span> Adding R<sub>p</sub> limits the DC gain to −R<sub>p</sub>/R<sub>s</sub>; the price is that integration is degraded at frequencies below 1/(2πR<sub>p</sub>C<sub>f</sub>).</div>
+        <div class="warnbox">C<sub>f</sub> must be non-polarized (film capacitor). In practice a MOSFET or relay is used as the reset switch; its leakage current is integrated too, so the reset element is chosen with leakage of the order of pA.</div>
+        <div class="warnbox">A real op-amp takes a few µs to recover from saturation; remember that in the saturation region the output does not follow the input on the oscilloscope and information is lost.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d3inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d3scopeHost"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 270"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table (from oscilloscope)</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Record (R)</button>
+          <button class="btn sec small" id="d3del">Delete last row</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Wave</th><th>f</th><th>Amplitude</th><th>R<sub>s</sub></th><th>C<sub>f</sub></th><th>R<sub>p</sub></th><th>±V<sub>CC</sub></th><th>V<sub>os</sub></th><th>v<sub>o</sub> max</th><th>v<sub>o</sub> min</th><th>Δt (cursor)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="What happens if you do not shift the time origin in the second interval? How is an unbounded response limited in a real circuit? Why is R_p needed in the integrator?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (hold to speed up). To type an <b>exact value</b> or pick from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope cursors:</b> press the CURSOR button and drag on the screen. Time is read from the trigger instant (1st division of the screen).<br>
+    <kbd>R</kbd> record measurement · <kbd>Space</kbd> pause/resume the Experiment 1 logger · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>6</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta11.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h11', ders: 'Circuit Theory I', hafta: 11,
+  doc: [
+    { id: 'CLO1', t: 'Finds the τ of each interval in first-order circuits with sequential switching and writes the piecewise response by applying continuity and time shifting.', mc: [1, 2] },
+    { id: 'CLO2', t: 'Computes the negative Thevenin resistance in circuits with dependent sources, and measures and interprets the unbounded response and its limitation by saturation.', mc: [1, 2, 5, 6] },
+    { id: 'CLO3', t: 'Builds an op-amp integrator, measures its slope and time to saturation, and takes design measures against offset drift with R<sub>p</sub> and a reset switch.', mc: [1, 3, 4, 5] },
+    { id: 'CLO4', t: 'Performs time-domain measurements with oscilloscope cursors, a data logger and a multimeter, and compares measurement with theory.', mc: [4, 5] },
+    { id: 'CLO5', t: 'Presents findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To measure the piecewise current curve of a two-switch RL circuit by programming the switching times, and to verify the shifting of the time origin in the second interval.', doc: ['CLO1', 'CLO4'], mc: [1, 2, 3, 4, 5, 6],
+      gerec: 'Adjustable DC supply, component box (R<sub>s</sub>, R<sub>2</sub>, R<sub>3</sub>, L), two-relay switch timer, series DMM (10 A), DMM, data logger.',
+      guvenlik: 'Do not open a switch without leaving a path for the inductor current (back EMF, arcing); choose R<sub>2</sub> for the peak power (≈12.5 W); mind the DMM current range and fuse.',
+      veri: 'i<sub>L</sub>(t) record, t–i<sub>L</sub>–v<sub>L</sub> table, comparison of the theoretical and unshifted expressions.',
+      tartisma: 'How did the initial condition and shape of the second interval change when the switching time t<sub>b</sub> changed? Which physical principle does the unshifted expression violate?' },
+    d2: { amac: 'To observe decaying, constant and growing responses in an RC circuit with a dependent source by changing the gain g; to measure a negative τ with cursors.', doc: ['CLO2', 'CLO4'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Component box (R, C), voltage-controlled current source (adjustable g and compliance voltage), precharge source, single-shot oscilloscope.',
+      guvenlik: 'An unstable circuit runs to the highest voltage the supply allows; choose a capacitor voltage rating above the compliance voltage and discharge it through a resistor at the end of the experiment.',
+      veri: 'Single-shot waveforms, cursor times and voltages, the boundary value of g.',
+      tartisma: 'How does a real oscillator use and limit this growing response?' },
+    d3: { amac: 'To obtain a triangle output from a square input with an integrator, measure the time to saturation, and observe offset drift and eliminate it with R<sub>p</sub> and a reset switch.', doc: ['CLO3', 'CLO4'], mc: [1, 3, 4, 5, 10],
+      gerec: 'Function generator (square/sine/DC, offset), µA741, component box (R<sub>s</sub>, C<sub>f</sub>, R<sub>p</sub>), reset switch, ±V<sub>CC</sub> supply, oscilloscope.',
+      guvenlik: 'C<sub>f</sub> must be non-polarized (an electrolytic may explode under reverse voltage); do not attach the oscilloscope ground to the virtual ground.',
+      veri: 'v<sub>o</sub> max/min, slope and time to saturation from cursors, drift observation with/without R<sub>p</sub>.',
+      tartisma: 'What trade-off does the choice of R<sub>p</sub> create between integration accuracy and offset error? Justify your component choice.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

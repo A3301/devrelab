@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 6 · Capacitor — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<style>
+  .boom{animation:shake .08s linear 8}
+  @keyframes shake{0%{transform:translate(0,0)}25%{transform:translate(3px,-2px)}50%{transform:translate(-3px,2px)}75%{transform:translate(2px,3px)}100%{transform:translate(0,0)}}
+  .readout{font-family:Consolas,monospace;font-size:13px;background:#0c1a10;color:#7dff8f;padding:8px 10px;border-radius:6px;line-height:1.6}
+</style>
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 6 — Capacitor</h1>
+    <div class="sub">i = C dv/dt · Voltage does not jump · w = ½Cv² · Real capacitor · Safe discharge</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">0%</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: i = C dv/dt</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Voltage Profile and Energy</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Real Capacitor</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Safe Discharge</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag them or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> for fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 6 · Capacitor</h2>
+  <p class="lead">Lecture notes: <b>Section 2.2 Capacitor</b> — construction and types, q = Cv, i = C dv/dt, continuity of voltage, energy, DC steady state and safety.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab</h3>
+      <ol class="steps">
+        <li>You will see on the oscilloscope, with the help of a shunt resistor, that a triangular voltage produces a <b>square current</b> in a capacitor, and measure an <b>unknown C</b> from the slope.</li>
+        <li>For a voltage profile you design yourself, you will obtain the current, power and <b>w = ½Cv²</b> energy curves, and see why capacitor voltage <b>cannot jump</b>.</li>
+        <li>You will examine the tolerance, leakage, ESR and voltage rating of ceramic, film and electrolytic capacitors, and see (safely!) why a <b>reverse-polarised electrolytic</b> explodes.</li>
+        <li>You will learn to <b>safely discharge</b> a charged capacitor with a suitable resistor, the discharge time, and the importance of the resistor’s power rating.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Function generator (50 Ω internal resistance) · Arbitrary waveform generator (AWG) · Two-channel oscilloscope (cursors, 1 MΩ input) · Adjustable DC power supply (0–60 V, current-limited, polarity switch) · Two digital multimeters (10 MΩ input) · LCR meter (1 kHz) · Infrared thermometer · Capacitor box and capacitor drawer (ceramic, film, electrolytic, tantalum) · Shunt resistors (1/10/100 Ω) · Discharge resistors (0.25–10 W) · Safety goggles.</p>
+      <div class="info">This week the passive sign convention is used: current enters the “+” terminal of the capacitor voltage. In this direction <span class="eq">i<sub>C</sub> = C dv<sub>C</sub>/dt</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Work order</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First read the <b>Background</b> page and solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left step by step; steps are ticked automatically when you make the correct setting. Record measurements into the table with <kbd>R</kbd> and answer the questions from your own measurements. In the last section print your report or save it as PDF.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Capacitor: The Memory of Voltage</h2>
+  <p class="lead">Take 10 minutes before starting the experiments: intuition, a formula card and the traps waiting for you in a real lab.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · What does a capacitor do?</h3>
+      <p style="font-size:14px;line-height:1.65">It consists of two conducting plates and an insulator (dielectric) between them. For every charge entering one plate, an equal charge leaves the other; no charge passes through the dielectric, but in the external circuit current <b>appears to flow</b>. The charge stored on the plates is proportional to the voltage: <b>q = Cv</b>. Since current is the rate of flow of charge,</p>
+      <div class="eq">i<sub>C</sub> = dq/dt = C dv<sub>C</sub>/dt</div>
+      <p style="font-size:14px;line-height:1.65">The current is set by the <b>slope of the voltage, not its value</b>. At constant voltage the current is zero: in DC steady state a capacitor behaves like an <b>open circuit</b>. An instantaneous change of voltage would require infinite current; therefore <b>capacitor voltage does not jump</b>. There is an exact duality with the inductor: there, the quantity that could not jump was the current.</p>
+      <h3>2 · Where do we meet it?</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Power supply filters</b> (smooth the rectified voltage), <b>decoupling</b> (the 100 nF ceramic next to an IC), <b>camera flash and defibrillator</b> (collect energy slowly, deliver it in milliseconds), <b>touch screens</b> (a finger changes the capacitance), timing circuits (RC, Section 3).</p>
+      <svg viewBox="0 0 420 170" class="schem" style="max-width:420px">
+        <rect x="120" y="30" width="12" height="110" fill="#c62828"/><rect x="250" y="30" width="12" height="110" fill="#1d4ed8"/>
+        <rect x="132" y="30" width="118" height="110" fill="#fff4cf" stroke="#d9c37a"/>
+        <g stroke="#b8860b" stroke-width="1.5">
+          <line x1="140" y1="50" x2="240" y2="50"/><line x1="140" y1="72" x2="240" y2="72"/><line x1="140" y1="94" x2="240" y2="94"/><line x1="140" y1="116" x2="240" y2="116"/>
+          <path d="M236,46 l6,4 l-6,4 M236,68 l6,4 l-6,4 M236,90 l6,4 l-6,4 M236,112 l6,4 l-6,4" fill="none"/>
+        </g>
+        <text x="126" y="24" text-anchor="middle" style="font-size:13px;fill:#c62828;font-weight:700">+q</text>
+        <text x="256" y="24" text-anchor="middle" style="font-size:13px;fill:#1d4ed8;font-weight:700">−q</text>
+        <text x="191" y="158" text-anchor="middle" class="lbl">dielectric (ε), thickness d — energy in the field: w = ½Cv²</text>
+        <path d="M40,85 H120 M262,85 H380" class="w"/>
+        <text x="60" y="76" class="lbl">i →</text><text x="330" y="76" class="lbl">i →</text>
+        <text x="40" y="110" class="lbl" style="font-size:12px">C = εA/d</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Definition</td><td class="l">q = C v<sub>C</sub> &nbsp;(1 F = 1 C/V)</td></tr>
+        <tr><td class="l">Parallel plate</td><td class="l">C = εA/d, &nbsp;ε<sub>0</sub> = 8.854×10<sup>−12</sup> F/m</td></tr>
+        <tr><td class="l">Current–voltage</td><td class="l">i<sub>C</sub> = C dv<sub>C</sub>/dt</td></tr>
+        <tr><td class="l">Voltage–current</td><td class="l">v<sub>C</sub>(t) = v<sub>C</sub>(t<sub>0</sub>) + (1/C)∫<sub>t0</sub><sup>t</sup> i dτ</td></tr>
+        <tr><td class="l">Power</td><td class="l">p = v i = C v dv/dt</td></tr>
+        <tr><td class="l">Energy</td><td class="l">w = ½ C v<sup>2</sup> = q<sup>2</sup>/(2C)</td></tr>
+        <tr><td class="l">Continuity</td><td class="l">v<sub>C</sub>(0<sup>+</sup>) = v<sub>C</sub>(0<sup>−</sup>)</td></tr>
+        <tr><td class="l">DC steady state</td><td class="l">dv/dt = 0 → i<sub>C</sub> = 0 (open circuit)</td></tr>
+        <tr><td class="l">Triangular voltage (V<sub>pp</sub>, f)</td><td class="l">|dv/dt| = 2V<sub>pp</sub>f → |i| = 2CV<sub>pp</sub>f (square current)</td></tr>
+        <tr><td class="l">Sine v = V<sub>m</sub> sin ωt</td><td class="l">i = ωCV<sub>m</sub> cos ωt (leads by 90°)</td></tr>
+        <tr><td class="l">Discharge through a resistor</td><td class="l">v(t) = V<sub>0</sub> e<sup>−t/RC</sup>, &nbsp;t<sub>safe</sub> = RC ln(V<sub>0</sub>/V<sub>s</sub>)</td></tr>
+        <tr><td class="l">Electrolytic allowed leakage (typical)</td><td class="l">I<sub>leak</sub> ≤ 0.01·C[µF]·V<sub>R</sub>[V] µA (or 3 µA)</td></tr>
+      </table>
+      <h3>Capacitor types (summary)</h3>
+      <table class="data">
+        <tr><th>Type</th><th>Range</th><th>Polarity</th><th>Tolerance</th><th>Note</th></tr>
+        <tr><td class="l">Ceramic</td><td>pF–µF</td><td>no</td><td>±10…20 %</td><td class="l">cheap, good at high frequency, decoupling</td></tr>
+        <tr><td class="l">Film</td><td>nF–µF</td><td>no</td><td>±5 %</td><td class="l">stable, low leakage; audio/timing</td></tr>
+        <tr><td class="l">Electrolytic (Al)</td><td>µF–mF</td><td><b>yes</b></td><td>±20 %</td><td class="l">large C, high ESR and leakage, explodes if reversed</td></tr>
+        <tr><td class="l">Tantalum</td><td>µF</td><td><b>yes</b></td><td>±10 %</td><td class="l">small volume; shorts and burns under reverse/over-voltage</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Precautions in a real laboratory</h3>
+    <div class="warnbox"><b>Electrolytic and tantalum capacitors are polarised.</b> The stripe on the body (“−” marks) indicates the negative terminal; the long leg is positive. In a reversed electrolytic the oxide layer dissolves, leakage current rises, the capacitor heats up, swells and may burst through the safety vent on top. Check the polarity a second time before powering the circuit and wear <b>safety goggles</b>.</div>
+    <div class="warnbox"><b>Do not exceed the voltage rating.</b> The voltage printed on the body (e.g. 25 V) is the absolute maximum; leave a 20–50% margin. When exceeded, the dielectric breaks down and the capacitor becomes a short circuit. Capacitors in series do not share voltage equally: the smaller capacitance takes the larger voltage.</div>
+    <div class="warnbox"><b>A charged capacitor is dangerous — even in an unplugged device.</b> A capacitor with open terminals keeps its charge for hours. A 470 µF/400 V capacitor inside a power supply stores ≈25 J. Before touching, discharge it through a resistor of suitable power, then verify 0 V by <b>measuring</b> with a multimeter.</div>
+    <div class="warnbox"><b>Do not short it with a screwdriver.</b> Discharging without a resistor means a current pulse of hundreds of amperes, sparks, spatter of molten metal and damage to the capacitor’s internal connections. Check both the value and the <b>power/energy rating</b> of the discharge resistor (a 0.25 W resistor cannot handle 25 J).</div>
+    <div class="warnbox"><b>Do not connect an LCR meter to a charged capacitor.</b> An LCR meter and the capacitance range of a multimeter measure with their own small signal; a charged capacitor destroys the instrument’s input stage. Discharge it first.</div>
+    <div class="warnbox"><b>The oscilloscope ground is a single point.</b> Put the shunt resistor you use to measure current at the grounded end; if you attach the oscilloscope ground clip to another node in the circuit, you short that node to the function generator’s ground.</div>
+    <div class="warnbox"><b>Inrush current.</b> When an empty capacitor is connected to a source without resistance, the current is limited only by the cable and source resistance. Charge large capacitors through a pre-charge resistor or an NTC; keep the power supply’s current limit low.</div>
+    <div class="info"><b>Common mistakes:</b> writing i = C·v (C·v is <b>charge</b>, not current); thinking current also flows at constant voltage; multiplying by 10<sup>−2</sup> when converting cm² → m² (correct is 10<sup>−4</sup>); forgetting the initial voltage in the integral; not noticing that, by the passive sign convention, a negative current <b>discharges</b> the capacitor; mixing up the µF, nF, pF prefixes.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before entering the lab. The questions use the same values as the examples in the lecture notes.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · i = C dv/dt: Triangular Voltage → Square Current</h2>
+  <p class="lead">Function generator → capacitor → shunt resistor R<sub>sh</sub> → ground. CH1 shows the generator output (≈ v<sub>C</sub>), CH2 the shunt voltage (= i·R<sub>sh</sub>).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">An oscilloscope cannot measure current; we read the current from the voltage across a small <b>shunt resistor</b>: <span class="eq">i = v<sub>CH2</sub> / R<sub>sh</sub></span> The shunt is chosen small enough not to disturb the capacitor voltage (R<sub>sh</sub> ≪ 1/(ωC)).</div>
+        <div class="info">In each half of a triangle wave the slope is constant: <span class="eq">|dv/dt| = ΔV/(T/2) = 2V<sub>pp</sub>f</span> Constant slope → constant current. When the slope changes sign the current changes sign too: a <b>square wave</b>.</div>
+        <div class="info">The rounding at the corners of the square current comes from the time constant formed by the generator’s 50 Ω internal resistance and the capacitor (τ = (50 Ω + R<sub>sh</sub>)C). You will see this in detail in Section 3.</div>
+        <div class="warnbox">Always put the shunt resistor on the <b>ground side</b>. If you place it between the capacitor and the generator and attach the oscilloscope ground to one end of the shunt, you short the capacitor through ground and see a wrong curve.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+        <div class="bench-row" style="margin-top:12px">
+          <div class="inst dark scopewrap" style="flex:1;min-width:420px">
+            <div class="brand"><span>DSO-2C · Digital Oscilloscope</span><span><span class="led on g"></span> RUN</span></div>
+            <div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+              <canvas id="scope" width="640" height="400" style="width:100%;max-width:640px"></canvas>
+              <div style="min-width:150px">
+                <div class="ctrls" id="scopeKnobs"></div>
+                <div class="row" style="margin:6px 0">
+                  <button class="seg-btn on" id="ch1on">CH1</button>
+                  <button class="seg-btn on" id="ch2on">CH2</button>
+                  <button class="seg-btn" id="curon">CURSOR</button>
+                </div>
+                <div class="meas" id="scopeMeas"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Wave</th><th>f</th><th>Generator (open circuit)</th><th>C</th><th>R<sub>sh</sub></th><th>CH1 V<sub>pp</sub></th><th>CH2 V<sub>pp</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Design a Voltage Profile: Current, Power and Energy</h2>
+  <p class="lead">The arbitrary waveform generator (AWG) applies the piecewise-linear voltage profile you write to the capacitor through its internal resistance R<sub>s</sub>. A current probe and a calculator plot the v<sub>C</sub>, i, p and w curves.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">Profile format: <code>t(ms):v(V)</code> pairs separated by commas. Example: <code>0:0, 2:20, 4:20, 7:-10, 9:-10</code>. If you write two different voltages at the same time (<code>3:0, 3:10</code>) you request a <b>step</b> (jump). Use a decimal point in values.</div>
+        <div class="info">When the power <span class="eq">p = v i</span> is positive the capacitor <b>absorbs</b> energy, when negative it <b>returns</b> it. The energy <span class="eq">w = ½Cv²</span> depends only on the voltage; it does not remember the history of the current. When the voltage passes through zero the energy is zero.</div>
+        <div class="info">If an ideal source could change the voltage as a step, we would have <span class="eq">i = C·Δv/0 → ∞</span>. In practice the source’s internal resistance limits the current: peak current ≈ Δv/R<sub>s</sub>, and the voltage reaches its new value in ≈5R<sub>s</sub>C.</div>
+        <div class="warnbox">Connecting a real source to a large capacitor with a voltage step stresses the source’s current limit, fuses and switch contacts (contacts may weld). In practice a pre-charge resistor or soft start is used.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div>
+        <div class="inst" style="margin-top:12px">
+          <div class="brand"><span>AWG · PROFILE EDITOR</span><span>t (ms) : v (V)</span></div>
+          <div class="row" style="width:100%"><input type="text" id="d2prof" style="flex:1;min-width:280px;font-family:Consolas,monospace"><button class="btn small" id="d2apply">Apply</button></div>
+          <div class="row" id="d2presets" style="margin-top:6px"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 200"></svg></div>
+      <div class="card">
+        <div class="row"><b>v<sub>C</sub>(t)</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d2theo"> Ideal (R<sub>s</sub> = 0) curve</label></div>
+        <canvas id="d2plotV" width="700" height="230" style="width:100%"></canvas>
+        <div class="row"><b>Second plot:</b>
+          <span class="row" id="d2sel" style="gap:4px"><button class="seg-btn on" data-k="i">Current i</button><button class="seg-btn" data-k="p">Power p</button><button class="seg-btn" data-k="w">Energy w</button></span>
+          <span style="font-size:12px;color:#667">(the p and w plots unlock when you answer the related question correctly with your own calculation)</span></div>
+        <canvas id="d2plotX" width="700" height="230" style="width:100%"></canvas>
+        <div class="row" style="margin-top:6px"><label style="flex:1">Time cursor <input type="range" id="d2t" min="0" max="1000" value="250" style="width:100%"></label></div>
+        <div class="readout" id="d2read"></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>C</th><th>R<sub>s</sub></th><th>t (ms)</th><th>v<sub>C</sub> (V)</th><th>i (A)</th><th>i<sub>peak</sub> (A)</th><th>Profile</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Capacitor Types and the Real Capacitor Model</h2>
+  <p class="lead">Choose a capacitor from the drawer, measure it with the LCR meter, connect it to the DC supply through a series resistor and examine the leakage current, polarity and voltage limit. In the real model there is a leakage resistance in parallel with C and a series ESR.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info"><b>Real capacitor model:</b> ideal C + series <b>ESR</b> (equivalent series resistance: plate, electrolyte and lead resistances) + parallel <b>R<sub>leak</sub></b> (leakage: the dielectric is not a perfect insulator). ESR and leakage are largest in electrolytics.</div>
+        <div class="info"><b>Why polarised?</b> The dielectric of an electrolytic is a very thin oxide grown electrochemically on the aluminium of the positive terminal. A reverse voltage dissolves this oxide: leakage rises rapidly, the electrolyte heats up and produces gas, the body swells and the safety vent opens.</div>
+        <div class="info">Once a capacitor has charged at DC, ideally the current falls to zero. The small persistent current read on the ammeter is the <b>leakage current</b>; in an electrolytic it is large at first connection and decreases within a few minutes.</div>
+        <div class="warnbox">In a real lab, reverse-polarity or over-voltage tests are <b>not done</b>. We do this experiment only in the virtual environment. Do not fit an electrolytic of unknown polarity into a circuit; replace a swollen capacitor or one with a bulging top immediately.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="row" id="d3parts" style="margin-bottom:8px"></div>
+        <div class="bench-row" id="d3inst"></div>
+      </div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><svg id="d3vis" viewBox="0 0 320 260" style="width:100%;display:block;background:#f3f1ea;border-radius:8px"></svg></div>
+        <div class="card"><svg id="d3sch" class="schem" viewBox="0 0 420 260"></svg></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Record (R)</button>
+          <button class="btn sec small" id="d3del">Delete last row</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Capacitor</th><th>Polarity</th><th>V<sub>source</sub></th><th>R</th><th>v<sub>C</sub> (V)</th><th>i</th><th>T (°C)</th><th>LCR: C / ESR</th><th>State</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Safely Discharging a Charged Capacitor</h2>
+  <p class="lead">The filter capacitor in an unplugged device has stayed charged. Choose a suitable discharge resistor and close switch S; watch on the voltmeter as it falls below 50 V (the limit considered safe to touch).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">Discharge through resistor R: <span class="eq">v(t) = V<sub>0</sub> e<sup>−t/τ</sup>, &nbsp;τ = RC</span> The peak current V<sub>0</sub>/R and peak power V<sub>0</sub><sup>2</sup>/R occur at the instant the switch closes. All of the capacitor energy ½CV<sub>0</sub><sup>2</sup> turns into heat in the resistor.</div>
+        <div class="info">Time to reach the safe voltage: <span class="eq">t<sub>s</sub> = RC ln(V<sub>0</sub>/V<sub>s</sub>)</span> After 5τ the voltage falls to 0.7% of its initial value.</div>
+        <div class="info">Resistor selection is a trade-off: a small R discharges quickly but the peak current and peak power grow; a large R is safe but slow. The resistor must be able to absorb the <b>energy</b> (J) with its thermal mass; the continuous power rating (W) alone is not a sufficient criterion.</div>
+        <div class="warnbox">In practice connect the discharge resistor with an insulated probe (or with crocodile clips attached while no voltage is present), work with one hand and keep the other in your pocket. Measure with a multimeter after discharging; in some large capacitors the voltage returns by a few volts due to dielectric absorption.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 260"></svg></div>
+      <div class="card">
+        <div class="row"><b>v<sub>C</sub>(t) — voltmeter record</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d4theo"> Theoretical curve V<sub>0</sub>e<sup>−t/RC</sup></label></div>
+        <canvas id="d4plot" width="700" height="280" style="width:100%"></canvas>
+      </div>
+      <div class="card">
+        <div class="row"><b>Discharge records</b> <span style="font-size:12px;color:#667">(added when each discharge ends or when you record with R)</span><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record (R)</button>
+          <button class="btn sec small" id="d4del">Delete last row</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>C</th><th>V<sub>0</sub> (V)</th><th>R</th><th>P<sub>R</sub></th><th>t (s)</th><th>v<sub>end</sub> (V)</th><th>t<sub>50V</sub> (s)</th><th>T<sub>R,max</sub> (°C)</th><th>Result</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Why does capacitor voltage not jump? Why is an electrolytic capacitor polarised? What did you pay attention to when choosing the discharge resistor?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). <b>Tap</b> the knob or the value below it to type an <b>exact value</b> or pick from a list (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, <kbd>Shift</kbd> for fine adjustment.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope cursors:</b> press the CURSOR button and drag on the screen.<br>
+    <b>Experiment 2:</b> write the profile and press “Apply”; move the time cursor and record with <kbd>R</kbd>.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta06.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h06', ders: 'Circuit Theory I', hafta: 6,
+  doc: [
+    { id: 'CLO1', t: 'Explains the current–voltage relation of a capacitor (i = C dv/dt) and measures it with an oscilloscope using a shunt resistor.', mc: [1, 4, 5] },
+    { id: 'CLO2', t: 'Calculates current, power and energy for a given voltage profile; interprets the continuity of capacitor voltage.', mc: [1, 2, 3] },
+    { id: 'CLO3', t: 'Recognises capacitor types and the real model (ESR, leakage, tolerance, voltage rating, polarity) and selects a capacitor suitable for the application.', mc: [1, 4, 6, 10] },
+    { id: 'CLO4', t: 'Safely discharges a charged capacitor with a resistor of suitable value and power rating, and calculates the discharge time.', mc: [2, 3, 6] },
+    { id: 'CLO5', t: 'Presents the findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To show that the capacitor current under a triangular voltage is a square wave and to measure an unknown capacitance from the slope.', doc: ['CLO1'], mc: [1, 4, 5],
+      gerec: 'Function generator (50 Ω), capacitor box, shunt resistors (1/10/100 Ω), two-channel oscilloscope.',
+      guvenlik: 'Put the shunt resistor on the ground side; connect the oscilloscope ground clip only to circuit ground.',
+      veri: 'CH1/CH2 Vpp, Δt and ΔV with cursors, calculation of C<sub>x</sub>.',
+      tartisma: 'Why are the corners of the square current rounded; how does increasing the shunt resistor spoil the measurement?' },
+    d2: { amac: 'To obtain the i, p and w curves for a designed piecewise-linear voltage profile; to show that with a voltage step the source resistance limits the peak current.', doc: ['CLO2'], mc: [1, 2, 3, 5],
+      gerec: 'Arbitrary waveform generator (adjustable internal resistance), capacitors, current probe, voltmeter.',
+      guvenlik: 'Connecting a large capacitor directly with a voltage step produces a high inrush current; use a pre-charge resistor.',
+      veri: 'Cursor measurements (t, v<sub>C</sub>, i), peak current, calculated p and w.',
+      tartisma: 'Where does the capacitor’s energy go when the power is negative?' },
+    d3: { amac: 'To examine the tolerance, leakage, ESR, voltage rating and polarity of ceramic, film, electrolytic and tantalum capacitors.', doc: ['CLO3'], mc: [1, 4, 6, 10],
+      gerec: 'DC power supply (0–60 V, polarity switch), series resistor, two DMMs, LCR meter, IR thermometer, capacitor drawer.',
+      guvenlik: 'Do not connect electrolytic/tantalum capacitors reversed, do not exceed the voltage rating, wear safety goggles; separate a swollen capacitor as e-waste.',
+      veri: 'LCR measurement (C, ESR), leakage current, body temperature, failure state.',
+      tartisma: 'For a decoupling and a filter application, which type would you choose, with what voltage margin and at what cost?' },
+    d4: { amac: 'To discharge a charged capacitor to a safe voltage with a resistor of suitable value and power rating; to measure the discharge time.', doc: ['CLO4'], mc: [2, 3, 6],
+      gerec: '470 µF/400 V capacitor, charging unit, discharge resistors (0.25–10 W), switch, DMM, IR thermometer.',
+      guvenlik: 'Do not short it with a screwdriver; use an insulated probe and a resistor of suitable power; verify the discharge with a multimeter.',
+      veri: 'v<sub>C</sub>(t) curve, t<sub>50V</sub>, resistor temperature, result.',
+      tartisma: 'How do you strike the trade-off between speed and safety when choosing a discharge resistor?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

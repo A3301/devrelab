@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 12 · Parallel RLC Natural Response — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 12 — Natural Response of the Parallel RLC Circuit</h1>
+    <div class="sub">α and ω<sub>0</sub> · Overdamped, underdamped and critically damped · s-plane · Logarithmic decrement · Real inductor</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Three Responses and the s-Plane</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Measuring ω<sub>d</sub> and α</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Critical Damping Design</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Real Inductor</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data are saved automatically on this computer.</div>
+</nav>
+
+<main>
+<section class="page" id="giris">
+  <h2>Week 12 · Natural Response of the Parallel RLC Circuit</h2>
+  <p class="lead">Lecture notes: <b>Section 4.1 Parallel RLC: Natural Response</b>, <b>4.2 Overdamped</b>, <b>4.3 Underdamped</b> and <b>4.4 Critically Damped Response</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li>see overdamped, critically damped and underdamped responses on the oscilloscope by changing only R, and relate them to the motion of the roots in the <b>s-plane</b>.</li>
+        <li>measure <b>ω<sub>d</sub></b> from the period and <b>α</b> from the ratio of successive peaks (logarithmic decrement) of the underdamped response, and determine an unknown capacitor.</li>
+        <li>design the <b>critical damping</b> resistor for given L and C, and measure the settling time versus R.</li>
+        <li>measure how the <b>winding resistance</b> of a real inductor changes the damping and include it in the model.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Initial-condition loader (adjustable V<sub>0</sub> and I<sub>0</sub>, disconnects from the circuit at t = 0) · Two-channel digital oscilloscope (cursors; 1 V/mA current probe on CH2) · Digital multimeter (Ω) · Resistor box · Inductors (8 H, 50 mH, etc.) · Capacitors · Unknown capacitor C<sub>x</sub>.</p>
+      <div class="info">In Experiments 1–3 the inductor is assumed ideal; in Experiment 4 the winding resistance r<sub>L</sub> comes into play. v: capacitor (node) voltage, i<sub>L</sub>: inductor current (downward +).</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First the <b>Background</b> and <b>Pre-lab</b>. In each experiment follow the lab sheet step by step; steps are ticked automatically at the correct setting. Record measurements with <kbd>R</kbd>; answer the questions from your own measurements. In the last section print the report.</p>
+  </div>
+</section>
+
+<section class="page" id="onbilgi">
+  <h2>Background · Two Energy Stores, One Resistor</h2>
+  <p class="lead">As the inductor discharges it charges the capacitor, then the reverse happens; on each round the resistor turns part of the energy into heat. A single comparison determines the shape of the response: <b>α versus ω<sub>0</sub></b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Why it matters and where it appears</h3>
+      <p style="font-size:14px;line-height:1.65">Most real systems are second order: the ringing at the output of a switching power supply, the tuning circuit of a radio receiver, the settling of a door closer or a meter needle, a camera image stabilizer… Overshoot, oscillation and settling time arise here. The designer often chooses L and C for other reasons (frequency, size, cost); <b>R is the lever that sets the damping</b>.</p>
+      <div class="eq">d²v/dt² + (1/RC) dv/dt + v/(LC) = 0 &nbsp;⇒&nbsp; s² + s/RC + 1/LC = 0</div>
+      <h3>Three cases</h3>
+      <p style="font-size:14px;line-height:1.65"><b>α &gt; ω<sub>0</sub> (overdamped):</b> two real roots; no oscillation, crosses the axis at most once; the slow root leaves a long tail.<br>
+      <b>α = ω<sub>0</sub> (critical):</b> repeated root; the fastest return without overshoot; v = (D<sub>1</sub>t + D<sub>2</sub>)e<sup>−αt</sup>.<br>
+      <b>α &lt; ω<sub>0</sub> (underdamped):</b> complex roots −α ± jω<sub>d</sub>; a sinusoid with envelope e<sup>−αt</sup>.</p>
+      <svg viewBox="0 0 400 220" style="width:100%;max-width:420px;display:block;margin:auto">
+        <line x1="20" y1="110" x2="390" y2="110" stroke="#99a"/><line x1="320" y1="10" x2="320" y2="210" stroke="#99a"/>
+        <text x="385" y="104" font-size="12" text-anchor="end">σ</text><text x="326" y="20" font-size="12">jω</text>
+        <circle cx="320" cy="110" r="80" fill="none" stroke="#0b5cad" stroke-dasharray="5 4"/>
+        <text x="250" y="40" font-size="11" fill="#0b5cad">|s| = ω₀</text>
+        <g stroke="#1a8a4a" stroke-width="2.5"><path d="M273,49 l8,8 m0,-8 l-8,8"/><path d="M273,163 l8,8 m0,-8 l-8,8"/></g>
+        <text x="285" y="50" font-size="11" fill="#1a8a4a">underdamped</text>
+        <g stroke="#e07a10" stroke-width="2.5"><path d="M236,106 l8,8 m0,-8 l-8,8"/></g><text x="218" y="130" font-size="11" fill="#e07a10">critical (−ω₀)</text>
+        <g stroke="#c62828" stroke-width="2.5"><path d="M286,106 l8,8 m0,-8 l-8,8"/><path d="M66,106 l8,8 m0,-8 l-8,8"/></g><text x="40" y="100" font-size="11" fill="#c62828">overdamped (s₂, s₁)</text>
+        <text x="200" y="205" font-size="11" text-anchor="middle">As (parallel) R decreases the roots move down the circle to the axis, then split along it</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card (parallel RLC)</h3>
+      <table class="data">
+        <tr><td class="l">Neper frequency</td><td class="l">α = 1/(2RC)</td></tr>
+        <tr><td class="l">Resonant frequency</td><td class="l">ω<sub>0</sub> = 1/√(LC)</td></tr>
+        <tr><td class="l">Roots</td><td class="l">s<sub>1,2</sub> = −α ± √(α² − ω<sub>0</sub>²)</td></tr>
+        <tr><td class="l">Damped frequency</td><td class="l">ω<sub>d</sub> = √(ω<sub>0</sub>² − α²), T<sub>d</sub> = 2π/ω<sub>d</sub></td></tr>
+        <tr><td class="l">Initial derivative</td><td class="l">dv/dt(0<sup>+</sup>) = −(V<sub>0</sub>/R + I<sub>0</sub>)/C</td></tr>
+        <tr><td class="l">Overdamped</td><td class="l">v = A<sub>1</sub>e<sup>s<sub>1</sub>t</sup> + A<sub>2</sub>e<sup>s<sub>2</sub>t</sup></td></tr>
+        <tr><td class="l">Critical</td><td class="l">v = (D<sub>1</sub>t + D<sub>2</sub>)e<sup>−αt</sup>, D<sub>2</sub> = V<sub>0</sub>, D<sub>1</sub> = dv/dt(0<sup>+</sup>) + αV<sub>0</sub></td></tr>
+        <tr><td class="l">Underdamped</td><td class="l">v = e<sup>−αt</sup>(B<sub>1</sub>cos ω<sub>d</sub>t + B<sub>2</sub>sin ω<sub>d</sub>t)</td></tr>
+        <tr><td class="l">Critical damping resistance</td><td class="l">R = ½√(L/C)</td></tr>
+        <tr><td class="l">Logarithmic decrement</td><td class="l">δ = ln(v<sub>k</sub>/v<sub>k+1</sub>) = αT<sub>d</sub></td></tr>
+        <tr><td class="l">With winding resistance r<sub>L</sub></td><td class="l">α ≈ 1/(2RC) + r<sub>L</sub>/(2L), ω<sub>0</sub>² = (1 + r<sub>L</sub>/R)/(LC)</td></tr>
+      </table>
+      <div class="info">Do not confuse with the series case: in series α = R/(2L) and the damping <b>increases</b> as R grows; in parallel the damping <b>decreases</b> as R grows.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Points to watch in a real lab</h3>
+    <div class="warnbox"><b>Interrupting inductor current produces sparks.</b> When the circuit that sets I<sub>0</sub> disconnects, the inductor current must have a path (the parallel C and R). With large inductors (8 H!), setting R to ∞ and interrupting the current produces hundreds of volts; the switch and the meter are damaged.</div>
+    <div class="warnbox"><b>Discharge the capacitor.</b> In an underdamped circuit the voltage rises to tens of volts even when there is no initial voltage (74 V in Example 4.3). Before touching the circuit, discharge the capacitor through a resistor and verify with a DMM. The capacitor’s voltage rating must exceed this peak.</div>
+    <div class="warnbox"><b>Do not use electrolytic capacitors.</b> Because the oscillation voltage goes in both directions, a polarized capacitor sees reverse voltage. Choose a film or ceramic capacitor; the leakage current of an electrolytic also behaves like an extra parallel resistor and spoils the damping.</div>
+    <div class="warnbox"><b>The oscilloscope probe loads the circuit.</b> A 1× probe adds 1 MΩ and ~100 pF: in a parallel RLC with R = 100 kΩ this means 10% extra damping, and a frequency shift with small C values. Use a 10× probe; connect the ground clip to the circuit ground.</div>
+    <div class="warnbox"><b>Inductor measurement and winding resistance.</b> Measure the winding resistance on the DMM Ω range with the circuit <u>de-energized</u>. Touching a live circuit on the Ω range damages the meter. If you choose a cored inductor, L may vary with current (saturation).</div>
+    <div class="warnbox"><b>Resistor power rating.</b> In a circuit with small R (overdamped) the initial power is V<sub>0</sub>²/R; for 12 V and 200 Ω this is 0.72 W: a ¼ W resistor heats up quickly. With repeated switching, compute the average power.</div>
+    <div class="info"><b>Common mistakes:</b> writing α = R/(2L) for the parallel circuit (the series formula); using ω<sub>0</sub> in the sinusoid of the underdamped case (the correct one is ω<sub>d</sub>); writing a single exponential in the critical case; trying to find the second initial condition (dv/dt) from V<sub>0</sub> instead of from the capacitor current; mixing up the direction (sign) of I<sub>0</sub>.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before coming to the lab. The values are taken from the examples in the lecture notes.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<section class="page" id="d1">
+  <h2>Experiment 1 · Three Responses, One Knob: R and the Roots</h2>
+  <p class="lead">Examples 4.3–4.4: L = 8 H, C = 0.125 µF. The loader sets V<sub>0</sub> and I<sub>0</sub> for t &lt; 0 and disconnects at t = 0. Change R; the oscilloscope and the s-plane update together.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">ω<sub>0</sub> = 1/√(LC) is independent of R: in the s-plane the roots first move at distance ω<sub>0</sub> from the origin, i.e. on a <b>circle</b> (underdamped), meet at −ω<sub>0</sub> (critical), then split along the real axis (overdamped).</div>
+        <div class="info">KCL at t = 0<sup>+</sup>: <span class="eq">dv/dt(0<sup>+</sup>) = −(V<sub>0</sub>/R + I<sub>0</sub>)/C</span> If I<sub>0</sub> is negative the voltage rises first.</div>
+        <div class="warnbox">In the overdamped case R is small: initially the resistor dissipates a power of V<sub>0</sub>²/R. When choosing a small R with a high V<sub>0</sub>, check the resistor’s power rating.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d1scopeHost"></div>
+      </div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><svg id="d1sch" class="schem" viewBox="0 0 420 260"></svg></div>
+        <div class="card"><b>s-plane (root locus)</b><svg id="d1splane" class="schem" viewBox="0 0 360 300" style="margin-top:6px"></svg></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>R</th><th>V<sub>0</sub> (V)</th><th>I<sub>0</sub> (mA)</th><th>Type</th><th>v max (V)</th><th>v min (V)</th><th>t<sub>A</sub> (cursor)</th><th>v<sub>A</sub> (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d2">
+  <h2>Experiment 2 · Measuring ω<sub>d</sub> and α in the Underdamped Response</h2>
+  <p class="lead">The time between two successive positive peaks gives T<sub>d</sub>, and their ratio gives δ = αT<sub>d</sub>. First verify the method with the known C = 0.125 µF, then measure the unknown C<sub>x</sub>.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">The peak values lie very close to the envelope (∝ e<sup>−αt</sup>) and are exactly one T<sub>d</sub> apart: <span class="eq">ln(v<sub>A</sub>/v<sub>B</sub>) = α T<sub>d</sub></span> The unknown amplitude cancels in the ratio.</div>
+        <div class="info">From the measured α and ω<sub>d</sub>: <span class="eq">ω<sub>0</sub>² = ω<sub>d</sub>² + α², C = 1/(ω<sub>0</sub>²L)</span> If R is known, cross-check with C = 1/(2Rα).</div>
+        <div class="warnbox">When placing the cursors on the peaks, set the time base to the largest scale at which both peaks fit on the screen; reading errors grow for a waveform that covers only a small part of the screen. On a real oscilloscope remember to use a 10× probe.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d2inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d2scopeHost"></div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="row"><b>Cursor measurements</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>C</th><th>R</th><th>t<sub>A</sub></th><th>v<sub>A</sub> (V)</th><th>t<sub>B</sub></th><th>v<sub>B</sub> (V)</th><th>Δt</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d3">
+  <h2>Experiment 3 · Critical Damping Design: Fastest Return Without Oscillation</h2>
+  <p class="lead">Choose L and C, and design R yourself. The oscilloscope automatically measures the 2% settling time (t<sub>s</sub>) and the zero crossings. Obtain the t<sub>s</sub>–R curve yourself.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">Critical damping condition α = ω<sub>0</sub>: <span class="eq">R<sub>k</sub> = ½ √(L/C)</span> R &gt; R<sub>k</sub> underdamped (overshoot), R &lt; R<sub>k</sub> overdamped (long tail).</div>
+        <div class="info">In the overdamped case the slow root s<sub>1</sub> = −α + √(α² − ω<sub>0</sub>²) approaches zero: the tail lengthens. In the underdamped case overshoot delays settling. The critical point is the fastest response without oscillation; if slight overshoot is allowed, a slightly underdamped design can settle even faster.</div>
+        <div class="warnbox">Critical damping is fragile: capacitor tolerances are typically ±5–10%. In practice choosing R slightly smaller (slightly overdamped) guarantees no overshoot in production. You also have to choose R from the standard E24 series.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d3inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d3scopeHost"></div>
+      </div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Record (R)</button>
+            <button class="btn sec small" id="d3del">Delete last row</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>L</th><th>C</th><th>R</th><th>t<sub>s</sub> (2%)</th><th>Zero crossings</th><th>v max</th><th>v min</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>t<sub>s</sub> – R plot</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Theoretical curve</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d4">
+  <h2>Experiment 4 · Real Inductor: Effect of the Winding Resistance</h2>
+  <p class="lead">An 8 H inductor has thousands of turns; the wire resistance r<sub>L</sub> is a resistance in series with the inductor and adds extra damping. First measure r<sub>L</sub>, then measure the damping and compare it with the model.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">Equations: <span class="eq">C dv/dt = −v/R − i<sub>L</sub>, &nbsp;L di<sub>L</sub>/dt = v − r<sub>L</sub>i<sub>L</sub></span> Characteristic equation: s² + (1/RC + r<sub>L</sub>/L)s + (1 + r<sub>L</sub>/R)/(LC) = 0.</div>
+        <div class="info">In the ideal model α = 0 when R = ∞ and the oscillation never dies out. In reality a damping of <span class="eq">α = r<sub>L</sub>/(2L)</span> remains: the <b>quality factor</b> Q = ω<sub>0</sub>L/r<sub>L</sub> is finite.</div>
+        <div class="warnbox">With R = ∞ (resistor removed), disconnecting the loader that sets the initial current transfers the inductor current only into C: the voltage may rise to hundreds of volts. Check the capacitor’s voltage rating and insulation; discharge the capacitor after the measurement.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d4inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d4scopeHost"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 520 240"></svg></div>
+      <div class="card">
+        <div class="row"><b>Cursor measurements</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record (R)</button>
+          <button class="btn sec small" id="d4del">Delete last row</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>Model</th><th>R</th><th>t<sub>A</sub></th><th>v<sub>A</sub> (V)</th><th>t<sub>B</sub></th><th>v<sub>B</sub> (V)</th><th>Δt</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="How did the roots move in the s-plane as R increased? Why is critical damping fragile? How did the winding resistance affect your measurements?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (hold to speed up). To type an <b>exact value</b> or pick from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope cursors:</b> press the CURSOR button and drag on the screen. Time is read from the switching instant (1st division of the screen).<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta12.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h12', ders: 'Circuit Theory I', hafta: 12,
+  doc: [
+    { id: 'CLO1', t: 'Sets up the characteristic equation of the parallel RLC circuit and determines the response type and the roots from α and ω<sub>0</sub>.', mc: [1, 2] },
+    { id: 'CLO2', t: 'Measures ω<sub>d</sub> and α of the underdamped response with an oscilloscope and extracts an unknown component value from the measurement.', mc: [2, 4, 5] },
+    { id: 'CLO3', t: 'Designs the critical damping resistor for given L and C, and evaluates tolerance and standard-value constraints.', mc: [1, 3, 10] },
+    { id: 'CLO4', t: 'Measures the winding resistance of a real inductor, includes it in the model and explains the difference between the ideal model and the measurement.', mc: [2, 4, 5] },
+    { id: 'CLO5', t: 'Presents findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To observe overdamped, critically damped and underdamped natural responses by changing R, and to relate them to the motion of the roots in the s-plane.', doc: ['CLO1'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Initial-condition loader, 8 H inductor, 0.125 µF capacitor, resistor box, two-channel oscilloscope with current probe.',
+      guvenlik: 'Always leave a path for the inductor current (back EMF); in the underdamped case the peak voltage reaches tens of volts, so discharge the capacitor; with small R mind the resistor power rating.',
+      veri: 'v(t) and i<sub>L</sub>(t) waveforms, peak values, response-type classification, root locations.',
+      tartisma: 'Why do the roots first move on a circle and then along the real axis as R decreases?' },
+    d2: { amac: 'To measure ω<sub>d</sub> and α from the period and the ratio of successive peaks of the underdamped response, and to determine an unknown capacitor.', doc: ['CLO2'], mc: [2, 4, 5],
+      gerec: 'Initial-condition loader, 8 H inductor, known 0.125 µF and unknown C<sub>x</sub> capacitors, resistor box, oscilloscope with cursors.',
+      guvenlik: 'Use a 10× probe to reduce probe loading; ground clip to circuit ground; discharge the capacitor after the measurement.',
+      veri: 'Cursor times and peak voltages; calculation of T<sub>d</sub>, δ, α, ω<sub>0</sub> and C<sub>x</sub>.',
+      tartisma: 'Which unknown is eliminated by using the ratio of two peaks instead of a single peak? How large is your measurement uncertainty?' },
+    d3: { amac: 'To design the critical damping resistor for given L and C, and to measure how the settling time varies with R.', doc: ['CLO3'], mc: [1, 3, 4, 5, 10],
+      gerec: 'Inductor and capacitor options, adjustable resistor box, oscilloscope with automatic settling-time measurement.',
+      guvenlik: 'With small resistance choose the resistor for the power V<sub>0</sub>²/R; choose the capacitor voltage rating for the peak voltage.',
+      veri: 'R–t<sub>s</sub> table and plot, number of zero crossings, overshoot.',
+      tartisma: 'If the capacitor tolerance is ±10% and R can only be chosen from the E24 series, which resistor would you choose? Justify in terms of cost and reliability.' },
+    d4: { amac: 'To measure the winding resistance of the inductor and determine its contribution to the damping of the parallel RLC circuit.', doc: ['CLO4'], mc: [2, 4, 5],
+      gerec: 'DMM (Ω range), 8 H real inductor, 0.125 µF capacitor, resistor box (including ∞), oscilloscope.',
+      guvenlik: 'Measure the winding resistance with the circuit de-energized; with R = ∞ the voltage may rise, so check the capacitor voltage rating.',
+      veri: 'r<sub>L</sub> measurement, cursor measurements for R = ∞ and R = 20 kΩ, ideal/real model comparison.',
+      tartisma: 'What would you pay attention to when choosing an inductor for a low-loss (high-Q) resonant circuit? What is the price of using thicker wire?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

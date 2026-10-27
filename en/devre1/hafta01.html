@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 1 · Meet the Op-Amp — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 1 — Meet the Op-Amp</h1>
+    <div class="sub">Terminals · Open loop · Saturation · Comparator · Virtual short</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>1b · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>2 · Experiment 1: Terminals and Supply</button>
+  <button data-p="d2"><span class="dot"></span>3 · Experiment 2: Open Loop and Saturation</button>
+  <button data-p="d3"><span class="dot"></span>4 · Experiment 3: Comparator</button>
+  <button data-p="d4"><span class="dot"></span>5 · Experiment 4: Feedback</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjust.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 1 · Meet the Operational Amplifier (Op-Amp)</h2>
+  <p class="lead">Lecture notes: <b>Section 1.1 Terminals and Constraints</b> and <b>1.2 Ideal Model and Virtual Short</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab</h3>
+      <ol class="steps">
+        <li>you will recognise the 8 pins of the µA741 IC and correctly connect the <b>symmetric supply</b> on a breadboard.</li>
+        <li>you will <b>measure</b> the open-loop characteristic to find the gain A and the limit of the linear region (±V<sub>CC</sub>/A).</li>
+        <li>you will see on the oscilloscope that an op-amp without feedback is a <b>comparator</b>, and measure its slew rate (SR).</li>
+        <li>you will see how negative feedback creates the <b>virtual short</b>, and why positive feedback latches.</li>
+        <li>you will verify with KCL at the five terminals that the output current comes <b>from the supply</b>.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Symmetric DC power supply (0–20 V, current-limited) · Adjustable DC voltage supply · Two digital multimeters · Function generator (sine/triangle/square) · Two-channel oscilloscope (with cursors) · Breadboard, µA741, resistors, 10 kΩ offset trimpot.</p>
+      <h3>Op-amp model (all experiments)</h3>
+      <div class="row" style="font-size:14px">
+        <label>Saturation assumption
+          <select id="satModel">
+            <option value="ideal">Course assumption: v<sub>o</sub> = ±V<sub>CC</sub></option>
+            <option value="real">Real 741: v<sub>o</sub> = ±(V<sub>CC</sub> − 1.5 V)</option>
+          </select></label>
+      </div>
+      <div class="info">µA741: A = 10<sup>5</sup>, R<sub>i</sub> = 2 MΩ, SR = 0.5 V/µs, quiescent current 1.7 mA, short-circuit output current ≈ 25 mA, maximum supply ±18 V. Numerical questions use the course assumption (±V<sub>CC</sub>).</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left step by step; steps tick themselves off when you make the correct setting. Record measurements into the table with <kbd>R</kbd> and answer the questions. In the last section print your report or save it as PDF.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · A Short Journey into the Op-Amp</h2>
+  <p class="lead">Spend 10 minutes before starting the experiments: concepts, a formula card and the pitfalls waiting for you in a real lab.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · What is an op-amp, and why “operational”?</h3>
+      <p style="font-size:14px;line-height:1.65">An operational amplifier is a five-terminal IC that amplifies the <b>difference</b> between its two inputs with a very large gain (A ≈ 10<sup>5</sup>). Its name comes from analog computers: with a few resistors it performs addition, subtraction, integration and differentiation <b>operations</b>. It is the building block of sensor interfaces, audio circuits, filters, measuring instruments and control circuits.</p>
+      <div class="eq">v<sub>o</sub> = A (v<sub>p</sub> − v<sub>n</sub>),&nbsp;&nbsp; −V<sub>CC</sub> ≤ v<sub>o</sub> ≤ +V<sub>CC</sub></div>
+      <h3>2 · Three operating conditions</h3>
+      <p style="font-size:14px;line-height:1.65"><b>No feedback:</b> the linear region is only ±V<sub>CC</sub>/A (≈150 µV) wide; in practice the output is always at ±V<sub>sat</sub> → <b>comparator</b>.<br>
+      <b>Negative feedback:</b> the output finds by itself the value that drives the difference towards zero → <b>v<sub>p</sub> ≈ v<sub>n</sub></b> (virtual short); the resistors set the gain.<br>
+      <b>Positive feedback:</b> the difference grows and the output latches into saturation → <b>memory / hysteresis</b>.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Linear region limit</td><td class="l">|v<sub>p</sub>−v<sub>n</sub>| &lt; V<sub>CC</sub>/A</td></tr>
+        <tr><td class="l">Ideal constraints (negative FB)</td><td class="l">v<sub>p</sub> = v<sub>n</sub>, i<sub>p</sub> = i<sub>n</sub> = 0</td></tr>
+        <tr><td class="l">Five-terminal KCL</td><td class="l">i<sub>p</sub>+i<sub>n</sub>+i<sub>o</sub>+i<sub>CC+</sub>+i<sub>CC−</sub> = 0</td></tr>
+        <tr><td class="l">Inverting gain (finite A)</td><td class="l">(−R<sub>f</sub>/R<sub>s</sub>)/(1+(1+R<sub>f</sub>/R<sub>s</sub>)/A)</td></tr>
+        <tr><td class="l">Slew rate</td><td class="l">SR = |dv<sub>o</sub>/dt|<sub>max</sub> (741: 0.5 V/µs)</td></tr>
+        <tr><td class="l">Comparator duty cycle</td><td class="l">D = ½ − arcsin(V<sub>ref</sub>/V<sub>m</sub>)/π</td></tr>
+      </table>
+      <h3>µA741 pinout (top view, notch on the left)</h3>
+      <pre style="font-size:13px;background:#f6f8fb;padding:8px;border-radius:6px;margin:0">  8 NC   7 +VCC   6 Output  5 Offset
+ ┌──────────────────────────────┐
+ ◖ µA741                         │
+ └──────────────────────────────┘
+  1 Offset 2 Input(−) 3 Input(+) 4 −VCC</pre>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Things to watch in a real lab</h3>
+    <div class="warnbox"><b>Connect first, then power.</b> Build the circuit with the supply output off, check every connection against the schematic, and only then turn the output on. Switch the supply off while changing the circuit.</div>
+    <div class="warnbox"><b>Set the current limit low.</b> In op-amp experiments set the supply current limit to 50–100 mA. If you make a mistake, the IC does not burn; the supply switches to “CC” mode: that is your warning light.</div>
+    <div class="warnbox"><b>Reversed supply and overvoltage kill the IC.</b> Swapping 7 ↔ 4 or exceeding ±18 V causes permanent damage within seconds. If the IC gets hot or you smell burning, cut the supply immediately.</div>
+    <div class="warnbox"><b>Ground (COM) is the reference of every measurement.</b> The supply COM terminal and the ground clips of the generator and oscilloscope must be connected to <u>the same point</u>. Clipping the oscilloscope ground onto another node shorts that node to ground.</div>
+    <div class="warnbox"><b>Do not leave inputs floating.</b> A floating op-amp input picks up noise and the output saturates randomly. Tie an unused input to ground through a resistor.</div>
+    <div class="warnbox"><b>Decoupling capacitor.</b> In a real circuit put a 100 nF ceramic capacitor from each supply pin (7 and 4) to ground; otherwise the circuit may oscillate.</div>
+    <div class="info"><b>Common mistakes:</b> using the ideal formula without checking saturation (there is no 100 V output!), forgetting the minus sign of the inverting gain, treating the virtual ground as real ground and sending current into it, mixing up µV and mV.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before entering the lab. Assume A = 10<sup>5</sup>, supply ±15 V, saturation ±V<sub>CC</sub>.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · µA741 Terminals and Symmetric Supply</h2>
+  <p class="lead">Connect wires by <b>dragging</b> from one hole/terminal to another (with the mouse or a finger). Clicking/tapping a wire removes it. On a phone, turning the screen to <b>landscape</b> is recommended; the bench can be scrolled sideways.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">An op-amp has <b>five terminals</b>: two inputs (v<sub>n</sub> “−”, v<sub>p</sub> “+”), one output (v<sub>o</sub>) and two supplies (+V<sub>CC</sub>, −V<sub>CC</sub>). The supply terminals are often not drawn in schematics but they <b>are always there</b>: they provide the energy and set the output limits.</div>
+        <div class="info">On the breadboard the upper five (a–e) and lower five (f–j) holes of each <b>column</b> are connected together; the central channel separates them. The long horizontal rails are connected end to end. Hovering over a hole highlights the holes connected to it.</div>
+        <div class="warnbox">If the supply is reversed or ±18 V is exceeded, the IC is damaged. In a real lab too: <b>connect, check, then turn the output on.</b></div>
+      </div>
+    </div>
+    <div>
+      <div class="bench" style="overflow-x:auto">
+        <svg id="bb" viewBox="0 0 980 480" style="width:100%;min-width:640px;display:block;user-select:none;touch-action:none"></svg>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="row">
+          <span style="font-size:13px">Wire colour:</span>
+          <span id="wireColors" class="row"></span>
+          <button class="btn sec small" id="undoWire">Remove last wire</button>
+          <button class="btn sec small" id="clearWires">Remove all</button>
+          <button class="btn warn small" id="newIC" style="display:none">Insert new 741</button>
+          <span class="grow"></span>
+          <button class="btn small" id="pinQuizBtn">Start pin test</button>
+        </div>
+        <div id="pinInfo" class="info" style="min-height:44px">Move the mouse over the pins of the IC.</div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Open-Loop Characteristic and Saturation</h2>
+  <p class="lead">No feedback: v<sub>o</sub> = A(v<sub>p</sub> − v<sub>n</sub>). A 1000:1 voltage divider is used to obtain a microvolt-level difference.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">The linear region is very narrow: <span class="eq">|v<sub>p</sub> − v<sub>n</sub>| &lt; V<sub>CC</sub> / A</span> For A = 10<sup>5</sup> and ±15 V it is only 150 µV.</div>
+        <div class="info">In a real 741 the output is not zero even when the inputs are equal: there is an <b>offset voltage</b> (V<sub>os</sub> ≈ 1–2 mV) that behaves like a small battery in series with the input. It is nulled with a 10 kΩ trimpot connected to pins 1 and 5.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 290"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d2rec">Record (R)</button>
+            <button class="btn sec small" id="d2del">Delete last row</button>
+            <button class="btn sec small" id="d2csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>V<sub>S</sub> (mV)</th><th>±V<sub>CC</sub></th><th>v<sub>p</sub>−v<sub>n</sub> (µV)</th><th>v<sub>o</sub> (V)</th><th>Region</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>v<sub>o</sub> – (v<sub>p</sub>−v<sub>n</sub>) plot</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d2theo"> Ideal curve</label></div>
+          <canvas id="d2plot" width="560" height="300" style="width:100%"></canvas>
+          <div id="d2fit" style="font-size:13px;margin-top:4px"></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Op-Amp Without Feedback: Comparator</h2>
+  <p class="lead">The function generator is connected to the non-inverting input and an adjustable reference voltage to the inverting input. CH1 shows the input, CH2 the output.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">The output takes only two values: +V<sub>sat</sub> if v<sub>p</sub> &gt; v<sub>n</sub>, otherwise −V<sub>sat</sub>. Bad for amplifying signals, but exactly the behaviour wanted from a <b>comparator</b>.</div>
+        <div class="info">The output cannot change infinitely fast: <span class="eq">SR = |dv<sub>o</sub>/dt|<sub>max</sub> = 0.5 V/µs</span> At high frequency the edges look sloped. This is not saturation; the op-amp simply <b>cannot keep up</b>.</div>
+        <div class="info">Duty cycle (sine, peak V<sub>m</sub>, reference V<sub>ref</sub>): <span class="eq">D = ½ − arcsin(V<sub>ref</sub>/V<sub>m</sub>)/π</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d3inst"></div>
+        <div class="bench-row" style="margin-top:12px">
+          <div class="inst dark scopewrap" style="flex:1;min-width:420px">
+            <div class="brand"><span>DSO-2C · Digital Oscilloscope</span><span><span class="led on g"></span> RUN</span></div>
+            <div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+              <canvas id="scope" width="640" height="400" style="width:100%;max-width:640px"></canvas>
+              <div style="min-width:150px">
+                <div class="ctrls" id="scopeKnobs"></div>
+                <div class="row" style="margin:6px 0">
+                  <button class="seg-btn on" id="ch1on">CH1</button>
+                  <button class="seg-btn on" id="ch2on">CH2</button>
+                  <button class="seg-btn" id="curon">CURSOR</button>
+                </div>
+                <div class="meas" id="scopeMeas"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Negative Feedback, Virtual Short and Terminal Currents</h2>
+  <p class="lead">R<sub>f</sub> connects the output back to the input. Switch S1 swaps the two input terminals of the op-amp: the feedback becomes <b>negative</b> or <b>positive</b>.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">With negative feedback the circuit finds by itself the output that drives the difference v<sub>p</sub> − v<sub>n</sub> almost to zero: <span class="eq">v<sub>p</sub> − v<sub>n</sub> = v<sub>o</sub>/A ≈ 0</span> This is a <b>result</b>, not a rule.</div>
+        <div class="info">Inverting configuration with finite A: <span class="eq">v<sub>o</sub>/v<sub>g</sub> = (−R<sub>f</sub>/R<sub>s</sub>) / (1 + (1 + R<sub>f</sub>/R<sub>s</sub>)/A)</span></div>
+        <div class="info">KCL for the five terminals (direction into the op-amp): <span class="eq">i<sub>p</sub> + i<sub>n</sub> + i<sub>o</sub> + i<sub>CC+</sub> + i<sub>CC−</sub> = 0</span> The load current comes not from the inputs but <b>from the supply</b>.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 320"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <b>Terminal currents (into the op-amp +)</b>
+          <table class="data" id="d4cur" style="margin-top:6px"></table>
+          <div id="d4kcl" style="font-size:13px;margin-top:6px"></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>v<sub>o</sub> – v<sub>g</sub> transfer curve</b><span class="grow"></span>
+            <button class="btn small" id="d4sweep">Auto sweep</button>
+            <button class="btn small" id="d4rec">Record (R)</button>
+            <button class="btn sec small" id="d4clr">Clear</button></div>
+          <canvas id="d4plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span><button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>FB</th><th>A</th><th>R<sub>s</sub></th><th>R<sub>f</sub></th><th>R<sub>L</sub></th><th>v<sub>g</sub> (V)</th><th>v<sub>n</sub></th><th>v<sub>o</sub> (V)</th><th>v<sub>o</sub>/v<sub>g</sub></th><th>i<sub>o</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="When is the virtual short valid? Why is it hard to make linear measurements in open loop? Write down your observations."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). To type an <b>exact value</b> or choose from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjust with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task in the lab sheet; a step ticks itself off when done correctly.<br>
+    <b>Wires (Experiment 1):</b> drag from one hole/terminal to another; clicking a wire removes it.<br>
+    <b>Oscilloscope cursors:</b> press the CURSOR button and drag on the screen.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta01.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h1', ders: 'Circuit Theory I', hafta: 1,
+  doc: [
+    { id: 'CLO1', t: 'Identifies the op-amp terminals and sets up the symmetric supply safely.', mc: [1, 4, 6] },
+    { id: 'CLO2', t: 'Measures the open-loop characteristic; determines the gain A and the linear region from data.', mc: [1, 4, 5] },
+    { id: 'CLO3', t: 'Calculates saturation and slew-rate limits and verifies them with an oscilloscope.', mc: [1, 2, 5] },
+    { id: 'CLO4', t: 'Distinguishes negative/positive feedback; analyses the virtual short and terminal currents.', mc: [1, 2, 5] },
+    { id: 'CLO5', t: 'Presents findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To learn the pin connections of the µA741 IC and to set up the ±15 V symmetric supply on a breadboard without errors.', doc: ['CLO1'], mc: [1, 4, 6],
+      gerec: 'Symmetric DC power supply (0–20 V, current-limited), breadboard, µA741, jumper wires.',
+      guvenlik: 'A reversed supply or more than ±18 V permanently damages the IC; set the current limit to 50–100 mA; wire the circuit while unpowered; do not touch a hot IC.',
+      veri: 'Voltage and quiescent current on the supply displays; pin test score.' },
+    d2: { amac: 'To measure the open-loop transfer curve and determine the gain A, the linear region limit and the offset voltage.', doc: ['CLO2'], mc: [1, 2, 4, 5],
+      gerec: 'Adjustable DC supply, 100 kΩ/100 Ω divider, two DMMs, 10 kΩ offset trimpot, ±V<sub>CC</sub> supply.',
+      guvenlik: 'Without the divider, applying hundreds of mV to the input saturates the output but causes no damage; do not connect the trimpot wiper anywhere other than −V<sub>CC</sub>.',
+      veri: 'Table of v<sub>p</sub>−v<sub>n</sub> and v<sub>o</sub>, transfer plot, A and V<sub>os</sub> by least squares.' },
+    d3: { amac: 'To observe and measure the comparator behaviour, duty cycle and slew rate of an op-amp without feedback.', doc: ['CLO3'], mc: [1, 2, 4, 5],
+      gerec: 'Function generator, reference potentiometer, two-channel oscilloscope (with cursors).',
+      guvenlik: 'Oscilloscope ground clip to circuit ground only; do not short the generator output.',
+      veri: 'Oscilloscope measurements (Vpp, f, duty cycle, t<sub>r</sub>), SR calculation with cursors.' },
+    d4: { amac: 'To verify how negative feedback creates the virtual short, the hysteresis of positive feedback and the five-terminal KCL equation.', doc: ['CLO4'], mc: [1, 2, 3, 4, 5],
+      gerec: 'DC supply, resistor box (R<sub>s</sub>, R<sub>f</sub>, R<sub>L</sub>), S1 input swap switch, two DMMs.',
+      guvenlik: 'With a small load resistance the output is limited to 25 mA and the IC heats up; choose R<sub>L</sub> ≥ 2 kΩ.',
+      veri: 'v<sub>g</sub>–v<sub>o</sub> transfer curve, terminal currents table, finite-gain comparison.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

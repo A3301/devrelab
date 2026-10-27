@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 6 · Transformers and Phasor Diagrams — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 6 — Transformers and Phasor Diagrams</h1>
+    <div class="sub">Linear transformer · Reflected impedance · Ideal transformer · Open-circuit/short-circuit test · Impedance matching · Dot convention · Phasor diagram</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Linear Transformer</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Open and Short Circuit</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Impedance Matching</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Polarity (Dot) Test</button>
+  <button data-p="d5"><span class="dot"></span>7 · Experiment 5: Phasor Diagram</button>
+  <button data-p="rapor"><span class="dot"></span>8 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag them or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–8</kbd> sections · <kbd>?</kbd> help<br><br>Your data are saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 6 · Transformers (Linear and Ideal) and Phasor Diagrams</h2>
+  <p class="lead">Lecture notes: <b>Section 1.8 Linear Transformer</b>, <b>1.9 Ideal Transformer</b> and <b>1.10 Phasor Diagrams</b> (Examples 1.35–1.43).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li>Find the <b>reflected impedance</b> by measuring the impedance seen from the primary of a linear transformer, and see why its imaginary part changes sign.</li>
+        <li>Safely perform the <b>open-circuit and short-circuit tests</b> on a mains transformer and extract the turns ratio and the equivalent-circuit parameters.</li>
+        <li><b>Design a turns ratio</b> for connecting a loudspeaker to an amplifier and verify maximum power transfer by measurement.</li>
+        <li>Find the <b>dot (polarity) marking</b> of an unknown transformer with the voltmeter and oscilloscope methods.</li>
+        <li>Design a circuit value geometrically with a live <b>phasor diagram</b> and measure the phase difference with the oscilloscope.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Isolation transformer (230/230 V) · Adjustable autotransformer (variac, 0–250 V) · Fused distribution box · Power analyser / wattmeter (P, V, I) · True-rms AC voltmeter and ammeter · Two-channel oscilloscope (current probe, differential probe) · Linear (air-core, adjustable k) transformer · 230/24 V, 100 VA mains transformer · Output transformer with selectable turns ratio · 8 Ω loudspeaker · R, L, C boxes.</p>
+      <div class="info"><b>Amplitude convention:</b> In this week’s transformer experiments sources and instruments are given in <b>rms</b> values (as in Examples 1.35, 1.38, 1.39 of the lecture notes). In the phasor-diagram experiment, consistent with the lecture notes, <b>peak</b> values are used.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First be sure to read the safety notes in the <b>Background</b> section: this week includes an experiment at mains voltage (Experiment 2). In each experiment follow the lab sheet on the left; steps are ticked automatically with the correct setting and measurement. Record measurements with <kbd>R</kbd>, answer the questions and print the report.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Two Windings, One Shared Magnetic Field</h2>
+  <p class="lead">A transformer carries energy not by wire but by <b>magnetic flux</b>. That is why it changes the voltage level, isolates circuits, and presents the load to the source as “a different impedance”.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Why does it matter, and where is it used?</h3>
+      <p style="font-size:14px;line-height:1.65">In Turkey, energy generated at ~11–20 kV in power plants is stepped up to <b>400 kV</b> for transmission, stepped down to 34.5 kV at distribution centres and to <b>400/230 V</b> at the neighbourhood transformer. Why? For the same power, if the voltage rises a times the current falls a times, and the line loss RI² falls <b>a² times</b>. In electronics, small transformers block DC, isolate lines and match impedances (microphone, loudspeaker, Ethernet line, antenna balun).</p>
+      <h3>2 · Two models</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Linear transformer:</b> R<sub>1</sub>, R<sub>2</sub>, L<sub>1</sub>, L<sub>2</sub>, M = k√(L<sub>1</sub>L<sub>2</sub>). Air-core and communication transformers. Two mesh equations:<br>
+      <span class="eq">V<sub>s</sub> = Z<sub>11</sub>I<sub>1</sub> − jωM I<sub>2</sub>,&nbsp; 0 = −jωM I<sub>1</sub> + Z<sub>22</sub>I<sub>2</sub></span><br>
+      <b>Ideal transformer:</b> k = 1, L → ∞, lossless. Only the turns ratio remains: V<sub>1</sub>/N<sub>1</sub> = V<sub>2</sub>/N<sub>2</sub>, N<sub>1</sub>I<sub>1</sub> = N<sub>2</sub>I<sub>2</sub> (signs according to the dots).</p>
+      <svg id="obTr" viewBox="0 0 520 210" class="schem"></svg>
+      <div class="row" style="font-size:13px;margin-top:6px">
+        <label>Dot position (secondary) <select id="obDot"><option value="1">top terminal (X1)</option><option value="-1">bottom terminal (X2)</option></select></label>
+        <label>N<sub>1</sub>:N<sub>2</sub> <select id="obN"><option value="2">2:1</option><option value="0.5">1:2</option><option value="4">4:1</option></select></label>
+      </div>
+      <div class="info">Animation: the v<sub>1</sub> and v<sub>2</sub> phasors arise from the same flux; if the dot is on the opposite terminal the v<sub>2</sub> phasor rotates by 180°. The amplitude ratio is the turns ratio, and the phase difference is either 0° or 180°: an ideal transformer does not shift phase.</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Mutual inductance</td><td class="l">M = k√(L<sub>1</sub>L<sub>2</sub>), 0 ≤ k ≤ 1</td></tr>
+        <tr><td class="l">Self-impedances</td><td class="l">Z<sub>11</sub> = Z<sub>s</sub> + R<sub>1</sub> + jωL<sub>1</sub>, Z<sub>22</sub> = R<sub>2</sub> + jωL<sub>2</sub> + Z<sub>L</sub></td></tr>
+        <tr><td class="l">Reflected impedance</td><td class="l">Z<sub>r</sub> = ω²M²/Z<sub>22</sub> = (ω²M²/|Z<sub>22</sub>|²)(R<sub>22</sub> − jX<sub>22</sub>)</td></tr>
+        <tr><td class="l">Input impedance</td><td class="l">Z<sub>ab</sub> = R<sub>1</sub> + jωL<sub>1</sub> + Z<sub>r</sub></td></tr>
+        <tr><td class="l">Secondary current</td><td class="l">I<sub>2</sub> = jωM I<sub>1</sub>/Z<sub>22</sub></td></tr>
+        <tr><td class="l">Ideal transformer, a = N<sub>2</sub>/N<sub>1</sub></td><td class="l">V<sub>2</sub> = aV<sub>1</sub>, I<sub>2</sub> = I<sub>1</sub>/a, Z<sub>IN</sub> = Z<sub>L</sub>/a² = (N<sub>1</sub>/N<sub>2</sub>)²Z<sub>L</sub></td></tr>
+        <tr><td class="l">Maximum power (matching)</td><td class="l">R<sub>L</sub>/a² = R<sub>s</sub> ⇒ a = √(R<sub>L</sub>/R<sub>s</sub>), efficiency 50%</td></tr>
+        <tr><td class="l">Open-circuit test</td><td class="l">R<sub>c</sub> ≈ V<sub>1</sub>²/P<sub>0</sub>, X<sub>m</sub> ≈ V<sub>1</sub>²/Q<sub>0</sub></td></tr>
+        <tr><td class="l">Short-circuit test</td><td class="l">R<sub>eq</sub> = P<sub>k</sub>/I<sub>k</sub>², Z<sub>eq</sub> = V<sub>k</sub>/I<sub>k</sub>, X<sub>eq</sub> = √(Z<sub>eq</sub>² − R<sub>eq</sub>²)</td></tr>
+        <tr><td class="l">Phasor diagram</td><td class="l">I is the reference in series, V in parallel; θ<sub>Z</sub> = θ<sub>V</sub> − θ<sub>I</sub></td></tr>
+      </table>
+      <h3>3 · The dot convention (in two sentences)</h3>
+      <p style="font-size:14px;line-height:1.65;margin:0"><b>Voltage:</b> if the + terminals of V<sub>1</sub> and V<sub>2</sub> are both dotted (or both undotted), V<sub>1</sub>/N<sub>1</sub> = +V<sub>2</sub>/N<sub>2</sub>; if one is dotted and the other is not, the sign is minus.<br>
+      <b>Current:</b> if I<sub>1</sub> and I<sub>2</sub> both enter the dotted terminals (or both leave), N<sub>1</sub>I<sub>1</sub> = −N<sub>2</sub>I<sub>2</sub>; if one enters and the other leaves, the sign is plus. This is because the net magnetomotive force in an ideal core is zero.</p>
+      <h3>4 · Why does the reflected reactance have the opposite sign?</h3>
+      <p style="font-size:14px;line-height:1.65;margin:0">Z<sub>r</sub> ∝ 1/Z<sub>22</sub> and 1/(R + jX) = (R − jX)/|Z|². If the secondary is capacitive it appears <b>inductive</b> from the primary, and if inductive it appears <b>capacitive</b>. The real part, however, is always ≥ 0: a passive secondary cannot return power to the source.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Worked mini example (Example 1.38)</h3>
+    <p style="font-size:14px;line-height:1.65;margin:0">Source 220∠0° V rms, Z<sub>g</sub> = 2 + j1 Ω; ideal transformer 5:1 (dots on top); Z<sub>L</sub> = 4 + j3 Ω.<br>
+    a = N<sub>2</sub>/N<sub>1</sub> = 0.2 ⇒ Z<sub>IN</sub> = Z<sub>L</sub>/a² = 25(4 + j3) = 100 + j75 Ω. <i>Why did it grow?</i> A step-down transformer makes the load look large to the source.<br>
+    I<sub>1</sub> = 220/(102 + j76) = 1.730∠−36.69° A; I<sub>2</sub> = I<sub>1</sub>/a = 8.65 A; P<sub>L</sub> = 8.648² · 4 = 299.1 W. Check: |I<sub>1</sub>|²·102 = 305.1 W = 5.98 W (Z<sub>g</sub>) + 299.1 W (load) ✓</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Things to watch in a real lab</h3>
+    <div class="warnbox"><b>Mains voltage kills.</b> 230 V AC can be lethal with a current of the order of 30 mA through the heart. Connections are made <b>with the power off</b>, only insulated (safety-type, shrouded) banana leads are used, the one-hand rule is applied, and the circuit is checked by the supervisor before power is applied. The residual-current device (30 mA) must be in working order.</div>
+    <div class="warnbox"><b>Isolation transformer and oscilloscope ground.</b> The oscilloscope probe ground is connected to protective earth. In a circuit connected directly to the mains, attaching the ground clip to any point other than neutral creates a <b>line-to-earth short circuit</b>: the probe burns and an arc forms. Either feed the circuit through an <b>isolation transformer</b> first or use a <b>differential probe</b>. Defeating the oscilloscope’s earth connection is strictly forbidden.</div>
+    <div class="warnbox"><b>Start the short-circuit test with the variac at zero.</b> Applying full voltage to the primary with the secondary shorted draws 10–20 times the rated current: the fuse blows and the windings heat up. Start the variac at <b>0 V</b> and increase it <b>slowly</b> up to rated current while watching the ammeter.</div>
+    <div class="warnbox"><b>In the open-circuit test the high-voltage side is live.</b> Even if the open-circuit test is done from the low-voltage side, <b>rated voltage</b> appears at the high-voltage terminals. Do not touch the open secondary terminals; make sure the instrument’s category (CAT II/III) and voltage rating are suitable.</div>
+    <div class="warnbox"><b>Never leave a current transformer’s secondary open.</b> In a measuring current transformer (CT) the primary current is set by the load; if the secondary is opened the magnetizing current is not limited, <b>thousands of volts</b> appear on the secondary and the core overheats. A CT secondary is always kept closed with a shorting link or an ammeter. A voltage transformer’s secondary, on the other hand, is never short-circuited.</div>
+    <div class="warnbox"><b>Inrush current and sparks.</b> At the instant a transformer is energized, the core may saturate because of residual magnetism and a short-lived current several times the rated current is drawn. That is why time-delay (T-type) fuses are chosen. When power is switched off, the sudden interruption of the magnetizing current causes a spark at the switch.</div>
+    <div class="warnbox"><b>Instrument connections.</b> An ammeter is connected in series and a voltmeter in parallel; a wattmeter’s current coil in series and its voltage coil in parallel. Measuring voltage while on the multimeter’s current input blows the fuse (and the meter). The wattmeter’s current limit must be higher than the rated current.</div>
+    <div class="info"><b>Common mistakes:</b> writing ωM instead of (ωM)² in reflection; keeping the sign of Z<sub>22</sub> (the conjugate is taken); multiplying the impedance by a² (if a = N<sub>2</sub>/N<sub>1</sub> you divide by a²); always writing a plus sign without looking at the dots; adding phasor magnitudes directly (60 + 80 ≠ 100); thinking the current lags when θ<sub>Z</sub> &lt; 0.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve these before coming to the lab. Example 1.35: R<sub>1</sub> = 200 Ω, R<sub>2</sub> = 100 Ω, L<sub>1</sub> = 9 H, L<sub>2</sub> = 4 H, k = 0.5, Z<sub>L</sub> = 800 Ω + 1 µF, ω = 400 rad/s.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Linear Transformer and Reflected Impedance</h2>
+  <p class="lead">Example 1.35 setup: 300 V rms, ω = 400 rad/s (f = 63.7 Hz), Z<sub>s</sub> = 500 + j100 Ω. The coupling coefficient can be adjusted with the core gap. Measure the voltage at terminals a–b, the primary current and the phase difference, and find Z<sub>r</sub>.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info"><b>From measurement to Z<sub>r</sub>:</b> <span class="eq">Z<sub>ab</sub> = (V<sub>ab</sub>/I<sub>1</sub>)∠θ,&nbsp; θ = 360°·Δt/T</span> Δt: the time from the CH1 (v<sub>ab</sub>) peak to the CH2 (i<sub>1</sub>) peak (Δt &gt; 0 if the current lags). Then <span class="eq">Z<sub>r</sub> = Z<sub>ab</sub> − (R<sub>1</sub> + jωL<sub>1</sub>) = Z<sub>ab</sub> − (200 + j3600) Ω</span></div>
+        <div class="info"><b>Why is that?</b> The secondary current induces a voltage of −jωM I<sub>2</sub> in the primary. Since this voltage is proportional to I<sub>1</sub>, the primary circuit “feels” it as an extra impedance. The current is coupled twice (primary → secondary → primary), which is why M² appears.</div>
+        <div class="info"><b>Check:</b> With the secondary open, I<sub>2</sub> = 0 and Z<sub>r</sub> must be 0: Z<sub>ab</sub> = 200 + j3600 Ω. This is the easiest way to test the accuracy of your measurement setup.</div>
+        <div class="warnbox">Switch off the source before short-circuiting the secondary or changing the load. In a linear transformer the short-circuit current is limited because k is small, but in an iron-core power transformer the same action means high current and sparks.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" id="d1scopeHost" style="margin-top:12px"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 260"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d1rec">Record (R)</button>
+            <button class="btn sec small" id="d1del">Delete last row</button>
+            <button class="btn sec small" id="d1csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>k</th><th>Secondary</th><th>V<sub>ab</sub> (V)</th><th>I<sub>1</sub> (mA)</th><th>I<sub>2</sub> (mA)</th><th>P<sub>ab</sub> (W)</th><th>Δt</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>Load power P<sub>L</sub> – k</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Theoretical curve</label></div>
+          <canvas id="d1plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12.5px;color:var(--muted)">Dots: rows recorded with Z<sub>L</sub> = 800 Ω + 1 µF, P<sub>L</sub> = I<sub>2</sub>² · 800 Ω.</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Open-Circuit and Short-Circuit Tests on a Mains Transformer</h2>
+  <p class="lead">230/24 V, 100 VA transformer (each student gets a transformer with a different manufacturing tolerance). Find the turns ratio and the iron loss with the open-circuit test, and the winding loss and equivalent impedance with the short-circuit test. <b>This experiment is performed at mains voltage.</b></p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info"><b>Open-circuit (no-load) test:</b> secondary open, rated voltage on the primary. The current is only the magnetizing current (2–10% of rated current); winding loss is negligible, so the wattmeter shows the <b>iron (core) loss</b>. V<sub>1</sub>/V<sub>2</sub> ≈ N<sub>1</sub>/N<sub>2</sub>.</div>
+        <div class="info"><b>Short-circuit test:</b> secondary shorted through an ammeter, a <b>low</b> voltage on the primary just enough to drive rated current (5–10% of rated voltage). Since the core flux is small, iron loss is negligible; the wattmeter shows the <b>copper loss</b>. The ratio V<sub>k</sub>/V<sub>n</sub> is the “short-circuit voltage” u<sub>k</sub>.</div>
+        <div class="info"><b>Why two tests?</b> Testing a transformer at full load requires large power and a real load. The total power of the two tests is only the losses (a few watts): large power transformers are tested this way in factories too.</div>
+        <div class="warnbox"><b>Specific to this experiment:</b> Make the short-circuit connection only with POWER OFF. Do not apply power without first setting the variac to zero. The rated current is 0.435 A; if the primary current exceeds 0.8 A the time-delay fuse (0.8 A T) blows.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Test</th><th>V<sub>1</sub> (V)</th><th>I<sub>1</sub> (mA)</th><th>P<sub>1</sub> (W)</th><th>V<sub>2</sub> (V)</th><th>I<sub>2</sub> (A)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Impedance Matching: Loudspeaker Matching</h2>
+  <p class="lead">Example 1.39: 40 V rms source with internal resistance R<sub>s</sub> (e.g. the output of a valve amplifier, 800 Ω); the load is an 8 Ω loudspeaker. Choose the turns ratio to transfer the most power to the loudspeaker.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">An ideal transformer transfers the load to the primary as <span class="eq">R<sub>IN</sub> = (N<sub>1</sub>/N<sub>2</sub>)² R<sub>L</sub></span> The power is maximum when the source sees R<sub>IN</sub> = R<sub>s</sub>: <span class="eq">N<sub>1</sub>/N<sub>2</sub> = √(R<sub>s</sub>/R<sub>L</sub>)</span></div>
+        <div class="info"><b>Why is that?</b> If R<sub>IN</sub> is very small the current is large but the load voltage is small; if it is very large the voltage is large but the current is small. The product (power) is maximum somewhere in between. At matching, half of the source power turns into heat in R<sub>s</sub>: the efficiency is 50%. That is why matching is not used in the power grid, only in small-signal/audio circuits.</div>
+        <div class="warnbox">Do not run an amplifier with an output transformer <b>without a loudspeaker</b>: when the load is removed the impedance seen from the primary becomes very large, voltage spikes appear on the primary, and the output stage/transformer insulation may be damaged. Also, at high power the loudspeaker coil heats up; increase the volume gradually.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 220"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Record (R)</button>
+            <button class="btn sec small" id="d3del">Delete last row</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>R<sub>s</sub></th><th>R<sub>L</sub></th><th>N<sub>1</sub>:N<sub>2</sub></th><th>I<sub>1</sub> (mA)</th><th>V<sub>2</sub> (V)</th><th>I<sub>2</sub> (mA)</th><th>P<sub>L</sub> (mW)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>P<sub>L</sub> – N<sub>1</sub>/N<sub>2</sub></b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Theoretical curve</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12.5px;color:var(--muted)">Only rows recorded with the current R<sub>s</sub> and R<sub>L</sub> are shown. The measurement without a transformer is plotted as N<sub>1</sub>/N<sub>2</sub> = 1.</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Dot Convention: Polarity Test</h2>
+  <p class="lead">The terminals of a transformer whose label has worn off are H1–H2 (primary) and X1–X2 (secondary). Find which secondary terminal is positive at the same time as H1 (the dot) with the voltmeter and oscilloscope methods.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info"><b>Voltmeter method:</b> Jumper one primary terminal (H2) to one secondary terminal, apply a low AC voltage to the primary, and measure between H1 and the free secondary terminal. <span class="eq">V<sub>test</sub> = V<sub>1</sub> − V<sub>2</sub> (subtractive) or V<sub>1</sub> + V<sub>2</sub> (additive)</span> Work out yourself which case corresponds to which dot placement from the directions of the winding voltages.</div>
+        <div class="info"><b>Oscilloscope method:</b> CH1 shows H1–H2 and CH2 shows X1–X2 (the grounds of both probes are at H2 and X2; therefore H2–X2 must be common). If the waveforms are in phase, X1 has the same polarity as H1.</div>
+        <div class="info"><b>Why does it matter?</b> Polarity must be known to connect two secondaries in series to raise the voltage, to run two transformers in parallel, or to make three-phase transformer connections. A short-circuit current circulates between parallel windings connected the wrong way round.</div>
+        <div class="warnbox">Do the polarity test at <b>low voltage</b> (10–30 V with the variac). In the additive connection the voltmeter sees V<sub>1</sub> + V<sub>2</sub>; for a high-ratio transformer at mains voltage this value may exceed the instrument’s range.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div><div class="bench-row" id="d4scopeHost" style="margin-top:12px"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record (R)</button>
+          <button class="btn sec small" id="d4del">Delete last row</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>V<sub>variac</sub> (V)</th><th>Jumper</th><th>Voltmeter leads</th><th>Reading (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Your decision</h3>
+        <div class="row" id="d4dec"></div>
+        <div id="d4decfb" style="font-size:13.5px;margin-top:6px"></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 5 ================= -->
+<section class="page" id="d5">
+  <h2>Experiment 5 · Circuit Solution with a Phasor Diagram</h2>
+  <p class="lead">Choose a circuit; the live phasor diagram changes together with the waveforms on the oscilloscope. In Example 1.40 design R geometrically; in 1.41–1.43 verify the diagram by measurement.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d5steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info"><b>Choice of reference:</b> in series the common quantity is the current (I on the horizontal axis), in parallel the voltage (V on the horizontal axis). Voltage and current arrows are drawn with <b>separate scales</b>: only the angles can be compared.</div>
+        <div class="info"><b>Idea of Example 1.40:</b> I<sub>L</sub> and I<sub>C</sub> are in opposite directions, and their sum is a vertical arrow. For 45° between I<sub>s</sub> and I<sub>R</sub>, the two legs of the right triangle must be equal: |I<sub>R</sub>| = |I<sub>C</sub> + I<sub>L</sub>|.</div>
+        <div class="info"><b>Phase on the oscilloscope:</b> φ = 360°·Δt/T. The waveform that reaches its peak <b>first</b> leads. Measure Δt from the CH1 peak to the CH2 peak; if Δt &lt; 0, CH2 leads.</div>
+        <div class="warnbox">To see a current on the oscilloscope, either a current probe or a small shunt resistor (e.g. 0.1 Ω) is used. When using a shunt, the grounds of both probes must be at the same point; otherwise part of the circuit is shorted through ground. In a parallel circuit a current probe is safer for viewing the branch currents separately.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d5inst"></div><div class="bench-row" id="d5scopeHost" style="margin-top:12px"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><b>Live phasor diagram</b><svg id="d5ph" viewBox="0 0 420 420" class="schem" style="margin-top:6px"></svg>
+          <label style="font-size:13px"><input type="checkbox" id="d5poly"> Place arrows tip to tail (KVL/KCL polygon)</label></div>
+        <div class="card"><b>Circuit</b><svg id="d5sch" class="schem" viewBox="0 0 420 260" style="margin-top:6px"></svg>
+          <div id="d5desc" style="font-size:13px;margin-top:6px;line-height:1.5"></div></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d5rec">Record (R)</button>
+          <button class="btn sec small" id="d5del">Delete last row</button>
+          <button class="btn sec small" id="d5csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d5tab"><thead><tr><th>#</th><th>Circuit</th><th>Setting</th><th>ω (rad/s)</th><th>CH1 peak</th><th>CH2 peak</th><th>Δt</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d5Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="How did the sign of the reflected impedance show up in your measurement? Why did you perform the short-circuit test at low voltage? By what factor did the matching transformer increase the loudspeaker power?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). To type an <b>exact value</b> or pick from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope cursors:</b> press the CURSOR button and drag on the screen. The left edge of the screen is t = 0 (trigger: CH1 peak).<br>
+    <b>Experiment 2:</b> the connection (open/short circuit) can be changed only with POWER off.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>8</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta06.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h6', ders: 'Circuit Theory II', hafta: 6,
+  doc: [
+    { id: 'CLO1', t: 'Sets up the mesh equations of a linear transformer circuit; calculates the reflected and input impedances and verifies them by measurement.', mc: [1, 2, 5] },
+    { id: 'CLO2', t: 'Performs the open-circuit and short-circuit tests on a mains transformer following safety rules; extracts the equivalent-circuit parameters.', mc: [4, 5, 6] },
+    { id: 'CLO3', t: 'Applies the ideal transformer relations and the dot convention; designs a turns ratio for maximum power transfer.', mc: [1, 2, 3] },
+    { id: 'CLO4', t: 'Finds circuit quantities geometrically by drawing a phasor diagram and verifies them by measuring phase with an oscilloscope.', mc: [1, 2, 4, 5] },
+    { id: 'CLO5', t: 'Presents the findings in writing in a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To find the reflected impedance by measuring the impedance seen from terminals a–b of a linear transformer; to examine how it varies with the load type and the coupling coefficient.', doc: ['CLO1'], mc: [1, 2, 4, 5],
+      gerec: 'Function generator + power amplifier (300 V rms, Z<sub>s</sub> = 500 + j100 Ω), air-core transformer with adjustable coupling, 800 Ω load, 1 µF film capacitor, AC voltmeter, two ammeters, wattmeter, oscilloscope (current probe).',
+      guvenlik: '300 V rms is a dangerous voltage: insulated leads, connections made with the power off; secondary changes with the power off; oscilloscope measurements with a differential probe.',
+      veri: 'V<sub>ab</sub>, I<sub>1</sub>, I<sub>2</sub>, P<sub>ab</sub>, Δt from the cursors; calculation of Z<sub>ab</sub> and Z<sub>r</sub>; P<sub>L</sub>–k plot.' },
+    d2: { amac: 'To determine the turns ratio, the iron and copper losses and the equivalent-circuit parameters of a mains transformer with the open-circuit and short-circuit tests.', doc: ['CLO2'], mc: [1, 4, 5, 6],
+      gerec: 'Isolation transformer, variac (0–250 V), fused distribution box (0.8 A T), wattmeter, AC voltmeter and ammeters, 230/24 V 100 VA transformer.',
+      guvenlik: 'Mains voltage: residual-current device, one-hand rule, connections with the power off; the short-circuit test starts with the variac at 0 V; in the open-circuit test the open secondary terminals are live; a current transformer’s secondary is never left open.',
+      veri: 'Open circuit: V<sub>1</sub>, I<sub>0</sub>, P<sub>0</sub>, V<sub>2</sub>. Short circuit: V<sub>k</sub>, I<sub>k</sub>, P<sub>k</sub>, I<sub>2</sub>. R<sub>c</sub>, X<sub>m</sub>, R<sub>eq</sub>, X<sub>eq</sub>, u<sub>k</sub>.',
+      tartisma: 'Based on the iron and copper losses you measured, what is the approximate full-load efficiency of this transformer in percent? Why is the energy consumed over a year by transformers idling with no load an important efficiency and environmental issue?' },
+    d3: { amac: 'To design the turns ratio that transfers maximum power to a loudspeaker by matching source and load impedances with an ideal transformer, and to verify it by measurement.', doc: ['CLO3'], mc: [1, 2, 3, 5, 10],
+      gerec: 'Function generator + internal resistance box (R<sub>s</sub>), output transformer with selectable turns ratio, 4/8/16 Ω loudspeaker loads, AC voltmeter and ammeter.',
+      guvenlik: 'An amplifier with an output transformer is not run without a loudspeaker; the loudspeaker power rating is not exceeded.',
+      veri: 'I<sub>1</sub>, V<sub>2</sub>, I<sub>2</sub>, P<sub>L</sub> versus turns ratio; P<sub>L</sub>–ratio plot; design verification.',
+      tartisma: 'If the turns ratio you designed were not available in a standard transformer, which nearest ratio would you choose and how much power would be lost? In which applications is the 50% efficiency limit of matching acceptable?' },
+    d4: { amac: 'To determine the dot (polarity) marking of an unknown transformer with the voltmeter and oscilloscope methods and to verify the sign relations of the dot convention.', doc: ['CLO3'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Variac, 230/24 V transformer (unlabelled), jumper lead, AC voltmeter, two-channel oscilloscope.',
+      guvenlik: 'The test is done at low voltage (10–30 V); in the additive connection the instrument range must not be exceeded; the jumper is changed with the power off.',
+      veri: 'Test voltages for the two jumper connections, winding voltages, phase relation on the oscilloscope; dot decision.' },
+    d5: { amac: 'To visualize the current–voltage relationship in parallel and series circuits with a phasor diagram; to design R in Example 1.40 geometrically and verify it with the oscilloscope.', doc: ['CLO4'], mc: [1, 2, 3, 4, 5],
+      gerec: 'Function generator, R box (0.05–5 Ω), 0.2 mH inductor, 800 µF film capacitor, R, L, C elements, oscilloscope (current probe).',
+      guvenlik: 'In a low-resistance parallel circuit the source current is large (amperes); element power ratings and the generator’s current limit are checked; probe grounds at a single point.',
+      veri: 'CH1/CH2 peak values and Δt for each circuit; phase angles; phasor diagram drawing.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

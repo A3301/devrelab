@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 2 · Inverting and Non-Inverting Amplifier — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 2 — Inverting and Non-Inverting Amplifier</h1>
+    <div class="sub">Antiphase · In phase · Saturation limit · Voltage follower · Loading effect · Design</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Inverting Amplifier</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Non-Inverting Amplifier</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Loading and Buffer</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Design Task</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjust.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 2 · Inverting and Non-Inverting Amplifier, Voltage Follower</h2>
+  <p class="lead">Lecture notes: <b>Section 1.3 Inverting Amplifier</b> and <b>1.4 Non-Inverting Amplifier and Follower</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab</h3>
+      <ol class="steps">
+        <li>you will measure the gain and the <b>180° phase difference</b> of the inverting amplifier on the oscilloscope and compare them with −R<sub>f</sub>/R<sub>s</sub>.</li>
+        <li>by increasing the input amplitude you will find the <b>clipping (saturation) limit</b> and distinguish the effects of the supply limit and the current limit.</li>
+        <li>you will obtain the transfer curve of the non-inverting amplifier and see why its gain <b>cannot be less than 1</b>.</li>
+        <li>you will measure the <b>loading effect</b> on a sensor with high internal resistance and see how a voltage follower (buffer) removes it.</li>
+        <li>you will design an amplifier with saturation margin by choosing <b>E12 resistors</b> that give the required gain and input resistance.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Symmetric DC power supply · Function generator (50 Ω output resistance) · Adjustable DC supply · Two digital multimeters (10 MΩ input) · Two-channel oscilloscope with cursors · Resistor box and E12 resistor drawer · µA741 · Sensor model (Thévenin equivalent).</p>
+      <h3>Op-amp model (all experiments)</h3>
+      <div class="row" style="font-size:14px">
+        <label>Saturation assumption
+          <select id="satModel">
+            <option value="ideal">Course assumption: v_o = ±V_CC</option>
+            <option value="real">Real 741: v_o = ±(V_CC − 1.5 V)</option>
+          </select></label>
+      </div>
+      <div class="info">µA741: A = 10<sup>5</sup>, R<sub>i</sub> = 2 MΩ, input bias current ≈ 80 nA, SR = 0.5 V/µs, output current limit ≈ 25 mA. Numerical questions use the course assumption (±V<sub>CC</sub>).</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First read the <b>Background</b> and solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left; steps tick themselves off when you make the correct setting. Record measurements into the table with <kbd>R</kbd> and answer the questions from your own measurements. In the last section print your report or save it as PDF.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Two Resistors, One Gain</h2>
+  <p class="lead">Last week you saw that the op-amp is useless in open loop. This week we use two resistors to turn it into a stable amplifier with a well-defined gain.</p>
+  <div class="card">
+    <svg id="obFig" class="schem" viewBox="0 0 945 190"></svg>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Inverting amplifier: why the minus?</h3>
+      <p style="font-size:14px;line-height:1.65">The non-inverting terminal is grounded and there is negative feedback: by the virtual short <b>v<sub>n</sub> = 0</b> (virtual ground). A current v<sub>g</sub>/R<sub>s</sub> enters through R<sub>s</sub>; no current can enter the op-amp input, so all of it flows through R<sub>f</sub> to the output. Since the current flows from the 0 V node towards the output, the output is <b>negative</b>: when the input is at its peak, the output is at its trough (180°).</p>
+      <div class="eq">v<sub>o</sub> = −(R<sub>f</sub>/R<sub>s</sub>)·v<sub>g</sub>,&nbsp;&nbsp; R<sub>in</sub> = R<sub>s</sub></div>
+      <p style="font-size:14px;line-height:1.65">The gain is only <b>the ratio of two resistors</b>: even if A changes tenfold or the temperature drifts, the output stays almost the same. The price: the source sees R<sub>s</sub>, so the input resistance of the inverting configuration is limited.</p>
+      <h3>2 · Non-inverting amplifier and follower</h3>
+      <p style="font-size:14px;line-height:1.65">The input is connected directly to v<sub>p</sub>. R<sub>s</sub>–R<sub>f</sub> divide the output, and the op-amp makes this divided value equal to v<sub>g</sub>. Since a <b>fraction</b> of the output equals the input, the output must be larger than the input: gain <b>≥ 1</b>. No current is drawn from the source; ideal for sensitive sensors. With R<sub>f</sub> = 0 (or R<sub>s</sub> = ∞) you get a <b>voltage follower (buffer)</b>.</p>
+      <div class="eq">v<sub>o</sub> = (1 + R<sub>f</sub>/R<sub>s</sub>)·v<sub>g</sub>,&nbsp;&nbsp; buffer: v<sub>o</sub> = v<sub>g</sub></div>
+      <h3>3 · In real life</h3>
+      <p style="font-size:14px;line-height:1.65">Microphone preamplifiers, pH electrodes (internal resistance of hundreds of MΩ!), thermocouple interfaces, ADC drivers, oscilloscope probes… All are built on these two basic configurations. In Experiment 3 you will see that the buffer is not a “useless circuit with gain 1”.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Inverting gain</td><td class="l">v<sub>o</sub>/v<sub>g</sub> = −R<sub>f</sub>/R<sub>s</sub></td></tr>
+        <tr><td class="l">Inverting input resistance</td><td class="l">R<sub>in</sub> = R<sub>s</sub></td></tr>
+        <tr><td class="l">Non-inverting gain</td><td class="l">v<sub>o</sub>/v<sub>g</sub> = 1 + R<sub>f</sub>/R<sub>s</sub> ≥ 1</td></tr>
+        <tr><td class="l">Voltage follower</td><td class="l">v<sub>o</sub> = v<sub>g</sub>, i<sub>p</sub> ≈ 0</td></tr>
+        <tr><td class="l">Linear operation</td><td class="l">|G|·|v<sub>g</sub>|<sub>peak</sub> ≤ V<sub>sat</sub> (10 % margin in practice)</td></tr>
+        <tr><td class="l">Output current (inverting)</td><td class="l">i<sub>o</sub> = v<sub>o</sub>/R<sub>L</sub> + v<sub>o</sub>/R<sub>f</sub></td></tr>
+        <tr><td class="l">Loading (divider)</td><td class="l">v<sub>L</sub> = v<sub>Th</sub>·R<sub>L</sub>/(R<sub>int</sub>+R<sub>L</sub>)</td></tr>
+        <tr><td class="l">Phase difference (with cursors)</td><td class="l">Δφ = 360°·f·Δt</td></tr>
+        <tr><td class="l">Inverting with finite A</td><td class="l">(−R<sub>f</sub>/R<sub>s</sub>)/(1 + (1+R<sub>f</sub>/R<sub>s</sub>)/A)</td></tr>
+        <tr><td class="l">E12 series</td><td class="l">10 12 15 18 22 27 33 39 47 56 68 82 (×10<sup>n</sup>)</td></tr>
+      </table>
+      <div class="info" style="margin-top:12px"><b>Four-step solution:</b> (1) Does the feedback go to the inverting terminal? (2) Find v<sub>p</sub> and write v<sub>n</sub> = v<sub>p</sub>. (3) KCL at the inverting node (i<sub>n</sub> = 0). (4) Check the result against the supply limit.</div>
+      <div class="info"><b>Common mistakes:</b> dropping the minus sign of the inverting gain · writing the non-inverting gain as R<sub>f</sub>/R<sub>s</sub> (forgetting the 1 +) · not checking saturation · thinking “if the gain is 1 the circuit is unnecessary” · forgetting the input-resistance requirement and making R<sub>s</sub> small · confusing Vpp with the peak value on the oscilloscope (Vpp = 2·peak).</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Things to watch in a real lab</h3>
+    <div class="warnbox"><b>Connect, check, then power.</b> Build the circuit on the breadboard with the supply off. Cut the supply while changing resistors; removing a component from a live circuit momentarily leaves the op-amp in open loop.</div>
+    <div class="warnbox"><b>Oscilloscope ground clip.</b> The ground clips of both probes are connected to mains earth inside the oscilloscope. Attach the clip <u>only</u> to the common ground of the circuit; if you clip it to the end of R<sub>f</sub> or to the output, you short that point to ground.</div>
+    <div class="warnbox"><b>The function generator’s 50 Ω and the “High-Z” setting.</b> The generator display usually assumes a 50 Ω load; into a high-impedance input you may see twice the amplitude shown on the display. Always measure the input amplitude <b>with the oscilloscope</b>.</div>
+    <div class="warnbox"><b>Check the resistor colour code and power rating.</b> 8.2 kΩ (grey-red-red) and 82 kΩ (grey-red-orange) differ by only one band. Measure with a multimeter before inserting. In op-amp circuits 1/4 W is enough, but for small load resistors calculate P = v<sup>2</sup>/R.</div>
+    <div class="warnbox"><b>Do not short the output; avoid small loads.</b> The 741 output is limited to ≈25 mA; even with a 100 Ω load it chokes at 2.5 V and heats up. Loads such as loudspeakers or relays need a power stage (transistor/buffer).</div>
+    <div class="warnbox"><b>The multimeter also has an internal resistance.</b> DMM inputs are typically 10 MΩ. When measuring a source with internal resistance of the order of MΩ, the instrument itself pulls the voltage down; when measuring current, use the fused mA input and move the lead back to the V input afterwards.</div>
+    <div class="warnbox"><b>Decoupling and floating inputs.</b> Put a 100 nF ceramic capacitor on each supply pin. Never leave the input of a non-inverting stage floating: when the source is removed the input bias current has no path and the output drifts into saturation. A 100 kΩ–1 MΩ resistor from the input to ground can be added.</div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before entering the lab. Assume an ideal op-amp with saturation at ±V<sub>CC</sub>.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Inverting Amplifier: Gain, Phase and Clipping</h2>
+  <p class="lead">CH1 shows the generator terminal voltage (v<sub>g</sub>), CH2 the output (v<sub>o</sub>). Choose R<sub>s</sub>, R<sub>f</sub> and R<sub>L</sub> on the resistor box.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">Find the gain from the Vpp ratio: <span class="eq">|G| = CH2 Vpp / CH1 Vpp</span> The sign is read from the phase: put one cursor on an input peak and the other on the nearest output trough; <span class="eq">Δφ = 360°·f·Δt</span></div>
+        <div class="info">Clipping has two different causes: the <b>supply limit</b> (|v<sub>o</sub>| → V<sub>sat</sub>) or the <b>output current limit</b> (i<sub>o</sub> = v<sub>o</sub>/R<sub>L</sub> + v<sub>o</sub>/R<sub>f</sub> → 25 mA). Look at |v<sub>n</sub>|<sub>max</sub> on the schematic: when clipping starts, the virtual ground breaks down.</div>
+        <div class="info">The generator’s 50 Ω internal resistance is in series with R<sub>s</sub>. Since CH1 is connected to the generator <b>terminal</b>, the measured ratio is still R<sub>f</sub>/R<sub>s</sub>; but if you choose a small R<sub>s</sub>, the generator terminal voltage drops.</div>
+        <div class="warnbox">In a real circuit do not leave it clipping for long; some op-amps are slow to come out of saturation (phase reversal, “latch-up”). Take the measurement and reduce the amplitude immediately.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d1scope"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 290"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Non-Inverting Amplifier and the Lower Limit of Gain</h2>
+  <p class="lead">The DC supply v<sub>g</sub> is connected to the non-inverting terminal. DMM-1 measures the output, DMM-2 the current drawn from the source. R<sub>s</sub> can be made an open circuit (∞) and R<sub>f</sub> a short circuit (0).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">KCL at the inverting node (i<sub>n</sub> = 0): <span class="eq">(0 − v<sub>n</sub>)/R<sub>s</sub> + (v<sub>o</sub> − v<sub>n</sub>)/R<sub>f</sub> = 0</span> Substituting v<sub>n</sub> = v<sub>g</sub> gives <span class="eq">v<sub>o</sub> = (1 + R<sub>f</sub>/R<sub>s</sub>) v<sub>g</sub></span></div>
+        <div class="info">The load seen by the op-amp is R<sub>L</sub> in parallel with the <b>R<sub>s</sub> + R<sub>f</sub></b> branch. Very small feedback resistors load the output unnecessarily.</div>
+        <div class="warnbox">When removing the source, do not leave the non-inverting input floating; the 741 input bias current (≈80 nA) has no path and the output slowly drifts into saturation. In a real circuit tie the input to ground through a resistor.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 290"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d2rec">Record (R)</button>
+            <button class="btn sec small" id="d2del">Delete last row</button>
+            <button class="btn sec small" id="d2csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d2tab"><thead></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>v<sub>o</sub> – v<sub>g</sub> transfer curve</b><span class="grow"></span>
+            <label style="font-size:13px"><input type="checkbox" id="d2theo"> Ideal curve</label>
+            <button class="btn small" id="d2sweep">Auto sweep</button>
+            <button class="btn sec small" id="d2clr">Clear</button></div>
+          <canvas id="d2plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Loading Effect and Voltage Follower (Buffer)</h2>
+  <p class="lead">The sensor is a Thévenin source with open-circuit voltage v<sub>Th</sub> and internal resistance R<sub>int</sub>. Connect the load directly or through a µA741 follower.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">Without a buffer the internal resistance and the load form a <b>voltage divider</b>: <span class="eq">v<sub>L</sub> = v<sub>Th</sub> · R<sub>L</sub>/(R<sub>int</sub> + R<sub>L</sub>)</span> Rule: the load resistance should be at least 10–100 times the internal resistance of the source.</div>
+        <div class="info">The input resistance of the buffer is ≈ A·R<sub>i</sub> = 10<sup>5</sup> × 2 MΩ (practically infinite). No current is drawn from the sensor; the op-amp supplies the load current <b>from the supply</b>. The voltage gain is 1, the power gain is very large.</div>
+        <div class="info">The horizontal axis of the plot is the logarithm of R<sub>L</sub>: 2 → 100 Ω, 4 → 10 kΩ, 6 → 1 MΩ, 7 → DMM only.</div>
+        <div class="warnbox">When measuring high-internal-resistance sources (pH electrode, piezo sensor, charged capacitor), even the DMM’s 10 MΩ causes an error. For such measurements use a buffer before the instrument or choose an electrometer-type instrument.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 290"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Record (R)</button>
+            <button class="btn sec small" id="d3del">Delete last row</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>v<sub>L</sub> – R<sub>L</sub> plot</b><span class="grow"></span>
+            <label style="font-size:13px"><input type="checkbox" id="d3theo"> Theoretical curves</label>
+            <button class="btn small" id="d3sweep">R<sub>L</sub> sweep</button>
+            <button class="btn sec small" id="d3clr">Clear</button></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12px;color:#556">Orange: sweep without buffer · blue: sweep with buffer · red/navy dots: your records</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Design Task: Resistor Selection and Saturation Margin</h2>
+  <p class="lead">You have been given a personal design task. Choose the topology, pick R<sub>s</sub> and R<sub>f</sub> from the E12 drawer and verify on the oscilloscope. The actual resistor values differ from their labels by up to 5 %.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Task</h3><div id="d4task" class="info"></div><button class="btn sec small" id="d4new">Get a new task</button></div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info"><b>Design order:</b> (1) Topology from the phase requirement. (2) R<sub>s</sub> from the input-resistance requirement (in the inverting configuration R<sub>in</sub> = R<sub>s</sub>). (3) Ideal value of R<sub>f</sub> from the gain. (4) Nearest E12 value; check the gain error. (5) Saturation margin: |G|·v<sub>g,peak</sub> ≤ 0.9·V<sub>sat</sub>.</div>
+        <div class="info">Think of the E12 ratios together: if no single R<sub>f</sub> fits, shift R<sub>s</sub> by one step as well. For example 4.7 k / 47 k for −10, and 4.7 k / 56 k or 3.3 k / 39 k for −12.</div>
+        <div class="warnbox">In a real design do not read the resistor value from its label only: measure it with a multimeter before inserting it. The ratio of two 5 % resistors may deviate by 10 % in the worst case.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d4inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d4scope"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 290"></svg></div>
+      <div class="card">
+        <div class="row"><b>Design records</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record design (R)</button>
+          <button class="btn sec small" id="d4del">Delete last row</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Compare the inverting and non-inverting configurations in terms of input resistance, phase and gain limit. When is a buffer essential? What trade-off did you make in your design?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). To type an <b>exact value</b> or choose from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjust with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task in the lab sheet; a step ticks itself off when done correctly.<br>
+    <b>Oscilloscope:</b> AUTO sets the scales; press the CURSOR button and drag on the screen to read Δt and instantaneous voltages.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta02.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h02', ders: 'Circuit Theory I', hafta: 2,
+  doc: [
+    { id: 'CLO1', t: 'Analyses the gain, phase relation and input resistance of the inverting amplifier using the virtual-ground concept and measures them with an oscilloscope.', mc: [1, 2, 4, 5] },
+    { id: 'CLO2', t: 'Obtains the transfer curve of the non-inverting amplifier and voltage follower; explains the lower limit of gain and saturation.', mc: [1, 2, 5] },
+    { id: 'CLO3', t: 'Measures the loading effect and assesses how the buffer (follower) isolates the source from the load, and its limits.', mc: [1, 2, 4, 5, 6] },
+    { id: 'CLO4', t: 'Designs an amplifier with saturation margin using standard (E12) resistors for a required gain and input resistance.', mc: [2, 3, 10] },
+    { id: 'CLO5', t: 'Presents findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To set the gain of an inverting amplifier by choosing R<sub>s</sub>, R<sub>f</sub>; to measure the 180° phase difference, the gain and the clipping limit with an oscilloscope (Examples 1.2–1.3).', doc: ['CLO1'], mc: [1, 2, 4, 5],
+      gerec: 'Function generator (50 Ω), resistor box, ±V<sub>CC</sub> supply, µA741, two-channel oscilloscope with cursors.',
+      guvenlik: 'Oscilloscope ground clip to circuit ground only; do not force the output into the 25 mA limit with a small R<sub>L</sub>; cut the supply while changing resistors.',
+      veri: 'CH1/CH2 Vpp, Δt and phase with cursors, onset of clipping; measurement table.',
+      tartisma: 'In what respect do the two ways of doubling the gain (R<sub>s</sub>/2 or 2R<sub>f</sub>) differ?' },
+    d2: { amac: 'To obtain the transfer curve of the non-inverting amplifier, measure the source current and show that the gain cannot be less than 1 (Example 1.4).', doc: ['CLO2'], mc: [1, 2, 5],
+      gerec: 'Adjustable DC supply, resistor box (with R<sub>s</sub> = ∞, R<sub>f</sub> = 0 options), two DMMs, µA741.',
+      guvenlik: 'Do not leave the non-inverting input floating; use the fused mA input of the DMM for current measurement.',
+      veri: 'v<sub>g</sub>–v<sub>o</sub> table and transfer plot, source current.',
+      tartisma: 'Which circuit would you use if attenuation (gain &lt; 1) were required?' },
+    d3: { amac: 'To measure the loading loss of a sensor with 100 kΩ internal resistance on a 10 kΩ load and to eliminate it with a voltage follower (Example 1.5).', doc: ['CLO3'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Thévenin sensor model, load resistor selector, µA741 follower, two DMMs (10 MΩ).',
+      guvenlik: 'Do not connect the buffer output to low-resistance loads (current limit, heating); an unnecessarily low load wastes energy.',
+      veri: 'v<sub>L</sub> and i<sub>L</sub> with/without buffer; v<sub>L</sub>–R<sub>L</sub> plot.',
+      tartisma: 'When can the input resistance of a measuring instrument not be neglected?' },
+    d4: { amac: 'To design and verify, with E12 resistors, an amplifier that meets the given gain, input resistance and saturation margin requirements.', doc: ['CLO4'], mc: [2, 3, 10],
+      gerec: 'E12 resistor drawer (5 %), test signal, ±V<sub>CC</sub> supply, oscilloscope.',
+      guvenlik: 'Measure resistors before inserting; very large resistors bring noise and offset, very small ones load the output.',
+      veri: 'Chosen R<sub>s</sub>, R<sub>f</sub>; nominal and measured gain; output peak value and saturation margin.',
+      tartisma: 'What trade-off did you make between standard values (cost, availability) and gain accuracy?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

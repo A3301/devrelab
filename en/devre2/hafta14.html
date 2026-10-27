@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 14 · Power Measurement and Semester Review — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<style>.why{background:#eef8ef;border-left:4px solid var(--ok);padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.55;margin:8px 0}.ex{background:#f7f4ff;border-left:4px solid #6a4fc9;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;margin:8px 0}</style>
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 14 — Power Measurement: The Wattmeter and the Two-Wattmeter Method</h1>
+    <div class="sub">Current and voltage coils · Reverse deflection · P and Q from W₁, W₂ · pf &lt; 0.5 · Unbalanced load · Semester review</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">0%</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Single Wattmeter</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Two Wattmeters</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Unbalanced Load</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Black Box + Review</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjust.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<section class="page" id="giris">
+  <h2>Week 14 · Power Measurement and Semester Review</h2>
+  <p class="lead">Lecture notes: <b>Chapter 3 · Part 5</b> — 3.6 Power measurement (wattmeter, two-wattmeter method) and chapter summary; mixed review of Chapters 1–3.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab</h3>
+      <ol class="steps">
+        <li>You will connect the wattmeter’s <b>current coil in series and voltage coil in parallel</b>, and see the consequences of wrong connections (reverse deflection, short circuit).</li>
+        <li>You will learn why the wattmeter’s <b>current range</b> must be monitored separately at low power factor.</li>
+        <li>You will measure P and Q with two wattmeters and find the power factor from <b>tan θ = √3(W₂ − W₁)/(W₁ + W₂)</b>.</li>
+        <li>At <b>pf &lt; 0.5</b> you will see one wattmeter read negative and record the reading with the correct sign.</li>
+        <li>You will measure total power with an unbalanced load, find Q of a balanced load with a single wattmeter, and identify and compensate a <b>black box</b> load.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Electrodynamic (analog) wattmeters: 300/600 V voltage, 1–50 A current ranges, mirror scale · Digital (signed) wattmeters · Single- and three-phase sources · R–X load boxes · Clamp ammeters, voltmeter · Δ capacitor bank · Black box load.</p>
+      <div class="info">In this section the two wattmeters are connected as in the lecture slides: <b>W₁</b> takes its current from line <b>a</b> and its voltage across <b>a–b</b>; <b>W₂</b> takes its current from line <b>c</b> and its voltage across <b>c–b</b> (common line b).</div>
+    </div>
+  </div>
+  <div class="card"><h3 style="margin-top:0">Order of work</h3><p style="font-size:14px;line-height:1.6;margin:0">Get to know the curves by changing θ in the W₁–W₂ plot in the Background section, then solve the Pre-lab. At the end of Experiment 4 there are <b>mixed review</b> questions covering the whole semester.</p></div>
+</section>
+
+<section class="page" id="onbilgi">
+  <h2>Background · How Does a Wattmeter Work, and Why Are Two Wattmeters Enough?</h2>
+  <p class="lead">Understanding what is inside an instrument is the best way to avoid connecting it wrongly.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Electrodynamic wattmeter</h3>
+      <svg viewBox="0 0 360 210" style="width:100%;max-width:400px" class="schem">
+        <polyline class="w" points="20,40 90,40"/><path class="w" d="M90,40 h15 q8,-12 16,0 q8,12 16,0 q8,-12 16,0 h15"/><polyline class="w" points="174,40 330,40 330,80"/>
+        <rect x="320" y="80" width="20" height="70" fill="#fff" stroke="#222" stroke-width="2"/><text x="346" y="120" class="lbl">Z</text>
+        <polyline class="w" points="330,150 330,180 20,180"/>
+        <polyline class="w" points="200,40 200,80"/><rect x="190" y="80" width="20" height="60" fill="#fff" stroke="#222" stroke-width="2"/><polyline class="w" points="200,140 200,180"/>
+        <text x="128" y="68" class="lbl" text-anchor="middle">current coil (series, ≈0 Ω)</text>
+        <text x="215" y="115" class="lbl">voltage coil</text><text x="215" y="132" class="lbl">(parallel, ≈10 kΩ)</text>
+        <text x="86" y="34" class="val">±</text><text x="190" y="34" class="val">±</text>
+        <circle cx="200" cy="40" r="3.5" class="node"/><circle cx="200" cy="180" r="3.5" class="node"/>
+      </svg>
+      <p style="font-size:14px;line-height:1.65">The magnetic field of the fixed (current) coil is proportional to i, and the current of the moving (voltage) coil is proportional to v. The torque turning the pointer is proportional to their product, i.e. to <b>p(t) = v·i</b>; the inertia of the pointer shows its <b>average</b>: W = V I cos θ. The “±” terminals must be connected to the same point (the source side); if one is reversed, the pointer deflects backwards.</p>
+      <div class="why"><b>Why are two wattmeters enough? (Blondel)</b> In a 3-wire system I<sub>a</sub> + I<sub>b</sub> + I<sub>c</sub> = 0. If we measure the voltages with respect to line b, p = v<sub>ab</sub>i<sub>a</sub> + v<sub>cb</sub>i<sub>c</sub>; the term for b vanishes. For an n-wire system n − 1 wattmeters are enough, even if the load is unbalanced.</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Single wattmeter</td><td class="l">W = V I cos(θ<sub>v</sub> − θ<sub>i</sub>) = Re{V I*}</td></tr>
+        <tr><td class="l">W₁ (a, V<sub>ab</sub>), balanced abc</td><td class="l">W₁ = V<sub>L</sub>I<sub>L</sub>cos(θ + 30°)</td></tr>
+        <tr><td class="l">W₂ (c, V<sub>cb</sub>), balanced abc</td><td class="l">W₂ = V<sub>L</sub>I<sub>L</sub>cos(θ − 30°)</td></tr>
+        <tr><td class="l">Total power (any 3-wire load)</td><td class="l">P = W₁ + W₂</td></tr>
+        <tr><td class="l">Reactive power (balanced)</td><td class="l">Q = √3(W₂ − W₁)</td></tr>
+        <tr><td class="l">Power angle (balanced)</td><td class="l">tan θ = √3(W₂ − W₁)/(W₁ + W₂)</td></tr>
+        <tr><td class="l">Unbalanced load</td><td class="l">W₁ = Re{V<sub>AB</sub>I<sub>aA</sub>*}, W₂ = Re{V<sub>CB</sub>I<sub>cC</sub>*}</td></tr>
+        <tr><td class="l">Q with a single wattmeter (balanced)</td><td class="l">current a, voltage b–c: Q = √3·W</td></tr>
+      </table>
+      <p style="font-size:13px;color:var(--muted)">In the acb sequence W₁ and W₂ swap places. Some sources use the names W₁ and W₂ the other way round (tan θ = √3(W₁ − W₂)/(W₁ + W₂)); always state which wattmeter is on which line.</p>
+      <div class="ex"><b>Worked mini example (Example 3.28):</b> abc, V<sub>L</sub> = 400 V, W₁ = 2000 W, W₂ = 4000 W. ① P = 6000 W. ② Q = √3·2000 = 3464 VAR. ③ tan θ = 0.577 ⇒ θ = 30°, pf = 0.866 lagging (W₂ &gt; W₁ ⇒ inductive). ④ |S| = 6928 VA ⇒ I<sub>L</sub> = 6928/(√3·400) = 10 A ⇒ Z<sub>φ</sub> = 230.9/10∠30° = 20 + j11.55 Ω.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">2 · How do W₁ and W₂ change with the load angle?</h3>
+    <div class="row" style="margin-bottom:6px"><label style="font-size:14px">θ <input type="range" id="obTh" min="-90" max="90" step="1" value="37"></label> <b id="obThV"></b></div>
+    <canvas id="obAnim" width="900" height="300" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px"></canvas>
+    <p style="font-size:14px;line-height:1.65">At θ = 0 the two wattmeters read the same. With an inductive load W₂ grows and W₁ shrinks; at θ = 60° (pf = 0.5) W₁ is zero, and beyond that it is <b>negative</b>. With a capacitive load the opposite happens. From the ratio of the readings you can estimate the pf at a glance.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Points to watch in a real laboratory</h3>
+    <div class="warnbox"><b>Never connect the current coil in parallel with the source.</b> The current coil has almost zero resistance: connecting it in parallel is a short circuit and the coil burns instantly. Make connections de-energized and check them one by one against the schematic.</div>
+    <div class="warnbox"><b>Wattmeter overload cannot be seen from the pointer.</b> With a low power factor load, the current or voltage coil range may be exceeded even while the pointer is mid-scale. Always add an ammeter and a voltmeter to the circuit; select the highest ranges first, then reduce.</div>
+    <div class="warnbox"><b>Reverse-deflecting pointer.</b> If the pointer hits the stop left of zero, the coil spring is strained. Switch off immediately, swap the terminals of the voltage (or current) coil and note the reading with a <b>minus</b> sign; some wattmeters have a polarity switch for this.</div>
+    <div class="warnbox"><b>Measurement with current transformers.</b> For large currents the wattmeter is connected through a current transformer; its secondary is never opened while the circuit is live (high voltage, insulation breakdown). A voltage transformer secondary, on the other hand, is never short-circuited.</div>
+    <div class="warnbox"><b>Capacitor bank and black box.</b> A load whose contents you do not know may contain capacitors; after disconnecting, do not touch its terminals without measuring them. In a 400 V system the peak voltage is 565 V.</div>
+    <div class="info"><b>Common mistakes:</b> adding a negative reading as its absolute value · using the cos(θ ± 30°) formula for an unbalanced load · taking θ for the angle between line voltage and line current · trusting the sign of tan θ without knowing the phase sequence · applying Q = √3·W to an unbalanced load · connecting the wattmeter’s “±” terminals to different sides.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve these before coming to the lab. The numbers are taken from the examples in the lecture slides.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<section class="page" id="d1">
+  <h2>Experiment 1 · Single Wattmeter: Correct and Wrong Connection</h2>
+  <p class="lead">Single-phase 230 V source, R–X load, analog wattmeter (300 V; 1/5/10 A). Choose the current coil and voltage coil connections yourself.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">The full scale of an analog wattmeter is <span class="eq">W<sub>full</sub> = V<sub>range</sub> × I<sub>range</sub></span> (for pf = 1). 300 V × 5 A = 1500 W.</div>
+        <div class="why"><b>Why does the pointer deflect backwards?</b> The torque is proportional to the average of v·i. When the voltage coil terminals are reversed, the sign of v changes and the average becomes negative. A real reversal of power flow (e.g. a motor running as a generator) gives the same result.</div>
+        <div class="ex"><b>Mini example:</b> 40 + j30 Ω ⇒ |Z| = 50 Ω, I = 4.6 A, cos θ = 0.8 ⇒ W = 230·4.6·0.8. Calculate before measuring and compare with the pointer.</div>
+        <div class="warnbox">Range selection: first check the current with an ammeter. For example, for 4.6 A the 5 A range is suitable; the 1 A range burns the coil, the 10 A range halves the reading resolution.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 680 240"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span><button class="btn small" id="d1rec">Record (R)</button><button class="btn sec small" id="d1del">Delete last row</button><button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Z (Ω)</th><th>Range</th><th>± term.</th><th>W (pointer)</th><th>V (V)</th><th>I (A)</th><th>V·I (VA)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d2">
+  <h2>Experiment 2 · Two-Wattmeter Method (Balanced Load)</h2>
+  <p class="lead">3-wire three-phase system, balanced Y or Δ load. W₁ and W₂ are analog; for a reverse-deflecting wattmeter reverse its voltage coil and record the reading as negative (a minus is entered in the table automatically).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">For a balanced abc load: <span class="eq">W₁ = V<sub>L</sub>I<sub>L</sub>cos(θ + 30°), W₂ = V<sub>L</sub>I<sub>L</sub>cos(θ − 30°)</span> θ is the angle of the phase impedance (in both Y and Δ).</div>
+        <div class="why"><b>Why ±30°?</b> W₁ sees the line voltage V<sub>ab</sub>, which leads V<sub>an</sub> by 30°. I<sub>a</sub> lags V<sub>an</sub> by θ: the angle between them is θ + 30°. For W₂, V<sub>cb</sub> lags V<sub>cn</sub> by 30°: the angle is θ − 30°.</div>
+        <div class="ex"><b>Table of Example 3.27 (calculate and compare):</b> (a) 8 + j6 · (b) 8 − j6 · (c) 5 + j5√3 = 5 + j8.66 · (d) 10∠−75° = 2.59 − j9.66 Ω. You can tap the X knob and type in the value.</div>
+        <div class="warnbox">For lightly loaded motors with pf &lt; 0.5 one wattmeter <b>always</b> deflects backwards; this is not a fault. If you forget to add the reading with a minus sign, the power comes out several times too large.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px">
+        <div class="row"><b>W / (V<sub>L</sub>I<sub>L</sub>) – θ</b> <span style="font-size:12px;color:#0b5cad">● W₁</span> <span style="font-size:12px;color:#e07a10">● W₂</span><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d2theo"> Theoretical curves</label></div>
+        <canvas id="d2plot" width="760" height="300" style="width:100%"></canvas>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span><button class="btn small" id="d2rec">Record (R)</button><button class="btn sec small" id="d2del">Delete last row</button><button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Seq.</th><th>Conn.</th><th>V<sub>φ</sub></th><th>Z (Ω)</th><th>θ (°)</th><th>W₁ (W)</th><th>W₂ (W)</th><th>V<sub>L</sub></th><th>I<sub>L</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d3">
+  <h2>Experiment 3 · Power in an Unbalanced Load and Q with a Single Wattmeter</h2>
+  <p class="lead">3-wire unbalanced Y load (Example 3.30) and a third wattmeter (W₃) with a free connection. Digital wattmeters give signed readings.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">General expression for an unbalanced load: <span class="eq">W₁ = Re{V<sub>AB</sub>I<sub>aA</sub>*}</span> First the shift of the load star point V<sub>N</sub> is found, then each line current is calculated separately (Week 12 Experiment 4).</div>
+        <div class="why"><b>Why Q = √3·W?</b> If the current is taken from line a and the voltage across b–c, V<sub>bc</sub> is perpendicular to V<sub>an</sub> (−90°). W = V<sub>L</sub>I<sub>L</sub>cos(90° − θ) = V<sub>L</sub>I<sub>L</sub>sin θ ⇒ Q<sub>T</sub> = √3 V<sub>L</sub>I<sub>L</sub>sin θ = √3·W. Only for a balanced load.</div>
+        <div class="warnbox">The current input of a digital wattmeter is usually limited to 10–20 A; for larger currents use a current clamp or current transformer and check the clamp direction (source → load).</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><b>Line currents (phasor)</b><svg id="d3ph" class="schem" viewBox="0 0 320 320"></svg></div>
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span><button class="btn small" id="d3rec">Record (R)</button><button class="btn sec small" id="d3del">Delete</button><button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>V<sub>L</sub></th><th>Z<sub>A</sub> | Z<sub>B</sub> | Z<sub>C</sub></th><th>W₁</th><th>W₂</th><th>W₃ (conn.)</th><th>I<sub>a</sub>/I<sub>b</sub>/I<sub>c</sub></th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d4">
+  <h2>Experiment 4 · Black Box Load and End-of-Semester Mixed Review</h2>
+  <p class="lead">Identify a balanced three-phase load whose inside you cannot see, using only terminal measurements, then correct its power factor. After that, mixed questions from the whole semester.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info"><b>Roadmap:</b> ① P = W₁ + W₂ ② Q = √3(W₂ − W₁) ③ pf = P/√(P² + Q²) ④ |Z<sub>Y</sub>| = (V<sub>L</sub>/√3)/I<sub>L</sub>, ∠Z<sub>Y</sub> = θ ⑤ Q<sub>C</sub> = P(tan θ<sub>1</sub> − tan θ<sub>2</sub>) ⑥ C<sub>Δ</sub> = Q<sub>C</sub>/(3ωV<sub>L</sub>²).</div>
+        <div class="why"><b>Why can’t you tell whether it is Y or Δ?</b> Every measurement seen from the terminals is the same because of the equivalence Z<sub>Y</sub> = Z<sub>Δ</sub>/3. You can find the internal connection only by opening the box (or accessing the winding terminals).</div>
+        <div class="warnbox">After adding the capacitors W₁ + W₂ must not change: if it does, there is a connection or reading error. This is a practical way to check the consistency of measurements in the field.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px">
+        <div class="row"><b>Measurement table</b><span class="grow"></span><button class="btn small" id="d4rec">Record (R)</button><button class="btn sec small" id="d4del">Delete last row</button><button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>C<sub>Δ</sub> (µF)</th><th>I<sub>L</sub> (A)</th><th>W₁ (W)</th><th>W₂ (W)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Black box questions</h3><div id="d4Q"></div></div>
+      <div class="card"><h3 style="margin-top:0">End-of-semester mixed review (Chapters 1–3)</h3><div id="d4R"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Which wattmeter connection errors were the most dangerous? What are the limits of the two-wattmeter method? How did you identify the black box load? Briefly assess what you learned during the semester."></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (hold to speed up). To type an <b>exact value</b> or pick from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjust with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is checked off automatically when done correctly.<br>
+    <b>Analog wattmeter:</b> the value below the pointer is the value read from the mirror scale; if the pointer is off scale it cannot be read.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta14.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h14', ders: 'Circuit Theory II', hafta: 14,
+  doc: [
+    { id: 'CLO1', t: 'Connects a wattmeter correctly; recognizes and eliminates measurement errors such as reverse deflection and range overload.', mc: [4, 5, 6] },
+    { id: 'CLO2', t: 'Measures and calculates P, Q and power factor of a balanced load with the two-wattmeter method.', mc: [1, 2, 4, 5] },
+    { id: 'CLO3', t: 'Measures total power in an unbalanced load; determines reactive power with a single wattmeter and discusses the limits of the methods.', mc: [1, 2, 5] },
+    { id: 'CLO4', t: 'Identifies an unknown three-phase load from terminal measurements and designs power factor correction; integrates the knowledge of Chapters 1–3.', mc: [2, 3, 10, 11] },
+    { id: 'CLO5', t: 'Presents the findings in writing in a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To apply the correct connection of a wattmeter to a single-phase load; to observe the errors of reverse deflection, connecting the current coil in parallel and range overload at low pf.', doc: ['CLO1'], mc: [4, 5, 6],
+      gerec: 'Single-phase 230 V source (with isolation transformer and fuse), R–X load box, analog wattmeter (300 V, 1/5/10 A), voltmeter, ammeter.',
+      guvenlik: 'The current coil is never connected in parallel; connections are made de-energized; on reverse deflection the supply is switched off and the terminals are swapped; the highest range is selected first.',
+      veri: 'Wattmeter reading, V, I, V·I for different loads; observations of reverse connection and overload.' },
+    d2: { amac: 'To measure P, Q and pf of a balanced three-phase load with the two-wattmeter method; to verify how W₁, W₂ vary with θ and the negative reading at pf &lt; 0.5.', doc: ['CLO2'], mc: [1, 2, 4, 5],
+      gerec: 'Three-phase 3-wire source, balanced R–X load (Y/Δ), two analog wattmeters (600 V, 5–50 A), voltmeter, ammeter.',
+      guvenlik: 'For a reverse-deflecting wattmeter the supply is switched off and the voltage coil is reversed; the current range is selected according to the line current.',
+      veri: 'Table and plot of W₁, W₂ versus θ; abc/acb comparison; cases of Example 3.27.' },
+    d3: { amac: 'To measure total power of an unbalanced 3-wire load with two wattmeters and verify it with ΣI²R; to measure Q of a balanced load with a single wattmeter.', doc: ['CLO3'], mc: [1, 2, 4, 5],
+      gerec: 'Three-phase source (208/400 V), three separate R–X loads, three digital wattmeters, clamp ammeters.',
+      guvenlik: 'The current input limit of the digital wattmeter must not be exceeded; clamp direction is checked.',
+      veri: 'W₁, W₂, W₃ (different connections) and line currents; measurements of Examples 3.30 and 3.31.' },
+    d4: { amac: 'To identify an unknown balanced load from terminal measurements (V, I, W₁, W₂); to design and verify a Δ capacitor bank raising the pf to 0.95; to review the semester.', doc: ['CLO4'], mc: [2, 3, 4, 6, 10, 11],
+      gerec: 'Black box load, three-phase 400 V source, two wattmeters, voltmeter, ammeter, Δ capacitor bank.',
+      guvenlik: 'The black box and the capacitor bank may remain charged after disconnection; do not touch before checking that they are discharged.',
+      veri: 'Measurements at C<sub>Δ</sub> = 0 and with compensation; calculated P, Q, pf, Z<sub>Y</sub>, C<sub>Δ</sub>.',
+      tartisma: 'Compare the economic benefit of compensation to the plant (reactive energy charges, reduced losses) with the bank cost. How does the uncertainty of your measurement affect the design?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 10 · Step Response and the General Solution — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 10 — Step Response and the General Solution Method</h1>
+    <div class="sub">x(t) = x<sub>f</sub> + [x(0) − x<sub>f</sub>] e<sup>−t/τ</sup> · Square wave · Initial condition · Timer design</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">0%</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: RC and Square Wave</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: RL Step Response</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Four-Step Method</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: LED/Relay Timer</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> for fine adjustment.<br><br><kbd>S</kbd> switch / start · <kbd>A</kbd> arm oscilloscope (SINGLE) · <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data are saved automatically on this computer.</div>
+</nav>
+
+<main>
+<section class="page" id="giris">
+  <h2>Week 10 · Step Response and the General Solution Method</h2>
+  <p class="lead">Lecture notes: <b>Section 3.3 Step Response: RL and RC</b> and <b>3.4 General Solution Method</b>.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li>See how, in an RC circuit driven by a square wave, the waveform changes <b>from full charging to a triangle</b> as the frequency changes relative to τ.</li>
+        <li>Measure the rise time (10%–90%) and verify the relation <b>t<sub>r</sub> = 2.2τ</b>.</li>
+        <li>Measure that in the RL step response the current goes from negative to positive with the <b>same τ</b>, and that the inductor voltage can exceed the source voltage.</li>
+        <li>Apply the four-step method (x(0<sup>+</sup>), x(∞), τ, substitute) with a wizard and draw your own curve on top of the measurement.</li>
+        <li><b>Design</b> an LED delay / relay timer and verify it with a stopwatch.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Function generator (square wave, 50 Ω output) · DC power supplies (current limited) · Pre-condition current source · Resistor, capacitor and inductor sets · Switches · Two-channel oscilloscope (SINGLE, cursor, current probe) · Comparator timer board (LED, 12 V relay, 1N4007) · Stopwatch.</p>
+      <div class="info">In Week 9 the source was <b>removed</b> (x<sub>f</sub> = 0). This week the source is <b>switched in</b>: the quantity approaches a new final value exponentially. The rule for finding τ is the same.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Workflow</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First read the <b>Background</b> and solve the <b>Pre-lab</b> questions. In the experiments, lab-sheet steps are ticked automatically when the setting is correct. <kbd>S</kbd> toggles the switch, <kbd>A</kbd> arms the oscilloscope, <kbd>R</kbd> records. Print the report in the last section.</p>
+  </div>
+</section>
+
+<section class="page" id="onbilgi">
+  <h2>Background · An Exponential Journey to a New Value</h2>
+  <p class="lead">When a source is switched in, the inductor current or capacitor voltage moves exponentially from its old value to its new steady-state value with the <b>same τ</b>. All first-order circuits fit into a single formula.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Steady state + transient</h3>
+      <p style="font-size:14px;line-height:1.65"><span class="eq" style="display:inline">x(t) = x<sub>f</sub> + [x(0<sup>+</sup>) − x<sub>f</sub>] e<sup>−(t−t<sub>0</sub>)/τ</sup></span><br>
+      The first term is the steady-state value <b>forced</b> by the source, the second term is the <b>decay of the difference</b> between the initial and final values. However large the difference, 63.2% of the remaining difference closes in each τ: the intuition that “starting further away settles more slowly” is wrong.</p>
+      <h3>2 · Four steps</h3>
+      <ol style="font-size:14px;line-height:1.6;margin-top:0">
+        <li><b>x(0<sup>+</sup>)</b>: the circuit <u>before</u> switching in steady state (L short, C open); carry it to 0<sup>+</sup> by continuity.</li>
+        <li><b>x(∞)</b>: the circuit <u>after</u> switching in steady state.</li>
+        <li><b>τ</b>: in the circuit after switching, with sources deactivated, the R<sub>Th</sub> seen from the element’s terminals: τ = R<sub>Th</sub>C or L/R<sub>Th</sub>.</li>
+        <li>Substitute the three into the formula; find the other quantities (i<sub>C</sub> = C dv/dt, v<sub>L</sub> = L di/dt) by differentiation.</li>
+      </ol>
+      <h3>3 · In real life</h3>
+      <p style="font-size:14px;line-height:1.65">Rounding of square-wave edges on digital lines (rise time, bandwidth), power-supply soft start, LED and relay delay circuits, the 555 timer, motor inrush current, button debounce filters… In all of them the question is the same: “how long until it settles?”</p>
+      <svg viewBox="0 0 420 170" style="width:100%;max-width:440px;display:block;margin:6px auto 0" aria-label="RC charging and discharging with a square wave">
+        <line x1="30" y1="150" x2="410" y2="150" stroke="#555"/>
+        <path d="M30,150 V40 H130 V150 H230 V40 H330 V150 H410" fill="none" stroke="#b8960a" stroke-width="1.5" stroke-dasharray="5 3"/>
+        <path d="M30,150 C50,70 80,45 130,42 C150,120 180,146 230,148 C250,70 280,45 330,42 C350,120 380,146 410,148" fill="none" stroke="#0b5cad" stroke-width="2.5"/>
+        <text x="140" y="30" font-size="12" fill="#b8960a">v_g (square)</text><text x="60" y="110" font-size="12" fill="#0b5cad">v_C</text>
+        <text x="200" y="166" font-size="11" text-anchor="middle">T/2 ≥ 5τ: full charge/discharge in every half period</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><th></th><th>RL</th><th>RC</th></tr>
+        <tr><td class="l">Step response</td><td class="l">i = I<sub>s</sub> + (I<sub>0</sub> − I<sub>s</sub>)e<sup>−t/τ</sup></td><td class="l">v = V<sub>s</sub> + (V<sub>0</sub> − V<sub>s</sub>)e<sup>−t/τ</sup></td></tr>
+        <tr><td class="l">Final value</td><td class="l">I<sub>s</sub> = V<sub>s</sub>/R</td><td class="l">V<sub>f</sub> = V<sub>s</sub> (or V<sub>Th</sub>)</td></tr>
+        <tr><td class="l">Derived</td><td class="l">v<sub>L</sub> = (V<sub>s</sub> − I<sub>0</sub>R)e<sup>−t/τ</sup></td><td class="l">i = (V<sub>s</sub> − V<sub>0</sub>)/R · e<sup>−t/τ</sup></td></tr>
+        <tr><td class="l">Time to reach a target</td><td class="l" colspan="2">t = τ ln[(x(0) − x<sub>f</sub>)/(x − x<sub>f</sub>)]</td></tr>
+        <tr><td class="l">Rise time</td><td class="l" colspan="2">t<sub>r</sub>(10%→90%) = τ ln9 ≈ 2.2τ</td></tr>
+        <tr><td class="l">Square wave, T/2 ≪ τ</td><td class="l" colspan="2">v<sub>C</sub> ≈ average ± small triangle; ripple ≈ V<sub>pp</sub>·T/(4τ)</td></tr>
+        <tr><td class="l">Timer (threshold V<sub>th</sub>)</td><td class="l" colspan="2">t<sub>d</sub> = RC ln[(V<sub>s</sub> − V<sub>0</sub>)/(V<sub>s</sub> − V<sub>th</sub>)]; V<sub>0</sub> = 0, V<sub>th</sub> = ⅔V<sub>s</sub> → t<sub>d</sub> = RC ln3 ≈ 1.1RC</td></tr>
+      </table>
+      <div class="info" style="margin-top:10px"><b>Three quantities, three circuits:</b> x(0<sup>+</sup>) from the old circuit, x(∞) from the new circuit, τ from the new circuit with sources deactivated. Deactivating sources is only for finding the <b>resistance</b>.</div>
+      <div class="info">The function generator’s <b>50 Ω internal resistance</b> is in series with R: τ = (R + 50 Ω)C. At R = 10 kΩ it is negligible; at R = 100 Ω it changes τ by 50%.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Precautions in a real laboratory</h3>
+    <div class="warnbox"><b>Electrolytic capacitor polarity and square waves.</b> A ±V (symmetric) square wave reverse-biases an electrolytic every half period. If you use an electrolytic, set the generator to 0/+V (offset) mode or use a film capacitor.</div>
+    <div class="warnbox"><b>Charging a capacitor like a short circuit.</b> An empty capacitor behaves like a short circuit at t = 0<sup>+</sup>: the initial current can be as large as V<sub>s</sub>/R. In Example 3.6 it is 3 A! The series resistor and the supply current limit restrict this pulse; account for the instantaneous power of the series resistor (V<sup>2</sup>/R).</div>
+    <div class="warnbox"><b>Relay coil and freewheeling diode.</b> When the transistor driving the timer relay turns off, the coil voltage can break down the transistor. Do not forget to fit a 1N4007 anti-parallel to the relay coil; if the diode is reversed, it shorts the supply the moment the transistor turns on.</div>
+    <div class="warnbox"><b>Discharge the capacitor before restarting the timer.</b> A voltage remaining on the capacitor means x(0) ≠ 0 and the delay becomes shorter. In real circuits a “reset” transistor/resistor does this job.</div>
+    <div class="warnbox"><b>Oscilloscope and generator grounds are common.</b> The generator’s black lead and the oscilloscope clip must be connected to the same point. If you attach the clip between R and C to measure the voltage of R directly, you short C; use the difference of two channels (CH1 − CH2).</div>
+    <div class="warnbox"><b>Supply limits when the inductor current reverses.</b> In Example 3.4 the current goes from −8 A to +12 A; the supply and resistors must be rated for this current and power (24 V × 12 A ≈ 290 W). Scaling down on the bench (larger R, smaller V) is safe.</div>
+    <div class="info"><b>Common mistakes:</b> writing x(0) instead of (x(0) − x<sub>f</sub>) as the coefficient of the exponential; reading x<sub>f</sub> from the circuit before switching; forgetting the source’s internal resistance or a resistor switched in later in τ; writing t instead of (t − t<sub>1</sub>) in the exponent at a second switching; confusing 63.2% and 36.8%; trying to read the initial value from a <u>discontinuous</u> quantity such as the current or inductor voltage.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before coming to the lab. The questions are based on Examples 3.4, 3.5 and 3.6 in the lecture notes.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<section class="page" id="d1">
+  <h2>Experiment 1 · RC Circuit and Square Wave: When the Frequency Meets τ</h2>
+  <p class="lead">The function generator (50 Ω output) drives C through R with a square wave. Every rising edge is a step, every falling edge a natural response. CH1 shows the generator output, CH2 the capacitor voltage; the oscilloscope runs continuously (AUTO) and triggers on the rising edge.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info"><b>T/2 ≥ 5τ:</b> the capacitor fully charges and discharges in every half period; v<sub>C</sub> is a rounded copy of the square wave.<br><b>T/2 ≈ τ:</b> the capacitor has no time to charge fully, a “shark fin” shape.<br><b>T/2 ≪ τ:</b> v<sub>C</sub> is a small triangle wave around the average value: the RC circuit integrates.</div>
+        <div class="info">Rise time is the time to go from 10% to 90%: t<sub>r</sub> = τ(ln 0.9 − ln 0.1)… that is <b>τ ln 9 ≈ 2.2τ</b>. Measure it with the cursors.</div>
+        <div class="warnbox">Do not choose an electrolytic capacitor (≥ 1 µF) while the generator is in ±V (symmetric) mode: it is reverse-biased every half period. Switch to 0/+V mode.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" style="margin-top:12px" id="d1scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>f</th><th>R</th><th>C</th><th>(T/2)/τ<sub>nom</sub></th><th>v<sub>C</sub> min (V)</th><th>v<sub>C</sub> max (V)</th><th>t<sub>A</sub> (ms)</th><th>t<sub>B</sub> (ms)</th><th>v<sub>C,A</sub></th><th>v<sub>C,B</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d2">
+  <h2>Experiment 2 · RL Step Response: Current from Negative to Positive</h2>
+  <p class="lead">For t &lt; 0 the inductor carries a current I<sub>0</sub> from a pre-condition current source. At t = 0 the switch transfers the inductor to the V<sub>s</sub>–R branch (lecture notes Example 3.4). CH1 shows the voltage across the inductor, CH2 the inductor current.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">Final value: inductor is a short circuit → I<sub>s</sub> = V<sub>s</sub>/R. The current goes from I<sub>0</sub> to I<sub>s</sub> with the <b>same τ = L/R</b>; the zero crossing has no special meaning.</div>
+        <div class="info">v<sub>L</sub>(0<sup>+</sup>) = V<sub>s</sub> − I<sub>0</sub>R. If I<sub>0</sub> is negative the inductor voltage is <b>larger</b> than the source (Example 3.4: 40 V &gt; 24 V).</div>
+        <div class="warnbox">A pre-condition current source driving an inductor must not be left open-circuited (Week 9!). In practice the transfer is done with a make-before-break switch.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div><div class="bench-row" style="margin-top:12px" id="d2scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>V<sub>s</sub></th><th>R</th><th>L</th><th>I<sub>0</sub> (A)</th><th>t<sub>A</sub> (ms)</th><th>t<sub>B</sub> (ms)</th><th>i<sub>A</sub> (A)</th><th>i<sub>B</sub> (A)</th><th>v<sub>L,A</sub> (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d3">
+  <h2>Experiment 3 · The Four-Step General Method: Wizard and Measurement Overlaid</h2>
+  <p class="lead">The capacitor is charged to V<sub>0</sub> by a pre-charge source; at t = 0 the switch connects the V<sub>s</sub>–R<sub>1</sub> branch, and R<sub>2</sub> is in parallel with the capacitor (a generalization of lecture notes Example 3.6). First solve the circuit, then capture the measurement and draw your own curve on top of it.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Wizard</h3>
+        <div id="wiz"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">Remove the capacitor and find the Thevenin equivalent of the remaining two-terminal circuit: V<sub>Th</sub> = V<sub>s</sub>R<sub>2</sub>/(R<sub>1</sub> + R<sub>2</sub>), R<sub>Th</sub> = R<sub>1</sub>‖R<sub>2</sub>. Then x<sub>f</sub> = V<sub>Th</sub> and τ = R<sub>Th</sub>C.</div>
+        <div class="warnbox">Do not forget to disconnect the pre-charge source before t = 0; otherwise the two sources are connected to each other. Here the switch does this automatically.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" style="margin-top:12px" id="d3scope"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement and your curve</b><span class="grow"></span><span id="d3err" style="font-size:13px"></span></div>
+        <canvas id="d3plot" width="640" height="300" style="width:100%"></canvas>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="d4">
+  <h2>Experiment 4 · Application: Designing an LED Delay / Relay Timer</h2>
+  <p class="lead">When the Start button is pressed, C charges toward V<sub>s</sub> through R. A comparator drives the LED or the relay when v<sub>C</sub> crosses the threshold (V<sub>th</sub> = ⅔V<sub>s</sub>). Choose R and C to achieve the given delay and verify it with the stopwatch.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><div class="info" id="d4target" style="font-size:15px"></div><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">From v<sub>C</sub>(t) = V<sub>s</sub> + (V<sub>0</sub> − V<sub>s</sub>)e<sup>−t/RC</sup> = V<sub>th</sub> we get t<sub>d</sub> = RC ln[(V<sub>s</sub> − V<sub>0</sub>)/(V<sub>s</sub> − V<sub>th</sub>)]. If the threshold is a fixed fraction of V<sub>s</sub>, the delay’s dependence on V<sub>s</sub> is <b>none</b>: the secret of the 555 timer.</div>
+        <div class="info">Long delays need a large C → electrolytic → ±20% tolerance. In a real design part of R is made a trimpot and the circuit is calibrated.</div>
+        <div class="warnbox">When the transistor driving the relay coil turns off, the coil current looks for a path. You can try operating without the diode here; on a real board it burns the transistor.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Trial table</b><span class="grow"></span>
+            <button class="btn small" id="d4rec">Record (R)</button>
+            <button class="btn sec small" id="d4del">Delete last row</button>
+            <button class="btn sec small" id="d4csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>R</th><th>C (nom.)</th><th>V<sub>s</sub></th><th>V<sub>0</sub> (V)</th><th>Output</th><th>t<sub>d</sub> measured (s)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <b>v<sub>C</sub>(t) record (last trial)</b>
+          <canvas id="d4plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="What did you observe when the square-wave frequency changed relative to τ? Did the curve you drew with the four-step method match the measurement? Why did your timer deviate from the target?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). To type an <b>exact value</b> or choose from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task in the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Capturing a transient (Experiments 2–3):</b> arm with SINGLE (<kbd>A</kbd>), toggle the switch (<kbd>S</kbd>). In Experiment 1 the oscilloscope runs continuously.<br>
+    <b>Cursors:</b> press the CURSOR button and drag on the screen.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta10.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h10', ders: 'Circuit Theory I', hafta: 10,
+  doc: [
+    { id: 'CLO1', t: 'Writes the RL and RC step response in the form x(t) = x<sub>f</sub> + [x(0) − x<sub>f</sub>]e<sup>−t/τ</sup>; distinguishes the steady-state and transient components.', mc: [1, 2] },
+    { id: 'CLO2', t: 'Observes the frequency–τ relation in an RC circuit driven by a square wave; measures the rise time and the response with an initial condition on the oscilloscope.', mc: [4, 5] },
+    { id: 'CLO3', t: 'Applies the four-step general method (x(0<sup>+</sup>), x(∞), τ from R<sub>Th</sub>) and verifies the result by comparing it with measurement.', mc: [1, 2, 5] },
+    { id: 'CLO4', t: 'Designs an RC timer achieving a target delay, taking into account component tolerance, cost and relay switching safety.', mc: [3, 6, 10] },
+    { id: 'CLO5', t: 'Presents the findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To see how the charge/discharge waveforms of an RC circuit driven by a square wave change with frequency, and to verify the relation t<sub>r</sub> = 2.2τ by measuring the rise time.', doc: ['CLO1', 'CLO2'], mc: [1, 4, 5],
+      gerec: 'Function generator (square wave, 50 Ω output), resistor and capacitor sets, two-channel oscilloscope.',
+      guvenlik: 'Do not use electrolytics with a symmetric square wave (reverse bias); keep the oscilloscope and generator grounds at the same point.',
+      veri: 'v<sub>C</sub> min–max for different (T/2)/τ ratios, table of 10%–90% rise time from the cursors.',
+      tartisma: 'What mathematical operation does the RC circuit perform when the square-wave frequency is very high relative to τ? Why is this a problem on digital lines?' },
+    d2: { amac: 'To measure the RL step response with a nonzero initial current; to verify that τ is independent of the initial value and that the inductor voltage jumps.', doc: ['CLO1', 'CLO2'], mc: [1, 2, 4, 5],
+      gerec: 'DC supply (high current), power resistor, inductor set, pre-condition current source, transfer switch, oscilloscope and current probe.',
+      guvenlik: 'Check the resistor and supply power at high current; never leave the path open when transferring the inductor current (make-before-break).',
+      veri: 'Records of i<sub>L</sub>(t) and v<sub>L</sub>(t); zero-crossing time, table of τ for different I<sub>0</sub> values.' },
+    d3: { amac: 'To apply the four-step general solution method step by step and verify it by overlaying your own solution curve on the measured step response.', doc: ['CLO1', 'CLO3'], mc: [1, 2, 5],
+      gerec: 'DC supply, pre-charge source, R<sub>1</sub>, R<sub>2</sub>, C, switch, oscilloscope.',
+      guvenlik: 'Disconnect the pre-charge source before switching; beware of the short-circuit current of an empty capacitor at t = 0<sup>+</sup> (V<sub>Th</sub>/R<sub>Th</sub>).',
+      veri: 'x(0), x<sub>f</sub>, τ entered in the wizard; RMS error between measurement and model.',
+      tartisma: 'If your curve deviated from the measurement, which part of the curve (start, final value, slope) does an error in each step distort?' },
+    d4: { amac: 'To design an RC + comparator timer achieving a target delay, verify it with a stopwatch, and study the effect of the initial voltage and tolerance.', doc: ['CLO3', 'CLO4'], mc: [2, 3, 5, 6, 10],
+      gerec: 'Timer board (comparator, LED, 12 V relay, transistor), E12 resistors, capacitor set, DC supply, stopwatch.',
+      guvenlik: 'Fit a freewheeling diode to the relay coil; mind the polarity of electrolytics; do not drive the LED without a series resistor.',
+      veri: 'Selected R, C; delays measured for different V<sub>0</sub> and V<sub>s</sub> values; v<sub>C</sub>(t) record.',
+      tartisma: 'Would you build the same delay with large R–small C or small R–large C? Compare in terms of cost, size, tolerance and leakage current; what is the effect on energy consumption of using an LED instead of a relay?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

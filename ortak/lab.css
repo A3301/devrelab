@@ -187,3 +187,10 @@ ol.steps li.hl{background:#fff4c2;transition:background .3s}
 .kpop .kp-msg .btn{margin-left:4px}
 /* dar ekranda cihaz göstergeleri taşmasın */
 @media (max-width:700px){.lcd{min-width:0!important;max-width:100%;overflow:hidden}.lcd .big{font-size:clamp(15px,5vw,26px)}}
+/* dil: İngilizce sayfalarda ana sayfa düğmesi ve dil değiştirme */
+html[lang^=en] .topbar>a:first-child::after{content:" Home"}
+.topbar a.langsw{background:#fff;color:#0b2a4a;border-radius:8px;padding:5px 10px;font:700 13px "Segoe UI",Arial,sans-serif;text-decoration:none;white-space:nowrap}
+.topbar a.langsw:hover{background:#ffe9b8}
+.langpick{display:inline-flex;gap:6px;margin-left:auto}
+.langpick a{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:5px 12px;font-weight:700;text-decoration:none;font-size:14px}
+.langpick a.on{background:#fff;color:#0b2a4a}

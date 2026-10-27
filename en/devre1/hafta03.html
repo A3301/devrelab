@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 3 · Summing and Difference Amplifiers — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 3 — Summing and Difference Amplifiers</h1>
+    <div class="sub">Weighted sum · Audio mixer · Ratio condition · CMRR · Noisy line</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Summing Amplifier</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Difference Amplifier</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Mismatch and CMRR</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Noisy Line</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data are saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 3 · Summing and Difference Amplifiers, Common-Mode Rejection</h2>
+  <p class="lead">Lecture notes: <b>Section 1.5 Summing and Difference Amplifiers</b> (Examples 1.6, 1.7, 1.14, 1.20).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab</h3>
+      <ol class="steps">
+        <li>You will measure the weight (−R<sub>f</sub>/R<sub>k</sub>) of each branch of a three-input summing amplifier and add a sine + DC + square wave on the oscilloscope.</li>
+        <li>You will set up the summer as an <b>audio mixer</b> and observe the saturation limit.</li>
+        <li>You will verify the <b>ratio condition</b> (R<sub>2</sub>/R<sub>1</sub> = R<sub>4</sub>/R<sub>3</sub>) of the difference amplifier and measure a case where v<sub>n</sub> is not zero.</li>
+        <li>You will measure how resistor mismatch degrades common-mode rejection, calculate the <b>CMRR</b>, and compare 5%/1%/0.1% tolerances.</li>
+        <li>You will <b>recover</b> a small signal from a line carrying 50 Hz mains noise using a difference amplifier.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Two function generators (50 Ω) · Two adjustable DC supplies · Dual (symmetric) supply · Two DMMs (5½ digit) · Two-channel oscilloscope with cursors · Resistor box · Resistor sets with 5%, 1%, 0.1% tolerance · µA741 (CMRR = 90 dB).</p>
+      <h3>Op-amp model (all experiments)</h3>
+      <div class="row" style="font-size:14px">
+        <label>Saturation assumption
+          <select id="satModel">
+            <option value="ideal">Course assumption: v_o = ±V_CC</option>
+            <option value="real">Real 741: v_o = ±(V_CC − 1.5 V)</option>
+          </select></label>
+      </div>
+      <div class="info">µA741: A = 10<sup>5</sup>, the op-amp’s own CMRR is 90 dB, output current limit ≈ 25 mA, SR = 0.5 V/µs. Numerical questions use the course assumption.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Workflow</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First read the <b>Background</b>, then solve the <b>Pre-lab</b> questions. Follow the lab sheet in each experiment; steps are ticked automatically when the setting is correct. Record measurements with <kbd>R</kbd> and answer the questions from your own measurements.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Adding, Subtracting and Cancelling Noise</h2>
+  <p class="lead">Two of the “operations” that gave the op-amp its name: addition and subtraction. The second is the heart of industrial measurement.</p>
+  <div class="card"><svg id="obFig" class="schem" viewBox="0 0 945 190"></svg></div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Summing amplifier: the currents meet at the virtual ground</h3>
+      <p style="font-size:14px;line-height:1.65">Connect several branches to the input of an inverting amplifier. Since the node is a virtual ground (0 V), each branch current is simply its own v<sub>k</sub>/R<sub>k</sub>; the inputs <b>do not affect each other</b>. The currents add at the node and flow through R<sub>f</sub>.</p>
+      <div class="eq">v<sub>o</sub> = −(R<sub>f</sub>/R<sub>a</sub>·v<sub>a</sub> + R<sub>f</sub>/R<sub>b</sub>·v<sub>b</sub> + R<sub>f</sub>/R<sub>c</sub>·v<sub>c</sub>)</div>
+      <p style="font-size:14px;line-height:1.65"><b>Where?</b> Audio mixers (each channel’s level set by its own resistor), signal mixing, adding an offset, weighted-resistor D/A converters.</p>
+      <h3>2 · Difference amplifier: amplify only the difference</h3>
+      <p style="font-size:14px;line-height:1.65">v<sub>b</sub> reaches the non-inverting input through a divider, v<sub>a</sub> reaches the inverting input through R<sub>1</sub>. By superposition:</p>
+      <div class="eq">v<sub>o</sub> = (1 + R<sub>2</sub>/R<sub>1</sub>)·R<sub>4</sub>/(R<sub>3</sub>+R<sub>4</sub>)·v<sub>b</sub> − (R<sub>2</sub>/R<sub>1</sub>)·v<sub>a</sub></div>
+      <p style="font-size:14px;line-height:1.65">If R<sub>2</sub>/R<sub>1</sub> = R<sub>4</sub>/R<sub>3</sub>, then <b>v<sub>o</sub> = (R<sub>2</sub>/R<sub>1</sub>)(v<sub>b</sub> − v<sub>a</sub>)</b>. Noise that appears identically on both wires (the common-mode signal) is cancelled, and the small signal between them remains. Thermocouples, bridge circuits (strain gauges), ECG and long-line sensors are all measured on this principle.</p>
+      <h3>3 · CMRR: the measure of rejection</h3>
+      <p style="font-size:14px;line-height:1.65">Real resistors are never exactly equal; a small part of the common-mode signal leaks to the output. Common-mode gain A<sub>cm</sub> = v<sub>o</sub>/v<sub>cm</sub>, differential gain A<sub>d</sub> = v<sub>o</sub>/v<sub>d</sub>. <b>CMRR = |A<sub>d</sub>/A<sub>cm</sub>|</b>, in decibels 20·log<sub>10</sub>(·). The CMRR of a difference amplifier is usually set not by the op-amp but by <b>resistor matching</b>.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Summer</td><td class="l">v<sub>o</sub> = −Σ (R<sub>f</sub>/R<sub>k</sub>)·v<sub>k</sub></td></tr>
+        <tr><td class="l">Branch weight</td><td class="l">−R<sub>f</sub>/R<sub>k</sub> (small R<sub>k</sub> = large weight)</td></tr>
+        <tr><td class="l">Difference (general)</td><td class="l">v<sub>o</sub> = (1+R<sub>2</sub>/R<sub>1</sub>)v<sub>p</sub> − (R<sub>2</sub>/R<sub>1</sub>)v<sub>a</sub>, v<sub>p</sub> = v<sub>b</sub>R<sub>4</sub>/(R<sub>3</sub>+R<sub>4</sub>)</td></tr>
+        <tr><td class="l">Ratio condition</td><td class="l">R<sub>2</sub>/R<sub>1</sub> = R<sub>4</sub>/R<sub>3</sub> ⇒ v<sub>o</sub> = (R<sub>2</sub>/R<sub>1</sub>)(v<sub>b</sub> − v<sub>a</sub>)</td></tr>
+        <tr><td class="l">Differential and common-mode components</td><td class="l">v<sub>d</sub> = v<sub>b</sub> − v<sub>a</sub>, v<sub>cm</sub> = (v<sub>a</sub> + v<sub>b</sub>)/2</td></tr>
+        <tr><td class="l">CMRR</td><td class="l">|A<sub>d</sub>/A<sub>cm</sub>|, dB: 20·log<sub>10</sub>|A<sub>d</sub>/A<sub>cm</sub>|</td></tr>
+        <tr><td class="l">Worst case (tolerance t)</td><td class="l">CMRR ≈ (1 + A<sub>d</sub>)/(4t)</td></tr>
+        <tr><td class="l">Output residue</td><td class="l">v<sub>o,cm</sub> = A<sub>cm</sub>·v<sub>cm</sub></td></tr>
+      </table>
+      <div class="info" style="margin-top:12px"><b>Common mistakes:</b> writing the difference the wrong way round (v<sub>a</sub> − v<sub>b</sub>) · assuming v<sub>n</sub> = 0 in a difference amplifier (v<sub>n</sub> = v<sub>p</sub>, not zero!) · forgetting the minus sign of the summer · using the simplified formula without checking the ratio condition · forgetting that the common-mode component can also cause saturation (input common-mode range).</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Points to watch in a real lab</h3>
+    <div class="warnbox"><b>An oscilloscope probe is not a differential meter.</b> The ground clips of the two probes are joined inside the oscilloscope and connected to mains earth. Do not attach a clip to v<sub>a</sub> to measure “v<sub>b</sub> − v<sub>a</sub>”: you would short v<sub>a</sub> to ground. Measure both channels with respect to ground and use the oscilloscope’s <b>MATH (CH1 − CH2)</b> function or a differential probe.</div>
+    <div class="warnbox"><b>Never connect directly to the mains.</b> <u>Never</u> run the 50 Hz noise experiment with voltage taken from a wall socket; emulate the noise with a signal generator or a low-voltage source with an isolation transformer. 230 V is lethal.</div>
+    <div class="warnbox"><b>Match by measuring.</b> A good difference amplifier cannot be built with 5% resistors. If those are all you have, measure the resistors on the DMM’s most sensitive range and pair those whose R<sub>2</sub>/R<sub>1</sub> and R<sub>4</sub>/R<sub>3</sub> ratios are closest; or put a trimpot in series with R<sub>4</sub> and null the output in common mode.</div>
+    <div class="warnbox"><b>Several generators = several grounds.</b> The chassis grounds of two function generators are also joined through mains earth; ground loops by themselves produce 50 Hz hum. Join all grounds at a single point (star ground).</div>
+    <div class="warnbox"><b>Input common-mode range.</b> Even if the difference is zero, the common voltage v<sub>p</sub> = v<sub>n</sub> must stay within the range the op-amp allows (741: ≈3 V inside the supply rails). Also, in a summing amplifier DC offsets add up: even if the sine looks small, the output may saturate because of the DC.</div>
+    <div class="warnbox"><b>Use the meter on the right range.</b> The common-mode residue is in the mV range; use the DMM on autorange and the DC function, and measure the 50 Hz separately on the AC function. When measuring current use the fused mA input, and move the lead back to the V input when you are done.</div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before coming to the lab. Assume an ideal op-amp with saturation at ±V<sub>CC</sub>.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Three-Input Summing Amplifier and Audio Mixer</h2>
+  <p class="lead">v<sub>a</sub>: sine generator, v<sub>b</sub>: DC supply, v<sub>c</sub>: square-wave generator. Connect the CH1 probe to any input you like and CH2 to the output.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">To use a generator as a DC source, set its amplitude to 0 and adjust only the offset. Read the DC value of the output from the <b>mean</b> column of the table.</div>
+        <div class="info">Superposition: leave only one input active at a time and measure its contribution; then activate them all. The total should equal the sum of the contributions (if there is no saturation).</div>
+        <div class="info">In the mixer, the gain of each channel is −R<sub>f</sub>/R<sub>k</sub>. If the channel weights are equal, the resistors are equal too; the master level is set with R<sub>f</sub>.</div>
+        <div class="warnbox">In a real mixer do not leave an unused channel input floating; long cables pick up noise like an antenna. Ground the inputs with a shorting jack or a 10 kΩ resistor.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d1scope"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 312"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Difference Amplifier, Ratio Condition and Common-Mode Signal</h2>
+  <p class="lead">v<sub>a</sub> is connected to the inverting branch (R<sub>1</sub>), v<sub>b</sub> to the non-inverting branch (R<sub>3</sub>–R<sub>4</sub> divider). The DMMs measure v<sub>p</sub>, v<sub>n</sub>, v<sub>o</sub> and the current in R<sub>1</sub>.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">Order of solution: first the divider <span class="eq">v<sub>p</sub> = v<sub>b</sub>·R<sub>4</sub>/(R<sub>3</sub>+R<sub>4</sub>)</span> then the virtual short v<sub>n</sub> = v<sub>p</sub>, then KCL at the inverting node.</div>
+        <div class="info">The “COMMON” button ties v<sub>b</sub> to v<sub>a</sub>: both inputs see the same voltage. If the condition holds, the output must be zero; this is the simplest test of a difference amplifier.</div>
+        <div class="warnbox">The input resistances of a difference amplifier are not equal: source v<sub>a</sub> sees R<sub>1</sub> (relative to the virtual short v<sub>n</sub>), source v<sub>b</sub> sees R<sub>3</sub>+R<sub>4</sub>. Sources with internal resistance add in series with these resistors and spoil the ratio condition; if necessary, buffer the inputs (instrumentation amplifier).</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 300"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Resistor Mismatch and CMRR Measurement</h2>
+  <p class="lead">Nominal R<sub>1</sub> = R<sub>3</sub> = 20 kΩ, R<sub>2</sub> = R<sub>4</sub> = 100 kΩ (A<sub>d</sub> = 5). Detune R<sub>4</sub> by hand, or insert random resistor sets of a given tolerance.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info"><b>Differential mode:</b> v<sub>a</sub> = −v<sub>d</sub>/2, v<sub>b</sub> = +v<sub>d</sub>/2 (common-mode component zero) → A<sub>d</sub> = v<sub>o</sub>/v<sub>d</sub>.<br><b>Common mode:</b> v<sub>a</sub> = v<sub>b</sub> = v<sub>cm</sub> → A<sub>cm</sub> = v<sub>o</sub>/v<sub>cm</sub>.</div>
+        <div class="info">“Record” performs the two standard measurements (v<sub>d</sub> = 1 V and v<sub>cm</sub> = 2 V) for the current resistor set. Calculate the CMRR yourself from the table: <span class="eq">CMRR<sub>dB</sub> = 20·log<sub>10</sub>|A<sub>d</sub>/A<sub>cm</sub>|</span></div>
+        <div class="info">Even with matched resistors the output is not exactly zero: the op-amp’s own CMRR (90 dB) leaves a small residue.</div>
+        <div class="warnbox">When measuring a high CMRR the residue is in the µV–mV range. On a real bench, ground loops in the test leads and the DMM offset easily corrupt this value; first short the inputs and note the zero reading.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 300"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Resistor sets</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Record (R)</button>
+            <button class="btn sec small" id="d3del">Delete last row</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>CMRR – tolerance</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Worst-case limit</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12px;color:#556">x: −1 → 0.1% · 0 → 1% · 0.7 → 5%</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Recovering a Signal from a Noisy Line</h2>
+  <p class="lead">A remote sensor sends a small 500 Hz signal over two wires. Along the line, equal 50 Hz mains noise couples onto both wires. CH1 shows the v<sub>b</sub> wire (relative to ground), CH2 shows the receiver output.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info"><b>Single-ended measurement:</b> the receiver measures one wire relative to ground and amplifies the noise with the same gain as the signal.<br><b>Differential measurement:</b> the receiver measures the difference between the two wires; the common 50 Hz is cancelled.</div>
+        <div class="info">Residual noise: <span class="eq">v<sub>o,50Hz</sub> = A<sub>cm</sub>·v<sub>cm</sub></span> The signal-to-noise ratio depends on the ratio between the differential gain and A<sub>cm</sub>, i.e. on the CMRR.</div>
+        <div class="info">Set the time base to 5 ms/div to see the 50 Hz, and to 0.5 ms/div to examine the 500 Hz signal.</div>
+        <div class="warnbox">In industry, sensor cable is chosen as shielded twisted pair; the shield is grounded at <b>one end only</b>. A shield grounded at both ends forms a ground loop and carries exactly the 50 Hz current you are trying to reject.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d4inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d4scope"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 300"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record (R)</button>
+          <button class="btn sec small" id="d4del">Delete last row</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Why do the inputs of a summing amplifier not affect each other? How does resistor tolerance determine the CMRR? What would you recommend for measuring over a noisy line?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). <b>Tap</b> the knob or the value below it to type an <b>exact value</b> or pick from a list (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, <kbd>Shift</kbd> for fine adjustment.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope:</b> AUTO sets the scales; press CURSOR and drag on the screen to read Δt and instantaneous voltages.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta03.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h03', ders: 'Circuit Theory I', hafta: 3,
+  doc: [
+    { id: 'CLO1', t: 'Analyses the summing amplifier using the virtual ground and KCL; verifies branch weights and superposition by measurement.', mc: [1, 2, 4, 5] },
+    { id: 'CLO2', t: 'Analyses the ratio condition and common-mode rejection of the difference amplifier; calculates terminal voltages and currents when v<sub>n</sub> ≠ 0.', mc: [1, 2, 5] },
+    { id: 'CLO3', t: 'Measures the effect of resistor tolerance on CMRR and justifies the choice of component grade (cost/accuracy).', mc: [2, 4, 5, 10] },
+    { id: 'CLO4', t: 'Selects and designs a suitable measurement method to recover a signal from a noisy line; observes safe measurement practice.', mc: [2, 3, 5, 6] },
+    { id: 'CLO5', t: 'Presents the findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To add a sine, a DC and a square wave in a three-input summing amplifier; to measure branch weights and saturation and set up an audio mixer (Example 1.6).', doc: ['CLO1'], mc: [1, 2, 4, 5],
+      gerec: 'Two function generators (50 Ω), DC supply, resistor box, ±V<sub>CC</sub> supply, µA741, two-channel oscilloscope.',
+      guvenlik: 'Join the generator grounds at a single point; remember that DC offsets can saturate the output; ground unused inputs.',
+      veri: 'Max/min/mean output values for each setting; superposition comparison.',
+      tartisma: 'Why is it important that mixer channels do not affect each other; would a non-inverting summer give the same property as the inverting one?' },
+    d2: { amac: 'To verify the ratio condition of the difference amplifier, show that the common-mode signal is cancelled, and measure terminal currents when v<sub>n</sub> ≠ 0 (Examples 1.7, 1.14).', doc: ['CLO2'], mc: [1, 2, 5],
+      gerec: 'Two adjustable DC supplies, resistor box, two DMMs, µA741.',
+      guvenlik: 'When measuring a difference with the oscilloscope, do not attach the ground clip to v<sub>a</sub>; use MATH or a differential probe.',
+      veri: 'v<sub>a</sub>, v<sub>b</sub>, v<sub>p</sub>, i<sub>1</sub>, v<sub>o</sub> table.',
+      tartisma: 'How does the internal resistance of the sources affect the ratio condition?' },
+    d3: { amac: 'To measure A<sub>d</sub>, A<sub>cm</sub> and CMRR with an R<sub>4</sub> = 110 kΩ mismatch and with random resistor sets of 5%/1%/0.1% tolerance (Example 1.20).', doc: ['CLO3'], mc: [2, 4, 5, 10],
+      gerec: 'Nominal 20 k/100 k resistor sets (5%, 1%, 0.1%), manually adjustable R<sub>4</sub>, test source, 5½-digit DMM.',
+      guvenlik: 'Do not overheat precision resistors when soldering (their value drifts); separate unused components according to e-waste rules.',
+      veri: 'Differential and common-mode outputs for each set; CMRR – tolerance plot.',
+      tartisma: '0.1% resistors are much more expensive than 5% ones. In which application is this cost justified, and what are the alternatives (trimpot, instrumentation amplifier IC)?' },
+    d4: { amac: 'To compare single-ended and differential measurement of a small signal on a line carrying 50 Hz common-mode noise, and to choose a suitable receiver structure.', doc: ['CLO4'], mc: [2, 3, 5, 6],
+      gerec: 'Sensor signal generator (500 Hz), noise generator (50 Hz, low voltage), selectable receiver amplifier, oscilloscope.',
+      guvenlik: 'Never use mains voltage directly; emulate the noise with a low-voltage isolated source. Ground the cable shield at one end.',
+      veri: 'CH2 Vpp and max for each configuration; saturation status.',
+      tartisma: 'Which cable and receiver structure would you recommend for long sensor lines in an industrial environment (motors, inverters)?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

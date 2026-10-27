@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 5 · Inductor — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 5 — Inductor</h1>
+    <div class="sub">v = L di/dt · Energy ½Li² · Real inductor and quality · Back EMF and flyback diode</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">0%</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: v = L di/dt</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Current Profile and Energy</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Real Inductor</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Back EMF and Diode</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag them or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> for fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 5 · The Element That Produces Voltage When Current Changes</h2>
+  <p class="lead">Lecture notes: <b>Section 2.1 Inductor</b> (Examples 2.1, 2.5, 2.7 and the “Predict first” questions).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab</h3>
+      <ol class="steps">
+        <li>You will see on the oscilloscope that a triangular current produces a <b>square voltage</b> across an inductor, and measure L from the slope: the voltage is set by the <b>slope</b> of the current, not its value.</li>
+        <li>You will design a current profile, read the voltage, power and <b>energy w = ½Li²</b> plots, and find the intervals in which the inductor absorbs and returns energy.</li>
+        <li>You will model a real inductor as <b>ideal L + series R<sub>L</sub></b> (plus winding capacitance at high frequency) and measure R<sub>L</sub>, L and the quality factor Q.</li>
+        <li>You will see that inductor current <b>cannot jump</b>, observe the back EMF that appears when the current is interrupted, and see how a flyback (freewheeling) diode protects the circuit.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Function generator (triangle/sine/square, 50 Ω output) · Two-channel oscilloscope (MATH: CH2 − CH1, cursors, single shot) · Programmable current source · DC power supply (current-limited) · Multimeter (Ω, REL) · Two-channel AC voltmeter (true RMS) · Infrared thermometer · Current probe · Inductors: 1 mH, 10 mH, 47 mH, 100 mH/6 Ω, relay coil, unknown inductor <b>X</b> · 1N4007 diode, 24 V zener, 10 Ω shunt.</p>
+      <div class="info">This week’s unknown inductor <b>X</b> is unique to you: its inductance and winding resistance differ for each student. In Experiment 1 and Experiment 3 you will measure the same inductor with two different methods and compare the results.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Work order</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First read the <b>Background</b> (especially the safety notes) and solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left; steps are ticked automatically when you make the correct setting. Record measurements with <kbd>R</kbd>. Print your report in the last section.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Why Does an Inductor Oppose “Change”?</h2>
+  <p class="lead">The inductor is our first element that responds to the change of current rather than its value. Grasping this difference is the foundation of the transient analysis in Section 3.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Intuitive explanation</h3>
+      <p style="font-size:14px;line-height:1.65">Current through the winding creates a magnetic field; the total flux linkage is proportional to the current: λ = Li. By Faraday’s law the voltage induced in the winding is the <b>rate of change</b> of flux linkage: v = dλ/dt = L di/dt. If the current is constant the flux is constant and the voltage is zero: <b>at DC an ideal inductor is a short circuit</b>. If you try to change the current suddenly, di/dt becomes very large and so does the voltage: inductor current <b>does not jump</b>.</p>
+      <p style="font-size:14px;line-height:1.65">An inductor <b>stores</b> energy in the magnetic field (w = ½Li²) and returns it; an ideal inductor dissipates no energy. In a real inductor, however, the resistance R<sub>L</sub> of the copper wire produces heat (P = I²R<sub>L</sub>).</p>
+      <p style="font-size:14px;line-height:1.65"><b>Where do you meet it?</b> As the energy-transfer element in switching power converters of phone chargers, as a choke in line filters, as the magnet in relays, as the 30 kV spark generator in a car ignition coil, and as the transmitter/receiver coil in wireless charging.</p>
+      <svg viewBox="0 0 420 200" style="width:100%;max-width:420px;display:block;margin:auto" aria-label="Triangular current and square voltage">
+        <text x="8" y="22" font-size="12" fill="#0b5cad">i(t)</text>
+        <line x1="30" y1="60" x2="410" y2="60" stroke="#bbb"/>
+        <polyline points="30,90 105,30 180,90 255,30 330,90 405,30" fill="none" stroke="#0b5cad" stroke-width="2.5"/>
+        <text x="8" y="132" font-size="12" fill="#c62828">v<tspan font-size="9" dy="3">L</tspan></text>
+        <line x1="30" y1="150" x2="410" y2="150" stroke="#bbb"/>
+        <polyline points="30,125 105,125 105,175 180,175 180,125 255,125 255,175 330,175 330,125 405,125" fill="none" stroke="#c62828" stroke-width="2.5"/>
+        <text x="66" y="118" font-size="10" fill="#c62828">+L·slope</text><text x="140" y="190" font-size="10" fill="#c62828">−L·slope</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Basic relation (passive sign)</td><td class="l">v<sub>L</sub> = L di<sub>L</sub>/dt</td></tr>
+        <tr><td class="l">Inverse relation</td><td class="l">i(t) = i(t<sub>0</sub>) + (1/L)∫<sub>t0</sub><sup>t</sup> v dτ</td></tr>
+        <tr><td class="l">Inductance</td><td class="l">L = μN²A/ℓ ; 1 H = 1 V·s/A</td></tr>
+        <tr><td class="l">Power</td><td class="l">p = vi = Li di/dt (p &gt; 0 absorbs, p &lt; 0 delivers)</td></tr>
+        <tr><td class="l">Energy</td><td class="l">w = ½Li² ≥ 0</td></tr>
+        <tr><td class="l">Continuity</td><td class="l">i<sub>L</sub>(0<sup>+</sup>) = i<sub>L</sub>(0<sup>−</sup>)</td></tr>
+        <tr><td class="l">Real inductor</td><td class="l">ideal L + series R<sub>L</sub> (+ parallel winding capacitance C<sub>p</sub>)</td></tr>
+        <tr><td class="l">Impedance (sine)</td><td class="l">|Z| = √(R<sub>L</sub>² + (ωL)²)</td></tr>
+        <tr><td class="l">Quality factor</td><td class="l">Q = ωL / R<sub>L</sub></td></tr>
+        <tr><td class="l">Triangular current</td><td class="l">v<sub>L,pp</sub> = 4 f L i<sub>pp</sub> (pp: peak-to-peak)</td></tr>
+        <tr><td class="l">Diode suppression</td><td class="l">τ ≈ L/(R<sub>L</sub> + R<sub>D</sub>)</td></tr>
+      </table>
+      <h3>Predict first</h3>
+      <div class="info">A 20 mH inductor carries 0.5 A when the switch opens and the current falls to zero in 1 µs. What is the inductor voltage: 0 V, −10 V, −10 000 V, infinite? In Experiment 4 you will see why this is <b>dangerous</b>.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Precautions in a real laboratory</h3>
+    <div class="warnbox"><b>Do not interrupt the current of an inductive load suddenly.</b> Opening the switch while current flows through a relay, solenoid, motor or large inductor produces a back EMF of hundreds to thousands of volts: <b>arcing/sparks</b> at the contacts, permanent transistor damage, electric shock to your hand. Use a flyback diode or snubber circuit on every inductive load.</div>
+    <div class="warnbox"><b>Diode orientation is critical.</b> The flyback diode is connected <b>antiparallel</b> to the inductor: cathode to the + supply terminal, anode to the terminal going to the switch. If reversed, it short-circuits the supply when the switch closes; the diode and the supply are damaged.</div>
+    <div class="warnbox"><b>Inductors heat up.</b> The I²R loss in the winding resistance heats the inductor; a 100 mH/6 Ω inductor dissipates 24 W at 12 V and within minutes reaches a temperature that burns the varnish insulation. Set the current limit and let the inductor cool before touching it.</div>
+    <div class="warnbox"><b>Multimeter current range and fuse.</b> When measuring current the probes are connected in <b>series</b> and the 10 A socket is used. Connecting a multimeter on its current range in parallel with the supply blows the fuse. Opening an inductive circuit while the DMM is in series also applies the back EMF to the meter.</div>
+    <div class="warnbox"><b>Oscilloscope grounds are common.</b> The ground clips of both probes are connected to each other and to mains earth inside the instrument. If you attach the clip to the lower end of the inductor to measure its voltage directly, you short out the shunt resistor. Correct method: reference both probes to circuit ground and use <b>MATH (CH2 − CH1)</b>, or use a differential probe.</div>
+    <div class="warnbox"><b>High-voltage probe.</b> For back-EMF measurements a standard ×10 probe (often rated 300–400 V) may be insufficient; use a ×100 high-voltage probe and make the first measurement with the protection element fitted.</div>
+    <div class="warnbox"><b>Shunt resistor and power rating.</b> The 10 Ω shunt placed in series to measure current dissipates P = I²R: 0.9 W at 0.3 A. A ¼ W resistor will burn; choose a resistor of at least 1–2 W.</div>
+    <div class="info"><b>Common mistakes:</b> writing v = L·i (correct is v = L di/dt; L·i is flux linkage, unit V·s) · thinking the inductor voltage is nonzero at constant current · getting a negative energy (w = ½Li² is never negative; i = −2 A also stores energy) · ignoring the passive sign convention and taking the voltage sign reversed · forgetting to convert mH to H · thinking a real inductor has “zero resistance” at DC.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before entering the lab. Use the passive sign convention.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Triangular Current, Square Voltage: v = L di/dt</h2>
+  <p class="lead">Function generator → R<sub>series</sub> → inductor → 10 Ω shunt → ground. When R<sub>series</sub> ≫ ωL the current follows the generator waveform. CH1 shows the shunt voltage (= 10 Ω × i), CH2 the upper terminal of the inductor; the inductor voltage is <b>CH2 − CH1</b>.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">The slope of a triangular current is constant in each half period: <span class="eq">di/dt = ± i<sub>pp</sub> / (T/2) = ± 2 f i<sub>pp</sub></span> So the inductor voltage jumps between two constant values: <span class="eq">v<sub>L,pp</sub> = 2 L (2 f i<sub>pp</sub>) = 4 f L i<sub>pp</sub></span></div>
+        <div class="info">The top of the square is not perfectly flat: in a real inductor v = L di/dt + R<sub>L</sub>i, so a small triangle (R<sub>L</sub>i) rides on the square. You will measure this resistance in Experiment 3.</div>
+        <div class="warnbox">The shunt resistor is the element in the current path <b>closest to ground</b>; this keeps CH1’s ground clip at circuit ground. Attaching the clip to the lower end of the inductor shorts the shunt and your current measurement reads zero.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d1inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d1scopeBox"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 240"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d1rec">Record (R)</button>
+            <button class="btn sec small" id="d1del">Delete last row</button>
+            <button class="btn sec small" id="d1csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Inductor</th><th>Wave</th><th>f (Hz)</th><th>i<sub>pp</sub> (mA)</th><th>v<sub>L,pp</sub> (V)</th></tr></thead><tbody></tbody></table></div>
+          <div style="font-size:12px;color:#556">i<sub>pp</sub> = CH1 peak-to-peak / 10 Ω; v<sub>L,pp</sub> = MATH (CH2 − CH1) peak-to-peak.</div>
+        </div>
+        <div class="card">
+          <div class="row"><b>v<sub>L,pp</sub> vs 4 f i<sub>pp</sub> plot</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Theoretical line</label></div>
+          <canvas id="d1plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12px;color:#556">Only triangle-wave records are plotted. The slope of the line is L (H).</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Current Profile Design: Voltage, Power and Energy</h2>
+  <p class="lead">A programmable current source drives an ideal inductor. Design a current profile by entering breakpoints (t; i); the source tries to follow this profile. The source’s <b>compliance voltage</b> is limited: if the required voltage exceeds this limit, the current cannot follow the profile.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Current profile</h3>
+        <div style="font-size:13px;margin-bottom:4px">One point per line: <b>t (ms) ; i (A)</b>. Points are joined linearly. You can try a jump by entering the same t twice.</div>
+        <textarea id="d2prof" rows="8" style="width:100%;font:14px Consolas,monospace;padding:6px;border:1px solid var(--line);border-radius:6px"></textarea>
+        <div class="row" style="margin-top:6px">
+          <button class="btn small" id="d2apply">Apply</button>
+          <span class="grow"></span>
+          <button class="btn sec small" data-pre="ex21">Example 2.1</button>
+          <button class="btn sec small" data-pre="ex25a">Example 2.5a</button>
+          <button class="btn sec small" data-pre="ex25b">Example 2.5b</button>
+          <button class="btn sec small" data-pre="trap">Ramp–constant–zero</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">Voltage follows the <b>slope</b> of the current, energy follows its <b>square</b>. When the current is constant v = 0 (current flows, no voltage!). While the magnitude of the current increases p &gt; 0 (the inductor absorbs energy), while it decreases p &lt; 0 (it returns energy).</div>
+        <div class="info">Check: the integral of power gives the energy, <span class="eq">∫<sub>0</sub><sup>t</sup> p dτ = ½Li(t)² − ½Li(0)²</span></div>
+        <div class="warnbox">A real current source can change current only as fast as its compliance voltage allows (di/dt ≤ V<sub>comp</sub>/L). When you put a steep fall in your profile and the source hits its limit, that is a controlled preview of the back EMF in Experiment 4.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><b>i(t) (A)</b><canvas id="d2pi" width="520" height="220" style="width:100%"></canvas></div>
+        <div class="card"><b>v(t) (V)</b><canvas id="d2pv" width="520" height="220" style="width:100%"></canvas></div>
+        <div class="card"><b>p(t) (W)</b><canvas id="d2pp" width="520" height="220" style="width:100%"></canvas></div>
+        <div class="card"><b>w(t) = ½Li² (J)</b><canvas id="d2pw" width="520" height="220" style="width:100%"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table (values at t*)</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>L</th><th>t* (ms)</th><th>i (A)</th><th>v (V)</th><th>p (W)</th><th>w (J)</th><th>∫p dt (J)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Real Inductor: Winding Resistance, Heating and Quality Factor</h2>
+  <p class="lead">Measure an inductor in three ways: (A) DC resistance with an ohmmeter, (B) steady-state current and heating with a DC supply, (C) impedance and quality factor with a sine wave.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">Real inductor ≈ ideal L + series R<sub>L</sub>. In DC steady state di/dt = 0, so only R<sub>L</sub> sets the current: <span class="eq">I = V / R<sub>L</sub>,&nbsp; P = I²R<sub>L</sub>,&nbsp; w = ½LI²</span> 24 W is a <b>flow</b> (energy turned into heat every second), 0.2 J is a <b>stock</b> (Example 2.7).</div>
+        <div class="info">Sine measurement: the current is found from the voltage across the 100 Ω reference resistor, I = V<sub>R</sub>/100 Ω. The inductor impedance is |Z| = V<sub>L</sub>/I = √(R<sub>L</sub>² + (ωL)²) ⇒ <span class="eq">ωL = √(|Z|² − R<sub>L</sub>²),&nbsp; Q = ωL/R<sub>L</sub></span></div>
+        <div class="info">At high frequency the capacitance between turns (C<sub>p</sub>, a few tens of pF) appears in parallel with the inductor; above the self-resonant frequency the inductor behaves like a capacitor.</div>
+        <div class="warnbox">When measuring a resistance of a few ohms with an ohmmeter, the probe-lead resistance (≈0.2–0.3 Ω) adds error. Short the probes and press <b>REL</b> (zero). Measure while the inductor is cold: copper resistance rises by 0.39% per °C.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>AC measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Record (R)</button>
+            <button class="btn sec small" id="d3del">Delete last row</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Inductor</th><th>f (Hz)</th><th>V<sub>R</sub> (V rms)</th><th>V<sub>L</sub> (V rms)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>|Z| vs log<sub>10</sub> f</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Ideal L + R<sub>L</sub> model</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12px;color:#556">Points: |Z| = V<sub>L</sub>/(V<sub>R</sub>/100 Ω). The dashed curve is the ideal L + R<sub>L</sub> model (no winding capacitance C<sub>p</sub>): note the deviation at high frequency.</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Back EMF at Switch Opening and the Flyback Diode</h2>
+  <p class="lead">+V<sub>S</sub> → inductor → node X → switch → ground. You can choose a protection element in parallel with the inductor. The oscilloscope in single-shot mode captures each change of switch position: CH1 = node X (×100 high-voltage probe), CH2 = inductor current (current probe, 1 V/A).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">Inductor current does not jump: <span class="eq">i<sub>L</sub>(0<sup>+</sup>) = i<sub>L</sub>(0<sup>−</sup>)</span> When the switch opens the current must find a path. If there is none it only charges the small parasitic capacitance (≈100 pF): the voltage rises to the order of I√(L/C), i.e. <b>kilovolts</b>; the contact gap breaks down (arc) or the transistor goes into avalanche breakdown.</div>
+        <div class="info"><b>Flyback diode:</b> the current circulates through the diode and the inductor; node X rises only to V<sub>S</sub> + 0.7 V. The price: the current decays slowly with τ = L/R<sub>L</sub>, so the relay releases late. A <b>zener + diode</b> dissipates the energy quickly at a higher but limited voltage (V<sub>S</sub> + V<sub>Z</sub> + 0.7).</div>
+        <div class="warnbox"><b>Safety:</b> In a real lab never open an unprotected relay or solenoid circuit while holding it with bare hands; the back EMF easily exceeds a few hundred volts. Do this experiment first with the protection element fitted; make the unprotected measurement only with a ×100 probe and an insulated setup, under instructor supervision.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d4inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d4scopeBox"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 260"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table (last switch-opening event)</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record (R)</button>
+          <button class="btn sec small" id="d4del">Delete last row</button>
+          <button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>Inductor</th><th>Switch</th><th>Protection</th><th>V<sub>S</sub> (V)</th><th>v<sub>X,peak</sub> (V)</th><th>Decay time (ms)</th><th>Dissipated in switch (mJ)</th></tr></thead><tbody></tbody></table></div>
+        <div style="font-size:12px;color:#556">Decay time: time after opening until the current falls to 10% of its initial value.</div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Why is the inductor voltage set by the slope of the current? Do the L values you found for inductor X with the two methods agree? What is the price of the flyback diode?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). <b>Tap</b> the knob or the value below it to type an <b>exact value</b> or pick from a list (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, <kbd>Shift</kbd> for fine adjustment.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope:</b> the MATH button turns the CH2 trace into CH2 − CH1. Press the CURSOR button and drag on the screen; the measurement box gives ΔV/Δt for both channels.<br>
+    <b>Experiment 4:</b> the SWITCH button toggles the position on each press; the oscilloscope captures that moment.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta05.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h05', ders: 'Circuit Theory I', hafta: 5,
+  doc: [
+    { id: 'CLO1', t: 'Explains the current–voltage relation of an inductor (v = L di/dt) by its physical cause and determines inductance from an oscilloscope measurement.', mc: [1, 4, 5] },
+    { id: 'CLO2', t: 'Calculates voltage, power and stored energy for a given current profile; interprets the intervals of energy absorption/delivery.', mc: [1, 2, 3] },
+    { id: 'CLO3', t: 'Represents a real inductor with the ideal L + R<sub>L</sub> model; measures winding resistance, heating and quality factor.', mc: [1, 4, 5, 6] },
+    { id: 'CLO4', t: 'Analyses the back-EMF hazard in inductive-load switching and designs a safe circuit by choosing a suitable protection element.', mc: [2, 3, 6, 10] },
+    { id: 'CLO5', t: 'Presents the findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To show that a triangular current produces a square voltage across an inductor and to measure the inductance of the unknown inductor from v<sub>L,pp</sub> = 4fLi<sub>pp</sub>.', doc: ['CLO1'], mc: [1, 4, 5],
+      gerec: 'Function generator (50 Ω), series resistor box, inductors (1–100 mH, X), 10 Ω/2 W shunt, two-channel oscilloscope (MATH, cursors).',
+      guvenlik: 'Oscilloscope ground clips go to circuit ground only; the inductor voltage is measured with MATH. Do not exceed the shunt resistor’s power rating.',
+      veri: 'Table of inductor, waveform, f, i<sub>pp</sub>, v<sub>L,pp</sub>; v<sub>L,pp</sub> vs 4fi<sub>pp</sub> plot and L from the slope.',
+      tartisma: 'Why are the flat parts of the square wave slightly sloped? Why does the current stop being triangular if R<sub>series</sub> is reduced?' },
+    d2: { amac: 'To examine inductor voltage, power and energy by designing a current profile; to verify Examples 2.1 and 2.5; to see why a current jump is impossible.', doc: ['CLO2'], mc: [1, 2, 3],
+      gerec: 'Programmable current source (adjustable compliance voltage), ideal inductor (10 mH–1 H).',
+      guvenlik: 'With a high compliance voltage, steep current falls produce hundreds of volts; do not touch the output terminals.',
+      veri: 'Table of t*, i, v, p, w and ∫p dt; plots of i, v, p, w.',
+      tartisma: 'What can be said about the signs of current and voltage while the inductor absorbs and returns energy? Why can energy not be negative?' },
+    d3: { amac: 'To measure the winding resistance, DC steady-state current, heating, impedance and quality factor of a real inductor (Example 2.7).', doc: ['CLO3'], mc: [1, 4, 5, 6],
+      gerec: 'Multimeter (Ω, REL), current-limited DC supply, ammeter, infrared thermometer, function generator, 100 Ω reference resistor, two-channel AC voltmeter.',
+      guvenlik: 'With continuous DC current the inductor heats up (I²R); set the current limit and do not touch a hot inductor. Unnecessary heat loss is wasted energy: efficient designs choose an inductor with low R<sub>L</sub>.',
+      veri: 'R<sub>L</sub>, DC current and temperature; table of f, V<sub>R</sub>, V<sub>L</sub>; |Z| vs f plot, L and Q calculations.',
+      tartisma: 'Why does the DC current decrease as the inductor heats up? What is the effect on energy efficiency of choosing a low-R<sub>L</sub> (thicker wire, more expensive) inductor in a power converter?' },
+    d4: { amac: 'To measure the back EMF produced when the current of an inductive load is interrupted; to compare suppression with a flyback diode, zener and resistor in terms of voltage peak and decay time.', doc: ['CLO4'], mc: [2, 3, 6, 10],
+      gerec: 'Current-limited DC supply, relay coil / solenoid, mechanical switch and transistor, 1N4007 diode, 24 V zener, 1 kΩ resistor, ×100 high-voltage probe, current probe, single-shot oscilloscope.',
+      guvenlik: 'Opening an unprotected inductive circuit produces hundreds to thousands of volts: risk of arcing, electric shock and semiconductor damage. Check the diode orientation; a reversed diode short-circuits the supply. Separate damaged components as electronic waste.',
+      veri: 'Table of v<sub>X</sub> peak, decay time and energy dissipated in the switch by protection type; single-shot oscilloscope screenshots.',
+      tartisma: 'Would you choose a diode or a zener + diode for a relay driver? Justify in terms of release speed, component cost and transistor voltage rating.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

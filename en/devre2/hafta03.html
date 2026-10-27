@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 3 · Series, Parallel, Δ–Y and Kirchhoff — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 3 — Series, Parallel, Δ–Y and Kirchhoff in the Frequency Domain</h1>
+    <div class="sub">KVL/KCL with phasors · Resonance · Voltage and current divider · Bridge circuit and Δ–Y</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Series RLC and KVL</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Parallel RLC and KCL</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Dividers</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Bridge and Δ–Y</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag them or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> for fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 3 · Series, Parallel, Δ–Y and Kirchhoff in the Frequency Domain</h2>
+  <p class="lead">Lecture notes: <b>Chapter 1 · Part 2 — 1.5 Series, Parallel and Δ–Y Simplifications</b> (Examples 1.18–1.25).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li>measure in a series RLC circuit that the <b>arithmetic sum of the voltmeter readings is not equal to the source</b>, and show on a phasor diagram how KVL is satisfied with phasors.</li>
+        <li>see that branch currents in a parallel circuit can be <b>larger</b> than the total current, and verify KCL with current phasors.</li>
+        <li>find series and parallel <b>resonance</b> by a frequency sweep and measure element voltages that grow by a factor of Q.</li>
+        <li>study the RC <b>voltage divider</b> as a function of frequency and measure the phase difference with the oscilloscope (cursors and X-Y).</li>
+        <li>solve a non-series-parallel <b>bridge circuit</b> with the Δ–Y transformation and verify it with an LCR meter measurement.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Function generator (20 Hz–20 kHz, <b>50 Ω internal resistance</b>) · Four AC voltmeters and four AC ammeters (true rms, TRMS) · Two-channel oscilloscope (cursors, X-Y mode) · LCR meter (1 kHz) · Vector voltmeter/current probe · Resistor, inductor (with winding resistance) and capacitor (±5% tolerance) boxes.</p>
+      <h3>Realistic imperfections</h3>
+      <div class="info">Inductors have winding resistance: 10 mH → 2.5 Ω, 25 mH → 6 Ω, 33 mH → 7.5 Ω, 50 mH → 12 Ω, 100 mH → 22 Ω. Capacitors may deviate ±5% from their label value (unique to you). The generator’s knob shows the <b>open-circuit</b> voltage (E); the terminal voltage V<sub>s</sub> drops with load current.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Workflow</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First study the rotating-phasor animation in <b>Background</b> and solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left step by step; steps are ticked automatically when the correct setting and measurement are made. Record measurements with <kbd>R</kbd>, answer the questions and print the report in the last section.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Why Do Kirchhoff’s Laws Still Hold with Phasors?</h2>
+  <p class="lead">The first thing that will surprise you in the lab: the sum of three voltmeters does not equal the source. This section resolves that surprise in advance.</p>
+  <div class="card">
+    <h3 style="margin-top:0">1 · Rotating phasors and instantaneous values (Example 1.23: R = 10 Ω, L = 50 mH, C = 20 µF, V<sub>m</sub> = 20 V)</h3>
+    <p style="font-size:14px;line-height:1.65;margin:0 0 6px">Every sinusoid is the <b>projection onto the real axis</b> of an arrow rotating counter-clockwise. In a series circuit all arrows rotate at the same speed; the angles between them are constant. KVL holds at every instant: v<sub>R</sub> + v<sub>L</sub> + v<sub>C</sub> = v<sub>s</sub>. Since the projections add at every instant, <b>the arrows themselves add tip-to-tail</b>: V<sub>R</sub> + V<sub>L</sub> + V<sub>C</sub> = V<sub>s</sub>. A voltmeter, however, shows only the <b>length</b> of the arrow. Change ω with the slider; as you approach resonance (1000 rad/s), watch the V<sub>L</sub> and V<sub>C</sub> arrows become longer than the source and cancel each other.</p>
+    <svg id="obSvg" class="schem" viewBox="0 0 640 300" style="max-width:820px"></svg>
+    <div class="row" style="margin-top:6px"><label style="font-size:14px">ω/ω<sub>0</sub> (log): <input type="range" id="obW" min="-0.6" max="0.6" step="0.005" value="0.3" style="width:280px"></label></div>
+    <div id="obTxt" style="font-size:14px;line-height:1.6;margin-top:6px"></div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">2 · Series, parallel, or neither?</h3>
+      <p style="font-size:14px;line-height:1.65"><b>Series:</b> elements end to end, <b>the current is common</b>; impedances add and the source voltage is shared in proportion to impedance (voltage divider). Reactances add <b>with their signs</b>: jωL points up, −j/ωC points down.<br>
+      <b>Parallel:</b> both terminals shared, <b>the voltage is common</b>; admittances add and the current is shared in proportion to admittance (current divider: the numerator is the <i>other</i> branch’s impedance).<br>
+      <b>Bridge:</b> three elements meet at every node; there is no series pair and no parallel pair. The remedy is <b>Δ–Y</b>: convert a delta into a wye that looks the same from the terminals, revealing a series-parallel structure.</p>
+      <svg viewBox="0 0 420 150" class="schem" style="max-width:420px">
+        <g stroke="#222" stroke-width="2" fill="none">
+          <path d="M40,20 L120,130 L200,20 Z"/><path d="M260,20 L340,75 L420,20 M340,75 L340,130"/>
+        </g>
+        <g font-size="13" fill="#333" font-family="Segoe UI">
+          <text x="30" y="16">b</text><text x="200" y="16">c</text><text x="114" y="146">d</text>
+          <text x="104" y="16">Z<tspan font-size="10" dy="3">bc</tspan></text><text x="40" y="84">Z<tspan font-size="10" dy="3">bd</tspan></text><text x="170" y="84">Z<tspan font-size="10" dy="3">cd</tspan></text>
+          <text x="250" y="16">b</text><text x="414" y="16">c</text><text x="334" y="146">d</text>
+          <text x="282" y="62">Z<tspan font-size="10" dy="3">1</tspan></text><text x="385" y="62">Z<tspan font-size="10" dy="3">2</tspan></text><text x="346" y="110">Z<tspan font-size="10" dy="3">3</tspan></text>
+          <text x="214" y="80" font-size="22">⇄</text>
+        </g>
+      </svg>
+      <p style="font-size:13px;color:var(--muted);margin:4px 0 0">Y branch = product of the <b>two adjacent</b> Δ elements at that node / sum of all <b>three</b> Δ elements.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Series impedance</td><td class="l">Z = Z<sub>1</sub> + Z<sub>2</sub> + … ; series RLC: Z = R + j(ωL − 1/ωC)</td></tr>
+        <tr><td class="l">Voltage divider</td><td class="l">V<sub>k</sub> = Z<sub>k</sub> / (Z<sub>1</sub> + … + Z<sub>n</sub>) · V</td></tr>
+        <tr><td class="l">Parallel / admittance</td><td class="l">Y = 1/Z = G + jB ; Y = Y<sub>1</sub> + Y<sub>2</sub> + … ; two branches: Z<sub>1</sub>Z<sub>2</sub>/(Z<sub>1</sub>+Z<sub>2</sub>)</td></tr>
+        <tr><td class="l">Current divider</td><td class="l">I<sub>1</sub> = Z<sub>2</sub> / (Z<sub>1</sub> + Z<sub>2</sub>) · I</td></tr>
+        <tr><td class="l">Resonance</td><td class="l">ω<sub>0</sub> = 1/√(LC) ; series: |Z| = R minimum ; Q = ω<sub>0</sub>L/R ; |V<sub>L</sub>| = |V<sub>C</sub>| = Q|V<sub>s</sub>|</td></tr>
+        <tr><td class="l">Δ → Y</td><td class="l">Z<sub>1</sub> = Z<sub>b</sub>Z<sub>c</sub>/(Z<sub>a</sub>+Z<sub>b</sub>+Z<sub>c</sub>) … ; if equal, Z<sub>Y</sub> = Z<sub>Δ</sub>/3</td></tr>
+        <tr><td class="l">Y → Δ</td><td class="l">Z<sub>a</sub> = (Z<sub>1</sub>Z<sub>2</sub>+Z<sub>2</sub>Z<sub>3</sub>+Z<sub>3</sub>Z<sub>1</sub>)/Z<sub>1</sub> (opposite branch)</td></tr>
+        <tr><td class="l">Phase (oscilloscope)</td><td class="l">φ = 360° · f · Δt ; X-Y ellipse: sin φ = y<sub>0</sub>/y<sub>peak</sub></td></tr>
+      </table>
+      <div class="info" style="margin-top:10px"><b>Worked mini example (Example 1.21):</b> R = 30 Ω, Z<sub>C</sub> = −j40 Ω, V = 100∠0° V. Z = 30 − j40 = 50∠−53.13° Ω. V<sub>C</sub> = (40∠−90°/50∠−53.13°)·100 = 80∠−36.87° V; V<sub>R</sub> = 60∠53.13° V. The voltmeters read 60 V and 80 V: a total of 140 V! Yet in the right triangle √(60² + 80²) = 100 V ✓.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Points to watch in a real lab</h3>
+    <div class="warnbox"><b>Do not measure directly on the mains.</b> These experiments are done with a function generator at a few volts. Building an RLC resonance experiment on the 230 V / 50 Hz mains can produce hundreds or even thousands of volts across the capacitor and inductor at resonance. Mains measurements are made only with an <b>isolation transformer</b> and under authorised supervision.</div>
+    <div class="warnbox"><b>The oscilloscope ground clip is a short-circuit wire.</b> The ground clips of the two channels are connected to each other and to mains earth inside the instrument. If you attach the clip to one end of the inductor to measure V<sub>L</sub>, you short that node to ground. For floating voltages use two channels + <b>MATH (CH1 − CH2)</b> or a <b>differential probe</b>.</div>
+    <div class="warnbox"><b>At resonance the element voltage is Q times the source.</b> With a 10 V source in a circuit with Q = 20, 200 V appears across the capacitor. Choose the capacitor’s <b>voltage rating</b> and the inductor’s current rating accordingly; <b>discharge</b> the capacitor after the experiment.</div>
+    <div class="warnbox"><b>Do not use electrolytic capacitors in AC circuits.</b> A polarised electrolytic fails during the reverse half-cycle, heats up and may explode. Choose a film (polyester/polypropylene) or bipolar capacitor.</div>
+    <div class="warnbox"><b>Not every multimeter measures AC correctly.</b> Cheap multimeters show a correct rms value only for sine waves and often only <b>up to 400 Hz–1 kHz</b>; those not marked “TRMS” are scaled from the average value. In the kilohertz range compare with the oscilloscope.</div>
+    <div class="warnbox"><b>An ammeter is connected in series and has a fuse.</b> Connecting an ammeter in parallel with an element short-circuits it and blows the instrument fuse. At resonance the current rises quickly: start on a high current range.</div>
+    <div class="info"><b>Common mistakes:</b> adding voltmeter readings and saying “KVL failed” · adding impedances in parallel (10 Ω ∥ 10 Ω must be 5 Ω!) · putting the wrong branch in the current-divider numerator · thinking B &gt; 0 is inductive · writing only two elements in the Δ–Y denominator (gives Z/2 instead of Z/3) · taking the generator’s set value as the terminal voltage · mixing up degrees and radians.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve these before entering the lab. The questions use the same numbers as the examples in the lecture notes.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Series RLC: Why Don’t the Voltmeters Add Up?</h2>
+  <p class="lead">Generator → R → inductor (L, r<sub>L</sub>) → C in series. Four voltmeters show the rms value of each element and of the source; the oscilloscope shows V<sub>s</sub> on CH1 and V<sub>R</sub> (in phase with the current) on CH2.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info"><b>Why?</b> In series the current is common. V<sub>R</sub> is in phase with the current, V<sub>L</sub> leads by 90°, V<sub>C</sub> lags by 90°. Since V<sub>L</sub> and V<sub>C</sub> point in exactly opposite directions they cancel; a voltmeter, however, shows both as positive numbers. KVL holds, but for the <b>arrows</b>: <span class="eq">V<sub>s</sub> = V<sub>R</sub> + V<sub>L</sub> + V<sub>C</sub></span></div>
+        <div class="info"><b>Resonance:</b> when ωL = 1/ωC, X = 0; the current is maximum and the circuit behaves as a pure resistance. <span class="eq">ω<sub>0</sub> = 1/√(LC), &nbsp;Q = ω<sub>0</sub>L/R<sub>tot</sub></span> Here R<sub>tot</sub> = R + r<sub>L</sub> (+ 50 Ω on the generator side). Because of r<sub>L</sub> the inductor voltmeter sees a voltage that leads by slightly less than 90°.</div>
+        <div class="info"><b>Worked mini example (Example 1.18):</b> 90 Ω, 32 mH, 5 µF, ω = 5000 rad/s: Z = 90 + j160 − j40 = 150∠53.13° Ω. For 750∠30° V, I = 5∠−23.13° A. At ω = 2500 the reactances become ±j80 and cancel: I = 750/90 = 8.33 A.</div>
+        <div class="warnbox"><b>Practical warning:</b> to measure V<sub>L</sub> with the oscilloscope, do not attach the ground clip between the inductor and C; you would short-circuit C. That is why on a real bench element voltages are read with floating (ungrounded) TRMS voltmeters.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" style="margin-top:12px" id="d1scope"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><svg id="d1sch" class="schem" viewBox="0 0 500 250"></svg></div>
+        <div class="card">
+          <div class="row"><b>Phasor diagram (live)</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1ph"> Show</label></div>
+          <svg id="d1pd" class="schem" viewBox="0 0 320 300" style="max-width:360px;margin-top:6px"></svg>
+          <div id="d1pdTxt" style="font-size:13px;margin-top:4px">Diagram hidden. First read the voltmeters and make a prediction.</div>
+        </div>
+      </div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Measurement table (rms values)</b><span class="grow"></span>
+            <button class="btn small" id="d1rec">Record (R)</button><button class="btn sec small" id="d1del">Delete last row</button><button class="btn sec small" id="d1csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>f (Hz)</th><th>R / L / C</th><th>V<sub>s</sub></th><th>V<sub>R</sub></th><th>V<sub>L</sub></th><th>V<sub>C</sub></th><th>V<sub>R</sub>+V<sub>L</sub>+V<sub>C</sub></th><th>I (mA)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>|I| – f (selected R, L, C)</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Ideal model (r<sub>L</sub> = 0, nominal C)</label></div>
+          <canvas id="d1plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Parallel RLC: Branch Currents and KCL</h2>
+  <p class="lead">R, inductor and C in parallel; each branch has an AC ammeter, the input has a total-current ammeter and a 1 Ω current-sense (shunt) resistor for the oscilloscope.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info"><b>Why?</b> In parallel the voltage is common. I<sub>R</sub> is in phase with the voltage, I<sub>C</sub> leads by 90°, I<sub>L</sub> lags by 90°. KCL with phasors: <span class="eq">I = I<sub>R</sub> + I<sub>L</sub> + I<sub>C</sub></span> Since I<sub>L</sub> and I<sub>C</sub> are opposite they cancel in the total, but remain in the branches as a “circulating current”.</div>
+        <div class="info"><b>Admittance:</b> Y = G + jB; inductor B = −1/ωL (negative), capacitor B = +ωC (positive). The sign is opposite to that in impedance. At parallel resonance B = 0, |Y| is minimum → total current is minimum.</div>
+        <div class="info"><b>Worked mini example (Example 1.20):</b> R = 50 Ω, L = 25 mH, C = 20 µF, ω = 1000: Y = 0.02 − j0.04 + j0.02 = 0.02 − j0.02 S; at 100 V, I = 2.83∠−45° A, but |I<sub>L</sub>| = 4 A!</div>
+        <div class="warnbox"><b>Practical warning:</b> the ammeter’s internal resistance (shunt + fuse) is small but not zero; it reduces the current in low-impedance branches. When measuring branch currents insert the ammeter in <b>series</b> with each branch; never connect it across two terminals.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div><div class="bench-row" style="margin-top:12px" id="d2scope"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><svg id="d2sch" class="schem" viewBox="0 0 500 265"></svg></div>
+        <div class="card">
+          <div class="row"><b>Current phasor diagram</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d2ph"> Show</label></div>
+          <svg id="d2pd" class="schem" viewBox="0 0 320 300" style="max-width:360px;margin-top:6px"></svg>
+          <div id="d2pdTxt" style="font-size:13px;margin-top:4px">Diagram hidden.</div>
+        </div>
+      </div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d2rec">Record (R)</button><button class="btn sec small" id="d2del">Delete last row</button><button class="btn sec small" id="d2csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>f (Hz)</th><th>R / L / C</th><th>V (V)</th><th>I (mA)</th><th>I<sub>R</sub></th><th>I<sub>L</sub></th><th>I<sub>C</sub></th><th>I<sub>R</sub>+I<sub>L</sub>+I<sub>C</sub></th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>Currents – f</b> <span style="font-size:12px">(black I, blue I<sub>L</sub>, green I<sub>C</sub>)</span><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d2theo"> Ideal I</label></div>
+          <canvas id="d2plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · RC Voltage Divider, Phase Measurement and Current Divider</h2>
+  <p class="lead">Series R–C. CH1 shows the source (V<sub>s</sub>), CH2 shows the capacitor voltage (V<sub>C</sub>). The common ground is the lower end of C, so both probes can be connected safely.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info"><b>Voltage divider:</b> <span class="eq">V<sub>C</sub>/V<sub>s</sub> = 1/(1 + jωRC)</span> Since the ratio is complex, the divider changes both amplitude and phase. At ω = 1/RC, |V<sub>R</sub>| = |V<sub>C</sub>| = 0.707|V<sub>s</sub>| and the phase difference is −45°.</div>
+        <div class="info"><b>Two ways to measure phase:</b> (1) With cursors, the Δt between two zero crossings in the same direction: φ = 360°·f·Δt. (2) <b>X-Y mode</b>: CH1 horizontal, CH2 vertical. In phase gives a line, 90° gives a circle/ellipse, in between a tilted ellipse; sin|φ| = (ellipse’s vertical-axis intercept)/(vertical peak).</div>
+        <div class="info"><b>Current divider (Example 1.22):</b> <span class="eq">I<sub>1</sub> = Z<sub>2</sub>/(Z<sub>1</sub>+Z<sub>2</sub>) · I</span> The numerator is the <i>other</i> branch’s impedance: if Z<sub>2</sub> grows, current shifts into the first branch.</div>
+        <div class="warnbox"><b>Practical warning:</b> if you want to measure V<sub>R</sub> with the oscilloscope, do not attach the ground clip between R and C; C would be short-circuited. Use CH1 − CH2 (MATH) instead, or swap R and C.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" style="margin-top:12px" id="d3scope"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><svg id="d3sch" class="schem" viewBox="0 0 520 250"></svg></div>
+        <div class="card">
+          <div class="row"><b>Division ratios – ω</b> <span style="font-size:12px">(red V<sub>R</sub>/V<sub>s</sub>, green V<sub>C</sub>/V<sub>s</sub>)</span><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Theory</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Record (R)</button><button class="btn sec small" id="d3del">Delete last row</button><button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>f (Hz)</th><th>ω (rad/s)</th><th>R / C</th><th>V<sub>s</sub></th><th>V<sub>R</sub></th><th>V<sub>C</sub></th><th>V<sub>R</sub>+V<sub>C</sub></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Bridge Circuit: Equivalent Impedance with Δ–Y</h2>
+  <p class="lead">Example 1.19 (lecture 9.8): source between a–d, lower delta b–c–d. Element values are impedances at 1 kHz. The LCR meter measures only when the source is <b>disconnected</b>; the vector voltmeter shows current and voltage phasors while the source is connected.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Your Δ → Y transformation</h3>
+        <p style="font-size:13px;margin:0 0 6px">Y branches: Z<sub>1</sub> connected to b, Z<sub>2</sub> to c, Z<sub>3</sub> to d. Enter in rectangular form (Re, Im); use a decimal point (a comma also works).</p>
+        <table class="data" style="width:auto">
+          <tr><th></th><th>Re (Ω)</th><th>Im (Ω)</th></tr>
+          <tr><td class="l">Z<sub>1</sub></td><td><input type="text" id="d4z1r" size="7"></td><td><input type="text" id="d4z1i" size="7"></td></tr>
+          <tr><td class="l">Z<sub>2</sub></td><td><input type="text" id="d4z2r" size="7"></td><td><input type="text" id="d4z2i" size="7"></td></tr>
+          <tr><td class="l">Z<sub>3</sub></td><td><input type="text" id="d4z3r" size="7"></td><td><input type="text" id="d4z3i" size="7"></td></tr>
+        </table>
+        <div class="row" style="margin-top:8px;font-size:14px">
+          <label>Preset <select id="d4pre"></select></label>
+          <label>View <select id="d4mode"><option value="delta">Original (Δ)</option><option value="y">Transformed (Y)</option></select></label>
+        </div>
+        <div class="info">Hint: if you enter a wrong value in Y, the LCR meter measures a different impedance at terminals a–d. The view from the terminals must remain the same; the measurement is your check.</div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info"><b>Why Δ–Y?</b> In the bridge three elements meet at every node; there is no series pair because current splits into a third branch, and no parallel pair because the terminals differ. Converting Δ to Y reveals the a–b–n and a–c–n branches; these are in parallel between a and n.</div>
+        <div class="info"><b>Worked mini example:</b> Σ = 10 + (20 + j60) + (−j20) = 30 + j40. Z<sub>1</sub> = 10(20 + j60)/Σ = 12 + j4 Ω. Then Z<sub>abn</sub> = −j4 + 12 + j4 = 12 Ω (the reactances cancelled!). Find the remaining two branches yourself.</div>
+        <div class="warnbox"><b>Practical warning:</b> the LCR meter generates its own test signal; measuring while another source is connected to the circuit gives a wrong result and may damage the instrument’s input. Disconnect the source, discharge large capacitors, then measure.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 480 340" style="max-width:600px"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d4rec">Record (R)</button><button class="btn sec small" id="d4del">Delete last row</button><button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>Circuit</th><th>Preset</th><th>Measurement</th><th>Magnitude</th><th>Angle (°)</th><th>Rectangular</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Why did the voltmeter readings not add up? What did you observe at resonance? How did the Δ–Y transformation preserve the view from the terminals?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). To type an <b>exact value</b> or choose from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope:</b> press the CURSOR button and drag on the screen; the X-Y button opens Lissajous mode; AUTO sets the scales.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta03.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h03', ders: 'Circuit Theory II', hafta: 3,
+  doc: [
+    { id: 'CLO1', t: 'Applies KVL and KCL with phasors in series and parallel AC circuits; distinguishes instrument readings from the phasor sum.', mc: [1, 2, 4] },
+    { id: 'CLO2', t: 'Determines series/parallel resonance experimentally by a frequency sweep and relates it to Q and element voltages.', mc: [1, 4, 5] },
+    { id: 'CLO3', t: 'Computes voltage and current dividers with complex ratios; measures phase difference with the oscilloscope (cursors, X-Y).', mc: [1, 2, 4, 5] },
+    { id: 'CLO4', t: 'Solves non-series-parallel networks with the Δ–Y transformation and verifies the result by measurement.', mc: [1, 2, 3, 5] },
+    { id: 'CLO5', t: 'Presents findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To show, by measuring element voltages in a series RLC circuit, that KVL is satisfied with phasors, and to study resonance behaviour.', doc: ['CLO1', 'CLO2'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Function generator (50 Ω), resistor/inductor/capacitor boxes, four TRMS AC voltmeters, AC ammeter, two-channel oscilloscope.',
+      guvenlik: 'At resonance the element voltage rises to Q times the source; mind the capacitor voltage rating and discharge it after the experiment. Connect the oscilloscope ground clip only to the common ground. This experiment is never done at mains voltage.',
+      veri: 'Table of f, V<sub>s</sub>, V<sub>R</sub>, V<sub>L</sub>, V<sub>C</sub>, I; |I|–f plot; phasor diagram; Δt and phase with the oscilloscope.',
+      tartisma: 'Explain the difference between the arithmetic sum and the phasor sum using your measurements. Why is the measured resonant frequency slightly different from the theoretical one? How did r<sub>L</sub> and the generator’s internal resistance affect Q?' },
+    d2: { amac: 'To show, by measuring branch currents in a parallel RLC circuit, that KCL is satisfied with current phasors, and to study parallel resonance.', doc: ['CLO1', 'CLO2'], mc: [1, 2, 4, 5],
+      gerec: 'Function generator, element boxes, four AC ammeters, AC voltmeter, 1 Ω current-sense resistor, oscilloscope.',
+      guvenlik: 'Connect ammeters in series with the branches; connecting them in parallel blows the instrument fuse. Start on a high current range.',
+      veri: 'Table of f, V, I, I<sub>R</sub>, I<sub>L</sub>, I<sub>C</sub>; currents–f plot; current phasor diagram.' },
+    d3: { amac: 'To measure the amplitude and phase ratio of an RC voltage divider as a function of frequency; to apply the current-divider rule.', doc: ['CLO3'], mc: [1, 2, 4, 5],
+      gerec: 'Function generator, resistor and capacitor box, three AC voltmeters, two-channel oscilloscope (cursors, X-Y).',
+      guvenlik: 'Connect the oscilloscope probe grounds to a single point; use MATH mode for V<sub>R</sub>. Do not use electrolytic capacitors in AC circuits.',
+      veri: 'Table of ω, V<sub>s</sub>, V<sub>R</sub>, V<sub>C</sub>; division ratios–ω plot; phase measurement with cursors/X-Y.' },
+    d4: { amac: 'To compute the equivalent impedance of a non-series-parallel bridge circuit with the Δ–Y transformation and verify it with an LCR meter; to observe the balanced-bridge condition.', doc: ['CLO4'], mc: [1, 2, 3, 4, 5],
+      gerec: 'AC source (120∠0° V peak, 1 kHz), impedance elements, LCR meter, vector voltmeter/current probe.',
+      guvenlik: 'Disconnect the source and discharge capacitors before measuring with the LCR meter; do not measure impedance in an energised circuit.',
+      veri: 'Z<sub>ad</sub> (Δ and Y), I<sub>0</sub>…I<sub>5</sub>, V<sub>1</sub>, V<sub>2</sub> phasors; user Δ→Y values.',
+      tartisma: 'Which currents and voltages were preserved after the transformation, and which were lost? Research how balanced bridges are used in impedance measurement (Maxwell, Schering bridges).' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

@@ -14,8 +14,12 @@
     if (parent) parent.appendChild(e);
     return e;
   };
-  // Türkçe ondalık virgülüyle sayı
-  Lab.num = (v, d = 2) => (isFinite(v) ? v.toFixed(d).replace('.', ',') : '—');
+  // sayfa dili: <html lang="en"> ise İngilizce metin ve ondalık nokta, değilse Türkçe ve ondalık virgül
+  const EN = /^en/i.test(document.documentElement.lang || '');
+  const DEC = EN ? '.' : ',';
+  const L = (tr, en) => (EN ? en : tr);
+  Lab.lang = EN ? 'en' : 'tr'; Lab.L = L;
+  Lab.num = (v, d = 2) => (isFinite(v) ? v.toFixed(d).replace('.', DEC) : '—');
   Lab.parse = (s) => parseFloat(String(s).trim().replace(/\s/g, '').replace(',', '.'));
   // Mühendislik gösterimi: 0,00025 A -> "250 µA"
   Lab.eng = function (v, unit = '', sig = 3) {
@@ -26,9 +30,9 @@
     let p = pre.find((q) => a >= q[0] * 0.9995) || pre[pre.length - 1];
     const x = v / p[0];
     const d = Math.max(0, sig - 1 - Math.floor(Math.log10(Math.abs(x) || 1)));
-    return x.toFixed(d).replace('.', ',') + ' ' + p[1] + unit;
+    return x.toFixed(d).replace('.', DEC) + ' ' + p[1] + unit;
   };
-  Lab.ohm = (r) => (r >= 1e9 ? '∞' : Lab.eng(r, 'Ω', 3).replace(/(,\d*?)0+ /, '$1 ').replace(', ', ' '));
+  Lab.ohm = (r) => (r >= 1e9 ? '∞' : Lab.eng(r, 'Ω', 3).replace(/([.,]\d*?)0+ /, '$1 ').replace(DEC + ' ', ' '));
 
   Lab.toast = function (msg, ms = 2600) {
     let t = Lab.$('.toast');
@@ -41,7 +45,7 @@
 
   /* ---------- kalıcı durum (localStorage) ---------- */
   Lab.store = {
-    key: 'devrelab',
+    key: EN ? 'devrelab-en' : 'devrelab',
     load(k) { try { return JSON.parse(localStorage.getItem(this.key + ':' + k)) || {}; } catch (e) { return {}; } },
     save(k, o) { try { localStorage.setItem(this.key + ':' + k, JSON.stringify(o)); } catch (e) {} },
   };
@@ -60,10 +64,10 @@
       const wrap = (this.el = document.createElement('div'));
       wrap.className = 'knob' + (this.o.dark ? ' kdark' : ''); wrap.tabIndex = 0;
       wrap.setAttribute('role', 'slider');
-      wrap.setAttribute('aria-label', o.label || 'düğme');
+      wrap.setAttribute('aria-label', o.label || L('düğme', 'knob'));
       if (o.label) { const l = document.createElement('div'); l.className = 'kl'; l.innerHTML = labelHTML(o.label); wrap.appendChild(l); }
       const svg = Lab.svg('svg', { width: s, height: s, viewBox: '-50 -50 100 100' });
-      Lab.svg('title', {}, svg).textContent = 'Çevirmek için yukarı/aşağı sürükleyin · değer yazmak için dokunun';
+      Lab.svg('title', {}, svg).textContent = L('Çevirmek için yukarı/aşağı sürükleyin · değer yazmak için dokunun', 'Drag up/down to turn · tap to type a value');
       const defs = Lab.svg('defs', {}, svg);
       const gid = 'kg' + Math.random().toString(36).slice(2, 8);
       const g = Lab.svg('radialGradient', { id: gid, cx: '35%', cy: '30%', r: '75%' }, defs);
@@ -86,9 +90,9 @@
       wrap.appendChild(svg);
       const row = document.createElement('div'); row.className = 'krow';
       const mk = (cls, txt, title) => { const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = txt; b.title = title; b.tabIndex = -1; row.appendChild(b); return b; };
-      this.bDn = mk('kb', '−', 'Azalt (basılı tutun: hızlı)');
-      this.vEl = mk('kv', '', 'Değeri yazmak / seçmek için dokunun');
-      this.bUp = mk('kb', '+', 'Artır (basılı tutun: hızlı)');
+      this.bDn = mk('kb', '−', L('Azalt (basılı tutun: hızlı)', 'Decrease (hold: faster)'));
+      this.vEl = mk('kv', '', L('Değeri yazmak / seçmek için dokunun', 'Tap to type or pick a value'));
+      this.bUp = mk('kb', '+', L('Artır (basılı tutun: hızlı)', 'Increase (hold: faster)'));
       wrap.appendChild(row);
       parent.appendChild(wrap);
       Lab.knobs.push(this);
@@ -193,10 +197,10 @@
   };
   // fmt çıktısını sayı + birim olarak ayır: "−j24 mΩ" gibi biçimler için null döner
   const splitFmt = (t) => {
-    const m = String(t).replace(/−/g, '-').replace(/^\s*([-+])j/, '$1').match(/^\s*[±%×~≈]?\s*([-+]?\d+(?:,\d+)?)\s*(\S*)\s*$/);
+    const m = String(t).replace(/−/g, '-').replace(/^\s*([-+])j/, '$1').match(/^\s*[±%×~≈]?\s*([-+]?\d+(?:[.,]\d+)?)\s*(\S*)\s*$/);
     if (!m) return null;
     const u = m[2], pre = u.length > 1 && PREF[u[0]] != null && !/^(mm|min)$/.test(u) ? u[0] : '';
-    const dec = (m[1].split(',')[1] || '').length;
+    const dec = (m[1].split(/[.,]/)[1] || '').length;
     return { n: parseFloat(m[1].replace(',', '.')), dec, unit: u, pre, base: u.slice(pre.length), mult: pre ? PREF[pre] : 1 };
   };
   // ham değer ↔ temel birim oranı (ör. "mV" ölçekli düğme için 1e-3); tutarsızsa null (ham sayı yazılır)
@@ -238,28 +242,28 @@
       };
     }
     P.knob = k; Lab.coach.done();
-    const o = k.o, el = P.el, title = labelHTML(o.label || 'Değer');
+    const o = k.o, el = P.el, title = labelHTML(o.label || L('Değer', 'Value'));
     if (o.list) {
-      el.innerHTML = `<div class="kp-h"><b>${title}</b><button type="button" class="kp-x" title="Kapat">×</button></div>
-        <div class="kp-sub">Bir değer seçin:</div><div class="kp-list">${o.list.map((v, i) => `<button type="button" data-i="${i}">${o.fmt(v)}</button>`).join('')}</div>`;
+      el.innerHTML = `<div class="kp-h"><b>${title}</b><button type="button" class="kp-x" title="${L('Kapat', 'Close')}">×</button></div>
+        <div class="kp-sub">${L('Bir değer seçin:', 'Pick a value:')}</div><div class="kp-list">${o.list.map((v, i) => `<button type="button" data-i="${i}">${o.fmt(v)}</button>`).join('')}</div>`;
       el.querySelectorAll('.kp-list button').forEach((b) => (b.onclick = () => { k.set(o.list[+b.dataset.i]); P.close(); k.el.focus({ preventScroll: true }); }));
       P.sync = () => el.querySelectorAll('.kp-list button').forEach((b) => b.classList.toggle('on', o.list[+b.dataset.i] === k.value));
     } else {
       const f = unitScale(k), units = f != null ? unitList(k) : [];
       const base = units.length ? units[0].base : '';
-      const uSel = units.length > 1 ? `<select class="kp-us" aria-label="Birim">${units.map((u, i) => `<option value="${i}">${u.unit}</option>`).join('')}</select>` : `<span class="kp-u">${units.length ? units[0].unit : ''}</span>`;
-      el.innerHTML = `<div class="kp-h"><b>${title}</b><button type="button" class="kp-x" title="Kapat">×</button></div>
-        <div class="kp-sub">Aralık: ${o.fmt(o.min)} … ${o.fmt(o.max)}</div>
+      const uSel = units.length > 1 ? `<select class="kp-us" aria-label="${L('Birim', 'Unit')}">${units.map((u, i) => `<option value="${i}">${u.unit}</option>`).join('')}</select>` : `<span class="kp-u">${units.length ? units[0].unit : ''}</span>`;
+      el.innerHTML = `<div class="kp-h"><b>${title}</b><button type="button" class="kp-x" title="${L('Kapat', 'Close')}">×</button></div>
+        <div class="kp-sub">${L('Aralık', 'Range')}: ${o.fmt(o.min)} … ${o.fmt(o.max)}</div>
         <div class="kp-in"><button type="button" class="kb" data-n="-1">−</button><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false">${uSel}<button type="button" class="kb" data-n="1">+</button></div>
         <input type="range" min="0" max="1000" step="1" class="kp-r" aria-label="${(o.label || '').replace(/"/g, '')}">
         <div class="kp-msg"></div>
-        <div class="kp-b"><span class="kp-tip">${units.length > 1 ? 'Birimi yandan seçin ya da yazın: 4,7k · 600µ · 2m' : 'Ondalık için virgül kullanın.'}</span><button type="button" class="btn small kp-ok">Uygula</button></div>`;
+        <div class="kp-b"><span class="kp-tip">${units.length > 1 ? L('Birimi yandan seçin ya da yazın: 4,7k · 600µ · 2m', 'Pick the unit or type it: 4.7k · 600µ · 2m') : L('Ondalık için virgül kullanın.', 'Use a decimal point.')}</span><button type="button" class="btn small kp-ok">${L('Uygula', 'Apply')}</button></div>`;
       const inp = el.querySelector('input[type=text]'), sel = el.querySelector('.kp-us'), rg = el.querySelector('.kp-r'), msg = el.querySelector('.kp-msg');
       const selMult = () => (sel ? units[+sel.value].mult : units.length ? units[0].mult : 1);
       P.sync = () => {
         if (document.activeElement !== inp && document.activeElement !== sel) {
           const c = f != null ? splitFmt(o.fmt(k.value)) : null;
-          inp.value = c ? String(c.n).replace('.', ',') : String(+k.value.toPrecision(8)).replace('.', ',');
+          inp.value = c ? String(c.n).replace('.', DEC) : String(+k.value.toPrecision(8)).replace('.', DEC);
           if (sel && c) { const i = units.findIndex((u) => u.unit === c.unit); if (i >= 0) sel.value = i; }
         }
         rg.value = Math.round(k.p * 1000);
@@ -275,23 +279,23 @@
       const inRange = (v) => v >= o.min - eps && v <= o.max + eps;
       const apply = () => {
         const t = Lab.parseSI(inp.value);
-        if (!isFinite(t.v)) { msg.textContent = 'Geçerli bir sayı yazın (ondalık için virgül kullanabilirsiniz).'; return false; }
+        if (!isFinite(t.v)) { msg.textContent = L('Geçerli bir sayı yazın (ondalık için virgül kullanabilirsiniz).', 'Type a valid number.'); return false; }
         const v = fin(toRaw(t, selMult()));
         if (!inRange(v)) {
-          msg.innerHTML = `Aralık dışında: en az ${o.fmt(o.min)}, en çok ${o.fmt(o.max)}.`;
+          msg.innerHTML = L(`Aralık dışında: en az ${o.fmt(o.min)}, en çok ${o.fmt(o.max)}.`, `Out of range: minimum ${o.fmt(o.min)}, maximum ${o.fmt(o.max)}.`);
           // başka bir birimle yazılmış olabilir mi? (ör. kHz yerine Hz)
           if (t.pre == null && sel) {
             const alts = units.map((u, i) => ({ u, i, v: fin(toRaw(t, u.mult)) })).filter((a) => inRange(a.v));
             alts.forEach((alt) => {
               const b = document.createElement('button'); b.type = 'button'; b.className = 'btn small sec kp-alt';
-              b.textContent = `${String(t.v).replace('.', ',')} ${alt.u.unit} mı?`;
+              b.textContent = L(`${String(t.v).replace('.', DEC)} ${alt.u.unit} mı?`, `Did you mean ${String(t.v)} ${alt.u.unit}?`);
               b.onclick = () => { sel.value = alt.i; if (apply()) P.close(); };
               msg.append(' ', b);
             });
           }
           // işaret unutulmuş olabilir (ör. kapasitif reaktans negatiftir)
           if (!msg.querySelector('.kp-alt') && t.v > 0 && inRange(fin(toRaw({ v: -t.v, pre: t.pre }, selMult())))) {
-            msg.innerHTML += ` <button type="button" class="btn small sec kp-alt">−${inp.value.trim()} mı?</button>`;
+            msg.innerHTML += ` <button type="button" class="btn small sec kp-alt">${L(`−${inp.value.trim()} mı?`, `Did you mean −${inp.value.trim()}?`)}</button>`;
             msg.querySelector('.kp-alt').onclick = () => { inp.value = '-' + inp.value.trim(); if (apply()) P.close(); };
           }
           return false;
@@ -337,10 +341,13 @@
           const e = k._eff; k._eff = null;
           if (!e || snap(e.sec) !== e.s || Date.now() - lastHint < 15000) return;
           shown.add(k); lastHint = Date.now();
-          const off = [...e.sec.querySelectorAll('button')].some((b) => b.offsetParent && /KAPALI|SINGLE|BAŞLAT|ÇALIŞTIR/i.test(b.textContent));
-          Lab.toast(`ℹ <b>${labelHTML(k.o.label || 'Düğme')}</b> değişti ama ekranda henüz bir sonuç görünmüyor. ` +
+          const off = [...e.sec.querySelectorAll('button')].some((b) => b.offsetParent && /KAPALI|SINGLE|BAŞLAT|ÇALIŞTIR|OFF|START|RUN\b/i.test(b.textContent));
+          Lab.toast(L(`ℹ <b>${labelHTML(k.o.label || 'Düğme')}</b> değişti ama ekranda henüz bir sonuç görünmüyor. ` +
             (off ? 'Cihazın <b>ÇIKIŞ / SINGLE / BAŞLAT</b> düğmesine basmanız gerekebilir. ' : '') +
-            'Doğru bağlantı/mod seçili mi? Föydeki sıradaki adıma bakın.', 6500);
+            'Doğru bağlantı/mod seçili mi? Föydeki sıradaki adıma bakın.',
+            `ℹ <b>${labelHTML(k.o.label || 'Knob')}</b> changed, but nothing has changed on screen yet. ` +
+            (off ? 'You may need to press the instrument’s <b>OUTPUT / SINGLE / START</b> button. ' : '') +
+            'Is the right connection/mode selected? Check the next step of the lab sheet.'), 6500);
         }, 900);
       },
     };
@@ -409,7 +416,8 @@
         const yy = H / 2 - c.pos * dy; g.fillText((k + 1) + '▶', 2, Lab.clamp(yy + 4, 10, H - 2));
       });
       g.font = '12px Consolas'; g.fillStyle = '#9fe0b0';
-      g.fillText(`${this.ch[0].on ? 'CH1 ' + Lab.eng(this.ch[0].vdiv, 'V') + '/d' : ''}   ${this.ch[1].on ? 'CH2 ' + Lab.eng(this.ch[1].vdiv, 'V') + '/d' : ''}   ${Lab.eng(this.tdiv, 's')}/d`, 8, H - 8);
+      const dv = L('/d', '/div');
+      g.fillText(`${this.ch[0].on ? 'CH1 ' + Lab.eng(this.ch[0].vdiv, 'V') + dv : ''}   ${this.ch[1].on ? 'CH2 ' + Lab.eng(this.ch[1].vdiv, 'V') + dv : ''}   ${Lab.eng(this.tdiv, 's')}${dv}`, 8, H - 8);
       if (this.cur.on) {
         g.strokeStyle = '#ff7cf0'; g.setLineDash([5, 4]);
         ['a', 'b'].forEach((k) => { const X = (this.cur[k] / 10) * W; g.beginPath(); g.moveTo(X, 0); g.lineTo(X, H); g.stroke(); });
@@ -465,8 +473,8 @@
       const X = (x) => L + ((x - xr[0]) / (xr[1] - xr[0])) * (W - L - R), Y = (y) => H - B - ((y - yr[0]) / (yr[1] - yr[0])) * (H - T - B);
       const ticks = (a, b) => { const s = Math.pow(10, Math.floor(Math.log10((b - a) / 5))); const m = [1, 2, 5, 10].find((k) => (b - a) / (k * s) <= 8) * s; const r = []; for (let v = Math.ceil(a / m) * m; v <= b + 1e-12; v += m) r.push(+v.toPrecision(12)); return r; };
       g.font = '11px Segoe UI'; g.strokeStyle = '#e4e8ef'; g.fillStyle = '#556';
-      ticks(xr[0], xr[1]).forEach((v) => { g.beginPath(); g.moveTo(X(v), T); g.lineTo(X(v), H - B); g.stroke(); g.textAlign = 'center'; g.fillText(Lab.num(v, Math.abs(v) < 10 && v % 1 ? 1 : 0).replace(',0', ''), X(v), H - B + 14); });
-      ticks(yr[0], yr[1]).forEach((v) => { g.beginPath(); g.moveTo(L, Y(v)); g.lineTo(W - R, Y(v)); g.stroke(); g.textAlign = 'right'; g.fillText(Lab.num(v, Math.abs(v) < 10 && v % 1 ? 1 : 0).replace(',0', ''), L - 5, Y(v) + 4); });
+      ticks(xr[0], xr[1]).forEach((v) => { g.beginPath(); g.moveTo(X(v), T); g.lineTo(X(v), H - B); g.stroke(); g.textAlign = 'center'; g.fillText(Lab.num(v, Math.abs(v) < 10 && v % 1 ? 1 : 0).replace(DEC + '0', ''), X(v), H - B + 14); });
+      ticks(yr[0], yr[1]).forEach((v) => { g.beginPath(); g.moveTo(L, Y(v)); g.lineTo(W - R, Y(v)); g.stroke(); g.textAlign = 'right'; g.fillText(Lab.num(v, Math.abs(v) < 10 && v % 1 ? 1 : 0).replace(DEC + '0', ''), L - 5, Y(v) + 4); });
       g.strokeStyle = '#99a'; g.lineWidth = 1.2;
       if (xr[0] < 0 && xr[1] > 0) { g.beginPath(); g.moveTo(X(0), T); g.lineTo(X(0), H - B); g.stroke(); }
       if (yr[0] < 0 && yr[1] > 0) { g.beginPath(); g.moveTo(L, Y(0)); g.lineTo(W - R, Y(0)); g.stroke(); }
@@ -490,31 +498,31 @@
   Lab.onAnswer = null;
   Lab.mcq = function (parent, o) {
     const d = document.createElement('div'); d.className = 'q'; d.dataset.qid = o.id;
-    d.innerHTML = `<div class="qt">${o.q}</div>` + o.opts.map((t, i) => `<label><input type="radio" name="${o.id}" value="${i}"> ${String.fromCharCode(65 + i)}) ${t}</label>`).join('') + `<button class="btn small">Kontrol et</button><div class="fb"></div>`;
+    d.innerHTML = `<div class="qt">${o.q}</div>` + o.opts.map((t, i) => `<label><input type="radio" name="${o.id}" value="${i}"> ${String.fromCharCode(65 + i)}) ${t}</label>`).join('') + `<button class="btn small">${L('Kontrol et', 'Check')}</button><div class="fb"></div>`;
     parent.appendChild(d);
     const fb = d.querySelector('.fb');
     const show = (v) => {
       const ok = v === o.correct;
       fb.className = 'fb ' + (ok ? 'ok' : 'bad');
-      fb.innerHTML = (ok ? '✔ Doğru. ' : '✘ Yanlış. ') + (ok || o.explainAlways ? o.explain || '' : 'Tekrar düşünün: ' + (o.hint || ''));
+      fb.innerHTML = (ok ? L('✔ Doğru. ', '✔ Correct. ') : L('✘ Yanlış. ', '✘ Incorrect. ')) + (ok || o.explainAlways ? o.explain || '' : L('Tekrar düşünün: ', 'Think again: ') + (o.hint || ''));
       Lab.answers[o.id] = { q: o.q, a: o.opts[v], ok };
       Lab.onAnswer && Lab.onAnswer();
     };
-    d.querySelector('button').onclick = () => { const r = d.querySelector('input:checked'); if (!r) return Lab.toast('Bir seçenek işaretleyin.'); show(+r.value); };
+    d.querySelector('button').onclick = () => { const r = d.querySelector('input:checked'); if (!r) return Lab.toast(L('Bir seçenek işaretleyin.', 'Select an option.')); show(+r.value); };
     if (Lab.answers[o.id]) { const i = o.opts.indexOf(Lab.answers[o.id].a); if (i >= 0) { d.querySelectorAll('input')[i].checked = true; show(i); } }
   };
   // Sayısal: {id, q, answer(number|fn), tol(%), unit, explain}
   Lab.numq = function (parent, o) {
     const d = document.createElement('div'); d.className = 'q'; d.dataset.qid = o.id;
-    d.innerHTML = `<div class="qt">${o.q}</div><div class="row"><input type="text" size="10" placeholder="sayı"> <span>${o.unit || ''}</span><button class="btn small">Kontrol et</button></div><div class="fb"></div>`;
+    d.innerHTML = `<div class="qt">${o.q}</div><div class="row"><input type="text" size="10" placeholder="${L('sayı', 'number')}"> <span>${o.unit || ''}</span><button class="btn small">${L('Kontrol et', 'Check')}</button></div><div class="fb"></div>`;
     parent.appendChild(d);
     const inp = d.querySelector('input'), fb = d.querySelector('.fb');
     const check = () => {
-      const v = Lab.parse(inp.value); if (!isFinite(v)) return Lab.toast('Geçerli bir sayı girin (ondalık için virgül kullanabilirsiniz).');
+      const v = Lab.parse(inp.value); if (!isFinite(v)) return Lab.toast(L('Geçerli bir sayı girin (ondalık için virgül kullanabilirsiniz).', 'Enter a valid number (decimal point or comma).'));
       const c = typeof o.answer === 'function' ? o.answer() : o.answer;
       const ok = Math.abs(v - c) <= Math.abs(c) * (o.tol ?? 2) / 100 + (o.abs || 0);
       fb.className = 'fb ' + (ok ? 'ok' : 'bad');
-      fb.innerHTML = ok ? '✔ Doğru. ' + (o.explain || '') : '✘ Beklenen değerden uzak. ' + (o.hint || '');
+      fb.innerHTML = ok ? L('✔ Doğru. ', '✔ Correct. ') + (o.explain || '') : L('✘ Beklenen değerden uzak. ', '✘ Not close to the expected value. ') + (o.hint || '');
       Lab.answers[o.id] = { q: o.q, a: inp.value + ' ' + (o.unit || ''), ok, ref: Lab.num(c, 3) };
       Lab.onAnswer && Lab.onAnswer();
     };
@@ -525,7 +533,7 @@
 
   /* ---------- CSV indir ---------- */
   Lab.downloadCSV = function (name, header, rows) {
-    const txt = '﻿' + [header, ...rows].map((r) => r.map((x) => (typeof x === 'number' ? String(x).replace('.', ',') : x)).join(';')).join('\r\n');
+    const txt = '﻿' + [header, ...rows].map((r) => r.map((x) => (typeof x === 'number' ? String(x).replace('.', DEC) : x)).join(';')).join('\r\n');
     const url = URL.createObjectURL(new Blob([txt], { type: 'text/csv;charset=utf-8' }));
     const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 60000);
@@ -546,11 +554,16 @@
       if (force && !vis(k)) k.scrollIntoView({ block: 'center' });
       this.hide();
       const el = (this.el = document.createElement('div')); el.className = 'coachbox no-print';
-      el.innerHTML = `<b>Cihaz düğmeleri nasıl kullanılır?</b>
+      el.innerHTML = L(`<b>Cihaz düğmeleri nasıl kullanılır?</b>
         <ol><li>Düğmeyi <b>yukarı / aşağı sürükleyin</b> (sağa / sola da olur)</li>
         <li>ya da altındaki <b>−</b> / <b>+</b> düğmelerine basın — basılı tutarsanız hızlanır</li>
         <li><b>Tam değer</b> için düğmeye ya da değerine <b>dokunun</b>: değeri yazın veya listeden seçin</li></ol>
-        <div style="text-align:right"><button type="button" class="btn small">Anladım</button></div>`;
+        <div style="text-align:right"><button type="button" class="btn small">Anladım</button></div>`,
+        `<b>How to use the instrument knobs</b>
+        <ol><li><b>Drag the knob up / down</b> (left / right also works)</li>
+        <li>or press the <b>−</b> / <b>+</b> buttons below it — hold to go faster</li>
+        <li>For an <b>exact value</b>, <b>tap</b> the knob or its value: type the value or pick it from the list</li></ol>
+        <div style="text-align:right"><button type="button" class="btn small">Got it</button></div>`);
       document.body.appendChild(el);
       this.knob = { el: k }; k.classList.add('coach');
       el.querySelector('button').onclick = () => this.done();
@@ -579,9 +592,10 @@
       const changed = key && key.split('|')[0] === sec.id && key.split('|')[1] !== String(i);
       key = k;
       document.body.classList.add('has-stepbar'); bar.classList.add('show'); bar.classList.toggle('mini', mini);
-      if (mini) bar.innerHTML = `<button type="button" class="sb-open">▲ Sıradaki adım (${i < 0 ? n : i}/${n})</button>`;
-      else if (i < 0) bar.innerHTML = `<span class="sb-n ok">✓ ${n}/${n}</span><span class="sb-t">Bu deneyin tüm föy adımları tamamlandı. Şimdi aşağıdaki <b>soruları</b> yanıtlayın.</span><button type="button" class="sb-go" data-go="q">Sorulara git</button><button type="button" class="sb-x" title="Küçült">▼</button>`;
-      else bar.innerHTML = `<span class="sb-n">Adım ${i + 1}/${n}</span><span class="sb-t">${strip(lis[i].innerHTML)}</span><button type="button" class="sb-go" data-go="f">Föyü göster</button><button type="button" class="sb-x" title="Küçült">▼</button>`;
+      const sx = `<button type="button" class="sb-x" title="${L('Küçült', 'Minimise')}">▼</button>`;
+      if (mini) bar.innerHTML = `<button type="button" class="sb-open">▲ ${L('Sıradaki adım', 'Next step')} (${i < 0 ? n : i}/${n})</button>`;
+      else if (i < 0) bar.innerHTML = `<span class="sb-n ok">✓ ${n}/${n}</span><span class="sb-t">${L('Bu deneyin tüm föy adımları tamamlandı. Şimdi aşağıdaki <b>soruları</b> yanıtlayın.', 'All lab-sheet steps of this experiment are done. Now answer the <b>questions</b> below.')}</span><button type="button" class="sb-go" data-go="q">${L('Sorulara git', 'Go to questions')}</button>` + sx;
+      else bar.innerHTML = `<span class="sb-n">${L('Adım', 'Step')} ${i + 1}/${n}</span><span class="sb-t">${strip(lis[i].innerHTML)}</span><button type="button" class="sb-go" data-go="f">${L('Föyü göster', 'Show lab sheet')}</button>` + sx;
       if (changed) { bar.classList.remove('flash'); void bar.offsetWidth; bar.classList.add('flash'); }
       const go = bar.querySelector('.sb-go');
       if (go) go.onclick = () => { const t = go.dataset.go === 'q' ? sec.querySelector('.q') : lis[Math.max(0, i)]; if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'center' }); t.classList.add('hl'); setTimeout(() => t.classList.remove('hl'), 1800); } };
@@ -596,14 +610,25 @@
     document.querySelectorAll('section.page').forEach((sec) => {
       const b = sec.querySelector('.bench'); if (!b || !sec.querySelector('.knob') || sec.querySelector('.benchtip')) return;
       const t = document.createElement('div'); t.className = 'benchtip no-print';
-      t.innerHTML = '<b>Düğme:</b> sürükleyin ya da <b>− / +</b> basın · <b>Tam değer:</b> düğmeye dokunun · <b>Ölçüm:</b> “Kaydet (R)” · Ne yapacağınızı alttaki <b>Sıradaki adım</b> çubuğu söyler. <a href="#" class="tipmore">Nasıl?</a>';
+      t.innerHTML = L('<b>Düğme:</b> sürükleyin ya da <b>− / +</b> basın · <b>Tam değer:</b> düğmeye dokunun · <b>Ölçüm:</b> “Kaydet (R)” · Ne yapacağınızı alttaki <b>Sıradaki adım</b> çubuğu söyler. <a href="#" class="tipmore">Nasıl?</a>',
+        '<b>Knob:</b> drag it or press <b>− / +</b> · <b>Exact value:</b> tap the knob · <b>Measurement:</b> “Record (R)” · The <b>Next step</b> bar at the bottom tells you what to do. <a href="#" class="tipmore">How?</a>');
       b.parentNode.insertBefore(t, b);
       t.querySelector('.tipmore').onclick = (e) => { e.preventDefault(); Lab.coach.show(true); };
     });
   }
   // tek dosya sürümünde sayfa document.write ile açılır ve 'load' olayı gelmeyebilir: ilk gelen olayda bir kez başlat
   let booted = false;
-  const boot = () => { if (booted) return; booted = true; stepBar(); benchTips(); };
+  // üst çubukta dil değiştirme (Türkçe ⇄ English): aynı haftanın öbür dildeki sayfası
+  function langSwitch() {
+    const bar = document.querySelector('.topbar'); if (!bar || bar.querySelector('.langsw')) return;
+    const path = decodeURIComponent(location.hash.slice(1)) || location.pathname;
+    const m = path.match(/(devre[12])\/(hafta\d\d)\.html/); if (!m) return;
+    const a = document.createElement('a'); a.className = 'langsw no-print';
+    a.href = EN ? `../../${m[1]}/${m[2]}.html` : `../en/${m[1]}/${m[2]}.html`;
+    a.textContent = EN ? 'TR' : 'EN'; a.title = EN ? 'Türkçe' : 'English';
+    const home = bar.querySelector('a'); home ? home.after(a) : bar.prepend(a);
+  }
+  const boot = () => { if (booted) return; booted = true; stepBar(); benchTips(); langSwitch(); };
   if (document.readyState !== 'loading') setTimeout(boot, 0);
   else { document.addEventListener('DOMContentLoaded', boot); window.addEventListener('load', boot); }
 })();

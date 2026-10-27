@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 4 · Thevenin–Norton (AC) — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 4 — Thevenin and Norton Equivalents in AC Circuits</h1>
+    <div class="sub">Black box · Open-circuit voltage and short-circuit current phasors · Verification with loads · Source transformation · The generator’s 50 Ω</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Black Box</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Verification with Loads</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Generator and Norton</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag them or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> for fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–6</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 4 · Thevenin and Norton Equivalents in AC Circuits</h2>
+  <p class="lead">Lecture notes: <b>Chapter 1 · Part 3 — 1.6 Source Transformation and Thevenin–Norton</b> (Examples 1.26–1.28).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li>measure the <b>open-circuit voltage</b> and <b>short-circuit current</b> of an AC black box you cannot see inside, as magnitude and phase.</li>
+        <li>use the phasor division Z<sub>Th</sub> = V<sub>Th</sub>/I<sub>N</sub> to find the box’s <b>Thevenin impedance</b> (R<sub>Th</sub> and X<sub>Th</sub>).</li>
+        <li><b>verify</b> your model with different resistive and reactive loads and compute the percentage error.</li>
+        <li>measure the function generator’s <b>50 Ω internal resistance</b> and understand why its display reads “wrong”.</li>
+        <li>convert the Thevenin model to a Norton model by <b>source transformation</b> and show that the terminal behaviour stays the same.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Black box (1 kHz, with REF sync output; unique to you) · TRMS AC voltmeter (10 MΩ input) · AC ammeter (0.1 Ω internal resistance) · 1 Ω current-sense (shunt) resistor · Two-channel oscilloscope (cursors, X-Y) · Load resistor box, series C and L boxes · Function generator (50 Ω, “50 Ω / High-Z” display mode).</p>
+      <div class="info"><b>Unique to you:</b> each student’s black box contains different values. Numerical answers are checked against measurements of your own box; a classmate’s result will not match yours.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Workflow</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">In the interactive figure in Background, see how the V<sub>L</sub> phasor moves as the load changes, and solve the Pre-lab questions. The results of Experiment 1 are the input of Experiment 2: keep the order. Record measurements with <kbd>R</kbd>; print the report in the last section.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Reducing a Circuit to Two Numbers</h2>
+  <p class="lead">The mains socket, an audio amplifier output, a sensor: seen from their terminals, we see each of them as “a source + an impedance”. This week we will do this by measurement.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Why an equivalent circuit?</h3>
+      <p style="font-size:14px;line-height:1.65">We do not want to re-solve the whole network every time we change the load. A linear, <b>single-frequency</b> network, seen from terminals a–b, behaves either as <b>V<sub>Th</sub> + series Z<sub>Th</sub></b> (Thevenin) or as <b>I<sub>N</sub> + parallel Z<sub>N</sub></b> (Norton). The bridge between them is source transformation: <b>V<sub>Th</sub> = Z<sub>Th</sub>·I<sub>N</sub></b>, Z<sub>N</sub> = Z<sub>Th</sub>.</p>
+      <svg viewBox="0 0 460 150" class="schem" style="max-width:460px">
+        <g stroke="#222" stroke-width="2" fill="none">
+          <circle cx="40" cy="75" r="18" fill="#fff"/><path d="M31,75 q4.5,-10 9,0 t9,0"/>
+          <path d="M40,57 V25 H70"/><rect x="70" y="17" width="60" height="16" fill="#fff"/><path d="M130,25 H180 M40,93 V125 H180"/>
+          <circle cx="180" cy="25" r="4" fill="#fff"/><circle cx="180" cy="125" r="4" fill="#fff"/>
+          <circle cx="290" cy="75" r="18" fill="#fff"/><path d="M290,86 V64 m-5,7 l5,-7 l5,7"/>
+          <path d="M290,57 V25 H430 M290,93 V125 H430 M370,25 V45 M370,105 V125"/><rect x="362" y="45" width="16" height="60" fill="#fff"/>
+          <circle cx="430" cy="25" r="4" fill="#fff"/><circle cx="430" cy="125" r="4" fill="#fff"/>
+        </g>
+        <g font-size="13" fill="#333" font-family="Segoe UI">
+          <text x="2" y="80">V<tspan font-size="10" dy="3">Th</tspan></text><text x="82" y="12">Z<tspan font-size="10" dy="3">Th</tspan></text>
+          <text x="188" y="30">a</text><text x="188" y="130">b</text>
+          <text x="255" y="80">I<tspan font-size="10" dy="3">N</tspan></text><text x="384" y="80">Z<tspan font-size="10" dy="3">N</tspan></text>
+          <text x="438" y="30">a</text><text x="438" y="130">b</text>
+          <text x="210" y="80" font-size="22">⇄</text>
+        </g>
+      </svg>
+      <h3>2 · Three ways to find Z<sub>Th</sub></h3>
+      <p style="font-size:14px;line-height:1.65;margin:0">(1) Zero the independent sources (V → short, I → open) and look into a–b. (2) <b>Ratio</b>: Z<sub>Th</sub> = V<sub>oc</sub>/I<sub>sc</sub> — we will use this in the lab because we cannot open the box; but in AC this is a <b>phasor division</b>: magnitudes divide, <b>angles subtract</b>. (3) With dependent sources, a test source: Z<sub>Th</sub> = V<sub>T</sub>/I<sub>T</sub>.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Thevenin voltage</td><td class="l">V<sub>Th</sub> = V<sub>ab</sub> (open circuit)</td></tr>
+        <tr><td class="l">Norton current</td><td class="l">I<sub>N</sub> = I<sub>ab</sub> (short circuit)</td></tr>
+        <tr><td class="l">Equivalent impedance</td><td class="l">Z<sub>Th</sub> = Z<sub>N</sub> = V<sub>Th</sub>/I<sub>N</sub> → |Z| = |V|/|I|, θ = φ<sub>V</sub> − φ<sub>I</sub></td></tr>
+        <tr><td class="l">Source transformation</td><td class="l">V<sub>s</sub> = Z<sub>s</sub>I<sub>s</sub> ; Z<sub>s</sub> series ↔ parallel, its value does not change</td></tr>
+        <tr><td class="l">Load current / voltage</td><td class="l">I<sub>L</sub> = V<sub>Th</sub>/(Z<sub>Th</sub> + Z<sub>L</sub>) ; V<sub>L</sub> = V<sub>Th</sub>Z<sub>L</sub>/(Z<sub>Th</sub> + Z<sub>L</sub>)</td></tr>
+        <tr><td class="l">Internal resistance (by measurement)</td><td class="l">R<sub>i</sub> = R<sub>L</sub>(V<sub>oc</sub>/V<sub>L</sub> − 1) (only for a purely resistive source)</td></tr>
+        <tr><td class="l">Phase (oscilloscope)</td><td class="l">φ = 360°·f·Δt ; at 1 kHz, 1 µs = 0.36°</td></tr>
+      </table>
+      <div class="info" style="margin-top:10px"><b>Worked mini example (Example 1.28):</b> 120∠0° V, series 8 + j6 Ω, 12 − j16 Ω across a–b. Short circuit: I<sub>N</sub> = 120/(8 + j6) = 12∠−36.87° A. Source shorted: Z<sub>N</sub> = (8 + j6) ∥ (12 − j16) = 8.8 + j1.6 Ω. V<sub>Th</sub> = I<sub>N</sub>Z<sub>N</sub> = 96 − j48 V. With a 10 Ω load I<sub>L</sub> = 5.69∠−31.43° A.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">3 · What happens when the load changes? (interactive)</h3>
+    <p style="font-size:14px;line-height:1.65;margin:0 0 6px">V<sub>Th</sub> = 10∠0° V, Z<sub>Th</sub> = 50 + jX Ω. As the purely resistive R<sub>L</sub> goes from 0 to ∞, the tip of the V<sub>L</sub> phasor travels along the dashed orange arc: zero at R<sub>L</sub> = 0, V<sub>Th</sub> at R<sub>L</sub> = ∞. When X ≠ 0 the load voltage is phase-shifted relative to V<sub>Th</sub>.</p>
+    <svg id="obSvg" class="schem" viewBox="0 0 440 300" style="max-width:600px"></svg>
+    <div class="row" style="margin-top:6px;font-size:14px">
+      <label>R<sub>L</sub> (log): <input type="range" id="obR" min="0" max="4" step="0.01" value="1.7" style="width:220px"></label>
+      <label>X<sub>Th</sub>: <input type="range" id="obX" min="-100" max="100" step="1" value="50" style="width:220px"></label>
+    </div>
+    <div id="obTxt" style="font-size:14px;line-height:1.6;margin-top:6px"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Points to watch in a real lab</h3>
+    <div class="warnbox"><b>Never measure the “short-circuit current” of the mains.</b> The Thevenin impedance of a 230 V socket is on the order of fractions of an ohm; the short-circuit current is hundreds to thousands of amperes and means arcs, burns and fire. The mains equivalent can be found only from the voltage drop under load, with a suitable instrument and under authorised supervision.</div>
+    <div class="warnbox"><b>Make short-circuit measurements only on current-limited, low-power sources.</b> The black box or generator must withstand a short circuit. Short-circuiting a transformer secondary heats the winding; the secondary of a <b>current transformer</b>, on the contrary, must <b>never be left open</b> (a high voltage develops).</div>
+    <div class="warnbox"><b>Range and fuse when measuring short-circuit current with an ammeter.</b> Start on the highest current range (10 A input), then go lower. If the fuse in the mA input blows, the instrument shows “0” and you think the box delivers no current.</div>
+    <div class="warnbox"><b>Oscilloscope ground and REF.</b> Terminal b of the black box, the REF output ground and the oscilloscope ground are the same point. Attaching the ground clip to terminal a short-circuits the box; that is why the shunt resistor is placed on the b (ground) side.</div>
+    <div class="warnbox"><b>The instrument is also a load.</b> A 10 MΩ voltmeter is negligible in most circuits, but a 1 MΩ oscilloscope input and its probe (~100 pF with a ×1 probe) affect high-impedance sources and high frequencies; the ammeter’s internal resistance makes the short circuit less than “perfect”.</div>
+    <div class="warnbox"><b>Discharge with capacitive loads.</b> Before changing a series C load, disconnect the source and discharge the capacitor through a resistor; energy may remain, especially in large capacitances.</div>
+    <div class="info"><b>Common mistakes:</b> saying Z<sub>Th</sub> = |V<sub>oc</sub>|/|I<sub>sc</sub>| and forgetting the angle · adding angles in division · measuring V<sub>oc</sub> and I<sub>sc</sub> against references with different phases · mixing up Vpp, peak and rms values · zeroing a dependent source · taking the amplitude on the generator display as the open-circuit voltage · including the element of interest in the source transformation.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve these before entering the lab. The questions use the same numbers as the examples in the lecture notes.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Thevenin Equivalent of the Black Box (as Phasors)</h2>
+  <p class="lead">The box has two terminals (a, b) and a REF output synchronous with the internal source. The oscilloscope shows REF on CH1 and the probe you select on CH2: the a–b voltage or the voltage across the 1 Ω shunt (= current).</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info"><b>Why are two measurements enough?</b> The a–b behaviour of a linear network is like a straight line (in the phasor plane): V = V<sub>Th</sub> − Z<sub>Th</sub>I. Two points (I = 0 and V = 0) determine the line: V<sub>oc</sub> = V<sub>Th</sub>, I<sub>sc</sub> = V<sub>Th</sub>/Z<sub>Th</sub>.</div>
+        <div class="info"><b>Why phase?</b> Magnitudes alone give |Z<sub>Th</sub>|; but separating R<sub>Th</sub> and X<sub>Th</sub> requires the angle: θ = ∠V<sub>Th</sub> − ∠I<sub>N</sub>. Since the two measurements are made at different times, a common reference (REF) is essential.</div>
+        <div class="info"><b>Worked mini example:</b> suppose V<sub>oc</sub> = 2.40 V ∠−20° and I<sub>sc</sub> = 30.0 mA ∠+25° are measured. |Z| = 2.40/0.030 = 80 Ω, θ = −20° − 25° = −45° → Z<sub>Th</sub> = 56.6 − j56.6 Ω (capacitive).</div>
+        <div class="warnbox"><b>Practical warning:</b> the short circuit is not “really” zero ohms: the ammeter (0.1 Ω) and shunt (1 Ω) are in series. When |Z<sub>Th</sub>| is a few tens of ohms this means a 2–4% error; discuss it in the report. For low-impedance sources, measurements with two different loads are used instead of a short-circuit measurement.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" style="margin-top:12px" id="d1scope"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><svg id="d1sch" class="schem" viewBox="0 0 480 240"></svg></div>
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d1rec">Record (R)</button><button class="btn sec small" id="d1del">Delete last row</button><button class="btn sec small" id="d1csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Load</th><th>|V<sub>ab</sub>| (V)</th><th>|I| (mA)</th><th>CH2</th><th>Δt cursor (µs)</th></tr></thead><tbody></tbody></table></div>
+          <p style="font-size:12px;color:var(--muted);margin:6px 0 0">If you record while the cursors are on, Δt is also written to the table. Converting Δt to a phasor is up to you.</p>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Verifying the Model by Changing the Load</h2>
+  <p class="lead">The same black box. Using the V<sub>Th</sub> and Z<sub>Th</sub> you found in Experiment 1, |V<sub>L</sub>| is predicted for each load and compared with the measurement. A bad model is exposed here.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Your Thevenin model</h3>
+        <table class="data" style="width:auto">
+          <tr><td class="l">|V<sub>Th</sub>| (V, rms)</td><td><input type="text" id="d2vm" size="8"></td></tr>
+          <tr><td class="l">∠V<sub>Th</sub> (°, relative to REF)</td><td><input type="text" id="d2va" size="8"></td></tr>
+          <tr><td class="l">R<sub>Th</sub> (Ω)</td><td><input type="text" id="d2zr" size="8"></td></tr>
+          <tr><td class="l">X<sub>Th</sub> (Ω)</td><td><input type="text" id="d2zi" size="8"></td></tr>
+        </table>
+        <div class="info">Prediction: |V<sub>L</sub>| = |V<sub>Th</sub>·Z<sub>x</sub>/(Z<sub>Th</sub> + Z<sub>x</sub>)|, Z<sub>x</sub> = Z<sub>L</sub> + 1.1 Ω (ammeter + shunt). Error = (model − measurement)/measurement.</div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info"><b>Why try a reactive load too?</b> Purely resistive loads are sensitive only to |Z<sub>Th</sub>| and partly to the angle. An R + C load cancels part of X<sub>Th</sub> (similar to series resonance) and the current rises noticeably: if you got the sign of X<sub>Th</sub> wrong, the error grows here.</div>
+        <div class="info"><b>Power hint:</b> with a purely resistive load, the load power is maximum around R<sub>L</sub> = |Z<sub>Th</sub>|. (The exact condition for maximum power transfer, Z<sub>L</sub> = Z<sub>Th</sub>*, is the topic of later weeks.)</div>
+        <div class="warnbox"><b>Practical warning:</b> check the power rating of the load resistor: P = I²R. With low-resistance loads the current grows; a ¼ W resistor heats up and changes value, and your measurement drifts.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d2rec">Record (R)</button><button class="btn sec small" id="d2del">Delete last row</button><button class="btn sec small" id="d2csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Load</th><th>Z<sub>L</sub> (Ω)</th><th>|V<sub>L</sub>| meas. (V)</th><th>|I<sub>L</sub>| (mA)</th><th>|V<sub>L</sub>| model</th><th>Error %</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <b>|V<sub>L</sub>| – R<sub>L</sub></b> <span style="font-size:12px">(blue measurement, orange your model)</span>
+          <canvas id="d2plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · The Function Generator’s 50 Ω, Source Transformation and Norton</h2>
+  <p class="lead">The generator you use every day is not an ideal source: it contains a 50 Ω series resistance. Its display shows the amplitude based on a “50 Ω” or “High-Z” load assumption.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Model panel</h3>
+        <div class="row" style="font-size:14px;margin-bottom:6px"><label>Source driving the load <select id="d3src"><option value="real">Real generator</option><option value="thev">My Thevenin model</option><option value="norton">My Norton model</option></select></label></div>
+        <table class="data" style="width:auto">
+          <tr><td class="l">V<sub>Th</sub> (Vpp)</td><td><input type="text" id="d3vth" size="7"></td><td class="l">R<sub>Th</sub> (Ω)</td><td><input type="text" id="d3rth" size="7"></td></tr>
+          <tr><td class="l">I<sub>N</sub> (mA, peak)</td><td><input type="text" id="d3in" size="7"></td><td class="l">R<sub>N</sub> (Ω)</td><td><input type="text" id="d3rn" size="7"></td></tr>
+        </table>
+        <div class="info">When you select a model, the bench generator is removed from the circuit and your model drives the load. If it gives the same voltage as the real generator at the same R<sub>L</sub>, your model is equivalent at the terminals.</div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info"><b>Why is the display “wrong”?</b> The generator output is designed to be connected to a 50 Ω coaxial line and a 50 Ω termination. In “50 Ω” mode the display shows E/2 (the voltage across a 50 Ω load). When you connect it to the oscilloscope’s 1 MΩ input you measure E, i.e. <b>twice as much</b>.</div>
+        <div class="info"><b>Source transformation:</b> E and series 50 Ω ↔ I<sub>N</sub> = E/50 Ω and parallel 50 Ω. Going from Vpp to peak current: I<sub>N,peak</sub> = (V<sub>Th,pp</sub>/2)/R<sub>Th</sub>.</div>
+        <div class="warnbox"><b>Practical warning:</b> short-circuiting the generator output does no harm on most instruments (the 50 Ω limits the current) but heats the output stage; do not leave it for long. Never connect an external DC voltage (e.g. a supply) to the generator output.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" style="margin-top:12px" id="d3scope"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><svg id="d3sch" class="schem" viewBox="0 0 500 245"></svg></div>
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Record (R)</button><button class="btn sec small" id="d3del">Delete last row</button><button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Source</th><th>Generator setting</th><th>R<sub>L</sub></th><th>V<sub>L</sub> (Vpp)</th></tr></thead><tbody></tbody></table></div>
+          <p style="font-size:12px;color:var(--muted);margin:6px 0 0">V<sub>L</sub> (Vpp) is the oscilloscope measurement; the V1 voltmeter shows the rms value (Vpp = 2√2 · V<sub>rms</sub>).</p>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Why was phase needed to find Z_Th? Where did your model’s error come from? Why did the generator display differ by a factor of two?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). To type an <b>exact value</b> or choose from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope:</b> measure Δt with CURSOR (drag on the screen); X-Y opens Lissajous mode; AUTO sets the scales.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>6</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta04.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h04', ders: 'Circuit Theory II', hafta: 4,
+  doc: [
+    { id: 'CLO1', t: 'Determines the Thevenin and Norton equivalents of a linear AC network as phasors from open-circuit/short-circuit measurements.', mc: [1, 2, 4, 5] },
+    { id: 'CLO2', t: 'Measures phase against a common reference with the oscilloscope and computes complex impedance by phasor division.', mc: [1, 4, 5] },
+    { id: 'CLO3', t: 'Verifies the equivalent-circuit model with different loads and evaluates error sources (instrument loading, ammeter resistance).', mc: [2, 3, 5] },
+    { id: 'CLO4', t: 'Applies source transformation; models a real function generator by measuring its internal resistance.', mc: [1, 3, 4, 6] },
+    { id: 'CLO5', t: 'Presents findings in writing as a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To measure the open-circuit voltage and short-circuit current of an unknown AC black box as magnitude and phase and find its Thevenin/Norton equivalent.', doc: ['CLO1', 'CLO2'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Black box (1 kHz, with REF output), TRMS AC voltmeter (10 MΩ), AC ammeter, 1 Ω shunt, two-channel oscilloscope.',
+      guvenlik: 'Short-circuit measurements are made only on current-limited, low-power sources; the short-circuit current of the mains is never measured. Start the ammeter on a high range; connect the oscilloscope ground only to terminal b (common).',
+      veri: '|V<sub>oc</sub>|, |I<sub>sc</sub>|, Δt and phases relative to REF; calculation of Z<sub>Th</sub> = V<sub>Th</sub>/I<sub>N</sub>.',
+      tartisma: 'Estimate numerically the effect of the ammeter and shunt resistance on the I<sub>N</sub> and Z<sub>Th</sub> result. How many degrees of Z<sub>Th</sub> angle does a 1 µs error in the phase measurement correspond to?' },
+    d2: { amac: 'To test the Thevenin model found in Experiment 1 with resistive and reactive loads and measure the model’s prediction error.', doc: ['CLO3'], mc: [2, 3, 5],
+      gerec: 'Black box, load resistor box, series C and L boxes, AC voltmeter and ammeter.',
+      guvenlik: 'Check the power rating of the load resistor (P = I²R); discharge capacitive loads before changing them.',
+      veri: 'Table of load, |V<sub>L</sub>|, |I<sub>L</sub>|, model prediction and percentage error; |V<sub>L</sub>|–R<sub>L</sub> plot.' },
+    d3: { amac: 'To measure the function generator’s 50 Ω internal resistance and the meaning of its display mode; to convert the Thevenin model to a Norton model by source transformation and show terminal equivalence.', doc: ['CLO4'], mc: [1, 3, 4, 6, 10],
+      gerec: 'Function generator (50 Ω, 50 Ω/High-Z mode), load resistor box, oscilloscope, AC voltmeter.',
+      guvenlik: 'Do not connect an external DC voltage to the generator output; avoid prolonged short circuits. Confusing the amplitude measured on an unmatched load with the display leads to misadjusted circuits and wasted energy.',
+      veri: 'Table of mode, display amplitude, R<sub>L</sub>, V<sub>L</sub> (Vpp); model–real comparison.',
+      tartisma: 'While the Norton and Thevenin models behave the same at the terminals, why is the power dissipated inside them different? Research why 50 Ω matching is the standard in RF and cable systems (economic and technical reasons).' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

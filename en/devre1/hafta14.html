@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 14 · Series RLC and Semester Review — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 14 — Series RLC Circuits and Semester Review</h1>
+    <div class="sub">α = R/2L · Series–parallel duality · Ringing and damping · Ignition coil · Mixed review</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Series and Parallel</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Square-Wave Ringing</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Ignition Coil</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Semester Review</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjust.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data are saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 14 · Series RLC Circuits and Semester Review</h2>
+  <p class="lead">Lecture notes: <b>Section 4.6 Series RLC Circuits</b> (Examples 4.6, 4.16, 4.17, the duality table, “Common mistake: confusing the α formula in the series circuit”) and the Chapter 4 review.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will be able to</h3>
+      <ol class="steps">
+        <li>measure the natural and step responses of the series RLC and compare <b>α = R/2L</b> with the parallel circuit’s α = 1/2RC <b>side by side</b> using the same components;</li>
+        <li>measure <b>ringing</b> on a line (cable + load) driven by a square wave and suppress it with a series damping resistor;</li>
+        <li>examine how a vehicle <b>ignition coil</b> produces high voltage by LC oscillation, the role of the capacitor and the effect of the dwell time;</li>
+        <li>wrap up the semester by answering the question <b>which response?</b> quickly and correctly for random circuits.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Adjustable DC supply · Square-wave generator (5 Ω / 50 Ω output) · Resistor, inductor, capacitor boxes · Two-channel digital oscilloscope (with cursors) · 12 V battery simulation, ignition coil (L<sub>p</sub> = 5 mH, 1:100), contact breaker and capacitor · 1000:1 high-voltage probe.</p>
+      <div class="info">The ignition experiment is a simulation only. The secondary of a real ignition coil produces tens of thousands of volts; in a teaching lab this experiment is done only with a suitably insulated setup and under supervision of a responsible person.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First study the comparison table in the <b>Background</b> and solve the <b>Pre-lab</b>. In each experiment the lab-sheet steps are ticked when you make the correct setting. Record measurements with <kbd>R</kbd>. Experiment 4 is an end-of-semester review: request a new circuit and find its type and α.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Same Mathematics, the Only Difference Is the Formula for α</h2>
+  <p class="lead">The series RLC is the “dual” of the parallel circuit (duality): voltage ↔ current, KCL ↔ KVL, R ↔ 1/R.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Intuition: who dissipates the energy?</h3>
+      <p style="font-size:14px;line-height:1.65">In the series circuit the current has a single path and always flows through R: as R increases more energy turns into heat and damping <b>increases</b>. In the parallel circuit, R is a “leakage path” for the L–C oscillation: as R increases the leakage decreases and damping <b>decreases</b>. Easy check: set R → 0; the series circuit becomes a lossless LC (α → 0), while in the parallel circuit R is a short circuit (α → ∞).</p>
+      <p style="font-size:14px;line-height:1.65">Series RLC is everywhere: the inductance of a long cable with the input capacitance of a receiver (<b>ringing</b> on digital lines), parasitic LC in switch-mode power supplies, the <b>ignition coil</b> in vehicles, the wave-shaping circuit of defibrillators, the series-resonant filter of a radio receiver.</p>
+      <svg viewBox="0 0 440 150" style="width:100%;max-width:460px;display:block;margin:auto" aria-label="Series and parallel RLC">
+        <g fill="none" stroke="#222" stroke-width="2">
+          <circle cx="30" cy="75" r="14" fill="#fff"/><path d="M30,61 V25 H55 l5,-6 l10,12 l10,-12 l10,12 l5,-6 H110 a5,5 0 0 1 10,0 a5,5 0 0 1 10,0 a5,5 0 0 1 10,0 H180 V65 M168,65 h24 M168,73 h24 M180,73 V125 H30 V89"/>
+          <circle cx="260" cy="75" r="14" fill="#fff"/><path d="M260,61 V25 H420 M260,89 V125 H420 M310,25 V45 l-6,4 l12,8 l-12,8 l12,8 l-6,4 V125 M365,25 V50 a5,5 0 0 1 0,10 a5,5 0 0 1 0,10 a5,5 0 0 1 0,10 V125 M415,25 V70 M403,70 h24 M403,78 h24 M415,78 V125"/>
+        </g>
+        <text x="100" y="145" font-size="12" text-anchor="middle" fill="#0b5cad">Series: common current, α = R/2L</text>
+        <text x="340" y="145" font-size="12" text-anchor="middle" fill="#c62828">Parallel: common voltage, α = 1/2RC</text>
+        <text x="75" y="15" font-size="11" text-anchor="middle">R</text><text x="125" y="15" font-size="11" text-anchor="middle">L</text><text x="196" y="72" font-size="11">C</text>
+        <text x="322" y="80" font-size="11">R</text><text x="375" y="80" font-size="11">L</text><text x="430" y="94" font-size="11">C</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Series and parallel RLC comparison table</h3>
+      <table class="data">
+        <tr><th></th><th>Parallel RLC</th><th>Series RLC</th></tr>
+        <tr><td class="l">Common quantity</td><td>voltage v</td><td>current i</td></tr>
+        <tr><td class="l">Basic law</td><td>KCL + derivative</td><td>KVL + derivative</td></tr>
+        <tr><td class="l">Neper frequency</td><td>α = 1/(2RC)</td><td>α = R/(2L)</td></tr>
+        <tr><td class="l">Resonant frequency</td><td>ω<sub>0</sub> = 1/√(LC)</td><td>ω<sub>0</sub> = 1/√(LC)</td></tr>
+        <tr><td class="l">If R increases</td><td>damping decreases</td><td>damping increases</td></tr>
+        <tr><td class="l">Critical condition</td><td>R = ½√(L/C)</td><td>R = 2√(L/C)</td></tr>
+        <tr><td class="l">Initial conditions</td><td>v(0) = V<sub>0</sub>, i<sub>L</sub>(0) = I<sub>0</sub></td><td>i(0) = I<sub>0</sub>, v<sub>C</sub>(0) = V<sub>0</sub></td></tr>
+        <tr><td class="l">Solved for in the step</td><td>i<sub>L</sub> → I<sub>s</sub></td><td>v<sub>C</sub> → V<sub>s</sub></td></tr>
+        <tr><td class="l">Initial derivative</td><td>di<sub>L</sub>/dt = V<sub>0</sub>/L</td><td>dv<sub>C</sub>/dt = I<sub>0</sub>/C</td></tr>
+        <tr><td class="l">Second initial condition in the natural response</td><td>dv/dt = −(V<sub>0</sub>/R + I<sub>0</sub>)/C</td><td>di/dt = −(RI<sub>0</sub> + V<sub>0</sub>)/L</td></tr>
+      </table>
+      <h3>Common formulas</h3>
+      <table class="data">
+        <tr><td class="l">Roots</td><td class="l">s<sub>1,2</sub> = −α ± √(α² − ω<sub>0</sub>²), ω<sub>d</sub> = √(ω<sub>0</sub>² − α²)</td></tr>
+        <tr><td class="l">Solution</td><td class="l">final value + {A<sub>1</sub>e<sup>s<sub>1</sub>t</sup> + A<sub>2</sub>e<sup>s<sub>2</sub>t</sup> | (D<sub>1</sub>t + D<sub>2</sub>)e<sup>−αt</sup> | e<sup>−αt</sup>(B<sub>1</sub>cos + B<sub>2</sub>sin)}</td></tr>
+        <tr><td class="l">Overshoot, peak time</td><td class="l">%OS = 100e<sup>−απ/ω<sub>d</sub></sup>, t<sub>p</sub> = π/ω<sub>d</sub></td></tr>
+        <tr><td class="l">LC energy transfer</td><td class="l">½LI<sub>0</sub>² = ½CV<sub>max</sub>² → V<sub>max</sub> = I<sub>0</sub>√(L/C)</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Points to watch in a real lab</h3>
+    <div class="warnbox"><b>An ignition coil is dangerous even if not lethal.</b> The secondary produces 15–40 kV; a shock can cause falls through muscle contraction and serious consequences for people with pacemakers. Do not touch a running coil circuit, do not hold the spark-plug lead by hand, use insulated pliers and a suitable HV probe.</div>
+    <div class="warnbox"><b>Interrupting inductor current = high voltage.</b> When the switch opens in a series circuit, v = L di/dt appears across the contacts. Put a freewheeling diode or an RC snubber on every switch that interrupts a relay or motor coil.</div>
+    <div class="warnbox"><b>Discharge the capacitor.</b> In a series RLC, v<sub>C</sub> may exceed the source voltage after a step (Example 4.6: 67 V with a 48 V source). The capacitor’s voltage rating must be chosen according to the <b>peak value</b>, not the source; discharge it through a resistor at the end of the experiment.</div>
+    <div class="warnbox"><b>Oscilloscope probe and ground spring.</b> When measuring nanosecond ringing, a long ground clip itself adds 100–200 nH of inductance and shows false ringing. Use the probe’s short ground spring and measure in the 10× position.</div>
+    <div class="warnbox"><b>Electrolytic capacitors and reverse voltage.</b> In an underdamped series circuit v<sub>C</sub> may change sign (natural response). Do not use a polarised capacitor; choose a film capacitor.</div>
+    <div class="warnbox"><b>Resistor power rating and inductance.</b> The damping resistor must not be wire-wound (its own inductance increases ringing); choose carbon film or metal film. In the battery circuit the ballast resistor produces several watts of heat.</div>
+    <div class="info"><b>Common mistakes:</b> using α = 1/2RC in the series circuit (check with R → 0!) · mixing up the critical conditions (½√(L/C) ↔ 2√(L/C)) · not including the generator’s internal resistance in R in the series circuit · forgetting that v<sub>C</sub>(∞) = V<sub>s</sub> and i(∞) = 0 in the series step · assuming the overshoot cannot exceed the source.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before coming to the lab (consistent with the Chapter 4 “Test yourself” questions).</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Series and Parallel RLC Side by Side</h2>
+  <p class="lead">Both circuits use the same R, L and C. In <b>Natural</b> mode the capacitors start charged to V<sub>0</sub>; in <b>Step</b> mode V<sub>s</sub> is applied to the series circuit and 10 mA to the parallel circuit. The cursor is at the same relative position on both plots.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">Equation of the series circuit (KVL): <span class="eq">d²i/dt² + (R/L) di/dt + i/(LC) = 0</span> α = R/2L, ω<sub>0</sub> = 1/√(LC).</div>
+        <div class="info">In the series natural response, if i(0) = 0 there is no voltage across R; the capacitor voltage appears entirely across the inductor: <span class="eq">di/dt(0<sup>+</sup>) = −V<sub>0</sub>/L</span></div>
+        <div class="info">In the series step the capacitor voltage <b>can exceed</b> the source: the inductor keeps charging the capacitor until its current reaches zero.</div>
+        <div class="warnbox">The natural-response experiment uses a capacitor charged to 100 V: on a real bench this voltage is dangerous. Connect the capacitor with insulated leads and discharge it through a resistor at the end of the experiment.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="grid-half" style="margin-top:12px">
+        <div class="card"><b style="color:#0b5cad">Series RLC</b><svg id="d1schS" class="schem" viewBox="0 0 760 250"></svg><canvas id="d1plotS" width="560" height="300" style="width:100%"></canvas></div>
+        <div class="card"><b style="color:#c62828">Parallel RLC</b><svg id="d1schP" class="schem" viewBox="0 0 760 250"></svg><canvas id="d1plotP" width="560" height="300" style="width:100%"></canvas></div>
+      </div>
+      <div class="card"><div class="row"><b>Cursor</b><input type="range" id="d1cur" min="0" max="1000" value="200" style="flex:1"></div><div id="d1curTxt" style="font-family:Consolas,monospace;font-size:13px;margin-top:4px"></div></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Mode</th><th>V</th><th>R</th><th>L</th><th>C</th><th>t (series)</th><th>series value</th><th>t (parallel)</th><th>parallel value</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Ringing with a Square Wave and the Damping Resistor</h2>
+  <p class="lead">A logic gate drives a 1 nF load through a cable with 1 µH inductance: this is a <b>series RLC</b>. CH1 shows the driver output, CH2 the voltage at the load; the rising edge is at the 1st division.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">The series R is the driver’s internal resistance + the line resistance + the added R<sub>d</sub>: <span class="eq">α = (R<sub>g</sub> + r + R<sub>d</sub>)/(2L)</span> The line’s “characteristic resistance” √(L/C) is 31.6 Ω here.</div>
+        <div class="info">The ringing frequency is almost ω<sub>0</sub>; the time between two successive peaks is T<sub>d</sub> = 2π/ω<sub>d</sub>.</div>
+        <div class="info">A real cable is a distributed LC line; here it is modelled as <b>lumped</b> with a single L and C. This model is good if the edge time is much longer than the line delay.</div>
+        <div class="warnbox">The ringing of a 5 V logic signal can shoot up to 8–9 V: the receiver’s input protection diodes conduct and the IC may be damaged. To see the ringing on the oscilloscope use the probe’s <b>short ground spring</b>.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d2inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d2scopeRow"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>R<sub>g</sub></th><th>R<sub>d</sub></th><th>L</th><th>C</th><th>Δt (cursor)</th><th>CH2 max (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Ignition Coil: High-Voltage Generation with LC</h2>
+  <p class="lead">While the contact breaker is closed, the battery drives current through the coil primary (RL charging). At t = 0 the breaker opens: the primary inductance and the capacitor across the breaker form a <b>series RLC</b>; the primary voltage rises to hundreds of volts and the secondary (×100) to tens of thousands of volts.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">During the closed (dwell) time: <span class="eq">i<sub>p</sub>(t) = (V<sub>b</sub>/R)(1 − e<sup>−t/τ</sup>), τ = L<sub>p</sub>/R</span></div>
+        <div class="info">When the breaker opens, energy passes from the coil to the capacitor: <span class="eq">½L<sub>p</sub>I<sub>0</sub>² ≈ ½Cv<sub>max</sub>² → v<sub>max</sub> ≈ I<sub>0</sub>√(L<sub>p</sub>/C)</span> Secondary voltage ≈ N·v<sub>p</sub>.</div>
+        <div class="info">The same principle is used in the <b>boost converter</b>, camera flash and electric fence drivers: energy stored in the inductor appears as high voltage when the current is interrupted.</div>
+        <div class="warnbox"><b>Safety:</b> In a real ignition circuit the secondary is 15–40 kV. While it is running do not touch the coil, the spark-plug lead or the distributor; measure only with a suitable HV probe; people with pacemakers must not take part in this experiment. Electronic ignition modules also produce 300–400 V on the primary.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 250"></svg><div id="d3stat" class="info"></div></div>
+      <div class="grid-half">
+        <div class="card"><b>Dwell: primary current</b><canvas id="d3plotI" width="560" height="300" style="width:100%"></canvas></div>
+        <div class="card"><b>After the breaker opens: primary v<sub>C</sub></b><canvas id="d3plotV" width="560" height="300" style="width:100%"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Record (R)</button>
+          <button class="btn sec small" id="d3del">Delete last row</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Dwell (ms)</th><th>R<sub>b</sub> (Ω)</th><th>C</th><th>Spark</th><th>Breaker arc</th><th>Secondary (kV)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · End-of-Semester Mixed Review: Which Response?</h2>
+  <p class="lead">A random series or parallel RLC circuit appears. Select its type, enter α (rad/s) and check; then see the response curve.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">Method: (1) is the circuit series or parallel? (2) compute α with the correct formula, (3) ω<sub>0</sub> = 1/√(LC), (4) compare: α &gt; ω<sub>0</sub> overdamped, α = ω<sub>0</sub> critically damped, α &lt; ω<sub>0</sub> underdamped.</div>
+        <div class="info">Quick check: find the critical resistance (parallel ½√(L/C), series 2√(L/C)) and compare R with it; the direction is opposite in series and parallel.</div>
+        <div class="warnbox">Both in the exam and on the bench the most common mistake is units: do not calculate without converting mH, µF, nF to base units.</div>
+      </div>
+    </div>
+    <div>
+      <div class="card"><svg id="d4sch" class="schem" viewBox="0 0 760 250"></svg>
+        <div class="row" id="d4kind" style="margin-top:6px"><b>Type:</b>
+          <button class="seg-btn" data-k="aşırı">Overdamped</button><button class="seg-btn" data-k="kritik">Critical</button><button class="seg-btn" data-k="az">Underdamped</button>
+          <label style="margin-left:12px">α = <input type="text" id="d4alpha" size="10" placeholder="rad/s"></label>
+          <button class="btn small" id="d4check">Check (R)</button><button class="btn sec small" id="d4new">New circuit</button>
+        </div>
+        <div id="d4fb" class="info"></div>
+        <div id="d4score" style="font-size:13px;font-weight:700"></div>
+        <canvas id="d4plot" width="760" height="300" style="width:100%"></canvas>
+      </div>
+      <div class="card">
+        <div class="row"><b>Answer history</b><span class="grow"></span><button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>Circuit</th><th>R</th><th>L</th><th>C</th><th>Answer (type)</th><th>Answer α</th><th></th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Why is the role of R opposite in series and parallel circuits? How did you suppress the ringing? What is the role of the capacitor in the ignition circuit?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). To type an <b>exact value</b> or pick from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjust with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope cursors (Experiment 2):</b> press the CURSOR button and drag on the screen; the cursor nearest to you moves.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta14.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h14', ders: 'Circuit Theory I', hafta: 14,
+  doc: [
+    { id: 'CLO1', t: 'Sets up the equation of the series RLC circuit with KVL; determines the response type with α = R/2L and compares it with the parallel circuit.', mc: [1, 2] },
+    { id: 'CLO2', t: 'Measures ringing on a square-wave-driven line with an oscilloscope and designs the damping resistor.', mc: [2, 3, 4, 5] },
+    { id: 'CLO3', t: 'Analyses high-voltage generation by inductive energy storage and assesses the safety risks.', mc: [1, 2, 6] },
+    { id: 'CLO4', t: 'Determines the response type of second-order circuits quickly and correctly (semester review).', mc: [1, 2, 11] },
+    { id: 'CLO5', t: 'Presents the findings in writing in a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To measure the natural and step responses of series and parallel RLC circuits side by side with the same R, L, C and show the opposite effect of R.', doc: ['CLO1'], mc: [1, 2, 4, 5],
+      gerec: 'DC supply, resistor/inductor/capacitor boxes, oscilloscope.',
+      guvenlik: 'A capacitor charged to 100 V is dangerous; use insulated leads and discharge it at the end of the experiment; choose the capacitor voltage rating according to the overshoot peak.',
+      veri: 'Series i/v<sub>C</sub> and parallel v/i<sub>L</sub> values read with the cursor.',
+      tartisma: 'What do the two circuits turn into in the limits R → 0 and R → ∞?' },
+    d2: { amac: 'To measure ringing in a square-wave-driven cable–load setup and design a series damping resistor for critical damping / 5% overshoot.', doc: ['CLO2'], mc: [2, 3, 4, 5, 10],
+      gerec: 'Square-wave generator (5 Ω/50 Ω), line model (L, C), adjustable damping resistor, two-channel oscilloscope.',
+      guvenlik: 'Ringing can overvoltage the receiver input; keep the probe ground spring short.',
+      veri: 'Ringing period, CH2 peak value, overshoot for different R<sub>d</sub> and driver impedances.',
+      tartisma: 'How does a series termination resistor affect edge speed and power consumption; which solution would be chosen on cost grounds?' },
+    d3: { amac: 'To examine RL charging in an ignition coil followed by high-voltage generation through series LC oscillation; to see the effect of the capacitor and the dwell time.', doc: ['CLO3'], mc: [1, 2, 5, 6],
+      gerec: '12 V battery simulation, ignition coil (5 mH, 1:100), contact breaker, capacitor, ballast resistor, 1000:1 HV probe.',
+      guvenlik: 'The secondary produces 15–40 kV; do not touch the running circuit, use only an HV probe; people with pacemakers must not take part; the ballast resistor gets hot.',
+      veri: 'Dwell time, C, spark and breaker-arc status, secondary peak voltage.',
+      tartisma: 'Breaker arcing means both energy loss and contact wear (maintenance, waste); how does electronic ignition solve this problem?' },
+    d4: { amac: 'To consolidate the semester by determining the response type and α of random series/parallel RLC circuits.', doc: ['CLO4'], mc: [1, 2, 11],
+      gerec: 'Simulation (random circuit generator).',
+      guvenlik: 'Convert units to base units in calculations; a wrong unit means a wrong component choice in a real circuit.',
+      veri: 'Answer history: circuit, R, L, C, selected type, α, correctness.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

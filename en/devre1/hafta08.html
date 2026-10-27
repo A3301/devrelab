@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 8 · Midterm Exam Week — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<style>
+  .tp{cursor:pointer}
+  .tp circle{fill:#fff;stroke:#c62828;stroke-width:2.5}
+  .tp.sel circle{fill:#c62828}
+  .tp text{font-size:11px;font-weight:700;fill:#c62828}
+  .rsel{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:14px}
+  .timer{font:700 28px Consolas,monospace;color:#0b5cad}
+  .timer.low{color:#c62828}
+  .exq{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:6px 0;background:#fbfcfe;font-size:14px;line-height:1.5}
+  .exq.ok{border-color:#1a8a4a;background:#effaf2}
+  .exq.bad{border-color:#c62828;background:#fdf0f0}
+  .mist li{margin:5px 0;font-size:14px;line-height:1.5}
+</style>
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 8 — Midterm Exam Week: Practical Exam</h1>
+    <div class="sub">Troubleshooting · Design task · Waveform recognition · Timed practice exam (Sections 1–2)</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">0%</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Exam Preparation Summary</button>
+  <button data-p="onhaz"><span class="dot"></span>1b · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>2 · Task 1: Find the Fault</button>
+  <button data-p="d2"><span class="dot"></span>3 · Task 2: Sensor Interface</button>
+  <button data-p="d3"><span class="dot"></span>4 · Task 3: Waveform Recognition</button>
+  <button data-p="d4"><span class="dot"></span>5 · Task 4: Practice Exam</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> for fine adjustment.<br><br><kbd>R</kbd> record measurement/design · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 8 · Midterm Exam Week — Practical Exam and Project</h2>
+  <p class="lead">Scope: <b>Section 1</b> (op-amp: terminals, ideal model, inverting/non-inverting/summing/difference amplifier, real limits) and <b>Section 2</b> (inductor, capacitor, series/parallel connection, mutual inductance).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this week you will</h3>
+      <ol class="steps">
+        <li>Be able to find the fault in a broken op-amp circuit systematically <b>by measuring node voltages with a multimeter</b>.</li>
+        <li>Be able to design a <b>buffer + difference stage + non-inverting gain</b> chain for a sensor with E12 resistors and meet a 0–10 V target.</li>
+        <li>Be able to recognise from the oscilloscope screen whether an element is <b>R, L or C</b>, or whether the circuit integrates/differentiates, and calculate its value.</li>
+        <li>Measure your speed and accuracy in a <b>timed 20-question</b> practice exam generated with random numbers.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Symmetric ±15 V power supply (current limited) · Digital multimeter (10 MΩ input) · Adjustable DC supply · Precision sensor simulator (bridge output, with internal resistance) · Two-channel oscilloscope (with cursors) and 100 Ω current shunt · Ready-made boards based on the µA741.</p>
+      <div class="info">Op-amp model: µA741, realistic saturation <b>±13.5 V</b> on a ±15 V supply, input bias current ≈ 80 nA. The practice exam questions use the lecture assumption (saturation = ±V<sub>CC</sub>); use this assumption unless the question says otherwise.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Work order</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First read the <b>Exam Preparation Summary</b> and solve the <b>Pre-lab</b> questions. Tasks 1–3 are practical exam stations: at each station the lab-sheet steps are checked off as you do the right thing; scenarios are generated randomly each time, so memorising does not help. Leave Task 4 to the end and try to solve it without looking at your notes once the timer starts. Your report contains the results of all tasks.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Exam Preparation Summary · Sections 1 and 2 on One Page</h2>
+  <p class="lead">Final review before the midterm: the main idea of both sections, all formulas on one card and the 10 most common mistakes.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · The essence of Section 1: two constraints solve everything</h3>
+      <p style="font-size:14px;line-height:1.65">An op-amp amplifies the <b>difference</b> of its two inputs with a very large gain. With negative feedback the output automatically finds the value that drives the difference towards zero: <b>v<sub>p</sub> = v<sub>n</sub></b> and <b>i<sub>p</sub> = i<sub>n</sub> = 0</b>. All amplifier solutions follow the same recipe: (1) write the virtual short, (2) write KCL at the inverting terminal, (3) solve for v<sub>o</sub>, (4) <b>compare the result with ±V<sub>CC</sub></b>.</p>
+      <p style="font-size:14px;line-height:1.65">A real op-amp departs from the ideal in three places: <b>saturation</b> (the output cannot exceed the supply), <b>bandwidth</b> (gain × bandwidth = GBW is constant) and <b>slew rate</b> (SR limit for large signals).</p>
+      <h3>2 · The essence of Section 2: the element responds to the slope, not the value</h3>
+      <p style="font-size:14px;line-height:1.65">An <b>inductor</b> produces a voltage opposing a change of current (v = L di/dt): its current <b>cannot change instantaneously</b>, and it is a short circuit at DC. A <b>capacitor</b> draws a current in response to a change of voltage (i = C dv/dt): its voltage <b>cannot change instantaneously</b>, and it is an open circuit at DC. Both store energy and give it back; ideally their average power is zero. So if you see <b>triangular current → square voltage</b> on the oscilloscope there is an inductor, and if you see <b>triangular voltage → square current</b> there is a capacitor.</p>
+      <h3>3 · Troubleshooting recipe</h3>
+      <svg viewBox="0 0 520 120" style="width:100%;max-width:520px;display:block" aria-label="Troubleshooting flow">
+        <g font-family="Segoe UI,Arial" font-size="12" text-anchor="middle">
+          <rect x="4" y="30" width="110" height="56" rx="8" fill="#eaf2fc" stroke="#0b5cad"/><text x="59" y="54">1 · Supply</text><text x="59" y="72">pins 7 and 4</text>
+          <rect x="140" y="30" width="110" height="56" rx="8" fill="#eaf2fc" stroke="#0b5cad"/><text x="195" y="54">2 · Inputs</text><text x="195" y="72">v_p = v_n ?</text>
+          <rect x="276" y="30" width="110" height="56" rx="8" fill="#eaf2fc" stroke="#0b5cad"/><text x="331" y="54">3 · Output</text><text x="331" y="72">saturated?</text>
+          <rect x="412" y="30" width="104" height="56" rx="8" fill="#fff4e2" stroke="#e07a10"/><text x="464" y="54">4 · Gain</text><text x="464" y="72">v_o / v_g = ?</text>
+          <path d="M114,58 h22 m-6,-5 l6,5 l-6,5 M250,58 h22 m-6,-5 l6,5 l-6,5 M386,58 h22 m-6,-5 l6,5 l-6,5" stroke="#333" fill="none" stroke-width="1.5"/>
+          <text x="260" y="112" fill="#555">Each step eliminates one class of fault: power first, then feedback, values last.</text>
+        </g>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card (Sections 1 + 2)</h3>
+      <table class="data">
+        <tr><th colspan="2">Op-amp</th></tr>
+        <tr><td class="l">Open loop / saturation</td><td class="l">v<sub>o</sub> = A(v<sub>p</sub>−v<sub>n</sub>), |v<sub>o</sub>| ≤ V<sub>CC</sub>, limit |v<sub>p</sub>−v<sub>n</sub>| &lt; V<sub>CC</sub>/A</td></tr>
+        <tr><td class="l">Ideal constraints</td><td class="l">v<sub>p</sub> = v<sub>n</sub>, i<sub>p</sub> = i<sub>n</sub> = 0 (negative FB)</td></tr>
+        <tr><td class="l">Five-terminal KCL</td><td class="l">i<sub>p</sub>+i<sub>n</sub>+i<sub>o</sub>+i<sub>C+</sub>+i<sub>C−</sub> = 0</td></tr>
+        <tr><td class="l">Inverting</td><td class="l">v<sub>o</sub> = −(R<sub>f</sub>/R<sub>s</sub>) v<sub>g</sub></td></tr>
+        <tr><td class="l">Non-inverting / buffer</td><td class="l">v<sub>o</sub> = (1 + R<sub>f</sub>/R<sub>s</sub>) v<sub>g</sub>; buffer: v<sub>o</sub> = v<sub>g</sub></td></tr>
+        <tr><td class="l">Summing</td><td class="l">v<sub>o</sub> = −R<sub>f</sub>(v<sub>a</sub>/R<sub>a</sub> + v<sub>b</sub>/R<sub>b</sub> + …)</td></tr>
+        <tr><td class="l">Difference (R<sub>2</sub>/R<sub>1</sub> = R<sub>4</sub>/R<sub>3</sub>)</td><td class="l">v<sub>o</sub> = (R<sub>2</sub>/R<sub>1</sub>)(v<sub>b</sub> − v<sub>a</sub>)</td></tr>
+        <tr><td class="l">Finite A (inverting)</td><td class="l">(−R<sub>f</sub>/R<sub>s</sub>) / (1 + (1+R<sub>f</sub>/R<sub>s</sub>)/A)</td></tr>
+        <tr><td class="l">Bandwidth / speed</td><td class="l">f<sub>3dB</sub> = GBW / A<sub>v</sub>; f ≤ SR / (2πV<sub>m</sub>)</td></tr>
+        <tr><td class="l">Offset</td><td class="l">Δv<sub>o</sub> = (1 + R<sub>f</sub>/R<sub>s</sub>) V<sub>os</sub></td></tr>
+        <tr><td class="l">Integrator / differentiator</td><td class="l">v<sub>o</sub> = −(1/RC)∫v<sub>g</sub>dt ; v<sub>o</sub> = −RC dv<sub>g</sub>/dt</td></tr>
+        <tr><th colspan="2">Inductor and capacitor</th></tr>
+        <tr><td class="l">Inductor</td><td class="l">v = L di/dt, i = (1/L)∫v dτ + i(0), w = ½Li²</td></tr>
+        <tr><td class="l">Capacitor</td><td class="l">i = C dv/dt, v = (1/C)∫i dτ + v(0), w = ½Cv², q = Cv</td></tr>
+        <tr><td class="l">Parallel plate</td><td class="l">C = εA/d (cm² → ×10⁻⁴ m²)</td></tr>
+        <tr><td class="l">Series / parallel L</td><td class="l">L<sub>s</sub> = ΣL<sub>k</sub>; 1/L<sub>p</sub> = Σ1/L<sub>k</sub></td></tr>
+        <tr><td class="l">Series / parallel C</td><td class="l">1/C<sub>s</sub> = Σ1/C<sub>k</sub>; C<sub>p</sub> = ΣC<sub>k</sub></td></tr>
+        <tr><td class="l">Sine (ω)</td><td class="l">L: V<sub>m</sub> = ωL I<sub>m</sub>, v leads the current by 90° · C: I<sub>m</sub> = ωC V<sub>m</sub>, i leads the voltage by 90°</td></tr>
+        <tr><td class="l">Mutual inductance</td><td class="l">M = k√(L<sub>1</sub>L<sub>2</sub>), 0 ≤ k ≤ 1; v<sub>2</sub> = L<sub>2</sub>di<sub>2</sub>/dt ± M di<sub>1</sub>/dt</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">The 10 most common mistakes</h3>
+      <ol class="mist">
+        <li><b>Forgetting saturation:</b> writing v<sub>o</sub> = 24 V. Compare every result with ±V<sub>CC</sub>.</li>
+        <li>Dropping <b>the minus sign of the inverting gain</b>.</li>
+        <li>Taking the non-inverting gain as <b>R<sub>f</sub>/R<sub>s</sub></b>; the correct one is <b>1 + R<sub>f</sub>/R<sub>s</sub></b>.</li>
+        <li>Treating <b>virtual ground as real ground</b> and letting current flow into it; i<sub>n</sub> = 0.</li>
+        <li>Using <b>v<sub>p</sub> = v<sub>n</sub></b> with positive feedback as well.</li>
+        <li>In a difference amplifier, writing <b>without matching the resistor ratios</b> v<sub>o</sub> = (R<sub>2</sub>/R<sub>1</sub>)(v<sub>b</sub>−v<sub>a</sub>).</li>
+        <li>Confusing <b>GBW and SR</b>: GBW limits small signals, SR limits large signals; the smaller limit applies.</li>
+        <li>Thinking that the <b>voltage</b> of an inductor and the <b>current</b> of a capacitor cannot change instantaneously (the opposite is true).</li>
+        <li>Thinking the series/parallel rules are <b>the same as for resistors</b>: for capacitors the rules are <b>reversed</b>.</li>
+        <li><b>Unit conversions:</b> mH, µF, nF, cm² → m² (×10⁻⁴), kHz and rad/s (ω = 2πf).</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">⚠ Points to watch in a real laboratory</h3>
+      <div class="warnbox"><b>When troubleshooting, measure the supply first.</b> Keep the black lead of the multimeter on common ground (COM); with the red lead first measure pins 7 and 4 of the IC. If the “CC” lamp on the supply is lit, something is short-circuited: switch the output off.</div>
+      <div class="warnbox"><b>Polarity of an electrolytic capacitor.</b> Long lead / side without the stripe is (+). An electrolytic inserted backwards draws leakage current, heats up, swells and may explode. Do not touch a hot capacitor; cut the supply and let it cool.</div>
+      <div class="warnbox"><b>Resistance is not measured in a powered circuit.</b> The ohm range injects its own current; in a powered circuit it reads wrongly and stresses the instrument. To measure resistance cut the supply and, if possible, disconnect one lead of the component from the circuit.</div>
+      <div class="warnbox"><b>The current range of a multimeter is a short circuit.</b> Trying to measure voltage with the leads in the A/mA socket blows the fuse. Check the range and the socket before every measurement.</div>
+      <div class="warnbox"><b>Do not interrupt an inductor current suddenly.</b> L di/dt becomes large: a spark and a back EMF of hundreds of volts appear at the switch. Use a freewheeling diode in inductive circuits.</div>
+      <div class="warnbox"><b>Discharge a charged capacitor.</b> Large capacitors hold energy even after the supply is cut. Discharge them through a resistor (e.g. 1 kΩ, 1 W) before touching; do not short them with a screwdriver.</div>
+      <div class="warnbox"><b>Oscilloscope ground clip.</b> The ground clips of both probes must be connected to the same node; when measuring the shunt resistor attach the ground clip to the ground side of the shunt, otherwise you short-circuit part of the circuit.</div>
+      <div class="warnbox"><b>Resistor selection.</b> The E12 series has 10% tolerance; for precise gain use 1% (E96) resistors. In a difference amplifier mismatched ratios carry the common-mode voltage to the output.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve these before starting the tasks. Unless stated otherwise the supply is ±15 V, saturation is ±V<sub>CC</sub> and the op-amp is ideal.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= GÖREV 1 ================= -->
+<section class="page" id="d1">
+  <h2>Task 1 · Find the Fault: Non-inverting Amplifier Board</h2>
+  <p class="lead">The circuit on the board <b>should be</b> as in the schematic; but each new board may have a random fault (or no fault at all). Click the red test points (TP) on the schematic to measure with the multimeter, then choose your diagnosis.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">On a healthy board: v<sub>p</sub> = v<sub>g</sub>, <span class="eq">v<sub>n</sub> ≈ v<sub>p</sub></span> and <span class="eq">v<sub>o</sub> = (1 + R<sub>f</sub>/R<sub>s</sub>) v<sub>g</sub></span> Which of these three relations is violated tells you the type of fault.</div>
+        <div class="info"><b>No hint table!</b> Interpret the symptom yourself: if v<sub>p</sub> ≠ v<sub>n</sub> the op-amp is not operating linearly (saturation, feedback open or positive, insufficient supply). If v<sub>p</sub> = v<sub>n</sub> but the gain is wrong, look at the resistors: R<sub>f</sub> = R<sub>s</sub>(v<sub>o</sub>/v<sub>n</sub> − 1).</div>
+        <div class="warnbox">When troubleshooting a real board, do not remove or insert the IC in its socket <b>with the supply on</b>; always make measurements with respect to the same ground point.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 320"></svg></div>
+      <div class="card">
+        <div class="row"><b>Diagnosis</b> <span class="badge" id="d1card">Board #1</span><span class="grow"></span><span id="d1score" class="badge"></span></div>
+        <div class="row" style="margin-top:8px">
+          <select id="d1diag" style="min-width:320px"></select>
+          <button class="btn" id="d1go">Diagnose</button>
+          <button class="btn sec" id="d1next">New board</button>
+        </div>
+        <div id="d1fb" class="info" style="min-height:40px">Measure first: at least two test points.</div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>Board</th><th>Point</th><th>Reading (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GÖREV 2 ================= -->
+<section class="page" id="d2">
+  <h2>Task 2 · Design: Sensor Interface (0–10 V)</h2>
+  <p class="lead">A bridge-type sensor gives a differential voltage of 0 → S mV as the measured quantity changes from 0% → 100%; both of its terminals sit at a 2.5 V common-mode voltage and its internal resistance is R<sub>i</sub>. The output must be 0 V at 0% and 10 V at 100%.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Chain: <b>two buffers</b> → <b>difference stage</b> (R<sub>1</sub>…R<sub>4</sub>) → <b>non-inverting stage</b> (R<sub>s</sub>, R<sub>f</sub>). If the ratios are equal <span class="eq">v<sub>o</sub> = (R<sub>2</sub>/R<sub>1</sub>)(1 + R<sub>f</sub>/R<sub>s</sub>) v<sub>d</sub></span></div>
+        <div class="info">If the buffers are removed, the sensor’s internal resistance R<sub>i</sub> is added in series with R<sub>1</sub> and R<sub>3</sub>: the gain changes, the ratio of the two branches is upset and the 2.5 V common-mode voltage leaks to the output.</div>
+        <div class="info">Acceptance criteria: |v<sub>o</sub>(0%)| ≤ 0.15 V · v<sub>o</sub>(100%) = 10 V ± 4% · no stage saturated · the gain of each stage ≤ 100 (bandwidth ≥ 10 kHz with GBW = 1 MHz).</div>
+        <div class="warnbox">In a real design E12 resistors have 10% tolerance; to keep the ratios in the difference stage, 1% resistors or a ready-made <b>instrumentation amplifier</b> are used. Tolerance is taken as nominal here.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 300"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <b>Design (E12 series)</b>
+          <div class="rsel" style="margin-top:8px">
+            <label for="d2R1">R<sub>1</sub></label><span><select id="d2R1"></select> · R<sub>3</sub> <select id="d2R3"></select></span>
+            <label for="d2R2">R<sub>2</sub></label><span><select id="d2R2"></select> · R<sub>4</sub> <select id="d2R4"></select></span>
+            <label for="d2Rs">R<sub>s</sub></label><span><select id="d2Rs"></select> · R<sub>f</sub> <select id="d2Rf"></select></span>
+            <span>Buffers</span><label><input type="checkbox" id="d2buf" checked> fitted</label>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn" id="d2eval">Evaluate system (R)</button>
+            <button class="btn sec small" id="d2new">New sensor</button>
+          </div>
+          <div id="d2verdict" class="info" style="min-height:60px">Select the resistors and evaluate.</div>
+        </div>
+        <div class="card">
+          <div class="row"><b>v<sub>o</sub> – measured quantity (%)</b></div>
+          <canvas id="d2plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Evaluated designs</b><span class="grow"></span><button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>S (mV)</th><th>R<sub>i</sub></th><th>Buffer</th><th>R<sub>1</sub>/R<sub>2</sub></th><th>R<sub>3</sub>/R<sub>4</sub></th><th>R<sub>s</sub>/R<sub>f</sub></th><th>v<sub>o</sub>(0%)</th><th>v<sub>o</sub>(100%)</th><th>Result</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GÖREV 3 ================= -->
+<section class="page" id="d3">
+  <h2>Task 3 · Recognising Elements from the Oscilloscope Screen (Warm-up before the Integrator)</h2>
+  <p class="lead">The black box contains an R, L or C; sometimes an op-amp integrator/differentiator. Look at the two waveforms on the screen and find the element, its equation and its value.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">On passive-element screens CH1 is the element voltage v(t) and CH2 is the voltage across the series <b>100 Ω shunt</b>: <span class="eq">i(t) = v<sub>CH2</sub>(t) / 100 Ω</span></div>
+        <div class="info">If one waveform is proportional to the <b>slope</b> of the other, there is a derivative relation: the slope of a triangle is constant → its derivative is a square. For a sine the derivative shifts by 90°; check which one leads.</div>
+        <div class="info">On op-amp screens CH1 is the input v<sub>g</sub> and CH2 is the output v<sub>o</sub>. Watch the sign because the structure is inverting: if the output is <b>decreasing</b> while the input is positive, it is an integrator.</div>
+        <div class="warnbox">A real inductor has internal resistance: with a triangular current the inductor voltage is not a perfect square but looks slightly tilted. Use the <b>average</b> level of the square wave when finding the value.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row">
+          <div class="inst dark scopewrap" style="flex:1;min-width:420px">
+            <div class="brand"><span>DSO-2C · Digital Oscilloscope</span><span><span class="led on g"></span> RUN</span></div>
+            <div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+              <canvas id="scope" width="640" height="400" style="width:100%;max-width:640px"></canvas>
+              <div style="min-width:150px">
+                <div class="ctrls" id="scopeKnobs"></div>
+                <div class="row" style="margin:6px 0">
+                  <button class="seg-btn on" id="ch1on">CH1</button>
+                  <button class="seg-btn on" id="ch2on">CH2</button>
+                  <button class="seg-btn" id="curon">CURSOR</button>
+                </div>
+                <div class="meas" id="scopeMeas"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 200"></svg></div>
+      <div class="card">
+        <div class="row"><b>Your answer</b> <span class="badge" id="d3no">Screen #1</span><span class="grow"></span><span class="badge" id="d3score"></span></div>
+        <div class="grid-half" style="margin-top:6px">
+          <div><div style="font-size:13px;font-weight:600">In the box</div><div id="d3el"></div></div>
+          <div><div style="font-size:13px;font-weight:600">Applicable equation</div><div id="d3eq"></div></div>
+        </div>
+        <div class="row" style="margin-top:8px"><span id="d3ask"></span><input type="text" id="d3val" size="9" placeholder="number"><span id="d3unit"></span>
+          <button class="btn" id="d3go">Check</button><button class="btn sec" id="d3next">New screen</button></div>
+        <div id="d3fb" class="info" style="min-height:40px">Examine the screen; measure slope and time with the cursors.</div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GÖREV 4 ================= -->
+<section class="page" id="d4">
+  <h2>Task 4 · Timed Practice Exam (20 questions)</h2>
+  <p class="lead">The numbers are regenerated in every attempt. The time is 40 minutes; when time runs out the exam is graded automatically. Use a decimal point (a comma also works). Each question is worth 5 points; an answer within ±2% counts as correct.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Exam</h3>
+        <div class="timer" id="exTimer">40:00</div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="exStart">Start new exam</button>
+          <button class="btn warn" id="exFinish">Finish and grade</button>
+        </div>
+        <div id="exInfo" class="info">The timer starts when you start. Time keeps running even if you leave the page.</div>
+        <div class="warnbox">Work as in an exam: a calculator is allowed, but without looking at the formula card. The unit is given in the question; enter the result in that unit.</div>
+        <h3>Attempt history</h3>
+        <table class="data" id="exHist"><thead><tr><th>#</th><th>Date</th><th>Score</th><th>Time</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div>
+      <div class="card" id="exBox"><p class="lead" style="margin:0">No exam has been started yet.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your diagnoses, designs, waveform answers and exam results.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="Which measurement gave the most information when troubleshooting? Why did your design fail without buffers? Which topic did you make the most mistakes on in the exam?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). <b>Tap</b> the knob or the value below it to type an <b>exact value</b> or pick from a list (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is checked off automatically when done correctly.<br>
+    <b>Task 1:</b> clicking the red TP circles on the schematic touches the multimeter’s red lead there.<br>
+    <b>Oscilloscope cursors:</b> press the CURSOR button and drag on the screen.<br>
+    <kbd>R</kbd> record measurement/design · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta08.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h08', ders: 'Circuit Theory I', hafta: 8,
+  doc: [
+    { id: 'CLO1', t: 'Finds and justifies a fault in an op-amp circuit systematically by measuring node voltages.', mc: [1, 2, 4, 5] },
+    { id: 'CLO2', t: 'Designs and verifies a chain of buffer, difference and non-inverting stages for a sensor interface using standard (E12) components.', mc: [1, 3, 10] },
+    { id: 'CLO3', t: 'Recognises the inductor, capacitor, integrator and differentiator from oscilloscope waveforms and calculates the element value.', mc: [1, 2, 4] },
+    { id: 'CLO4', t: 'Correctly solves Section 1–2 problems under time constraints.', mc: [1, 2] },
+    { id: 'CLO5', t: 'Presents the findings in writing in a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To diagnose the fault (swapped inputs, open R<sub>f</sub>, reversed electrolytic, wrong resistor) on randomly faulted non-inverting amplifier boards by measuring with a multimeter.', doc: ['CLO1'], mc: [1, 2, 4, 5, 6],
+      gerec: '±15 V current-limited supply, adjustable DC supply, DMM (10 MΩ), µA741 board (R<sub>s</sub> 10 kΩ, R<sub>f</sub> 47 kΩ, R<sub>L</sub> 10 kΩ, C1 100 µF).',
+      guvenlik: 'A reversed electrolytic heats up and may explode; cut the supply when the CC lamp lights. Do not make ohm measurements in a powered circuit; separate faulty components as e-waste.',
+      veri: 'Table of test-point voltages, diagnosis per board and accuracy rate.',
+      tartisma: 'Which single measurement eliminated the most fault classes? How would you improve your measurement order?' },
+    d2: { amac: 'To design a buffer + difference + non-inverting gain chain giving a 0–10 V output for a bridge sensor using E12 resistors, and to demonstrate the loading effect.', doc: ['CLO2'], mc: [1, 3, 4, 10],
+      gerec: 'Sensor simulator (bridge with internal resistance), three/four op-amps, E12 resistor set, two DMMs, ±15 V supply.',
+      guvenlik: 'The supply must not exceed ±18 V; no voltage should be applied to the sensor from an op-amp output. Choosing few standard components reduces cost and waste.',
+      veri: 'Design table (resistors, 0% and 100% output, compliance), v<sub>o</sub>–quantity plot.',
+      tartisma: 'What is the cost/performance trade-off of using 1% E96 resistors or a ready-made instrumentation amplifier instead of E12?' },
+    d3: { amac: 'To recognise R, L, C or an integrator/differentiator from voltage–current waveforms on the oscilloscope screen and calculate its value.', doc: ['CLO3'], mc: [1, 2, 4],
+      gerec: 'Function generator, 100 Ω shunt, two-channel oscilloscope with cursors, black-box elements.',
+      guvenlik: 'Probe ground clips on the same node; do not interrupt an inductor current suddenly (back EMF).',
+      veri: 'Answer per screen (element, equation, value) and accuracy.',
+      tartisma: 'How did the internal resistance of the inductor change the waveform, and how does it affect the value calculation?' },
+    d4: { amac: 'To measure preparation for Sections 1–2 with a timed 20-question practice exam generated with random numbers.', doc: ['CLO4'], mc: [1, 2, 11],
+      gerec: 'Calculator, timer.',
+      guvenlik: '—',
+      veri: 'Practice exam scores and times.',
+      tartisma: 'In which topics were your mistakes concentrated, and what study plan will you make until the exam?' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

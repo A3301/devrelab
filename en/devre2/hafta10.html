@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 10 · Power Calculations and Power Factor Correction — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<style>
+  .vd{width:100%;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:6px}
+  .vd text{font-size:12px;font-family:Segoe UI,Arial}
+  .seg{display:flex;gap:4px;flex-wrap:wrap}
+  .why{background:#fff8e6;border-left:4px solid #e0a100;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.55;border-radius:4px}
+  .solved{background:#f2f8f2;border-left:4px solid #2e8b57;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.6;border-radius:4px}
+  .stage{display:inline-block;width:14px;height:14px;border-radius:50%;background:#333;margin:2px;border:1px solid #000}
+  .stage.on{background:#ffb000;box-shadow:0 0 6px #ffb000}
+</style>
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 10 — Power Calculations and Power Factor Correction</h1>
+    <div class="sub">Line loss · Power balance · Capacitor compensation · Overcompensation · Economic aspect</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Motor and Capacitor</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Line Loss and Power Balance</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Economics of Compensation</button>
+  <button data-p="rapor"><span class="dot"></span>6 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–6</kbd> sections · <kbd>?</kbd> help<br><br>Your data is saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 10 · Power Calculations and Power Factor Correction</h2>
+  <p class="lead">Lecture notes: <b>Section 2.5 Power Calculations</b> (Examples 2.16 – 2.22).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will be able to</h3>
+      <ol class="steps">
+        <li>Determine Q<sub>C</sub> and C for raising the power factor of an inductive load (motor) to a required value (0.95) with a parallel capacitor <b>by calculation</b>, and apply them.</li>
+        <li>Show <b>by measurement</b> how compensation reduces the line current and line loss, and see the effect of overcompensation.</li>
+        <li>Verify that the complex power delivered by the source equals the sum of the powers absorbed by the line and the loads (<b>power balance</b>).</li>
+        <li>Design an <b>economic</b> compensation by comparing the reactive energy penalty, the cost of losses and the capacitor investment.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Single-phase 230/400 V, 50 Hz source (with isolation transformer) · Line impedance module · Induction motor load (adjustable P, cos φ) · Stepped/adjustable capacitor bank (with discharge resistors) · Single-phase power analyser and current clamp · Bus voltmeter · Line loss wattmeter · Adjustable R–X load box · Reactive power relay and compensation panel.</p>
+      <div class="info">The motor and loads this week are modelled as <b>fixed impedances</b> that draw the given P and cos φ at the stated voltage; as the voltage drops, their powers decrease with V².</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">Play with the live power triangle in the Background section and solve the Pre-lab questions. In Experiment 1 size the capacitor on paper first, then connect it; in Experiment 2 measure at three points and establish the power balance; in Experiment 3 design a factory’s compensation panel from an economic point of view.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Generating Reactive Power Locally</h2>
+  <p class="lead">Why are there capacitors in a factory’s switchboard? This section builds the answer step by step.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · The problem: low power factor</h3>
+      <p style="font-size:14px;line-height:1.65">An induction motor draws <b>reactive power</b> (Q &gt; 0) for magnetisation. This energy does no work; it goes back and forth between source and motor every half period. But while travelling over the line it carries <b>current</b>: for the same P the current is <span class="eq">I = P / (V cos θ)</span>, so at cos θ = 0.6 the current is 67% higher than at cos θ = 1. Since line loss is I²R, the loss rises almost <b>2.8 times</b>; transformers and cables are loaded for nothing.</p>
+      <h3>2 · The solution: put a capacitor next to the load</h3>
+      <p style="font-size:14px;line-height:1.65">A capacitor absorbs negative reactive power (that is, it <b>generates</b> reactive power). Connected in parallel next to the motor, it supplies part of the Q the motor needs; the line carries only the difference. The motor itself notices nothing: its voltage is the same, and its P and Q are the same. Only the current <b>flowing through the line</b> changes.</p>
+      <div class="eq">Q<sub>C</sub> = P (tan θ<sub>1</sub> − tan θ<sub>2</sub>),&nbsp;&nbsp; C = Q<sub>C</sub> / (ω V<sub>rms</sub>²)</div>
+      <h3>3 · Overcompensation</h3>
+      <p style="font-size:14px;line-height:1.65">If the capacitor is larger than needed, the total Q becomes negative, the pf drops again (this time <b>leading</b>) and the current rises again. At light load the bus voltage rises; the distribution company also charges a penalty for capacitive reactive energy.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Live power triangle</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0 0 6px">Motor: 30 kW, cos θ = 0.6 lagging. Increase the Q<sub>C</sub> supplied by the capacitor with the slider. Blue: motor S, orange: −Q<sub>C</sub>, green: total S carried by the line.</p>
+      <label style="font-size:13px">Q<sub>C</sub> <input type="range" id="obC" min="0" max="60" step="0.5" value="0" style="width:60%"> <span id="obCv"></span></label>
+      <svg id="obTri" class="vd" viewBox="0 0 420 260" style="margin-top:6px"></svg>
+      <canvas id="obBar" width="560" height="120" style="width:100%;margin-top:6px"></canvas>
+      <div id="obTxt" style="font-size:13px"></div>
+    </div>
+  </div>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Series circuit</td><td class="l">I = V<sub>s</sub>/(Z<sub>line</sub> + Z<sub>L</sub>),&nbsp; S<sub>L</sub> = |I|² Z<sub>L</sub>,&nbsp; S<sub>line</sub> = |I|² Z<sub>line</sub></td></tr>
+        <tr><td class="l">Power balance</td><td class="l">Σ S<sub>delivered</sub> = Σ S<sub>absorbed</sub> (P and Q separately)</td></tr>
+        <tr><td class="l">Source sign</td><td class="l">If the current leaves the + terminal, S<sub>source</sub> = V I* is the <b>delivered</b> power</td></tr>
+        <tr><td class="l">Required capacitor power</td><td class="l">Q<sub>C</sub> = P (tan θ<sub>1</sub> − tan θ<sub>2</sub>)</td></tr>
+        <tr><td class="l">Capacitor value</td><td class="l">C = Q<sub>C</sub>/(ω V<sub>rms</sub>²)</td></tr>
+        <tr><td class="l">Line current</td><td class="l">I = P/(V cos θ)</td></tr>
+        <tr><td class="l">Line loss ratio</td><td class="l">P<sub>k2</sub>/P<sub>k1</sub> = (cos θ<sub>1</sub>/cos θ<sub>2</sub>)²</td></tr>
+        <tr><td class="l">Reactive ratio (penalty limit, typical)</td><td class="l">E<sub>ind</sub>/E<sub>act</sub> ≤ 20% · E<sub>cap</sub>/E<sub>act</sub> ≤ 15% ↔ cos θ ≥ 0.98 lagging</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Compensation panel (single-line diagram)</h3>
+      <svg class="vd" viewBox="0 0 420 200">
+        <g font-size="12" stroke="#333" stroke-width="2" fill="none">
+          <path d="M20,40 H400"/><path d="M90,40 V150"/><rect x="65" y="150" width="50" height="30" fill="#eef4ff"/>
+          <path d="M240,40 V70 M222,70 H258 M222,80 H258 M240,80 V110"/><path d="M300,40 V70 M282,70 H318 M282,80 H318 M300,80 V110"/><path d="M360,40 V70 M342,70 H378 M342,80 H378 M360,80 V110"/>
+          <circle cx="160" cy="40" r="10"/>
+        </g>
+        <g font-size="12" fill="#223">
+          <text x="20" y="30">Grid</text><text x="90" y="170" text-anchor="middle">Motor</text>
+          <text x="160" y="70" text-anchor="middle">CT</text><text x="160" y="85" text-anchor="middle">(metering)</text>
+          <text x="300" y="130" text-anchor="middle">Capacitor steps</text>
+          <text x="300" y="150" text-anchor="middle">(contactor + discharge resistor)</text>
+          <text x="210" y="190" text-anchor="middle" fill="#a33">The reactive power relay switches steps in according to the cos θ measured via the CT.</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Things to watch in a real lab</h3>
+    <div class="warnbox"><b>A capacitor bank is dangerous even after the power is cut.</b> A capacitor of hundreds of µF charged at 400 V stores lethal energy (½CV² ≈ 50 J and more). Discharge resistors must be fitted; wait at least 1 min before touching and verify by measuring the voltage.</div>
+    <div class="warnbox"><b>Never open the secondary of a current transformer.</b> If the secondary of a CT used for panel metering is left open while carrying load, thousands of volts appear and the insulation breaks down. Before removing the meter, bridge the secondary with a shorting terminal.</div>
+    <div class="warnbox"><b>Switching a capacitor under voltage.</b> At switch-on a very large charging current pulse occurs; contactor contacts can weld. Special capacitor contactors (with pre-insertion resistors) are used for compensation, and a step must be allowed to discharge before it is switched in again.</div>
+    <div class="warnbox"><b>Harmonics and resonance.</b> In installations with drive (inverter) loads, the capacitor can resonate with the grid inductance at a harmonic frequency and overheat or explode. In that case <b>detuned (harmonic-filter) reactor</b> compensation is required.</div>
+    <div class="warnbox"><b>Overcompensation raises the voltage.</b> When the load decreases, capacitors left in circuit raise the bus voltage; sensitive equipment may be damaged. Set the relay to the correct target cos θ and switch steps out together with the load.</div>
+    <div class="warnbox"><b>Oscilloscope on mains measurements.</b> Use a differential probe for measurements on the 230/400 V side; connecting the ground clip to the phase causes a short circuit. In motor experiments fit protective covers over rotating parts.</div>
+    <div class="info"><b>Common mistakes:</b> using P instead of Q<sub>C</sub> when computing C (C comes out twice as large, overcompensation) · adding apparent powers arithmetically · using P = V²/R in a series circuit with the total voltage across R and X · ignoring the sign of the source power · forgetting the ½ factor with peak-value phasors · thinking compensation reduces the motor’s P.</div>
+  </div>
+</section>
+
+<!-- ================= ÖN HAZIRLIK ================= -->
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before coming to the lab. Values are rms.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Motor Load and pf Correction with a Parallel Capacitor</h2>
+  <p class="lead">A single-phase source supplies the motor bus through a small line impedance (0.05 + j0.15 Ω). The capacitor bank is in parallel with the motor. The power analyser is on the source side; the voltmeter and pf meter are on the bus.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Capacitor for a target pf: <span class="eq">Q<sub>C</sub> = P(tan θ<sub>1</sub> − tan θ<sub>2</sub>),&nbsp; C = Q<sub>C</sub>/(ωV²)</span> Here V is the voltage of the <b>bus</b> to which the capacitor is connected.</div>
+        <div class="info">Since the motor is a fixed impedance, its P and Q vary with the square of the bus voltage; so does the capacitor’s Q<sub>C</sub>. Therefore the bus pf is independent of the voltage.</div>
+        <div class="why"><b>Why does the current drop while the motor power stays the same?</b> The voltage at the motor terminals stays almost the same; the motor draws the same P and Q. Most of Q is now generated locally by the capacitor; the line only has to carry P and a small residual Q. I = |S<sub>line</sub>|/V decreases, and the line loss falls with I².</div>
+        <div class="solved"><b>Worked mini example (Example 2.19):</b> 250 V, 60 Hz bus; loads 8 − j6 kVA and 12 + j16 kVA. Total 20 + j10 kVA, pf = 0.894 lagging. For pf = 1, Q<sub>C</sub> = 10 kVAR, C = 10 000/(377 × 250²) = 424.4 µF. If P = 20 kW is used instead of Q<sub>C</sub>, C = 848.8 µF: twice as large, serious overcompensation.</div>
+        <div class="warnbox">Switch the capacitor bank in step by step and check the bus voltage after each change. In real banks, once a step has been switched out, it must not be switched in again before the discharge time (typically 60 s) has elapsed.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 230"></svg><div id="d1hint" class="info" style="margin-bottom:0"></div></div>
+      <div class="grid-half">
+        <div class="card"><b>Power triangle (bus)</b><svg id="d1tri" class="vd" viewBox="0 0 420 260"></svg></div>
+        <div class="card">
+          <div class="row"><b>Line current – C</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Theoretical curve</label></div>
+          <canvas id="d1plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>V<sub>s</sub> (V)</th><th>P<sub>M</sub> (kW)</th><th>cos θ<sub>M</sub></th><th>C (µF)</th><th>V<sub>bus</sub> (V)</th><th>I<sub>line</sub> (A)</th><th>pf<sub>bus</sub></th><th>Q<sub>C</sub> (kVAR)</th><th>P<sub>line</sub> (W)</th><th>|S<sub>source</sub>| (kVA)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Line Loss, Voltage Drop and Power Balance</h2>
+  <p class="lead">The source supplies a load through Z<sub>line</sub> = R<sub>h</sub> + jX<sub>h</sub>. The load can be connected in series (R + jX) or in parallel (R ∥ jX). Connect the power analyser to the source, the line or the load and measure.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">In a series circuit find the total impedance first, then the current: <span class="eq">I = V<sub>s</sub>/(Z<sub>line</sub> + Z<sub>L</sub>)</span> The power of each element is found from <span class="eq">S = |I|² Z</span>; the power delivered by the source is <span class="eq">S<sub>s</sub> = V<sub>s</sub> I*</span></div>
+        <div class="info">The power balance holds for P and Q <b>separately</b>: P<sub>s</sub> = P<sub>line</sub> + P<sub>L</sub>, Q<sub>s</sub> = Q<sub>line</sub> + Q<sub>L</sub>. Efficiency: η = P<sub>L</sub>/P<sub>s</sub>.</div>
+        <div class="why"><b>Why is P = |V<sub>L</sub>|²/R wrong?</b> In a series load |V<sub>L</sub>| is the <b>total</b> voltage across R and jX, not the voltage across R alone. In Example 2.18 this mistake gives 1408 W; the correct value is |I|²R = 975 W.</div>
+        <div class="solved"><b>Worked mini example (Example 2.22):</b> 100 V, line 2 + j6 Ω, load 10 Ω ∥ −j5 Ω. Parallel equivalent 2 − j4 Ω; total 4 + j2 Ω; I = 20 − j10 A, |I|² = 500. S<sub>line</sub> = 1000 + j3000, S<sub>load</sub> = 1000 − j2000, S<sub>s</sub> = V I* = 2000 + j1000 VA. The totals match ✓.</div>
+        <div class="warnbox">Line loss is heat. In real installations the cable cross-section is chosen according to the current; an overheated cable loses its insulation and creates a fire risk. Ways to reduce line loss: increase the cross-section, raise the voltage and correct the pf.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 230"></svg></div>
+      <div class="grid-half">
+        <div class="card"><b>Power vectors: S<sub>line</sub> + S<sub>load</sub> = S<sub>source</sub></b><svg id="d2vec" class="vd" viewBox="0 0 420 260"></svg></div>
+        <div class="card"><b>Balance check with recorded measurements</b><div id="d2bal" style="font-size:13.5px;line-height:1.6"></div></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Configuration</th><th>Point</th><th>V (V)</th><th>I (A)</th><th>P (W)</th><th>Q (VAR)</th><th>|S| (VA)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Economics of Compensation: Penalty, Loss and Investment</h2>
+  <p class="lead">You are designing a stepped capacitor bank for the panel of a workshop (average 120 kW, cos θ = 0.72 lagging, 400 hours per month). Prices are <b>representative</b> values; you can change them with the knobs.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Information</h3>
+        <div class="info">Monthly energies: <span class="eq">E<sub>act</sub> = P·t,&nbsp; E<sub>ind</sub> = Q<sub>net</sub>·t (Q<sub>net</sub> &gt; 0),&nbsp; E<sub>cap</sub> = |Q<sub>net</sub>|·t (Q<sub>net</sub> &lt; 0)</span> Limits assumed in this lab: if E<sub>ind</sub>/E<sub>act</sub> &gt; 20% or E<sub>cap</sub>/E<sub>act</sub> &gt; 15%, all of the reactive energy is billed at the unit price (penalty).</div>
+        <div class="info">The in-plant loss (cable + transformer copper loss) is taken as 2% of P at cos θ = 1 and varies with |S|². The investment is amortised over 60 months (5 years).</div>
+        <div class="why"><b>Why not aim for “exactly 1”?</b> The load changes during the day. A bank set to pf = 1 immediately enters the capacitive region when the load decreases, and then a capacitive penalty arises. Since the step size is finite, exactly 1 cannot be hit anyway; in practice the target is the range 0.95–0.99 lagging.</div>
+        <div class="solved"><b>Worked mini example:</b> 50 kW, cos θ = 0.8 lagging (tan θ = 0.75). Limit ratio 0.20 → Q<sub>net</sub> ≤ 10 kVAR. Q<sub>C</sub> ≥ 37.5 − 10 = 27.5 kVAR → with 5 kVAR steps, 6 steps (30 kVAR). Capacitive limit: Q<sub>net</sub> ≥ −7.5 kVAR → Q<sub>C</sub> ≤ 45 kVAR (at most 9 steps).</div>
+        <div class="warnbox">At the end of its life a capacitor bank must be separated as <b>electronic waste</b>; old-type capacitors may contain toxic PCB oil. Lifetime, the harmonic environment and disposal cost are also considered in the design.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px">
+        <div class="row"><b>Monthly cost – Q<sub>C</sub></b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3theo"> Show cost curve</label></div>
+        <canvas id="d3plot" width="760" height="300" style="width:100%"></canvas>
+        <div style="font-size:12px;color:#556">Red: penalty · Orange: loss · Purple: monthly share of investment · Green: total (thousand TL/month). Dots: the scenarios you recorded.</div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Scenario table</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Record (R)</button>
+          <button class="btn sec small" id="d3del">Delete last row</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Steps</th><th>Q<sub>C</sub> (kVAR)</th><th>cos θ</th><th>E<sub>ind</sub>/E<sub>act</sub></th><th>E<sub>cap</sub>/E<sub>act</sub></th><th>Penalty (TL/month)</th><th>Loss (TL/month)</th><th>Investment (TL)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="How much did compensation reduce the line current and loss? What did you observe with overcompensation? What bank size and payback time do you propose?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (hold to speed up). <b>Tap</b> the knob or the value below it to type an <b>exact value</b> or pick from a list (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>6</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta10.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h10', ders: 'Circuit Theory II', hafta: 10,
+  doc: [
+    { id: 'CLO1', t: 'Computes element, line and source powers in series and parallel AC circuits; verifies the power balance.', mc: [1, 2, 5] },
+    { id: 'CLO2', t: 'Sizes a parallel capacitor to correct the power factor of an inductive load and measures its effect.', mc: [1, 3, 4, 5] },
+    { id: 'CLO3', t: 'Interprets the effect of low power factor and overcompensation on line loss, voltage and energy efficiency.', mc: [2, 6] },
+    { id: 'CLO4', t: 'Proposes an economic compensation solution by comparing the reactive energy penalty, the cost of losses and the investment.', mc: [3, 10] },
+    { id: 'CLO5', t: 'Presents the findings in writing in a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To raise the power factor of a motor load to 0.95 with a parallel capacitor; to measure the reduction in line current and loss and the effect of overcompensation.', doc: ['CLO2', 'CLO3'], mc: [1, 3, 4, 5, 6],
+      gerec: 'Single-phase 230/400 V source, line impedance module (0.05 + j0.15 Ω), motor load, adjustable capacitor bank, power analyser, bus voltmeter.',
+      guvenlik: 'Do not touch capacitors before discharging them; do not switch a step back in before the discharge time has elapsed; do not open a current transformer secondary; keep away from rotating motor parts.',
+      veri: 'Table of line current, bus pf, Q<sub>C</sub> and line loss versus C; I<sub>line</sub>–C plot.',
+      tartisma: 'If all plants in an industrial zone raised their pf from 0.6 to 0.95, how would losses and carbon emissions in the transmission and distribution network be affected?' },
+    d2: { amac: 'To verify the complex power balance by measuring source, line and load powers in a line circuit with series and parallel loads; to study line loss and efficiency.', doc: ['CLO1', 'CLO3'], mc: [1, 2, 5, 6],
+      gerec: 'Adjustable AC source, adjustable line impedance (R<sub>h</sub>, X<sub>h</sub>), series/parallel R–X load box, power analyser.',
+      guvenlik: 'Start the source from zero; the line resistor may get hot, do not touch it; change connections only when de-energised.',
+      veri: 'V, I, P, Q, |S| at the source, line and load points; balance check and efficiency.' },
+    d3: { amac: 'To determine the economic number of steps and the payback time for a workshop by comparing the reactive energy penalty, the cost of losses and the capacitor investment.', doc: ['CLO4'], mc: [3, 6, 10],
+      gerec: 'Compensation panel model: reactive power relay, step contactors, price parameters.',
+      guvenlik: 'During panel maintenance cut the power and verify by measurement that the capacitors have discharged; dispose of end-of-life capacitors as e-waste.',
+      veri: 'Scenario table (steps, cos θ, reactive ratios, penalty, loss, investment); cost–Q<sub>C</sub> plot.',
+      tartisma: 'Is a larger bank always better? Discuss the economic and technical benefit of an automatic relay in a plant with a variable load profile.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

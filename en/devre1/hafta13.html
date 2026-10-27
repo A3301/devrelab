@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 13 · Parallel RLC Step Response — Circuit Theory I Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory I · Week 13 — Parallel RLC Step Response</h1>
+    <div class="sub">Final value · Three damping types · Overshoot and settling · Design · Initial conditions</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Step and Three Types</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Overshoot and Settling</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Design (5% overshoot)</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Initial Conditions</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjust.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data are saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 13 · Step Response of the Parallel RLC Circuit</h2>
+  <p class="lead">Lecture notes: <b>Section 4.5 Parallel RLC: Step Response</b> (Examples 4.5, 4.14, 4.15 and “Predict first: will it overshoot?”).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will be able to</h3>
+      <ol class="steps">
+        <li>explain why the inductor current goes to the final value <b>I<sub>s</sub></b> when the current source is switched in, and write i<sub>L</sub>(t) for the three damping types;</li>
+        <li>compute α and ω<sub>0</sub> and obtain overdamped, critically damped and underdamped responses by changing only <b>R</b>;</li>
+        <li>measure <b>overshoot</b>, <b>peak time</b> and <b>settling time</b> with oscilloscope cursors and compare them with theory;</li>
+        <li><b>design R and C</b> for a 5% overshoot and a given settling-time target;</li>
+        <li>see that the initial conditions (I<sub>0</sub>, V<sub>0</sub>) change the coefficients but not the final value.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Adjustable DC current source (0–50 mA, compliance voltage ±60 V) and electronic switch · Resistor box · Inductor box (10 mH–2.5 H, with internal resistance) · Capacitor box (film, 5%) · Two-channel digital oscilloscope (with cursors) and current probe (100 mV/mA) · DMM.</p>
+      <div class="info">To see the step response by eye, a real lab often uses a <b>low-frequency square wave</b> instead of a switch; every edge is a new step. Here the electronic switch closes at t = 0 and the circuit starts from the initial conditions you set beforehand.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First read the <b>Background</b> and solve the <b>Pre-lab</b> questions. In each experiment follow the lab sheet on the left step by step; steps are ticked automatically when you make the correct setting. Record measurements in the table with <kbd>R</kbd> and answer the questions using your own measurements. In the last section print your report or save it as PDF.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · What Does a Second-Order Circuit Do When a Source Is Switched In?</h2>
+  <p class="lead">Spend 10 minutes before starting the experiments: intuition, formula card and the pitfalls of a real lab.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Intuition: where does the current go?</h3>
+      <p style="font-size:14px;line-height:1.65">Imagine a constant current I<sub>s</sub> applied at t = 0 to R, L and C in parallel. At the first instant the inductor current cannot change abruptly, nor can the capacitor voltage: all of the current first goes to <b>charging the capacitor</b>. As the voltage rises, the inductor current increases. Finally (t → ∞) the inductor behaves like a <b>short circuit</b>, the voltage falls to zero and the inductor takes all of the source current: <b>i<sub>L</sub>(∞) = I<sub>s</sub></b>.</p>
+      <p style="font-size:14px;line-height:1.65">What happens on the way is set by α and ω<sub>0</sub>. If R is large (α small), energy swings back and forth between L and C, the current goes beyond I<sub>s</sub> (<b>overshoots</b>) and settles while oscillating. If R is small, the current rises without overshoot but slowly. This is exactly the same behaviour as the step response of a <b>control system</b> (motor speed control, suspension, voltage regulator): choosing between “fast but with overshoot” and “slow but without overshoot” is the engineer’s job.</p>
+      <svg viewBox="0 0 420 170" style="width:100%;max-width:440px;display:block;margin:auto" aria-label="Step response for the three damping types">
+        <line x1="40" y1="140" x2="410" y2="140" stroke="#99a"/><line x1="40" y1="10" x2="40" y2="140" stroke="#99a"/>
+        <line x1="40" y1="50" x2="410" y2="50" stroke="#888" stroke-dasharray="5 4"/><text x="8" y="54" font-size="11" fill="#555">I_s</text>
+        <path d="M40,140 C80,140 90,30 130,30 S180,62 210,55 S260,47 290,50 L410,50" fill="none" stroke="#c62828" stroke-width="2.4"/>
+        <path d="M40,140 C70,140 90,60 140,53 S220,50 410,50" fill="none" stroke="#1a8a4a" stroke-width="2.4"/>
+        <path d="M40,140 C70,130 110,90 170,70 S300,52 410,51" fill="none" stroke="#0b5cad" stroke-width="2.4"/>
+        <text x="135" y="24" font-size="11" fill="#c62828">underdamped (overshoot)</text>
+        <text x="235" y="80" font-size="11" fill="#1a8a4a">critical</text>
+        <text x="255" y="100" font-size="11" fill="#0b5cad">overdamped</text>
+        <text x="380" y="156" font-size="11" fill="#555">t</text><text x="44" y="20" font-size="11" fill="#555">i_L</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Differential equation</td><td class="l">d²i<sub>L</sub>/dt² + (1/RC) di<sub>L</sub>/dt + i<sub>L</sub>/LC = I<sub>s</sub>/LC</td></tr>
+        <tr><td class="l">Neper and resonant frequency</td><td class="l">α = 1/(2RC), ω<sub>0</sub> = 1/√(LC)</td></tr>
+        <tr><td class="l">Roots</td><td class="l">s<sub>1,2</sub> = −α ± √(α² − ω<sub>0</sub>²)</td></tr>
+        <tr><td class="l">Overdamped (α &gt; ω<sub>0</sub>)</td><td class="l">i<sub>L</sub> = I<sub>s</sub> + A<sub>1</sub>e<sup>s<sub>1</sub>t</sup> + A<sub>2</sub>e<sup>s<sub>2</sub>t</sup></td></tr>
+        <tr><td class="l">Critically damped (α = ω<sub>0</sub>)</td><td class="l">i<sub>L</sub> = I<sub>s</sub> + (D<sub>1</sub>t + D<sub>2</sub>)e<sup>−αt</sup></td></tr>
+        <tr><td class="l">Underdamped (α &lt; ω<sub>0</sub>)</td><td class="l">i<sub>L</sub> = I<sub>s</sub> + e<sup>−αt</sup>(B<sub>1</sub>cos ω<sub>d</sub>t + B<sub>2</sub>sin ω<sub>d</sub>t), ω<sub>d</sub> = √(ω<sub>0</sub>² − α²)</td></tr>
+        <tr><td class="l">Initial conditions</td><td class="l">i<sub>L</sub>(0<sup>+</sup>) = I<sub>0</sub>, di<sub>L</sub>/dt(0<sup>+</sup>) = v(0<sup>+</sup>)/L = V<sub>0</sub>/L</td></tr>
+        <tr><td class="l">Critical resistance</td><td class="l">R = ½√(L/C)</td></tr>
+        <tr><td class="l">Overshoot (starting at rest, underdamped)</td><td class="l">%OS = 100·e<sup>−απ/ω<sub>d</sub></sup>, t<sub>p</sub> = π/ω<sub>d</sub></td></tr>
+        <tr><td class="l">Damping ratio</td><td class="l">ζ = α/ω<sub>0</sub>; 5% overshoot ↔ ζ ≈ 0.69</td></tr>
+        <tr><td class="l">Settling time (2% band)</td><td class="l">t<sub>s</sub> ≈ 4/α (underdamped, rough estimate)</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Points to watch in a real lab</h3>
+    <div class="warnbox"><b>Do not interrupt the inductor current.</b> If the path of a current-carrying inductor is opened, v = L di/dt becomes very large: a spark at the switch and a back EMF of hundreds of volts in the circuit. Before turning off the current source make sure there is a parallel path across the inductor (R or a freewheeling diode).</div>
+    <div class="warnbox"><b>Compliance voltage of the current source.</b> There is no ideal current source. In the parallel circuit the voltage peaks transiently (31.5 V in Example 4.14); if the source’s compliance voltage is lower than this, the source hits its voltage limit and the curve you measure departs from theory.</div>
+    <div class="warnbox"><b>Discharge the capacitor.</b> The capacitor may stay charged between experiments; before changing components discharge it for a few seconds through a 1 kΩ resistor. If the initial condition is assumed to be “at rest”, this step is part of the measurement.</div>
+    <div class="warnbox"><b>Do not use an electrolytic capacitor.</b> In a parallel RLC the voltage may change sign (a negative half-wave when underdamped). A polarised electrolytic heats up under reverse voltage and may explode; choose a film or ceramic (non-polarised) capacitor.</div>
+    <div class="warnbox"><b>Oscilloscope ground clip.</b> The ground clips of both probes must be connected to the same node. When measuring current across a resistor, attaching the ground clip to a “hot” node shorts that node to ground; use a current probe or a differential probe.</div>
+    <div class="warnbox"><b>Internal resistance and core of the inductor.</b> The winding resistance of a 2.5 H inductor can be hundreds of ohms: it adds extra damping, reduces the overshoot and lowers the final value to I<sub>s</sub>·R/(R + r<sub>L</sub>). An iron-core inductor saturates at large current; L decreases and the frequency shifts.</div>
+    <div class="warnbox"><b>Resistor power rating.</b> In the transient the peak power in the resistor is v<sup>2</sup>/R. A 16 V peak at 400 Ω is only 0.64 W and short-lived; for continuous square-wave excitation compute the average power and choose a ½ W resistor instead of ¼ W.</div>
+    <div class="info"><b>Common mistakes:</b> forgetting to subtract I<sub>s</sub> when finding the coefficients (A<sub>1</sub>+A<sub>2</sub> = I<sub>0</sub> − I<sub>s</sub>, not I<sub>0</sub>!) · using the series-circuit formula α = R/2L in the parallel circuit · assuming di<sub>L</sub>/dt(0<sup>+</sup>) is zero (it is V<sub>0</sub>/L if V<sub>0</sub> ≠ 0) · computing overshoot relative to the starting value instead of the final value · mixing up mA and A, µs and ms.</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve before coming to the lab. Circuit of Example 4.5: I<sub>s</sub> = 24 mA, R = 400 Ω, L = 25 mH, C = 25 nF.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Current-Source Step and the Three Damping Types</h2>
+  <p class="lead">Switch S connects the source at t = 0. Select the component values, apply the step with <b>CLOSE SWITCH</b>, and read values on the curves with the cursor.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">The left-hand side of the driven equation is <b>the same</b> as for the natural response: α, ω<sub>0</sub> and the roots do not change. The constant term on the right sets only the final value (I<sub>s</sub>).</div>
+        <div class="info">The inductor voltage is the derivative of the current: <span class="eq">v = L di<sub>L</sub>/dt</span> Since the current starts from zero, v(0) = 0; the voltage rises, peaks, then falls to zero.</div>
+        <div class="info">In the parallel circuit <b>damping decreases as R increases</b>. R → ∞ is the ideal LC circuit: the current oscillates forever between 0 and 2I<sub>s</sub>.</div>
+        <div class="warnbox">The compliance voltage of a real current source is limited (±60 V here). With large L and small C the voltage peak may exceed this limit; if a warning appears on the schematic, the curve no longer agrees with theory.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>i<sub>L</sub>(t)</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d1theo"> Theoretical curve</label></div>
+          <canvas id="d1plotI" width="560" height="300" style="width:100%"></canvas>
+        </div>
+        <div class="card">
+          <b>v(t) — inductor (node) voltage</b>
+          <canvas id="d1plotV" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Cursor</b><input type="range" id="d1cur" min="0" max="1000" value="200" style="flex:1"><span id="d1curTxt" style="font-family:Consolas,monospace;font-size:13px;min-width:280px"></span></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>I<sub>s</sub></th><th>R</th><th>L</th><th>C</th><th>cursor t</th><th>i<sub>L</sub>(t) (mA)</th><th>v(t) (V)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Measuring Overshoot and Settling Time with the Oscilloscope</h2>
+  <p class="lead">Circuit of Example 4.15. CH1 shows the node voltage, CH2 shows the inductor current via the current probe (100 mV/mA). The step is applied at the 1st division of the screen.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info"><b>Overshoot:</b> %OS = 100·(i<sub>max</sub> − i(∞))/i(∞). In an underdamped circuit starting at rest the first peak is at ω<sub>d</sub>t = π: <span class="eq">t<sub>p</sub> = π/ω<sub>d</sub>, %OS = 100·e<sup>−απ/ω<sub>d</sub></sup></span></div>
+        <div class="info"><b>Settling time t<sub>s</sub>:</b> the instant after which the response enters the ±2% band of the final value and never leaves it again. Since the envelope is e<sup>−αt</sup>, a rough estimate is <span class="eq">t<sub>s</sub> ≈ 4/α</span></div>
+        <div class="info">The time between two successive peaks is the damped period: T<sub>d</sub> = 2π/ω<sub>d</sub>. The logarithm of the ratio of successive peaks gives αT<sub>d</sub> (logarithmic decrement).</div>
+        <div class="warnbox">Zero the current probe (DEGAUSS/ZERO) before clamping it and point its arrow in the current reference direction. A reversed probe inverts the curve; you would mistake the overshoot for an “undershoot”.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench">
+        <div class="bench-row" id="d2inst"></div>
+        <div class="bench-row" style="margin-top:12px" id="d2scopeRow"></div>
+      </div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>Cursor measurements</b><span class="grow"></span>
+          <button class="btn small" id="d2rec">Record (R)</button>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>R</th><th>Δt (a→b)</th><th>CH1 b (V)</th><th>CH2 a (V)</th><th>CH2 b (V)</th><th>i<sub>L</sub> b (mA)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Design: 5% Overshoot and a Settling-Time Target</h2>
+  <p class="lead">A 100 mH inductor is given for a driver circuit. The inductor current must settle to a 10 mA step with <b>5 ± 1% overshoot</b> and within <b>t<sub>s</sub> ≤ 1.2 ms</b>. You choose R and C.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">The design has two steps: (1) the overshoot depends only on <b>ζ = α/ω<sub>0</sub></b>: <span class="eq">%OS = 100·exp(−πζ/√(1−ζ²))</span> (2) the settling time sets α: <span class="eq">α ≈ 4/t<sub>s</sub></span> Then ω<sub>0</sub> = α/ζ, C = 1/(ω<sub>0</sub>²L), R = 1/(2αC).</div>
+        <div class="info">If only the overshoot is required with a given C: <span class="eq">R = √(L/C)/(2ζ)</span></div>
+        <div class="warnbox">The winding resistance of a real inductor (here r<sub>L</sub> = 20 Ω) adds extra damping: the final value drops to I<sub>s</sub>R/(R + r<sub>L</sub>); the overshoot measured relative to the final value decreases only very slightly. Always verify the design with the real component.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>i<sub>L</sub>/I<sub>s</sub> (%) — t (ms)</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d3rL"> Real inductor (r<sub>L</sub> = 20 Ω)</label></div>
+        <canvas id="d3plot" width="760" height="320" style="width:100%"></canvas>
+        <div id="d3meas" class="info" style="margin-top:6px"></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Design table</b><span class="grow"></span>
+          <button class="btn small" id="d3rec">Record (R)</button>
+          <button class="btn sec small" id="d3del">Delete last row</button>
+          <button class="btn sec small" id="d3csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>R</th><th>C</th><th>r<sub>L</sub></th><th>%OS</th><th>t<sub>s</sub> (ms)</th><th>Target</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Step Response with Initial Conditions</h2>
+  <p class="lead">Before the switch closes there is a current I<sub>0</sub> in the inductor and a voltage V<sub>0</sub> on the capacitor. Start with the circuit of Example 4.5; each run stores a trace so you can compare them overlaid.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Notes</h3>
+        <div class="info">The coefficients are found after subtracting I<sub>s</sub>: <span class="eq">A<sub>1</sub> + A<sub>2</sub> = I<sub>0</sub> − I<sub>s</sub></span><span class="eq">s<sub>1</sub>A<sub>1</sub> + s<sub>2</sub>A<sub>2</sub> = V<sub>0</sub>/L</span></div>
+        <div class="info">The initial derivative of the capacitor voltage comes from KCL: <span class="eq">C dv/dt(0<sup>+</sup>) = I<sub>s</sub> − V<sub>0</sub>/R − I<sub>0</sub></span></div>
+        <div class="info">The final value does not depend on the initial condition: the circuit eventually goes to i<sub>L</sub> = I<sub>s</sub>, v = 0. The initial condition changes only the <b>path</b>.</div>
+        <div class="warnbox">In reality I<sub>0</sub> must be supplied to the inductor by a separate source which is then disconnected. Opening that source’s path while the inductor carries current produces a back EMF: make the changeover in “make-before-break” order.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <div class="row"><b>i<sub>L</sub>(t) — stored traces</b><span class="grow"></span>
+          <label style="font-size:13px"><input type="checkbox" id="d4theo"> Theoretical curve (ideal inductor)</label>
+          <button class="btn small" id="d4rec">Run and record trace (R)</button>
+          <button class="btn sec small" id="d4clr">Clear</button></div>
+        <canvas id="d4plot" width="760" height="320" style="width:100%"></canvas>
+        <div class="row" style="margin-top:6px"><b>Cursor</b><input type="range" id="d4cur" min="0" max="1000" value="100" style="flex:1"><span id="d4curTxt" style="font-family:Consolas,monospace;font-size:13px;min-width:260px"></span></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span><button class="btn sec small" id="d4csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>R</th><th>I<sub>0</sub> (mA)</th><th>V<sub>0</sub> (V)</th><th>i<sub>L</sub> min (mA)</th><th>i<sub>L</sub> max (mA)</th><th>i<sub>L</sub>(300 µs) (mA)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="How did changing R affect the response? Did your design also meet the target with the real inductor? What did the initial conditions change, and what did they not change?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). To type an <b>exact value</b> or pick from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjust with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope cursors (Experiment 2):</b> press the CURSOR button and drag on the screen; the cursor nearest to you moves.<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta13.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd1h13', ders: 'Circuit Theory I', hafta: 13,
+  doc: [
+    { id: 'CLO1', t: 'Sets up the equation of the parallel RLC step response; determines the response type from α, ω<sub>0</sub> and solves for i<sub>L</sub>(t).', mc: [1, 2] },
+    { id: 'CLO2', t: 'Measures overshoot, peak time and settling time with oscilloscope cursors and compares them with theory.', mc: [1, 4, 5] },
+    { id: 'CLO3', t: 'Designs R and C values that meet overshoot and settling-time targets and verifies them with real component imperfections.', mc: [2, 3, 5] },
+    { id: 'CLO4', t: 'Analyses the effect of initial conditions on the coefficients; shows that the final value depends on the source.', mc: [1, 2, 5] },
+    { id: 'CLO5', t: 'Presents the findings in writing in a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To observe the inductor current approaching I<sub>s</sub> for a current-source step and to obtain the three damping types by changing only R.', doc: ['CLO1'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Adjustable DC current source (compliance ±60 V), electronic switch, resistor/inductor/capacitor boxes, oscilloscope.',
+      guvenlik: 'Do not open the path of a current-carrying inductor (back EMF, sparks); use a non-polarised capacitor; watch for peaks exceeding the compliance voltage.',
+      veri: 'i<sub>L</sub>(t) and v(t) values read with the cursor; response types versus R.',
+      tartisma: 'Why does damping decrease as R increases in the parallel circuit? In which element is the energy dissipated?' },
+    d2: { amac: 'To measure overshoot, peak time and 2% settling time of the underdamped step response with oscilloscope cursors.', doc: ['CLO2'], mc: [1, 4, 5],
+      gerec: 'Current source, component boxes, two-channel oscilloscope, current probe (100 mV/mA).',
+      guvenlik: 'Connect the oscilloscope ground clip only to circuit ground; zero the current probe and check its direction.',
+      veri: 'Δt and CH2 cursor values, t<sub>p</sub>, i<sub>max</sub>, %OS, t<sub>s</sub>.',
+      tartisma: 'Why may the measured t<sub>s</sub> differ from the 4/α estimate?' },
+    d3: { amac: 'To design R and C for a 5% overshoot and t<sub>s</sub> ≤ 1.2 ms target; to assess the effect of the real inductor resistance.', doc: ['CLO3'], mc: [2, 3, 5, 10],
+      gerec: 'Decade resistor and capacitor boxes, 100 mH inductor (r<sub>L</sub> = 20 Ω), current source, oscilloscope.',
+      guvenlik: 'Compute the transient peak power of the resistor and choose its power rating; watch for inductor saturation.',
+      veri: 'Design table: R, C, r<sub>L</sub>, %OS, t<sub>s</sub>, target met or not.',
+      tartisma: 'How would you implement your design with standard (E12) values; how does tolerance affect the target?' },
+    d4: { amac: 'To show how initial energy in the inductor and capacitor changes the path of the step response.', doc: ['CLO4'], mc: [1, 2, 5],
+      gerec: 'Current source, initial-condition setter, 25 mH inductor, 25 nF capacitor, resistor box.',
+      guvenlik: 'Use make-before-break order when disconnecting the source that supplies the initial current; discharge a charged capacitor.',
+      veri: 'Stored i<sub>L</sub>(t) traces, minimum/maximum current, comparison with theory.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>

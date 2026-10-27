@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 5 · AC Nodal and Mesh Analysis — Circuit Theory II Virtual Lab</title>
+<link rel="stylesheet" href="../ortak/lab.css?v=16">
+<link rel="manifest" href="../../manifest.webmanifest"><meta name="theme-color" content="#16324f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Devre Lab"><link rel="apple-touch-icon" href="../../icons/icon-180.png"></head>
+<body><div style="padding:10px;text-align:center;background:#edf3fa;color:#20334d;font:14px Arial,sans-serif;border-bottom:1px solid #cad5e3">© 2026 Ali AKDAĞLI · Version 1.3 · All rights reserved.</div>
+<header class="topbar no-print">
+  <a href="../index.html" style="color:#fff;text-decoration:none;font-size:20px" title="Lab home page">⌂</a>
+  <div>
+    <h1>Circuit Theory II · Week 5 — Nodal and Mesh Analysis (AC)</h1>
+    <div class="sub">Phasor node equations · [Y][V]=[I] · Superposition · Sources of different frequencies · Dependent source</div>
+  </div>
+  <div class="grow"></div>
+  <input id="stName" placeholder="Full name">
+  <input id="stNo" placeholder="Student ID" style="width:110px">
+  <div title="Progress"><div class="progress"><div id="prog"></div></div><div class="sub" id="progTxt" style="text-align:center">%0</div></div>
+  <button class="btn sec small" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+</header>
+
+<div class="layout">
+<nav class="side no-print" id="nav">
+  <button data-p="giris"><span class="dot"></span>0 · Introduction and Objectives</button>
+  <button data-p="onbilgi"><span class="dot"></span>1 · Background and Safety Notes</button>
+  <button data-p="onhaz"><span class="dot"></span>2 · Pre-lab</button>
+  <button data-p="d1"><span class="dot"></span>3 · Experiment 1: Two-Source Nodal Analysis</button>
+  <button data-p="d2"><span class="dot"></span>4 · Experiment 2: Equation Builder [Y][V]=[I]</button>
+  <button data-p="d3"><span class="dot"></span>5 · Experiment 3: Sources of Different Frequencies</button>
+  <button data-p="d4"><span class="dot"></span>6 · Experiment 4: Dependent Source</button>
+  <button data-p="rapor"><span class="dot"></span>7 · Conclusion and Report</button>
+  <div class="hint">Knobs: drag them or press <b>− / +</b>. <b>Tap</b> a knob to enter an exact value. <kbd>Shift</kbd> fine adjustment.<br><br><kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0–7</kbd> sections · <kbd>?</kbd> help<br><br>Your data are saved automatically on this computer.</div>
+</nav>
+
+<main>
+<!-- ================= GİRİŞ ================= -->
+<section class="page" id="giris">
+  <h2>Week 5 · Nodal and Mesh Analysis in the Sinusoidal Steady State</h2>
+  <p class="lead">Lecture notes: <b>Section 1.7 Node-Voltage and Mesh-Current Methods</b> (Examples 1.29–1.34).</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">By the end of this lab you will</h3>
+      <ol class="steps">
+        <li><b>Measure</b> the node voltages of a two-source (same-frequency) AC circuit and compare them with the solution of the phasor node equations.</li>
+        <li><b>Build</b> the admittance matrix yourself, test the solution of the system against measurement, and debug sign and 1/j errors.</li>
+        <li>Measure the <b>phase difference</b> with the oscilloscope cursors and find the phasor angle.</li>
+        <li>See why phasors of two sources with different frequencies <b>cannot be added</b>, and how the rms value is found.</li>
+        <li>Measure how a dependent source breaks the <b>symmetry</b> of the admittance matrix.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Instruments on the bench</h3>
+      <p style="font-size:14px;line-height:1.6;margin:0">Function generator + power amplifier (voltage source, 50 Ω output bypassed) · Synchronous AC current source (transconductance amplifier, adjustable phase) · True-rms AC voltmeter and ammeter · Phase meter · Two-channel oscilloscope (with cursors) · Resistor, inductor and capacitor boxes.</p>
+      <div class="info"><b>Amplitude convention:</b> As in the lecture notes, phasors are written with the <b>peak value</b> (cosine amplitude): V<sub>s</sub> = 10∠0° V ⇔ v<sub>s</sub>(t) = 10 cos ωt V. The AC voltmeter, however, shows the <b>rms</b> value: V<sub>rms</sub> = V<sub>m</sub>/√2. Do not forget this conversion when comparing a measurement with a phasor.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Order of work</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0">First complete the <b>Background</b> and <b>Pre-lab</b> sections. In each experiment follow the lab sheet on the left step by step; steps are ticked automatically when you make the correct setting and measurement. Record measurements with <kbd>R</kbd> and answer the questions. In the last section print your report or save it as PDF.</p>
+  </div>
+</section>
+
+<!-- ================= ÖN BİLGİ ================= -->
+<section class="page" id="onbilgi">
+  <h2>Background · Familiar Methods, Now with Complex Numbers</h2>
+  <p class="lead">The KCL/KVL rules you learned for resistive circuits do not change; only Z replaces R and phasors replace real numbers.</p>
+  <div class="grid-half">
+    <div class="card">
+      <h3 style="margin-top:0">1 · Why nodal and mesh analysis?</h3>
+      <p style="font-size:14px;line-height:1.65">Real circuits (the filter stage of a sound card, a power distribution network, the input filter of a motor drive) contain several sources and dozens of elements. Series–parallel reduction soon gets stuck. Nodal and mesh analysis give <b>a systematic recipe that works for every circuit</b>: N−1 equations for N−1 nodes. Circuit simulators (SPICE) do exactly this in AC analysis: they build the admittance matrix and solve the complex linear system.</p>
+      <div class="eq">[Y][V] = [I]&nbsp;&nbsp;&nbsp;⇔&nbsp;&nbsp;&nbsp;[Z][I] = [V]</div>
+      <h3>2 · Step-by-step recipe (nodal)</h3>
+      <ol style="font-size:14px;line-height:1.65;margin:0;padding-left:20px">
+        <li>Choose the reference node (usually the node with the most elements connected).</li>
+        <li>Convert sources to phasors and elements to Z = R, jωL, 1/(jωC) or Y = 1/Z.</li>
+        <li><b>Y<sub>kk</sub></b> = sum of all admittances connected to node k.</li>
+        <li><b>Y<sub>km</sub></b> = the <b>negative</b> of the admittance between k and m.</li>
+        <li><b>I<sub>k</sub></b> = sum of source currents <b>entering</b> the node (voltage source + series Z → Norton: V<sub>s</sub>/Z).</li>
+        <li>Solve (Cramer or Gauss) and check by substituting the result back into one equation.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Formula card</h3>
+      <table class="data">
+        <tr><td class="l">Admittances</td><td class="l">Y<sub>R</sub> = 1/R, Y<sub>L</sub> = 1/(jωL) = −j/(ωL), Y<sub>C</sub> = jωC</td></tr>
+        <tr><td class="l">Dividing by the imaginary unit</td><td class="l">1/j = −j,&nbsp; 1/(j2) = −j0.5</td></tr>
+        <tr><td class="l">2×2 Cramer</td><td class="l">Δ = Y<sub>11</sub>Y<sub>22</sub> − Y<sub>12</sub>Y<sub>21</sub>,&nbsp; V<sub>1</sub> = (I<sub>1</sub>Y<sub>22</sub> − Y<sub>12</sub>I<sub>2</sub>)/Δ</td></tr>
+        <tr><td class="l">Complex division</td><td class="l">(a+jb)/(c+jd) = (a+jb)(c−jd)/(c²+d²)</td></tr>
+        <tr><td class="l">rms value</td><td class="l">V<sub>rms</sub> = V<sub>m</sub>/√2</td></tr>
+        <tr><td class="l">Phase (oscilloscope)</td><td class="l">φ = 360° · f · Δt (the one that peaks first <b>leads</b>)</td></tr>
+        <tr><td class="l">Sources with different ω</td><td class="l">i(t) = Σ |I<sub>k</sub>| cos(ω<sub>k</sub>t + φ<sub>k</sub>),&nbsp; I<sub>rms</sub> = √(Σ I<sub>k,rms</sub>²)</td></tr>
+        <tr><td class="l">Dependent source</td><td class="l">Enters the matrix; Y<sub>km</sub> ≠ Y<sub>mk</sub> is possible</td></tr>
+      </table>
+      <h3>3 · At a glance: two phasors of different frequencies</h3>
+      <svg id="obAnim" viewBox="0 0 520 230" class="schem" style="max-width:520px"></svg>
+      <div class="row" style="font-size:13px;margin-top:6px">
+        <label>ω<sub>2</sub>/ω<sub>1</sub> <select id="obRatio"><option value="1">1 (same frequency)</option><option value="3" selected>3</option><option value="2">2</option></select></label>
+        <span style="color:var(--muted)">Left: two phasors and their sum (black). Right: time waveform of the sum.</span>
+      </div>
+      <div class="info">At the same frequency the two arrows rotate <b>together</b> and the angle between them stays constant: the sum is also a phasor of constant length. At different frequencies the angle between them opens as (ω<sub>2</sub>−ω<sub>1</sub>)t; the length of the sum keeps changing, so it <b>cannot be represented by a single phasor</b>.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Worked mini example (Example 1.30)</h3>
+    <p style="font-size:14px;line-height:1.65;margin:0">V<sub>s</sub> = 10∠0° V, 1 Ω in series; node 1–ground 5 Ω; between nodes 1–2 j2 Ω; node 2–ground 10 Ω; I<sub>s</sub> = 2∠0° A enters node 2.<br>
+    Node 1: (1 + 0.2 − j0.5)V<sub>1</sub> + j0.5V<sub>2</sub> = 10 &nbsp;·&nbsp; Node 2: j0.5V<sub>1</sub> + (0.1 − j0.5)V<sub>2</sub> = 2.<br>
+    Why is the off-diagonal term <b>+j0.5</b>? Because Y<sub>12</sub> = −1/(j2) = −(−j0.5) = +j0.5. The sign flipped twice: once from the “neighbour is negative” rule and once from 1/j = −j.<br>
+    Δ = 0.12 − j0.65 ⇒ V<sub>1</sub> = 9.20 − j0.16 V, V<sub>2</sub> = 9.59 + j1.92 V. In Experiment 1 you will test these results on the bench.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">⚠ Things to watch in a real lab</h3>
+    <div class="warnbox"><b>The oscilloscope ground is a single point.</b> The ground clips of both probes are connected to each other and to the mains protective earth inside the oscilloscope. If you attach the CH2 ground to node 1, you short node 1 to ground and the circuit changes. To see the voltage between two nodes (V<sub>1</sub>−V<sub>2</sub>) use the <b>math channel (CH1−CH2)</b> or a <b>differential probe</b>.</div>
+    <div class="warnbox"><b>Measuring mains-powered circuits.</b> The power amplifier in these experiments is isolated from the mains. In a circuit connected directly to the mains, if the oscilloscope ground touches the live conductor a short circuit and an arc occur; such measurements are made only with an <b>isolation transformer</b> or an isolated differential probe. Disconnecting the oscilloscope’s protective earth (“defeating the plug earth”) is never a solution.</div>
+    <div class="warnbox"><b>Never leave a current source’s output open.</b> When its load opens, a current source raises its voltage to maintain the current (up to the compliance voltage limit). In the experiment, set I<sub>s</sub> to zero before changing node 2; on an open circuit the source’s “OVL” warning lights up.</div>
+    <div class="warnbox"><b>The multimeter’s AC range and frequency limit.</b> Cheap multimeters are “average-responding” and show the correct rms only for a pure sine; most are also inaccurate above 400 Hz–1 kHz. A <b>true-rms</b> instrument is required for the two-frequency waveform in Experiment 3. When measuring current, mind the 10 A input and its fuse; move the lead back to the V input before measuring voltage again.</div>
+    <div class="warnbox"><b>Element power and current ratings.</b> 1 A rms in a 1 Ω resistor means about 1 W: a ¼ W resistor burns. The wire gauge of an inductor also limits the current, and its internal resistance rises as it heats up. Check the power of the element you choose in advance with P = I<sub>rms</sub>²R.</div>
+    <div class="warnbox"><b>Electrolytic capacitors are not used in AC.</b> A polarized electrolytic capacitor fails during the reverse half-cycle, swells and may explode. In AC circuits choose film (polypropylene) or non-polarized (bipolar) capacitors; at the end of the experiment discharge large capacitors through a resistor.</div>
+    <div class="info"><b>Common mistakes:</b> writing 1/(jωL) as +j/(ωL); forgetting to make the off-diagonal term negative; adding mesh currents in the shared branch (take the difference); comparing the voltmeter’s rms value with the peak phasor; adding phasors of different frequencies; adding rms values directly (the squares are added).</div>
+  </div>
+</section>
+
+<section class="page" id="onhaz">
+  <h2>Pre-lab</h2>
+  <p class="lead">Solve these before coming to the lab. Phasors are peak values; angles are in degrees.</p>
+  <div class="card" id="preQ"></div>
+</section>
+
+<!-- ================= DENEY 1 ================= -->
+<section class="page" id="d1">
+  <h2>Experiment 1 · Node Voltages in a Two-Source Circuit</h2>
+  <p class="lead">The circuit of Example 1.30 on the bench: a voltage source and a current source running synchronously at the same frequency. Measure, convert to phasors, and compare with the solution of the equations.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d1steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info"><b>From measurement to phasor:</b> amplitude = V<sub>rms</sub>·√2; angle from the time difference on the oscilloscope between the reference (CH1 = v<sub>s</sub>, angle 0°) and the measured channel: <span class="eq">φ = −360° · Δt / T</span> Δt is the time from the CH1 peak to the CH2 peak; if CH2 peaks first (Δt &lt; 0) the phasor <b>leads</b> and the angle is positive.</div>
+        <div class="info"><b>Why is that?</b> The inductor (j2 Ω) adds a voltage leading the current by 90°; that is why V<sub>1</sub> and V<sub>2</sub> are no longer in phase. In the DC solution (Example 1.29) both were real numbers with the same sign.</div>
+        <div class="info"><b>Superposition (same frequency):</b> If you add <b>as complex numbers</b> the phasors measured with the sources switched on one at a time, you get the phasor measured with both sources on. Adding rms values is wrong; the angles must also be taken into account.</div>
+        <div class="warnbox">Do not attach the ground clip of the second oscilloscope probe to node 1: node 1 would be shorted to ground. For V<sub>1</sub>−V<sub>2</sub> use the <b>difference (CH1−CH2 math)</b> position of the “probe point” selector.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d1inst"></div><div class="bench-row" id="d1scopeHost" style="margin-top:12px"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d1sch" class="schem" viewBox="0 0 760 270"></svg></div>
+      <div class="card">
+        <div class="row"><b>Measurement table</b><span class="grow"></span>
+          <button class="btn small" id="d1rec">Record (R)</button>
+          <button class="btn sec small" id="d1del">Delete last row</button>
+          <button class="btn sec small" id="d1csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d1tab"><thead><tr><th>#</th><th>V<sub>s</sub> (V)</th><th>I<sub>s</sub></th><th>ω (rad/s)</th><th>Inductor</th><th>Point</th><th>V<sub>rms</sub> (V)</th><th>Δt (cursor)</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d1Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 2 ================= -->
+<section class="page" id="d2">
+  <h2>Experiment 2 · Interactive Equation Builder: [Y][V] = [I]</h2>
+  <p class="lead">Design the circuit yourself: choose the element of each of the three branches and the frequency, then enter the admittance matrix. The system solves your matrix and compares it with the bench measurement.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d2steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">The voltage source V<sub>s</sub> with series R<sub>s</sub> = 1 Ω is converted to its Norton equivalent: a current <b>V<sub>s</sub>/R<sub>s</sub></b> enters node 1, and 1/R<sub>s</sub> is added to Y<sub>11</sub>.</div>
+        <div class="info"><b>Checklist:</b> (1) The real parts of Y<sub>11</sub> and Y<sub>22</sub> must be ≥ 0 (passive elements). (2) The imaginary part of an inductor admittance is <b>negative</b>, that of a capacitor <b>positive</b>. (3) Without a dependent source Y<sub>12</sub> = Y<sub>21</sub>.</div>
+        <div class="info"><b>Why compare with measurement?</b> A single sign error in the matrix gives a result that “looks reasonable” but is wrong. In engineering a calculation is always verified by an independent route (measurement, a second method, energy balance).</div>
+        <div class="warnbox">Switch off the sources (POWER button) when changing the inductor and capacitor. A large charged capacitor (1000 µF) sparks when touched; discharge it through a bleeder resistor before changing it.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d2inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d2sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="card">
+        <h3 style="margin-top:0">Equation builder</h3>
+        <div id="d2mat"></div>
+      </div>
+      <div class="card">
+        <div class="row"><b>Comparison table</b><span class="grow"></span>
+          <button class="btn sec small" id="d2del">Delete last row</button>
+          <button class="btn sec small" id="d2csv">CSV</button></div>
+        <div class="tablewrap"><table class="data" id="d2tab"><thead><tr><th>#</th><th>Circuit</th><th>ω</th><th>Matrix</th><th>V<sub>1</sub> (solution)</th><th>V<sub>1</sub> (measured)</th><th>V<sub>2</sub> (solution)</th><th>V<sub>2</sub> (measured)</th><th>Error</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d2Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 3 ================= -->
+<section class="page" id="d3">
+  <h2>Experiment 3 · Superposition and Two Sources of Different Frequencies</h2>
+  <p class="lead">Example 1.34: series 10 Ω and 10 mH; v<sub>1</sub> = 10 cos 1000t V and v<sub>2</sub> = 6 cos(ω<sub>2</sub>t − 30°) V. Switch the sources on one at a time and examine the current with the oscilloscope and a true-rms ammeter.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d3steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">A phasor is defined for a single ω. Solve each source separately <b>at its own frequency</b> (Z = R + jωL is different for each ω), then add in the <b>time domain</b>: <span class="eq">i(t) = |I<sub>1</sub>|cos(ω<sub>1</sub>t+φ<sub>1</sub>) + |I<sub>2</sub>|cos(ω<sub>2</sub>t+φ<sub>2</sub>)</span></div>
+        <div class="info"><b>rms value:</b> the average of the product of sinusoids of different frequencies is zero (orthogonality). Therefore <span class="eq">I<sub>rms</sub> = √(I<sub>1,rms</sub>² + I<sub>2,rms</sub>²)</span> At the same frequency the cross term remains; the phasors are added first.</div>
+        <div class="info">A voltage source that is switched off is replaced by a <b>short circuit</b> (a current source by an open circuit). On a real bench you remove the source from the circuit and insert a jumper; the “output off” button also keeps the internal resistance small.</div>
+        <div class="warnbox">Do not connect the outputs of two power supplies directly in parallel: between two voltage sources of different frequencies a large current flows, limited only by their internal resistances. When connecting in series, make sure each source has an isolated (floating) output.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d3inst"></div><div class="bench-row" id="d3scopeHost" style="margin-top:12px"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d3sch" class="schem" viewBox="0 0 760 220"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d3rec">Record (R)</button>
+            <button class="btn sec small" id="d3del">Delete last row</button>
+            <button class="btn sec small" id="d3csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d3tab"><thead><tr><th>#</th><th>Source 1</th><th>Source 2</th><th>ω<sub>2</sub></th><th>I<sub>rms</sub> (mA)</th><th>i max (A)</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>i(t) comparison</b><span class="grow"></span>
+            <label style="font-size:13px"><input type="checkbox" id="d3theo"> Correct solution (sum in the time domain)</label>
+            <label style="font-size:13px"><input type="checkbox" id="d3wrong"> Wrong: add the phasors</label></div>
+          <canvas id="d3plot" width="560" height="300" style="width:100%"></canvas>
+          <div style="font-size:12.5px;color:var(--muted)">Blue dots: measured current (oscilloscope, two ω<sub>1</sub> periods).</div>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d3Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DENEY 4 ================= -->
+<section class="page" id="d4">
+  <h2>Experiment 4 · Circuit with a Dependent Source and a Non-Symmetric Matrix</h2>
+  <p class="lead">A current source controlled by the node 1 voltage (VCCS, i = g·v<sub>1</sub>) is connected to node 2. This is exactly the small-signal model of transistor amplifiers.</p>
+  <div class="grid2">
+    <div>
+      <div class="card"><h3 style="margin-top:0">Lab sheet</h3><ol class="steps" id="d4steps"></ol></div>
+      <div class="card">
+        <h3 style="margin-top:0">Info</h3>
+        <div class="info">The dependent source is first written like an independent source (+gV<sub>1</sub> on the I<sub>2</sub> side); then, since the controlling variable is an unknown, it is <b>moved to the left-hand side</b>: <span class="eq">−(Y<sub>b</sub> + g)V<sub>1</sub> + (Y<sub>b</sub> + Y<sub>c</sub>)V<sub>2</sub> = 0</span> Hence Y<sub>21</sub> ≠ Y<sub>12</sub>.</div>
+        <div class="info"><b>Why is the symmetry broken?</b> A passive branch couples two nodes mutually and equally. A dependent source is one-way: V<sub>1</sub> affects node 2, but V<sub>2</sub> does not affect node 1 through this path. This is how an amplifier passes signals from input to output but not back.</div>
+        <div class="warnbox">In a real amplifier the gain rises as g grows, but if there is a feedback path (here the 4 Ω branch) the circuit may approach <b>instability</b>: as Δ → 0 the voltages become very large. On the bench this means the output stage goes into saturation and the elements heat up; increase g slowly.</div>
+      </div>
+    </div>
+    <div>
+      <div class="bench"><div class="bench-row" id="d4inst"></div></div>
+      <div class="card" style="margin-top:12px"><svg id="d4sch" class="schem" viewBox="0 0 760 250"></svg></div>
+      <div class="grid-half">
+        <div class="card">
+          <div class="row"><b>Measurement table</b><span class="grow"></span>
+            <button class="btn small" id="d4rec">Record (R)</button>
+            <button class="btn sec small" id="d4del">Delete last row</button>
+            <button class="btn sec small" id="d4csv">CSV</button></div>
+          <div class="tablewrap"><table class="data" id="d4tab"><thead><tr><th>#</th><th>g (S)</th><th>V<sub>1,rms</sub></th><th>∠V<sub>1</sub></th><th>V<sub>2,rms</sub></th><th>∠V<sub>2</sub></th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row"><b>|V<sub>2</sub>| – g plot</b><span class="grow"></span><label style="font-size:13px"><input type="checkbox" id="d4theo"> Theoretical curve</label></div>
+          <canvas id="d4plot" width="560" height="300" style="width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">Equation builder (with dependent source)</h3><div id="d4mat"></div></div>
+      <div class="card"><h3 style="margin-top:0">Questions</h3><div id="d4Q"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RAPOR ================= -->
+<section class="page" id="rapor">
+  <h2>Conclusion and Report</h2>
+  <p class="lead">Your report is generated automatically from your answers, measurement tables and plots.</p>
+  <div class="card">
+    <div class="row">
+      <label>Group <input type="text" id="stGroup" size="6"></label>
+      <label>Date <input type="text" id="stDate" size="12"></label>
+      <span class="grow"></span>
+      <button class="btn" id="printBtn">Print report / save as PDF</button>
+      <button class="btn sec" id="resetBtn">Reset all data</button>
+    </div>
+    <h3>Your discussion (at least 3 sentences)</h3>
+    <textarea id="stComment" rows="5" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px" placeholder="How well did the phasor nodal solution agree with measurement? Why could you not add phasors for sources of different frequencies? How did the dependent source change the matrix?"></textarea>
+  </div>
+  <div class="card" id="reportPreview"></div>
+</section>
+</main>
+</div>
+
+<div id="report"></div>
+<div class="modal" id="helpModal"><div class="box">
+  <h3 style="margin-top:0">Shortcuts and usage</h3>
+  <p style="font-size:14px;line-height:1.7">
+    <b>Knobs:</b> drag up/down (or right/left) or press the <b>−</b> / <b>+</b> buttons below them (holding speeds up). To type an <b>exact value</b> or pick from a list, <b>tap</b> the knob or the value below it (prefixes such as 4.7k · 600µ · 2m are accepted). Keyboard: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>PgUp</kbd> <kbd>PgDn</kbd> <kbd>Home</kbd> <kbd>End</kbd>, fine adjustment with <kbd>Shift</kbd>.<br>
+    <b>What do I do?</b> The <b>Next step</b> bar at the bottom of the screen shows the next task on the lab sheet; a step is ticked automatically when done correctly.<br>
+    <b>Oscilloscope cursors:</b> press the CURSOR button and drag on the screen. The left edge of the screen is t = 0 (trigger: peak of v<sub>s</sub>).<br>
+    <b>Equation builder:</b> type a complex number into separate real and imaginary boxes (e.g. 1.2 and −0.5). Use a decimal point (a comma also works).<br>
+    <kbd>R</kbd> record measurement · <kbd>Alt</kbd>+<kbd>0</kbd>…<kbd>7</kbd> change section · <kbd>?</kbd> this window · <kbd>Esc</kbd> close
+  </p>
+  <button class="btn" onclick="document.getElementById('helpModal').classList.remove('show')">OK</button>
+</div></div>
+
+<script src="../ortak/lab-core.js?v=16"></script>
+<script src="hafta05.js?v=16"></script>
+<script>
+window.CIKTI = { key: 'd2h5', ders: 'Circuit Theory II', hafta: 5,
+  doc: [
+    { id: 'CLO1', t: 'Sets up and solves phasor node and mesh equations for multi-source circuits in the sinusoidal steady state.', mc: [1, 2] },
+    { id: 'CLO2', t: 'Determines phasors experimentally by measuring amplitude and phase with an AC voltmeter and a two-channel oscilloscope.', mc: [4, 5] },
+    { id: 'CLO3', t: 'Builds the admittance matrix for a circuit of their own choice, verifies the solution by measurement and debugs errors.', mc: [2, 3, 5] },
+    { id: 'CLO4', t: 'Applies superposition in the time domain for sources of different frequencies; analyses the effect of a dependent source on the matrix.', mc: [1, 2, 5] },
+    { id: 'CLO5', t: 'Presents the findings in writing in a technical report.', mc: [9, 11] },
+  ],
+  deneyler: {
+    d1: { amac: 'To measure the amplitude and phase of node voltages in a two-source (same-frequency) AC circuit and compare them with the solution of the phasor node equations and with superposition.', doc: ['CLO1', 'CLO2'], mc: [1, 2, 4, 5, 6],
+      gerec: 'Function generator + power amplifier, synchronous AC current source, true-rms AC voltmeter, two-channel oscilloscope, 1 Ω, 5 Ω, 10 Ω resistors, 2 mH inductor.',
+      guvenlik: 'The oscilloscope ground clip goes only to the reference node; difference voltages are measured with the math channel or a differential probe. The 1 Ω resistor dissipates several watts, so its power rating must be chosen accordingly. The current source is never left open-circuited.',
+      veri: 'rms values of the node voltages, Δt from the cursors, phasor amplitudes and angles; complex sum of the single-source measurements.' },
+    d2: { amac: 'To build the admittance matrix for the chosen R, L, C elements and frequency; to verify the solution by measurement and debug sign and 1/j errors.', doc: ['CLO1', 'CLO3'], mc: [1, 2, 3, 4, 5],
+      gerec: 'Resistor, inductor and capacitor boxes; voltage and current source; AC voltmeter and phase meter.',
+      guvenlik: 'Power is switched off when changing elements; large capacitors are discharged through a bleeder resistor; electrolytic capacitors are not used in AC circuits.',
+      veri: '[Y] and [I] entered by the student, comparison table of solution and measurement, relative error.',
+      tartisma: 'Which term in your matrix was wrong at the first attempt, and how did the measurement reveal it? Why did changing the frequency in the circuit you designed change the node voltages?' },
+    d3: { amac: 'To find the response to two sources of different frequencies by superposition in the time domain; to measure why adding phasors is invalid and how the rms value is calculated.', doc: ['CLO2', 'CLO4'], mc: [1, 2, 4, 5],
+      gerec: 'Two function generators with floating outputs, 10 Ω resistor, 10 mH inductor, true-rms ammeter, oscilloscope (current probe).',
+      guvenlik: 'Voltage sources are not connected directly in parallel; an average-responding multimeter reads non-sinusoidal waveforms incorrectly.',
+      veri: 'I<sub>rms</sub> values with one and two sources, current waveform, sum-of-squares check.' },
+    d4: { amac: 'To set up the node equations of a circuit containing a voltage-controlled current source and verify the non-symmetric admittance matrix by measurement.', doc: ['CLO1', 'CLO4'], mc: [1, 2, 4, 5],
+      gerec: 'Voltage source, VCCS module (adjustable g), resistors, 250 µF film capacitor, 2 mH inductor, AC voltmeter, phase meter.',
+      guvenlik: 'As g is increased the circuit may approach instability; g is increased slowly while monitoring the output voltage.',
+      veri: 'Amplitudes and angles of V<sub>1</sub>, V<sub>2</sub> versus g, |V<sub>2</sub>|–g plot, the dependent-source [Y] built by the student.' },
+  } };
+</script>
+<script src="../ortak/ciktilar.js?v=16"></script>
+<script src="../../pwa-bridge.js"></script></body>
+</html>
